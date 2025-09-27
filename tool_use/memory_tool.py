@@ -289,6 +289,16 @@ class MemoryToolHandler:
 
         full_path = self._validate_path(path)
 
+        # Verify the path is within /memories to prevent accidental deletion outside the memory directory
+        # This provides an additional safety check beyond _validate_path
+        try:
+            full_path.relative_to(self.memory_root.resolve())
+        except ValueError:
+            return {
+                "error": f"Invalid operation: Path '{path}' is not within /memories directory. "
+                "Only paths within /memories can be deleted."
+            }
+
         if not full_path.exists():
             return {"error": f"Path not found: {path}"}
 
@@ -338,6 +348,11 @@ class MemoryToolHandler:
     def clear_all_memory(self) -> dict[str, str]:
         """
         Clear all memory files (useful for testing or starting fresh).
+
+        ⚠️ WARNING: This method is for demonstration and testing purposes only.
+        In production, you should carefully consider whether you need to delete
+        all memory files, as this will permanently remove all learned patterns
+        and stored knowledge. Consider using selective deletion instead.
 
         Returns:
             Dict with success message
