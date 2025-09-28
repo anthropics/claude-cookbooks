@@ -4,7 +4,7 @@ This is one of Python's most common gotchas.
 """
 
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 
 
 class CacheManager:
@@ -35,8 +35,8 @@ class CacheManager:
         self.cache[key] = items
 
     def merge_configs(
-        self, name: str, overrides: Dict[str, any] = {}  # BUG: Mutable default!
-    ) -> Dict[str, any]:
+        self, name: str, overrides: Dict[str, Any] = {}  # BUG: Mutable default!
+    ) -> Dict[str, Any]:
         """
         Merge configuration with overrides.
 
@@ -49,8 +49,8 @@ class CacheManager:
         return overrides
 
     def merge_configs_fixed(
-        self, name: str, overrides: Optional[Dict[str, any]] = None
-    ) -> Dict[str, any]:
+        self, name: str, overrides: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
         """Merge configs properly."""
         if overrides is None:
             overrides = {}

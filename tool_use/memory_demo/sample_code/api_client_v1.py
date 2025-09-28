@@ -4,7 +4,7 @@ This demonstrates Claude applying thread-safety patterns to async code.
 """
 
 import asyncio
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Any
 
 import aiohttp
 
@@ -19,7 +19,7 @@ class AsyncAPIClient:
 
     async def fetch_endpoint(
         self, session: aiohttp.ClientSession, endpoint: str
-    ) -> Dict[str, any]:
+    ) -> Dict[str, Any]:
         """Fetch a single endpoint."""
         url = f"{self.base_url}/{endpoint}"
         try:
@@ -38,7 +38,7 @@ class AsyncAPIClient:
                 "error": str(e),
             }
 
-    async def fetch_all(self, endpoints: List[str]) -> List[Dict[str, any]]:
+    async def fetch_all(self, endpoints: List[str]) -> List[Dict[str, Any]]:
         """
         Fetch multiple endpoints concurrently.
 
@@ -61,7 +61,7 @@ class AsyncAPIClient:
 
         return self.responses
 
-    def get_summary(self) -> Dict[str, any]:
+    def get_summary(self) -> Dict[str, Any]:
         """Get summary statistics."""
         return {
             "total_responses": len(self.responses),

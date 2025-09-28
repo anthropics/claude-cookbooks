@@ -5,7 +5,7 @@ Multiple threads modify shared state without synchronization.
 
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import List, Dict
+from typing import List, Dict, Any
 
 import requests
 
@@ -18,7 +18,7 @@ class WebScraper:
         self.results = []  # BUG: Shared mutable state accessed by multiple threads!
         self.failed_urls = []  # BUG: Another race condition!
 
-    def fetch_url(self, url: str) -> Dict[str, any]:
+    def fetch_url(self, url: str) -> Dict[str, Any]:
         """Fetch a single URL and return the result."""
         try:
             response = requests.get(url, timeout=5)
@@ -31,7 +31,7 @@ class WebScraper:
         except requests.exceptions.RequestException as e:
             return {"url": url, "error": str(e)}
 
-    def scrape_urls(self, urls: List[str]) -> List[Dict[str, any]]:
+    def scrape_urls(self, urls: List[str]) -> List[Dict[str, Any]]:
         """
         Scrape multiple URLs concurrently.
 
