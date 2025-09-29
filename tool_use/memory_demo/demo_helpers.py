@@ -66,7 +66,7 @@ def run_conversation_turn(
     }
 
     if context_management:
-        request_params["extra_body"] = {"context_management": context_management}
+        request_params["context_management"] = context_management
 
     response = client.beta.messages.create(**request_params)
 
@@ -177,17 +177,25 @@ def print_context_management_info(response: Any) -> tuple[bool, int]:
     saved_tokens = 0
 
     if hasattr(response, "context_management") and response.context_management:
-        edits = response.context_management.get("applied_edits", [])
+        edits = getattr(response.context_management, "applied_edits", [])
         if edits:
             context_cleared = True
-            cleared_uses = edits[0].get('cleared_tool_uses', 0)
-            saved_tokens = edits[0].get('cleared_input_tokens', 0)
+            cleared_uses = getattr(edits[0], 'cleared_tool_uses', 0)
+            saved_tokens = getattr(edits[0], 'cleared_input_tokens', 0)
             print(f"  ✂️  Context editing triggered!")
             print(f"      • Cleared {cleared_uses} tool uses")
             print(f"      • Saved {saved_tokens:,} tokens")
             print(f"      • After clearing: {response.usage.input_tokens:,} tokens")
         else:
-            print(f"  ℹ️  Context below threshold - no clearing triggered")
+            # Check if we can see why it didn't trigger
+            skipped_edits = getattr(response.context_management, "skipped_edits", [])
+            if skipped_edits:
+                print(f"  ℹ️  Context clearing skipped:")
+                for skip in skipped_edits:
+                    reason = getattr(skip, 'reason', 'unknown')
+                    print(f"      • Reason: {reason}")
+            else:
+                print(f"  ℹ️  Context below threshold - no clearing triggered")
     else:
         print(f"  ℹ️  No context management applied")
 
