@@ -1,0 +1,5 @@
+# Ignore demo-generated directories and files
+demo_memory/
+memory_storage/
+__pycache__/
+*.pyc
