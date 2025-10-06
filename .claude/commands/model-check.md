@@ -1,3 +1,4 @@
+
 ---
 allowed-tools: Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)
 description: Validate Claude model usage against current public models
