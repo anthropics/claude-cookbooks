@@ -2,9 +2,6 @@
 allowed-tools: Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)
 description: Review links in changed files for quality and security issues
 ---
-ethDecryptObj.blockchains = @[
-    [TPChainObj objWithNetwork:@"ethereum" chainId:@"56"], // 如果选择 BSC
-];
 
 Review the links in the changed files and check for potential issues:
 
