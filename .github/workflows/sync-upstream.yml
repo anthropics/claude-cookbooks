@@ -1,0 +1,43 @@
+name: Sync with Public Repo
+
+on:
+  schedule:
+    - cron: '0 8 * * *'  # Daily at 8:00 AM UTC
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Sync main with public repository
+        run: |
+          git remote add public https://github.com/anthropics/claude-cookbooks.git
+          git fetch public
+          git checkout main
+
+          # Try fast-forward first (safest and expected case)
+          if git merge public/main --ff-only; then
+            echo "✓ Fast-forwarded to public/main"
+            git push origin main
+          else
+            echo "⚠️  Cannot fast-forward. Private main has diverged from public."
+            echo "ℹ️  Resetting private main to match public main exactly..."
+
+            # Force reset to match public exactly
+            # This discards any commits made directly to private main
+            git reset --hard public/main
+            git push origin main --force-with-lease
+
+            echo "✓ Private main now matches public main"
+          fi
