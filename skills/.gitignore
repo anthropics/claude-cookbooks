@@ -1,0 +1,43 @@
+# Environment and secrets
+.env
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Generated outputs
+outputs/
+*.xlsx
+*.pptx
+*.pdf
+*.docx
+
+# SDK wheel file - users should download from Anthropic
+whl/
+
+# Documentation sources - internal only
+docs/
+# Exception: Keep the cookbook plan
+!docs/skills_cookbook_plan.md
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
