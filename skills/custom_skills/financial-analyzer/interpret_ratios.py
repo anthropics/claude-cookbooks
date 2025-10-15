@@ -37,7 +37,14 @@ class RatioInterpreter:
             'roe': {'excellent': 0.18, 'good': 0.14, 'acceptable': 0.10, 'poor': 0.06},
             'gross_margin': {'excellent': 0.35, 'good': 0.25, 'acceptable': 0.18, 'poor': 0.12},
             'pe_ratio': {'undervalued': 14, 'fair': 20, 'growth': 28, 'expensive': 40}
-        }
+        },
+        'healthcare': {
+            'current_ratio': {'excellent': 2.3, 'good': 1.8, 'acceptable': 1.4, 'poor': 1.0},
+            'debt_to_equity': {'excellent': 0.3, 'good': 0.6, 'acceptable': 1.0, 'poor': 1.8},
+            'roe': {'excellent': 0.22, 'good': 0.16, 'acceptable': 0.11, 'poor': 0.07},
+            'gross_margin': {'excellent': 0.65, 'good': 0.45, 'acceptable': 0.30, 'poor': 0.20},
+            'pe_ratio': {'undervalued': 18, 'fair': 28, 'growth': 40, 'expensive': 55}
+                }
     }
 
     def __init__(self, industry: str = 'general'):
