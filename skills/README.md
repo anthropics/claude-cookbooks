@@ -42,7 +42,7 @@ Master the art of creating your own specialized skills.
 - Building a financial ratio calculator
 - Creating company brand guidelines skill
 - Advanced: Financial modeling suite
-- Best practices and security considerations
+- [Best practices](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/best-practices) and security considerations
 
 ## Quick Start
 
