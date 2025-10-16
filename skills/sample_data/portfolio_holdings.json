@@ -1,0 +1,182 @@
+{
+  "portfolio_name": "Growth & Income Portfolio",
+  "portfolio_id": "PF-2024-001",
+  "base_currency": "USD",
+  "last_updated": "2024-12-31",
+  "total_value": 1250000,
+  "holdings": [
+    {
+      "ticker": "AAPL",
+      "name": "Apple Inc.",
+      "sector": "Technology",
+      "shares": 500,
+      "purchase_price": 145.50,
+      "current_price": 192.50,
+      "purchase_date": "2023-06-15",
+      "market_value": 96250,
+      "unrealized_gain": 23500,
+      "dividend_yield": 0.44,
+      "allocation_percent": 7.7
+    },
+    {
+      "ticker": "MSFT",
+      "name": "Microsoft Corporation",
+      "sector": "Technology",
+      "shares": 300,
+      "purchase_price": 310.25,
+      "current_price": 376.50,
+      "purchase_date": "2023-08-20",
+      "market_value": 112950,
+      "unrealized_gain": 19875,
+      "dividend_yield": 0.72,
+      "allocation_percent": 9.04
+    },
+    {
+      "ticker": "JPM",
+      "name": "JPMorgan Chase & Co.",
+      "sector": "Financials",
+      "shares": 400,
+      "purchase_price": 135.75,
+      "current_price": 170.25,
+      "purchase_date": "2023-09-10",
+      "market_value": 68100,
+      "unrealized_gain": 13800,
+      "dividend_yield": 2.33,
+      "allocation_percent": 5.45
+    },
+    {
+      "ticker": "JNJ",
+      "name": "Johnson & Johnson",
+      "sector": "Healthcare",
+      "shares": 350,
+      "purchase_price": 155.00,
+      "current_price": 160.75,
+      "purchase_date": "2023-07-05",
+      "market_value": 56262.50,
+      "unrealized_gain": 2012.50,
+      "dividend_yield": 2.95,
+      "allocation_percent": 4.5
+    },
+    {
+      "ticker": "V",
+      "name": "Visa Inc.",
+      "sector": "Financials",
+      "shares": 200,
+      "purchase_price": 220.50,
+      "current_price": 260.75,
+      "purchase_date": "2023-05-12",
+      "market_value": 52150,
+      "unrealized_gain": 8050,
+      "dividend_yield": 0.74,
+      "allocation_percent": 4.17
+    },
+    {
+      "ticker": "PG",
+      "name": "Procter & Gamble Co.",
+      "sector": "Consumer Staples",
+      "shares": 300,
+      "purchase_price": 145.25,
+      "current_price": 152.50,
+      "purchase_date": "2023-04-18",
+      "market_value": 45750,
+      "unrealized_gain": 2175,
+      "dividend_yield": 2.42,
+      "allocation_percent": 3.66
+    },
+    {
+      "ticker": "UNH",
+      "name": "UnitedHealth Group Inc.",
+      "sector": "Healthcare",
+      "shares": 100,
+      "purchase_price": 475.00,
+      "current_price": 525.50,
+      "purchase_date": "2023-10-02",
+      "market_value": 52550,
+      "unrealized_gain": 5050,
+      "dividend_yield": 1.45,
+      "allocation_percent": 4.2
+    },
+    {
+      "ticker": "HD",
+      "name": "The Home Depot Inc.",
+      "sector": "Consumer Discretionary",
+      "shares": 150,
+      "purchase_price": 295.75,
+      "current_price": 345.25,
+      "purchase_date": "2023-11-15",
+      "market_value": 51787.50,
+      "unrealized_gain": 7425,
+      "dividend_yield": 2.37,
+      "allocation_percent": 4.14
+    },
+    {
+      "ticker": "NVDA",
+      "name": "NVIDIA Corporation",
+      "sector": "Technology",
+      "shares": 80,
+      "purchase_price": 420.00,
+      "current_price": 495.50,
+      "purchase_date": "2023-12-01",
+      "market_value": 39640,
+      "unrealized_gain": 6040,
+      "dividend_yield": 0.03,
+      "allocation_percent": 3.17
+    },
+    {
+      "ticker": "AMZN",
+      "name": "Amazon.com Inc.",
+      "sector": "Consumer Discretionary",
+      "shares": 250,
+      "purchase_price": 130.25,
+      "current_price": 155.75,
+      "purchase_date": "2023-03-22",
+      "market_value": 38937.50,
+      "unrealized_gain": 6375,
+      "dividend_yield": 0,
+      "allocation_percent": 3.11
+    }
+  ],
+  "cash_position": {
+    "amount": 50000,
+    "allocation_percent": 4.0
+  },
+  "bonds": {
+    "total_value": 585432.50,
+    "allocation_percent": 46.83,
+    "holdings": [
+      {
+        "name": "US Treasury 10Y",
+        "value": 250000,
+        "yield": 4.25
+      },
+      {
+        "name": "Corporate Bond ETF",
+        "value": 200000,
+        "yield": 5.10
+      },
+      {
+        "name": "Municipal Bonds",
+        "value": 135432.50,
+        "yield": 3.75
+      }
+    ]
+  },
+  "performance_metrics": {
+    "total_return": 95302.50,
+    "total_return_percent": 7.62,
+    "year_to_date_return": 12.5,
+    "annualized_return": 9.8,
+    "sharpe_ratio": 1.45,
+    "beta": 0.85,
+    "standard_deviation": 12.3
+  },
+  "sector_allocation": {
+    "Technology": 19.98,
+    "Financials": 9.62,
+    "Healthcare": 8.7,
+    "Consumer Discretionary": 7.25,
+    "Consumer Staples": 3.66,
+    "Bonds": 46.83,
+    "Cash": 4.0
+  }
+}
