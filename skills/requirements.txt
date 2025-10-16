@@ -1,0 +1,26 @@
+# Claude Skills Cookbook Requirements
+# Install with: pip install -r requirements.txt
+
+# Core dependencies
+anthropic>=0.71.0                         # Anthropic SDK with Skills support
+python-dotenv>=1.0.0                      # Environment variable management
+ipykernel>=6.25.0                         # Jupyter kernel for notebooks
+jupyter>=1.0.0                            # Jupyter notebook support
+
+# Data manipulation and analysis
+pandas>=2.0.0                             # Data analysis and manipulation
+numpy>=1.24.0                             # Numerical computing
+openpyxl>=3.1.0                           # Excel file reading/writing
+
+# Visualization (for financial charts in notebooks)
+matplotlib>=3.7.0                         # Basic plotting
+plotly>=5.14.0                           # Interactive visualizations
+
+# Utilities
+requests>=2.31.0                          # HTTP requests for examples
+tqdm>=4.65.0                             # Progress bars for long operations
+tabulate>=0.9.0                          # Pretty-print tables in notebooks
+
+# Development tools (optional but recommended)
+ipywidgets>=8.0.0                        # Interactive widgets for notebooks
+nbformat>=5.9.0                          # Notebook format validation

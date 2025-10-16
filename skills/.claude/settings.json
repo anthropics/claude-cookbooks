@@ -1,0 +1,30 @@
+{
+  "hooks": {
+    "SessionStart": {
+      "command": ".claude/hooks/session-start.sh",
+      "description": "Verify Skills cookbook environment setup (SDK version, API key, directories)"
+    },
+    "PreToolUse": [
+      {
+        "command": ".claude/hooks/pre-write.sh",
+        "description": "Warn before overwriting protected files (whl, plan, sample data)",
+        "toolFilter": ["Write"]
+      },
+      {
+        "command": ".claude/hooks/pre-bash.sh",
+        "description": "Safety checks for bash commands (rm, pip install, jupyter)",
+        "toolFilter": ["Bash"]
+      }
+    ]
+  },
+  "contextFiles": [
+    "CLAUDE.md",
+    "docs/skills_cookbook_plan.md"
+  ],
+  "projectInfo": {
+    "name": "Skills Cookbook",
+    "type": "jupyter-notebooks",
+    "language": "python",
+    "description": "Educational cookbook for Claude Skills API with progressive notebooks"
+  }
+}
