@@ -21,7 +21,7 @@ if [[ "$COMMAND" == *"rm -rf outputs"* ]] || [[ "$COMMAND" == *"rm -rf sample_da
 fi
 
 # Warn about pip install without using requirements.txt
-if [[ "$COMMAND" == *"pip install"* ]] && [[ "$COMMAND" != *"requirements.txt"* ]] && [[ "$COMMAND" != *".whl"* ]]; then
+if [[ "$COMMAND" == *"pip install"* ]] && [[ "$COMMAND" != *"requirements.txt"* ]]; then
     echo "ℹ️  Installing package directly. Consider updating requirements.txt"
 fi
 

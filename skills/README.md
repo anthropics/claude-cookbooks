@@ -56,8 +56,8 @@ Master the art of creating your own specialized skills.
 
 1. **Clone the repository**
 ```bash
-git clone <repository-url>
-cd skills
+git clone https://github.com/anthropics/claude-cookbooks.git
+cd claude-cookbooks/skills
 ```
 
 2. **Create virtual environment** (recommended)
@@ -113,8 +113,6 @@ skills/
 │   └── report_generator/
 ├── outputs/                      # Generated files
 ├── docs/                         # Documentation
-│   └── skills_cookbook_plan.md  # Implementation tracker
-├── whl/                         # Anthropic SDK wheel
 ├── requirements.txt             # Python dependencies
 ├── .env.example                 # Environment template
 └── README.md                    # This file
@@ -299,7 +297,7 @@ Error: Request exceeds token limit
 ## Resources
 
 - 📖 [Claude API Documentation](https://docs.anthropic.com/en/api/messages)
-- 🔧 [Skills Documentation](https://docs.anthropic.com/en/docs/agents-and-tools/tool-use/skills)
+- 🔧 [Skills Documentation](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview)
 - 💬 [Claude Support](https://support.claude.com)
 - 🐙 [GitHub Issues](https://github.com/anthropics/claude-cookbooks/issues)
 

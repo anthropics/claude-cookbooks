@@ -1,6 +1,6 @@
 ---
-name: brand-guidelines
-description: Applies consistent corporate branding and styling to all generated documents including colors, fonts, layouts, and messaging
+name: Applying Brand Guidelines
+description: This skill applies consistent corporate branding and styling to all generated documents including colors, fonts, layouts, and messaging
 ---
 
 # Corporate Brand Guidelines Skill

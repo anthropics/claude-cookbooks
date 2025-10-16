@@ -23,13 +23,8 @@ outputs/
 *.pdf
 *.docx
 
-# SDK wheel file - users should download from Anthropic
-whl/
-
 # Documentation sources - internal only
 docs/
-# Exception: Keep the cookbook plan
-!docs/skills_cookbook_plan.md
 
 # IDE
 .vscode/

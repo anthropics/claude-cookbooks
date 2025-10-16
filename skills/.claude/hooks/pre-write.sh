@@ -14,8 +14,6 @@ fi
 
 # Protected files - should never be overwritten without explicit user request
 PROTECTED_FILES=(
-    "whl/anthropic-0.69.0-py3-none-any.whl"
-    "docs/skills_cookbook_plan.md"
     ".env"
     "requirements.txt"
 )

@@ -1,6 +1,6 @@
 ---
-name: financial-analyzer
-description: Calculates key financial ratios and metrics from financial statement data for investment analysis
+name: Analyzing Financial Statements
+description: This skill calculates key financial ratios and metrics from financial statement data for investment analysis
 ---
 
 # Financial Ratio Calculator Skill

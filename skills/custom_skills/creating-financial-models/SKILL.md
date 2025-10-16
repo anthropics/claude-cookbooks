@@ -1,6 +1,6 @@
 ---
-name: financial-modeler
-description: Advanced financial modeling suite with DCF analysis, sensitivity testing, Monte Carlo simulations, and scenario planning for investment decisions
+name: Creating Financial Models
+description: This skill provides an advanced financial modeling suite with DCF analysis, sensitivity testing, Monte Carlo simulations, and scenario planning for investment decisions
 ---
 
 # Financial Modeling Suite
@@ -146,10 +146,6 @@ A comprehensive financial modeling toolkit for investment analysis, valuation, a
 
 - `dcf_model.py`: Complete DCF valuation engine
 - `sensitivity_analysis.py`: Sensitivity testing framework
-- `monte_carlo.py`: Monte Carlo simulation module
-- `scenario_planner.py`: Scenario analysis tools
-- `model_builder.py`: Excel model generation
-- `risk_metrics.py`: Risk calculation utilities
 
 ## Limitations and Disclaimers
 

@@ -17,11 +17,11 @@ fi
 # Check if Anthropic SDK is installed and get version
 if python -c "import anthropic" 2>/dev/null; then
     SDK_VERSION=$(python -c "import anthropic; print(anthropic.__version__)" 2>/dev/null || echo "unknown")
-    if [[ "$SDK_VERSION" == "0.69.0" ]]; then
-        echo "✅ Anthropic SDK: $SDK_VERSION (correct version for Skills)"
-    else
-        echo "⚠️  Anthropic SDK: $SDK_VERSION (expected 0.69.0)"
-        echo "   Run: pip install --force-reinstall whl/anthropic-0.69.0-py3-none-any.whl"
+    echo "✅ Anthropic SDK: $SDK_VERSION"
+    # Check for minimum version for Skills support
+    if [[ "$SDK_VERSION" < "0.71.0" ]]; then
+        echo "⚠️  SDK version $SDK_VERSION may be too old (minimum 0.71.0 for Skills support)"
+        echo "   Run: pip install anthropic>=0.71.0"
         echo ""
     fi
 else

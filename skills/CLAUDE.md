@@ -4,8 +4,6 @@
 
 This is a comprehensive Jupyter notebook cookbook demonstrating Claude's Skills feature for document generation (Excel, PowerPoint, PDF). It's designed for developers learning to integrate Skills into their applications.
 
-**Current Status**: Phase 2 - Notebook 1 complete, Notebooks 2-3 in progress
-
 ## Quick Start Commands
 
 ### Environment Setup
@@ -52,7 +50,6 @@ skills/
 ├── sample_data/           # Financial datasets for examples
 ├── custom_skills/         # Custom skill development area
 ├── outputs/               # Generated files (xlsx, pptx, pdf)
-├── whl/                   # Local Anthropic SDK (v0.69.0)
 ├── file_utils.py          # Files API helper functions
 └── docs/                  # Implementation tracking
 ```
@@ -79,12 +76,11 @@ skills/
 
 ## Development Gotchas
 
-### 1. SDK Version Critical
-**Problem**: PyPI has older SDK without Skills support
-**Solution**: Must install from `whl/anthropic-0.69.0-py3-none-any.whl`
+### 1. SDK Version
+**Important**: Ensure you have the Anthropic SDK version 0.71.0 or later with Skills support
 ```bash
-pip install --force-reinstall whl/anthropic-0.69.0-py3-none-any.whl
-# Restart Jupyter kernel after installation!
+pip install anthropic>=0.71.0
+# Restart Jupyter kernel after installation if upgrading!
 ```
 
 ### 2. Beta Namespace Required
@@ -214,11 +210,9 @@ Before committing notebook changes:
 
 ## Resources
 
-- **Skills Documentation**: `/Users/zh/code/claude-cookbooks-private/skills/docs/`
-- **Implementation Tracker**: `docs/skills_cookbook_plan.md`
 - **API Reference**: https://docs.claude.com/en/api/messages
 - **Files API**: https://docs.claude.com/en/api/files-content
-- **Skills Docs PR**: https://github.com/anthropics/docs/pull/1901/files
+- **Skills Documentation**: https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview
 
 ## Project-Specific Notes
 
