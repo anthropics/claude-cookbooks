@@ -13,6 +13,8 @@ Skills are organized packages of instructions, executable code, and resources th
 - Apply company-specific workflows and branding
 - Automate business processes with domain expertise
 
+📖 Read our engineering blog post on [Equipping agents for the real world with Skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills)
+
 ## Key Features
 
 ✨ **Progressive Disclosure Architecture** - Skills load only when needed, optimizing token usage
@@ -296,8 +298,15 @@ Error: Request exceeds token limit
 
 ## Resources
 
+### Documentation
 - 📖 [Claude API Documentation](https://docs.anthropic.com/en/api/messages)
 - 🔧 [Skills Documentation](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview)
+
+### Support Articles
+- 📚 [Teach Claude your way of working using Skills](https://support.claude.com/en/articles/12580051-teach-claude-your-way-of-working-using-skills) - User guide for working with Skills
+- 🛠️ [How to create a skill with Claude through conversation](https://support.claude.com/en/articles/12599426-how-to-create-a-skill-with-claude-through-conversation) - Interactive skill creation guide
+
+### Community & Support
 - 💬 [Claude Support](https://support.claude.com)
 - 🐙 [GitHub Issues](https://github.com/anthropics/claude-cookbooks/issues)
 
