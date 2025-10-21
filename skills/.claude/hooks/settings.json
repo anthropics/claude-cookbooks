@@ -1,0 +1,74 @@
+{
+  "hooks": {
+    "SessionStart": {
+      "command": ".claude/hooks/session-start.sh",
+      "description": "Initialize and verify environment: SDK version, API key, directories, and dependencies.",
+      "onError": "echo '[ERROR] Environment setup failed. Please check SDK version and .env configuration.'"
+    },
+    "PreToolUse": [
+      {
+        "command": ".claude/hooks/pre-write.sh",
+        "description": "Warn before overwriting or deleting protected files (wheel, plan, notebooks, sample data).",
+        "toolFilter": ["Write"],
+        "onError": "echo '[WARNING] Attempted to overwrite protected files. Operation aborted.'"
+      },
+      {
+        "command": ".claude/hooks/pre-bash.sh",
+        "description": "Run safety checks for risky bash commands (rm, sudo, pip install, jupyter).",
+        "toolFilter": ["Bash"],
+        "onError": "echo '[SECURITY] Unsafe bash command detected and blocked.'"
+      }
+    ],
+    "PostToolUse": [
+      {
+        "command": ".claude/hooks/post-validate.sh",
+        "description": "Validate notebook outputs and ensure metadata consistency after tool execution.",
+        "toolFilter": ["Write", "Python"]
+      },
+      {
+        "command": ".claude/hooks/post-commit.sh",
+        "description": "Auto-format notebooks and run linting before commit (black, flake8, nbstripout).",
+        "toolFilter": ["Git"]
+      }
+    ]
+  },
+
+  "contextFiles": [
+    "CLAUDE.md",
+    "docs/skills_cookbook_plan.md",
+    "notebooks/",
+    "examples/",
+    "config/environment.yml"
+  ],
+
+  "projectInfo": {
+    "name": "Skills Cookbook",
+    "type": "jupyter-notebooks",
+    "language": "python",
+    "description": "An educational cookbook showcasing Claude Skills API through progressive, interactive notebooks.",
+    "maintainers": [
+      {
+        "name": "Durgesh Kumar Dewangan",
+        "role": "Lead Developer",
+        "contact": "durgesh@example.com"
+      }
+    ],
+    "repository": "https://github.com/yourusername/skills-cookbook",
+    "license": "MIT",
+    "version": "1.1.0"
+  },
+
+  "logging": {
+    "level": "info",
+    "output": ".claude/logs/hooks.log",
+    "rotate": true,
+    "maxSizeMB": 10,
+    "keepLast": 5
+  },
+
+  "security": {
+    "allowExternalCommands": false,
+    "restrictedPaths": ["*.whl", "*.env", "data/private/"],
+    "requireConfirmation": true
+  }
+}
