@@ -8,14 +8,7 @@
 
 # More about ElevenLabs
 
-Here are some helpful resources for getting started:
-
-- [API Documentation](https://elevenlabs.io/docs/introduction)
-- [Python SDK](https://github.com/elevenlabs/elevenlabs-python)
-- [JavaScript SDK](https://github.com/elevenlabs/elevenlabs-js)
-- [API Playground](https://elevenlabs.io/app/speech-synthesis)
-- [Voice Library](https://elevenlabs.io/voice-library)
-- [Blog & Tutorials](https://elevenlabs.io/blog)
+Learn more at [elevenlabs.io](https://elevenlabs.io) and view the [API Documentation](https://elevenlabs.io/docs/overview).
 
 # Get Started
 
