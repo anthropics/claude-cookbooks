@@ -4,9 +4,11 @@ A production-ready conversational voice assistant that demonstrates real-time
 speech-to-text, Claude integration, and text-to-speech with minimal latency.
 
 Usage:
-    1. Set your API keys in lines 39-40 below
-       - Get ElevenLabs API key: https://elevenlabs.io/app/developers/api-keys
-       - Get Anthropic API key: https://console.anthropic.com/settings/keys
+    1. Set up environment variables:
+       - Copy .env.example to .env
+       - Add your API keys to .env:
+         * Get ElevenLabs API key: https://elevenlabs.io/app/developers/api-keys
+         * Get Anthropic API key: https://console.anthropic.com/settings/keys
 
     2. Install dependencies:
        pip install -r requirements.txt
@@ -31,6 +33,7 @@ Key optimizations:
 import base64
 import io
 import json
+import os
 import threading
 import time
 
@@ -39,13 +42,17 @@ import elevenlabs
 import numpy as np
 import sounddevice as sd
 import websocket
+from dotenv import load_dotenv
 from scipy.io import wavfile
 
-ELEVENLABS_API_KEY = "🔑🔑🔑 Your API Key here! 🔑🔑🔑"
-ANTHROPIC_API_KEY = "🔑🔑🔑 Your API Key here! 🔑🔑🔑"
+# Load environment variables from .env file
+load_dotenv()
 
-assert not ELEVENLABS_API_KEY.startswith("🔑"), "ERROR: Set ELEVENLABS_API_KEY to your actual API key"
-assert not ANTHROPIC_API_KEY.startswith("🔑"), "ERROR: Set ANTHROPIC_API_KEY to your actual API key"
+ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")
+ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
+
+assert ELEVENLABS_API_KEY is not None, "ERROR: ELEVENLABS_API_KEY not found. Please copy .env.example to .env and add your API keys."
+assert ANTHROPIC_API_KEY is not None, "ERROR: ANTHROPIC_API_KEY not found. Please copy .env.example to .env and add your API keys."
 
 SAMPLE_RATE = 44100  # Audio sample rate for recording
 CHANNELS = 1  # Mono audio
@@ -59,6 +66,16 @@ anthropic_client = anthropic.Anthropic(
     api_key=ANTHROPIC_API_KEY
 )
 
+# Fetch available voices and select the first one
+voices = elevenlabs_client.voices.search().voices
+selected_voice = voices[0]
+VOICE_ID = selected_voice.voice_id
+print(f"Using voice: {selected_voice.name} (ID: {VOICE_ID})")
+
+# TTS configuration
+TTS_MODEL_ID = "eleven_turbo_v2_5"  # Fast, low-latency model
+TTS_OUTPUT_FORMAT = "pcm_44100"  # PCM format eliminates MP3 encoding artifacts
+
 
 class AudioQueue:
     """Manages continuous audio playback with minimal latency.
@@ -68,6 +85,11 @@ class AudioQueue:
     - Stream callback reads from buffer in real-time
     - Pre-buffering prevents crackling from buffer underruns
     """
+    # Audio buffer configuration constants
+    PRE_BUFFER_SIZE = 8192  # Minimum buffer size before playback starts (prevents initial crackling)
+    BUFFER_CLEANUP_THRESHOLD = 100000  # Bytes before buffer cleanup to prevent memory growth
+    REMAINING_BYTES_THRESHOLD = 1000  # Bytes to consider playback effectively done
+
     def __init__(self):
         self.buffer = bytearray()
         self.buffer_lock = threading.Lock()
@@ -100,7 +122,7 @@ class AudioQueue:
             self.buffer.extend(samples.tobytes())
 
         # Start playback after pre-buffering
-        if not self.playing and len(self.buffer) >= 8192:
+        if not self.playing and len(self.buffer) >= self.PRE_BUFFER_SIZE:
             self.start_playback()
 
     def start_playback(self):
@@ -123,7 +145,7 @@ class AudioQueue:
                     data = bytes(self.buffer[self.read_position:self.read_position + bytes_to_read])
                     self.read_position += bytes_to_read
 
-                    if self.read_position > 100000:
+                    if self.read_position > self.BUFFER_CLEANUP_THRESHOLD:
                         self.buffer = self.buffer[self.read_position:]
                         self.read_position = 0
                 else:
@@ -156,7 +178,7 @@ class AudioQueue:
         while True:
             with self.buffer_lock:
                 remaining = len(self.buffer) - self.read_position
-            if remaining < 1000:
+            if remaining < self.REMAINING_BYTES_THRESHOLD:
                 break
             time.sleep(0.1)
 
@@ -244,8 +266,7 @@ def stream_claude_and_synthesize_ws(messages, audio_queue):
     """
     print("\nStreaming Claude response...\n")
 
-    voice_id = "JBFqnCBsd6RMkjVDRZzb"
-    ws_url = f"wss://api.elevenlabs.io/v1/text-to-speech/{voice_id}/stream-input?model_id=eleven_turbo_v2_5&output_format=pcm_44100"
+    ws_url = f"wss://api.elevenlabs.io/v1/text-to-speech/{VOICE_ID}/stream-input?model_id={TTS_MODEL_ID}&output_format={TTS_OUTPUT_FORMAT}"
 
     ws_connected = False
     ws_finished = False
@@ -267,6 +288,7 @@ def stream_claude_and_synthesize_ws(messages, audio_queue):
         print(f"\nWebSocket error: {error}")
 
     def on_close(ws, close_status_code, close_msg):
+        """Handle WebSocket connection closure."""
         pass
 
     def on_open(ws):
