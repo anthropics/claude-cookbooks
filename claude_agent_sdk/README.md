@@ -42,7 +42,7 @@ This tutorial series takes you on a journey from basic agent implementation to s
 ### What You'll Learn
 
 Through this series, you'll be exposed to:
-- **Core SDK fundamentals** with `query()` and the `ClaudeSDKClient` & `ClaudeCodeOptions` interfaces in the Python SDK
+- **Core SDK fundamentals** with `query()` and the `ClaudeSDKClient` & `ClaudeAgentOptions` interfaces in the Python SDK
 - **Tool usage patterns** from basic WebSearch to complex MCP server integration
 - **Multi-agent orchestration** with specialized subagents and coordination
 - **Enterprise features** by leveraging hooks for compliance tracking and audit trails
