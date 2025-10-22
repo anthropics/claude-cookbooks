@@ -23,7 +23,7 @@ RUN npm install -g @anthropic-ai/claude-code
 COPY observability_agent ./observability_agent
 
 RUN pip install --no-cache-dir \
-    claude-code-sdk \
+    claude-agent-sdk \
     fastapi \
     python-dotenv \
     uvicorn[standard] \
