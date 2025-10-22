@@ -4,14 +4,14 @@ import re
 
 client = Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
 
-def llm_call(prompt: str, system_prompt: str = "", model="claude-3-5-sonnet-20241022") -> str:
+def llm_call(prompt: str, system_prompt: str = "", model="claude-sonnet-4-5") -> str:
     """
     Calls the model with the given prompt and returns the response.
 
     Args:
         prompt (str): The user prompt to send to the model.
         system_prompt (str, optional): The system prompt to send to the model. Defaults to "".
-        model (str, optional): The model to use for the call. Defaults to "claude-3-5-sonnet-20241022".
+        model (str, optional): The model to use for the call. Defaults to "claude-sonnet-4-5".
 
     Returns:
         str: The response from the language model.

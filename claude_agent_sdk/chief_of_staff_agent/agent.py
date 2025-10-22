@@ -10,7 +10,7 @@ from typing import Any, Literal
 
 from dotenv import load_dotenv
 
-from claude_code_sdk import ClaudeCodeOptions, ClaudeSDKClient
+from claude_agent_sdk import ClaudeAgentOptions, ClaudeSDKClient
 
 load_dotenv()
 
@@ -79,7 +79,7 @@ async def send_query(
 
     # build options with optional output style
     options_dict = {
-        "model": "claude-sonnet-4-20250514",
+        "model": "claude-sonnet-4-5",
         "allowed_tools": [
             "Task",  # enables subagent delegation
             "Read",
@@ -98,7 +98,7 @@ async def send_query(
     if output_style:
         options_dict["settings"] = json.dumps({"outputStyle": output_style})
 
-    options = ClaudeCodeOptions(**options_dict)
+    options = ClaudeAgentOptions(**options_dict)
 
     result = None
     messages = []  # this is to append the messages ONLY for this agent turn

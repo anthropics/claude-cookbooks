@@ -120,12 +120,12 @@ class NotebookValidator:
         
         # Check for deprecated models
         deprecated_models = {
-            "claude-3-5-sonnet-20241022": "claude-3-7-sonnet-latest",
+            "claude-sonnet-4-5": "claude-3-7-sonnet-latest",
             "claude-3-5-sonnet-20240620": "claude-3-7-sonnet-latest", 
             "claude-3-5-sonnet-latest": "claude-3-7-sonnet-latest",
-            "claude-3-opus-20240229": "claude-opus-4-1",
+            "claude-opus-4-1": "claude-opus-4-1",
             "claude-3-opus-latest": "claude-opus-4-1",
-            "claude-3-haiku-20240307": "claude-3-5-haiku-latest"
+            "claude-haiku-4-5": "claude-3-5-haiku-latest"
         }
         
         for i, cell in enumerate(nb.get('cells', [])):
@@ -630,12 +630,12 @@ Overall: {passing}/{total} notebooks passing ({percentage:.1f}%)
                 nb = json.load(f)
             
             replacements = {
-                "claude-3-5-sonnet-20241022": "claude-3-7-sonnet-latest",
+                "claude-sonnet-4-5": "claude-3-7-sonnet-latest",
                 "claude-3-5-sonnet-20240620": "claude-3-7-sonnet-latest",
                 "claude-3-5-sonnet-latest": "claude-3-7-sonnet-latest",
-                "claude-3-opus-20240229": "claude-opus-4-1",
+                "claude-opus-4-1": "claude-opus-4-1",
                 "claude-3-opus-latest": "claude-opus-4-1",
-                "claude-3-haiku-20240307": "claude-3-5-haiku-latest"
+                "claude-haiku-4-5": "claude-3-5-haiku-latest"
             }
             
             modified = False
