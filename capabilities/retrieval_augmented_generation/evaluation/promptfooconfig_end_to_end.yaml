@@ -7,13 +7,13 @@ prompts:
   - prompts.py:answer_query_level_three
 
 providers:
-  - id: anthropic:messages:claude-3-haiku-20240307
+  - id: anthropic:messages:claude-haiku-4-5
     label: "Haiku: T-0.0"
     config:
       max_tokens: 2500
       temperature: 0
 
-  - id: anthropic:messages:claude-3-5-sonnet-20241022
+  - id: anthropic:messages:claude-sonnet-4-5
     label: "3.5 Sonnet: T-0.0"
     config:
       max_tokens: 2500

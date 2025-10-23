@@ -106,7 +106,7 @@ def _rerank_results(query: str, results: List[Dict], k: int = 5) -> List[Dict]:
     """
     try:
         response = client.messages.create(
-            model="claude-3-haiku-20240307",
+            model="claude-haiku-4-5",
             max_tokens=50,
             messages=[{"role": "user", "content": prompt}, {"role": "assistant", "content": "<relevant_indices>"}],
             temperature=0,

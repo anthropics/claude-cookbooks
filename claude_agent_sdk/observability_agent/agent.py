@@ -1,14 +1,16 @@
 """
-Research Agent - Using Claude SDK with built-in session management
+Observability Agent - GitHub monitoring with MCP servers
+Built on top of the research agent pattern
 """
 
 import asyncio
+import os
 from collections.abc import Callable
 from typing import Any
 
 from dotenv import load_dotenv
 
-from claude_code_sdk import ClaudeCodeOptions, ClaudeSDKClient
+from claude_agent_sdk import ClaudeAgentOptions, ClaudeSDKClient
 
 load_dotenv()
 
@@ -17,7 +19,6 @@ def get_activity_text(msg) -> str | None:
     """Extract activity text from a message"""
     try:
         if "Assistant" in msg.__class__.__name__:
-            # Check if content exists and has items
             if hasattr(msg, "content") and msg.content:
                 first_content = msg.content[0] if isinstance(msg.content, list) else msg.content
                 if hasattr(first_content, "name"):
@@ -37,34 +38,57 @@ def print_activity(msg) -> None:
         print(activity)
 
 
+# Pre-configured GitHub MCP server
+GITHUB_MCP_SERVER = {
+    "github": {
+        "command": "docker",
+        "args": [
+            "run",
+            "-i",
+            "--rm",
+            "-e",
+            "GITHUB_PERSONAL_ACCESS_TOKEN",
+            "ghcr.io/github/github-mcp-server",
+        ],
+        "env": {"GITHUB_PERSONAL_ACCESS_TOKEN": os.environ.get("GITHUB_TOKEN")},
+    }
+}
+
+
 async def send_query(
     prompt: str,
     activity_handler: Callable[[Any], None | Any] = print_activity,
     continue_conversation: bool = False,
+    mcp_servers: dict[str, Any] | None = None,
+    use_github: bool = True,
 ) -> str | None:
     """
-    Send a query using the Claude SDK with minimal overhead.
+    Send a query to the observability agent with MCP server support.
 
     Args:
         prompt: The query to send
         activity_handler: Callback for activity updates
         continue_conversation: Continue the previous conversation if True
-
-    Note:
-        For the activity_handler - we support both sync and async handlers
-        to make the module work in different contexts:
-            - Sync handlers (like print_activity) for simple console output
-            - Async handlers for web apps that need WebSocket/network I/O
-        In production, you'd typically use just one type based on your needs
+        mcp_servers: Custom MCP servers configuration
+        use_github: Include GitHub MCP server (default: True)
 
     Returns:
         The final result text or None if no result
     """
-    options = ClaudeCodeOptions(
-        model="claude-sonnet-4-20250514",
-        allowed_tools=["WebSearch", "Read"],
+    # Build MCP servers config
+    servers = {}
+    if use_github and os.environ.get("GITHUB_TOKEN"):
+        servers.update(GITHUB_MCP_SERVER)
+    if mcp_servers:
+        servers.update(mcp_servers)
+
+    options = ClaudeAgentOptions(
+        model="claude-sonnet-4-5",
+        allowed_tools=["mcp__github", "WebSearch", "Read"],
         continue_conversation=continue_conversation,
-        system_prompt="You are a research agent specialized in AI",
+        system_prompt="You are an observability agent specialized in monitoring GitHub repositories and CI/CD workflows",
+        mcp_servers=servers if servers else None,
+        permission_mode="acceptEdits",
     )
 
     result = None

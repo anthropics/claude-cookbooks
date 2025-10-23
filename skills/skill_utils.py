@@ -246,7 +246,7 @@ def test_skill(
     client: Anthropic,
     skill_id: str,
     test_prompt: str,
-    model: str = "claude-sonnet-4-5-20250929",
+    model: str = "claude-sonnet-4-5",
     include_anthropic_skills: Optional[List[str]] = None
 ) -> Any:
     """
