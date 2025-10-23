@@ -30,6 +30,27 @@ jobs:
           git remote add public https://x-access-token:${PUBLIC_REPO_TOKEN}@github.com/anthropics/claude-cookbooks.git || true
           git fetch public
 
+      - name: Pull latest changes from public
+        run: |
+          echo "Syncing latest changes from public repository first..."
+
+          # Ensure we're on main branch
+          git checkout main
+
+          # Try to merge public changes
+          if git merge public/main --no-edit; then
+            echo "✓ Successfully merged changes from public repository"
+
+            # Push the merged changes back to private repo
+            git push origin main
+            echo "✓ Private repository updated with latest public changes"
+          else
+            echo "⚠️  Merge conflict detected!"
+            echo "Aborting sync. Manual intervention required."
+            git merge --abort
+            exit 1
+          fi
+
       - name: Prepare filtered branch for public
         run: |
           echo "Creating a temporary branch without private-only files..."
