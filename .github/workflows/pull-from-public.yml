@@ -1,0 +1,61 @@
+name: Pull from Public Repository
+
+on:
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  sync-from-public:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout private repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: main
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Add public repository as remote
+        run: |
+          git remote add public https://github.com/anthropics/claude-cookbooks.git || true
+          git fetch public
+
+      - name: Merge changes from public
+        run: |
+          echo "Attempting to merge changes from public repository..."
+
+          # Try to merge public changes
+          if git merge public/main --no-edit; then
+            echo "✓ Successfully merged changes from public repository"
+
+            # Push the merged changes back to private repo
+            git push origin main
+            echo "✓ Changes pushed to private repository"
+          else
+            echo "⚠️  Merge conflict detected!"
+            echo "Manual intervention required. Please resolve conflicts locally."
+
+            # Abort the merge
+            git merge --abort
+
+            # Create an issue to notify about the conflict
+            echo "Creating issue to track merge conflict..."
+            exit 1
+          fi
+
+      - name: Report sync status
+        if: always()
+        run: |
+          if [ $? -eq 0 ]; then
+            echo "✓ Sync completed successfully"
+          else
+            echo "✗ Sync failed - manual intervention required"
+          fi

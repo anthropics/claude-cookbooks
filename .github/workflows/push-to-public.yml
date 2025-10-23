@@ -1,0 +1,84 @@
+name: Push to Public Repository
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  sync-to-public:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout private repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Add public repository as remote
+        env:
+          PUBLIC_REPO_TOKEN: ${{ secrets.PUBLIC_REPO_TOKEN }}
+        run: |
+          # Add public repo with authentication
+          git remote add public https://x-access-token:${PUBLIC_REPO_TOKEN}@github.com/anthropics/claude-cookbooks.git || true
+          git fetch public
+
+      - name: Prepare filtered branch for public
+        run: |
+          echo "Creating a temporary branch without private-only files..."
+
+          # Create a new temporary branch for public sync
+          git checkout -b temp-public-sync
+
+          # Remove private-only files from this branch
+          # Add any other private-only files or directories here
+          git rm -r .github/workflows/ || true
+
+          # Check if there are any changes to commit
+          if git diff --cached --quiet; then
+            echo "No private-only files to remove"
+          else
+            git commit -m "Remove private-only files for public sync"
+          fi
+
+      - name: Push to public repository
+        env:
+          PUBLIC_REPO_TOKEN: ${{ secrets.PUBLIC_REPO_TOKEN }}
+        run: |
+          echo "Pushing changes to public repository..."
+
+          # Get the current commit message from main branch
+          LATEST_COMMIT_MSG=$(git log main -1 --pretty=%B)
+
+          # Try to push to public
+          if git push public temp-public-sync:main; then
+            echo "✓ Successfully pushed changes to public repository"
+          else
+            echo "⚠️  Push failed. This might be due to:"
+            echo "  - Divergent history between private and public"
+            echo "  - Permission issues"
+            echo "  - Missing PUBLIC_REPO_TOKEN secret"
+            exit 1
+          fi
+
+      - name: Cleanup
+        if: always()
+        run: |
+          git checkout main
+          git branch -D temp-public-sync || true
+
+      - name: Report sync status
+        if: always()
+        run: |
+          if [ $? -eq 0 ]; then
+            echo "✓ Push to public completed successfully"
+          else
+            echo "✗ Push to public failed - check logs for details"
+          fi
