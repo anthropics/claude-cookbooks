@@ -27,7 +27,7 @@ exclude_path = [
     ".git/",
     "__pycache__/",
     ".ipynb_checkpoints/",
-    "*.pyc",
+    ".pyc",
     ".github/",
     "scripts/"
 ]
