@@ -1,5 +1,5 @@
 ---
-name: Analyzing Financial Statements
+name: analyzing-financial-statements
 description: This skill calculates key financial ratios and metrics from financial statement data for investment analysis
 ---
 
