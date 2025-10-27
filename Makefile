@@ -1,12 +1,11 @@
-.PHONY: help format lint lint-pylint check fix test clean install
+.PHONY: help format lint check fix test clean install
 
 # Default target
 help:
 	@echo "Available targets:"
 	@echo "  make format        - Format code with ruff"
 	@echo "  make lint          - Run ruff linting checks"
-	@echo "  make lint-pylint   - Run pylint for deeper analysis"
-	@echo "  make check         - Run all checks (format check + lint + pylint)"
+	@echo "  make check         - Run all checks (format check + lint)"
 	@echo "  make fix           - Auto-fix issues with ruff"
 	@echo "  make test          - Run tests"
 	@echo "  make install       - Install dependencies"
@@ -27,13 +26,8 @@ lint:
 	@echo "Running ruff linting..."
 	uv run ruff check .
 
-# Run pylint for deeper analysis (magic numbers, variable names, etc.)
-lint-pylint:
-	@echo "Running pylint for deeper analysis..."
-	uv run pylint --rcfile=pyproject.toml $$(find . -name "*.py" -not -path "./.venv/*" -not -path "./venv/*" -not -path "*/build/*" -not -path "*/dist/*")
-
 # Run all checks
-check: format-check lint lint-pylint
+check: format-check lint
 	@echo "All checks completed!"
 
 # Auto-fix issues with ruff

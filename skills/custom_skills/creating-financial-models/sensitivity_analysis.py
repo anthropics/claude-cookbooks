@@ -5,7 +5,7 @@ Tests impact of variable changes on key outputs.
 
 import numpy as np
 import pandas as pd
-from typing import Dict, List, Any, Tuple, Callable
+from typing import Dict, List, Any, Optional, Tuple, Callable
 
 
 class SensitivityAnalyzer:
@@ -29,7 +29,7 @@ class SensitivityAnalyzer:
         range_pct: float,
         steps: int,
         output_func: Callable,
-        model_update_func: Callable
+        model_update_func: Callable,
     ) -> pd.DataFrame:
         """
         Perform one-way sensitivity analysis.
@@ -58,13 +58,15 @@ class SensitivityAnalyzer:
             # Calculate output
             output = output_func()
 
-            results.append({
-                'variable': variable_name,
-                'value': value,
-                'pct_change': (value - base_value) / base_value * 100,
-                'output': output,
-                'output_change': output - self.base_output if self.base_output else 0
-            })
+            results.append(
+                {
+                    "variable": variable_name,
+                    "value": value,
+                    "pct_change": (value - base_value) / base_value * 100,
+                    "output": output,
+                    "output_change": output - self.base_output if self.base_output else 0,
+                }
+            )
 
         # Reset to base
         model_update_func(base_value)
@@ -80,7 +82,7 @@ class SensitivityAnalyzer:
         var2_base: float,
         var2_range: List[float],
         output_func: Callable,
-        model_update_func: Callable
+        model_update_func: Callable,
     ) -> pd.DataFrame:
         """
         Perform two-way sensitivity analysis.
@@ -114,18 +116,16 @@ class SensitivityAnalyzer:
         # Create DataFrame
         df = pd.DataFrame(
             results,
-            index=[f"{var1_name}={v:.2%}" if v < 1 else f"{var1_name}={v:.1f}"
-                   for v in var1_range],
-            columns=[f"{var2_name}={v:.2%}" if v < 1 else f"{var2_name}={v:.1f}"
-                     for v in var2_range]
+            index=[f"{var1_name}={v:.2%}" if v < 1 else f"{var1_name}={v:.1f}" for v in var1_range],
+            columns=[
+                f"{var2_name}={v:.2%}" if v < 1 else f"{var2_name}={v:.1f}" for v in var2_range
+            ],
         )
 
         return df
 
     def tornado_analysis(
-        self,
-        variables: Dict[str, Dict[str, Any]],
-        output_func: Callable
+        self, variables: Dict[str, Dict[str, Any]], output_func: Callable
     ) -> pd.DataFrame:
         """
         Create tornado diagram data showing relative impact of variables.
@@ -144,37 +144,39 @@ class SensitivityAnalyzer:
 
         for var_name, var_info in variables.items():
             # Test low value
-            var_info['update_func'](var_info['low'])
+            var_info["update_func"](var_info["low"])
             low_output = output_func()
 
             # Test high value
-            var_info['update_func'](var_info['high'])
+            var_info["update_func"](var_info["high"])
             high_output = output_func()
 
             # Reset to base
-            var_info['update_func'](var_info['base'])
+            var_info["update_func"](var_info["base"])
 
             # Calculate impact
             impact = high_output - low_output
             low_delta = low_output - self.base_output
             high_delta = high_output - self.base_output
 
-            tornado_data.append({
-                'variable': var_name,
-                'base_value': var_info['base'],
-                'low_value': var_info['low'],
-                'high_value': var_info['high'],
-                'low_output': low_output,
-                'high_output': high_output,
-                'low_delta': low_delta,
-                'high_delta': high_delta,
-                'impact': abs(impact),
-                'impact_pct': abs(impact) / self.base_output * 100
-            })
+            tornado_data.append(
+                {
+                    "variable": var_name,
+                    "base_value": var_info["base"],
+                    "low_value": var_info["low"],
+                    "high_value": var_info["high"],
+                    "low_output": low_output,
+                    "high_output": high_output,
+                    "low_delta": low_delta,
+                    "high_delta": high_delta,
+                    "impact": abs(impact),
+                    "impact_pct": abs(impact) / self.base_output * 100,
+                }
+            )
 
         # Sort by impact
         df = pd.DataFrame(tornado_data)
-        df = df.sort_values('impact', ascending=False)
+        df = df.sort_values("impact", ascending=False)
 
         return df
 
@@ -183,7 +185,7 @@ class SensitivityAnalyzer:
         scenarios: Dict[str, Dict[str, float]],
         variable_updates: Dict[str, Callable],
         output_func: Callable,
-        probability_weights: Optional[Dict[str, float]] = None
+        probability_weights: Optional[Dict[str, float]] = None,
     ) -> pd.DataFrame:
         """
         Analyze multiple scenarios with different variable combinations.
@@ -209,31 +211,40 @@ class SensitivityAnalyzer:
             output = output_func()
 
             # Get probability if provided
-            prob = probability_weights.get(scenario_name, 1/len(scenarios)) \
-                   if probability_weights else 1/len(scenarios)
+            prob = (
+                probability_weights.get(scenario_name, 1 / len(scenarios))
+                if probability_weights
+                else 1 / len(scenarios)
+            )
 
-            results.append({
-                'scenario': scenario_name,
-                'probability': prob,
-                'output': output,
-                **variables  # Include all variable values
-            })
+            results.append(
+                {
+                    "scenario": scenario_name,
+                    "probability": prob,
+                    "output": output,
+                    **variables,  # Include all variable values
+                }
+            )
 
             # Reset model (simplified - should restore all base values)
 
         df = pd.DataFrame(results)
 
         # Calculate expected value
-        df['weighted_output'] = df['output'] * df['probability']
-        expected_value = df['weighted_output'].sum()
+        df["weighted_output"] = df["output"] * df["probability"]
+        expected_value = df["weighted_output"].sum()
 
         # Add summary row
-        summary = pd.DataFrame([{
-            'scenario': 'Expected Value',
-            'probability': 1.0,
-            'output': expected_value,
-            'weighted_output': expected_value
-        }])
+        summary = pd.DataFrame(
+            [
+                {
+                    "scenario": "Expected Value",
+                    "probability": 1.0,
+                    "output": expected_value,
+                    "weighted_output": expected_value,
+                }
+            ]
+        )
 
         df = pd.concat([df, summary], ignore_index=True)
 
@@ -247,7 +258,7 @@ class SensitivityAnalyzer:
         target_value: float,
         min_search: float,
         max_search: float,
-        tolerance: float = 0.01
+        tolerance: float = 0.01,
     ) -> float:
         """
         Find breakeven point where output equals target.
@@ -286,7 +297,7 @@ class SensitivityAnalyzer:
 def create_data_table(
     row_variable: Tuple[str, List[float], Callable],
     col_variable: Tuple[str, List[float], Callable],
-    output_func: Callable
+    output_func: Callable,
 ) -> pd.DataFrame:
     """
     Create Excel-style data table for two variables.
@@ -313,7 +324,7 @@ def create_data_table(
     df = pd.DataFrame(
         results,
         index=pd.Index(row_values, name=row_name),
-        columns=pd.Index(col_values, name=col_name)
+        columns=pd.Index(col_values, name=col_name),
     )
 
     return df
@@ -343,7 +354,7 @@ if __name__ == "__main__":
         range_pct=0.20,
         steps=5,
         output_func=model.calculate_value,
-        model_update_func=lambda x: setattr(model, 'revenue', x)
+        model_update_func=lambda x: setattr(model, "revenue", x),
     )
 
     print("One-Way Sensitivity Analysis:")
@@ -351,26 +362,26 @@ if __name__ == "__main__":
 
     # Tornado analysis
     variables = {
-        'Revenue': {
-            'base': 1000,
-            'low': 800,
-            'high': 1200,
-            'update_func': lambda x: setattr(model, 'revenue', x)
+        "Revenue": {
+            "base": 1000,
+            "low": 800,
+            "high": 1200,
+            "update_func": lambda x: setattr(model, "revenue", x),
         },
-        'Margin': {
-            'base': 0.20,
-            'low': 0.15,
-            'high': 0.25,
-            'update_func': lambda x: setattr(model, 'margin', x)
+        "Margin": {
+            "base": 0.20,
+            "low": 0.15,
+            "high": 0.25,
+            "update_func": lambda x: setattr(model, "margin", x),
         },
-        'Multiple': {
-            'base': 10,
-            'low': 8,
-            'high': 12,
-            'update_func': lambda x: setattr(model, 'multiple', x)
-        }
+        "Multiple": {
+            "base": 10,
+            "low": 8,
+            "high": 12,
+            "update_func": lambda x: setattr(model, "multiple", x),
+        },
     }
 
     tornado = analyzer.tornado_analysis(variables, model.calculate_value)
     print("\nTornado Analysis:")
-    print(tornado[['variable', 'impact', 'impact_pct']])
+    print(tornado[["variable", "impact", "impact_pct"]])

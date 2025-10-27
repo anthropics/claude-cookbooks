@@ -8,7 +8,8 @@ dependencies = [
     "notebook>=7.4.7",
     "numpy>=2.3.4",
     "pandas>=2.3.3",
-    "jupyter>=1.1.1"
+    "jupyter>=1.1.1",
+    "voyageai>=0.3.5",
 ]
 
 [tool.uv.sources]
@@ -19,7 +20,6 @@ build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
-    "pylint>=3.0.0",
     "ruff>=0.14.2",
     "pytest>=8.3.3",
     "nbval>=0.11.0",
@@ -53,32 +53,4 @@ ignore = [
     "N803",   # argument name should be lowercase
     "N806",   # variable in function should be lowercase
 ]
-
-[tool.pylint.main]
-jobs = 0
-load-plugins = []
-
-[tool.pylint."messages control"]
-enable = [
-    "useless-suppression",
-    "deprecated-pragma",
-]
-disable = [
-    "missing-docstring",
-    "invalid-name",  # We'll handle this with ruff's N rules
-    "line-too-long",  # Ruff handles this
-    "too-few-public-methods",
-]
-
-[tool.pylint.format]
-max-line-length = 100
-
-
-[tool.pylint.basic]
-# Naming conventions - enforce descriptive names
-good-names = ["i", "j", "k", "x", "y", "z", "df", "ax", "_"]
-bad-names = ["foo", "bar", "baz", "tmp", "temp"]
-# Variable name regex patterns
-variable-rgx = "[a-z_][a-z0-9_]{1,30}$"
-const-rgx = "(([A-Z_][A-Z0-9_]*)|(__.*__))$"
 
