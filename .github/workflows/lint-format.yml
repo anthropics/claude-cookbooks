@@ -111,6 +111,7 @@ jobs:
       - name: Post lint/format issues to PR
         if: |
           github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name == github.repository &&
           (steps.format-check.outputs.has_format_issues == 'true' ||
            steps.lint-check.outputs.has_lint_issues == 'true')
         uses: anthropics/claude-code-action@v1

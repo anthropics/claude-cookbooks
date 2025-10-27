@@ -14,8 +14,10 @@ permissions:
 
 jobs:
   model-check:
+    # Only run for internal contributors (not forks) since claude-code-action requires write permissions
+    if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
         with:
