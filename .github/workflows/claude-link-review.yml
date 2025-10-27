@@ -21,12 +21,33 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Get changed files
+        id: changed-files
+        run: |
+          git fetch origin ${{ github.base_ref }}
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -E '\.(md|mdx|ipynb)$' || echo "")
+
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "No relevant files changed"
+            echo "has_files=false" >> $GITHUB_OUTPUT
+          else
+            echo "Changed files:"
+            echo "$CHANGED_FILES"
+            echo "$CHANGED_FILES" > changed_files.txt
+            echo "has_files=true" >> $GITHUB_OUTPUT
+          fi
+
       - name: Run Claude Link Review
+        if: steps.changed-files.outputs.has_files == 'true'
         uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          prompt: "/link-review"
+          prompt: |
+            /link-review
+
+            Changed files to review:
+            $(cat changed_files.txt)
           claude_args: |
             --allowedTools "Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(echo:*),Read,Glob,Grep,WebFetch"
         env:

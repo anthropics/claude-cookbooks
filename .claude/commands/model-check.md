@@ -3,7 +3,9 @@ allowed-tools: Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)
 description: Validate Claude model usage against current public models
 ---
 
-Review the changed files for Claude model usage.
+**IMPORTANT**: Only review the files explicitly listed in the prompt above. Do not search for or review additional files.
+
+Review the specified changed files for Claude model usage.
 
 First, fetch the current list of allowed models from:
 https://docs.claude.com/en/docs/about-claude/models/overview.md
