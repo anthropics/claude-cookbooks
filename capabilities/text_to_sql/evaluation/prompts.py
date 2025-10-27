@@ -1,31 +1,33 @@
 import sqlite3
 
-DATABASE_PATH = '../data/data.db'
+DATABASE_PATH = "../data/data.db"
+
 
 def get_schema_info():
     conn = sqlite3.connect(DATABASE_PATH)
     cursor = conn.cursor()
-    
+
     schema_info = []
-    
+
     # Get all tables
     cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
     tables = cursor.fetchall()
-    
+
     for (table_name,) in tables:
         # Get columns for this table
         cursor.execute(f"PRAGMA table_info({table_name})")
         columns = cursor.fetchall()
-        
+
         table_info = f"Table: {table_name}\n"
         table_info += "\n".join(f"  - {col[1]} ({col[2]})" for col in columns)
         schema_info.append(table_info)
-    
+
     conn.close()
     return "\n\n".join(schema_info)
 
+
 def generate_prompt(context):
-    user_query = context['vars']['user_query']
+    user_query = context["vars"]["user_query"]
     schema = get_schema_info()
     return f"""
     You are an AI assistant that converts natural language queries into SQL. 
@@ -40,8 +42,9 @@ def generate_prompt(context):
     Provide only the SQL query in your response, enclosed within <sql> tags.
     """
 
+
 def generate_prompt_with_examples(context):
-    user_query = context['vars']['user_query']
+    user_query = context["vars"]["user_query"]
     examples = """
         Example 1:
         <query>List all employees in the HR department.</<query>
@@ -80,8 +83,9 @@ def generate_prompt_with_examples(context):
         Provide only the SQL query in your response, enclosed within <sql> tags.
     """
 
+
 def generate_prompt_with_cot(context):
-    user_query = context['vars']['user_query']
+    user_query = context["vars"]["user_query"]
     schema = get_schema_info()
     examples = """
     <example>
@@ -129,6 +133,7 @@ def generate_prompt_with_cot(context):
     Then, within <sql> tags, provide your output SQL query.
     """
 
+
 def generate_prompt_with_rag(context):
     from vectordb import VectorDB
 
@@ -136,23 +141,29 @@ def generate_prompt_with_rag(context):
     vectordb = VectorDB()
     vectordb.load_db()
 
-    user_query = context['vars']['user_query']
+    user_query = context["vars"]["user_query"]
 
     if not vectordb.embeddings:
         with sqlite3.connect(DATABASE_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
             schema_data = [
-                {"text": f"Table: {table[0]}, Column: {col[1]}, Type: {col[2]}", 
-                "metadata": {"table": table[0], "column": col[1], "type": col[2]}}
+                {
+                    "text": f"Table: {table[0]}, Column: {col[1]}, Type: {col[2]}",
+                    "metadata": {"table": table[0], "column": col[1], "type": col[2]},
+                }
                 for table in cursor.fetchall()
                 for col in cursor.execute(f"PRAGMA table_info({table[0]})").fetchall()
             ]
         vectordb.load_data(schema_data)
-    
+
     relevant_schema = vectordb.search(user_query, k=10, similarity_threshold=0.3)
-    schema_info = "\n".join([f"Table: {item['metadata']['table']}, Column: {item['metadata']['column']}, Type: {item['metadata']['type']}"
-                             for item in relevant_schema])
+    schema_info = "\n".join(
+        [
+            f"Table: {item['metadata']['table']}, Column: {item['metadata']['column']}, Type: {item['metadata']['type']}"
+            for item in relevant_schema
+        ]
+    )
 
     examples = """
     <example>
