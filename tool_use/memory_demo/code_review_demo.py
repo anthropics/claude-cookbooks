@@ -12,7 +12,7 @@ Requires:
 """
 
 import os
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from anthropic import Anthropic
 from dotenv import load_dotenv
@@ -33,14 +33,10 @@ API_KEY = os.getenv("ANTHROPIC_API_KEY")
 MODEL = os.getenv("ANTHROPIC_MODEL")
 
 if not API_KEY:
-    raise ValueError(
-        "ANTHROPIC_API_KEY not found. Copy .env.example to .env and add your API key."
-    )
+    raise ValueError("ANTHROPIC_API_KEY not found. Copy .env.example to .env and add your API key.")
 
 if not MODEL:
-    raise ValueError(
-        "ANTHROPIC_MODEL not found. Copy .env.example to .env and set the model."
-    )
+    raise ValueError("ANTHROPIC_MODEL not found. Copy .env.example to .env and set the model.")
 
 
 # Context management configuration
@@ -101,9 +97,7 @@ Remember: Your memory persists across conversations. Use it wisely."""
             return result.get("success") or result.get("error", "Unknown error")
         return f"Unknown tool: {tool_use.name}"
 
-    def review_code(
-        self, code: str, filename: str, description: str = ""
-    ) -> Dict[str, Any]:
+    def review_code(self, code: str, filename: str, description: str = "") -> Dict[str, Any]:
         """
         Review code with memory-enhanced analysis.
 
@@ -162,8 +156,8 @@ Remember: Your memory persists across conversations. Use it wisely."""
                     assistant_content.append({"type": "text", "text": content.text})
                     final_text.append(content.text)
                 elif content.type == "tool_use":
-                    cmd = content.input.get('command', 'unknown')
-                    path = content.input.get('path', '')
+                    cmd = content.input.get("command", "unknown")
+                    path = content.input.get("path", "")
                     print(f"    🔧 Memory: {cmd} {path}")
 
                     # Execute tool

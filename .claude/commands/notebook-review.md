@@ -3,7 +3,9 @@ allowed-tools: Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(
 description: Comprehensive review of Jupyter notebooks and Python scripts
 ---
 
-Review the changes to Jupyter notebooks and Python scripts in this PR using the Notebook review skill.
+**IMPORTANT**: Only review the files explicitly listed in the prompt above. Do not search for or review additional files.
+
+Review the specified Jupyter notebooks and Python scripts using the Notebook review skill.
 
 Provide a clear summary with:
 - ✅ What looks good

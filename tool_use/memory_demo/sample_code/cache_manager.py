@@ -14,7 +14,9 @@ class CacheManager:
         self.cache = {}
 
     def add_items(
-        self, key: str, items: List[str] = []  # BUG: Mutable default argument!
+        self,
+        key: str,
+        items: List[str] = [],  # BUG: Mutable default argument!
     ) -> None:
         """
         Add items to cache.
@@ -35,7 +37,9 @@ class CacheManager:
         self.cache[key] = items
 
     def merge_configs(
-        self, name: str, overrides: Dict[str, Any] = {}  # BUG: Mutable default!
+        self,
+        name: str,
+        overrides: Dict[str, Any] = {},  # BUG: Mutable default!
     ) -> Dict[str, Any]:
         """
         Merge configuration with overrides.
@@ -66,7 +70,9 @@ class DataProcessor:
     """Another example of the mutable default bug."""
 
     def process_batch(
-        self, data: List[int], filters: List[str] = []  # BUG: Mutable default!
+        self,
+        data: List[int],
+        filters: List[str] = [],  # BUG: Mutable default!
     ) -> List[int]:
         """
         Process data with optional filters.

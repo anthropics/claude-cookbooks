@@ -3,7 +3,9 @@ allowed-tools: Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)
 description: Review links in changed files for quality and security issues
 ---
 
-Review the links in the changed files and check for potential issues:
+**IMPORTANT**: Only review the files explicitly listed in the prompt above. Do not search for or review additional files.
+
+Review the links in the specified changed files and check for potential issues:
 
 ## Link Quality Checks
 1. **Broken Links**: Identify any links that might be broken or malformed

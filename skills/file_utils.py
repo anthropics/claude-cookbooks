@@ -38,10 +38,10 @@ def extract_file_ids(response) -> List[str]:
         # Check for bash_code_execution_tool_result (beta API format)
         if block.type == "bash_code_execution_tool_result":
             try:
-                if hasattr(block, 'content') and hasattr(block.content, 'content'):
+                if hasattr(block, "content") and hasattr(block.content, "content"):
                     # Iterate through content array
                     for item in block.content.content:
-                        if hasattr(item, 'file_id'):
+                        if hasattr(item, "file_id"):
                             file_ids.append(item.file_id)
             except Exception as e:
                 print(f"Warning: Error parsing bash_code_execution_tool_result: {e}")
@@ -50,23 +50,24 @@ def extract_file_ids(response) -> List[str]:
         # Check for legacy tool_result blocks (for backward compatibility)
         elif block.type == "tool_result":
             try:
-                if hasattr(block, 'output'):
+                if hasattr(block, "output"):
                     output_str = str(block.output)
 
                     # Look for file_id patterns in the output
-                    if 'file_id' in output_str.lower():
+                    if "file_id" in output_str.lower():
                         # Try to parse as JSON first
                         try:
                             output_json = json.loads(output_str)
-                            if isinstance(output_json, dict) and 'file_id' in output_json:
-                                file_ids.append(output_json['file_id'])
+                            if isinstance(output_json, dict) and "file_id" in output_json:
+                                file_ids.append(output_json["file_id"])
                             elif isinstance(output_json, list):
                                 for item in output_json:
-                                    if isinstance(item, dict) and 'file_id' in item:
-                                        file_ids.append(item['file_id'])
+                                    if isinstance(item, dict) and "file_id" in item:
+                                        file_ids.append(item["file_id"])
                         except json.JSONDecodeError:
                             # If not JSON, use regex to find file_id patterns
                             import re
+
                             pattern = r"file_id['\"]?\s*[:=]\s*['\"]?([a-zA-Z0-9_-]+)"
                             matches = re.findall(pattern, output_str)
                             file_ids.extend(matches)
@@ -86,10 +87,7 @@ def extract_file_ids(response) -> List[str]:
 
 
 def download_file(
-    client: Anthropic,
-    file_id: str,
-    output_path: str,
-    overwrite: bool = True
+    client: Anthropic, file_id: str, output_path: str, overwrite: bool = True
 ) -> Dict[str, Any]:
     """
     Download a file from Claude's Files API and save it locally.
@@ -119,18 +117,18 @@ def download_file(
         ...     print(f"Downloaded {result['size']} bytes to {result['output_path']}")
     """
     result = {
-        'file_id': file_id,
-        'output_path': output_path,
-        'size': 0,
-        'success': False,
-        'error': None
+        "file_id": file_id,
+        "output_path": output_path,
+        "size": 0,
+        "success": False,
+        "error": None,
     }
 
     try:
         # Check if file exists
         file_exists = os.path.exists(output_path)
         if file_exists and not overwrite:
-            result['error'] = f"File already exists: {output_path} (set overwrite=True to replace)"
+            result["error"] = f"File already exists: {output_path} (set overwrite=True to replace)"
             return result
 
         # Create output directory if it doesn't exist
@@ -142,16 +140,16 @@ def download_file(
         file_content = client.beta.files.download(file_id=file_id)
 
         # Save to disk
-        with open(output_path, 'wb') as f:
+        with open(output_path, "wb") as f:
             f.write(file_content.read())
 
         # Get file size
-        result['size'] = os.path.getsize(output_path)
-        result['success'] = True
-        result['overwritten'] = file_exists  # Track if we overwrote an existing file
+        result["size"] = os.path.getsize(output_path)
+        result["success"] = True
+        result["overwritten"] = file_exists  # Track if we overwrote an existing file
 
     except Exception as e:
-        result['error'] = str(e)
+        result["error"] = str(e)
 
     return result
 
@@ -161,7 +159,7 @@ def download_all_files(
     response,
     output_dir: str = "outputs",
     prefix: str = "",
-    overwrite: bool = True
+    overwrite: bool = True,
 ) -> List[Dict[str, Any]]:
     """
     Extract and download all files from a Claude API response.
@@ -235,13 +233,13 @@ def get_file_info(client: Anthropic, file_id: str) -> Optional[Dict[str, Any]]:
     try:
         file_info = client.beta.files.retrieve_metadata(file_id=file_id)
         return {
-            'file_id': file_info.id,
-            'filename': file_info.filename,
-            'size': file_info.size_bytes,
-            'mime_type': file_info.mime_type,
-            'created_at': file_info.created_at,
-            'type': file_info.type,
-            'downloadable': file_info.downloadable
+            "file_id": file_info.id,
+            "filename": file_info.filename,
+            "size": file_info.size_bytes,
+            "mime_type": file_info.mime_type,
+            "created_at": file_info.created_at,
+            "type": file_info.type,
+            "downloadable": file_info.downloadable,
         }
     except Exception as e:
         print(f"Error retrieving file info: {e}")
@@ -274,12 +272,12 @@ def print_download_summary(results: List[Dict[str, Any]]) -> None:
     total_size = 0
 
     for result in results:
-        if result['success']:
-            size_kb = result['size'] / 1024
-            overwrite_notice = " [overwritten]" if result.get('overwritten', False) else ""
+        if result["success"]:
+            size_kb = result["size"] / 1024
+            overwrite_notice = " [overwritten]" if result.get("overwritten", False) else ""
             print(f"✓ {result['output_path']} ({size_kb:.1f} KB){overwrite_notice}")
             success_count += 1
-            total_size += result['size']
+            total_size += result["size"]
         else:
             print(f"✗ {result['output_path']} - Error: {result['error']}")
 
