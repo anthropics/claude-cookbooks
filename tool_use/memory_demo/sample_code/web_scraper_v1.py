@@ -3,7 +3,6 @@ Concurrent web scraper with a race condition bug.
 Multiple threads modify shared state without synchronization.
 """
 
-import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import List, Dict, Any
 
@@ -78,7 +77,7 @@ if __name__ == "__main__":
     scraper = WebScraper(max_workers=10)
     results = scraper.scrape_urls(urls)
 
-    print(f"Expected: 50 results")
+    print("Expected: 50 results")
     print(f"Got: {len(results)} results")
     print(f"Stats: {scraper.get_stats()}")
     print("\nNote: Results count may be less than expected due to race condition!")

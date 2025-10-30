@@ -36,7 +36,7 @@ def run_conversation_turn(
     system: str,
     context_management: dict[str, Any] | None = None,
     max_tokens: int = 1024,
-    verbose: bool = False
+    verbose: bool = False,
 ) -> tuple[Any, list[dict[str, Any]], list[dict[str, Any]]]:
     """
     Run a single conversation turn, handling tool uses.
@@ -62,7 +62,7 @@ def run_conversation_turn(
         "system": system,
         "messages": messages,
         "tools": [memory_tool],
-        "betas": ["context-management-2025-06-27"]
+        "betas": ["context-management-2025-06-27"],
     }
 
     if context_management:
@@ -80,8 +80,8 @@ def run_conversation_turn(
             assistant_content.append({"type": "text", "text": content.text})
         elif content.type == "tool_use":
             if verbose:
-                cmd = content.input.get('command')
-                path = content.input.get('path', '')
+                cmd = content.input.get("command")
+                path = content.input.get("path", "")
                 print(f"  🔧 Memory tool: {cmd} {path}")
 
             result = execute_tool(content, memory_handler)
@@ -90,17 +90,12 @@ def run_conversation_turn(
                 result_preview = result[:80] + "..." if len(result) > 80 else result
                 print(f"  ✓ Result: {result_preview}")
 
-            assistant_content.append({
-                "type": "tool_use",
-                "id": content.id,
-                "name": content.name,
-                "input": content.input
-            })
-            tool_results.append({
-                "type": "tool_result",
-                "tool_use_id": content.id,
-                "content": result
-            })
+            assistant_content.append(
+                {"type": "tool_use", "id": content.id, "name": content.name, "input": content.input}
+            )
+            tool_results.append(
+                {"type": "tool_result", "tool_use_id": content.id, "content": result}
+            )
 
     return response, assistant_content, tool_results
 
@@ -114,7 +109,7 @@ def run_conversation_loop(
     context_management: dict[str, Any] | None = None,
     max_tokens: int = 1024,
     max_turns: int = 5,
-    verbose: bool = False
+    verbose: bool = False,
 ) -> Any:
     """
     Run a complete conversation loop until Claude stops using tools.
@@ -148,7 +143,7 @@ def run_conversation_loop(
             system=system,
             context_management=context_management,
             max_tokens=max_tokens,
-            verbose=verbose
+            verbose=verbose,
         )
 
         messages.append({"role": "assistant", "content": assistant_content})
@@ -180,9 +175,9 @@ def print_context_management_info(response: Any) -> tuple[bool, int]:
         edits = getattr(response.context_management, "applied_edits", [])
         if edits:
             context_cleared = True
-            cleared_uses = getattr(edits[0], 'cleared_tool_uses', 0)
-            saved_tokens = getattr(edits[0], 'cleared_input_tokens', 0)
-            print(f"  ✂️  Context editing triggered!")
+            cleared_uses = getattr(edits[0], "cleared_tool_uses", 0)
+            saved_tokens = getattr(edits[0], "cleared_input_tokens", 0)
+            print("  ✂️  Context editing triggered!")
             print(f"      • Cleared {cleared_uses} tool uses")
             print(f"      • Saved {saved_tokens:,} tokens")
             print(f"      • After clearing: {response.usage.input_tokens:,} tokens")
@@ -190,13 +185,13 @@ def print_context_management_info(response: Any) -> tuple[bool, int]:
             # Check if we can see why it didn't trigger
             skipped_edits = getattr(response.context_management, "skipped_edits", [])
             if skipped_edits:
-                print(f"  ℹ️  Context clearing skipped:")
+                print("  ℹ️  Context clearing skipped:")
                 for skip in skipped_edits:
-                    reason = getattr(skip, 'reason', 'unknown')
+                    reason = getattr(skip, "reason", "unknown")
                     print(f"      • Reason: {reason}")
             else:
-                print(f"  ℹ️  Context below threshold - no clearing triggered")
+                print("  ℹ️  Context below threshold - no clearing triggered")
     else:
-        print(f"  ℹ️  No context management applied")
+        print("  ℹ️  No context management applied")
 
     return context_cleared, saved_tokens

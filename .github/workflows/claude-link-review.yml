@@ -8,27 +8,74 @@ on:
       - '**.mdx'
       - '**.ipynb'
       - 'README.md'
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to review'
+        required: true
+        type: number
 
 jobs:
   link-review:
+    # Only run for internal contributors (not forks) unless manually triggered
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     permissions:
       contents: read
       pull-requests: write
-      id-token: write
     steps:
-      - name: Checkout repository
+      - name: Set PR number
+        id: pr-number
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "number=${{ inputs.pr_number }}" >> $GITHUB_OUTPUT
+          else
+            echo "number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Checkout PR
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ github.event_name == 'workflow_dispatch' && format('refs/pull/{0}/head', inputs.pr_number) || '' }}
+
+      - name: Get changed files
+        id: changed-files
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            # For manual dispatch, get base ref from PR
+            BASE_REF=$(gh pr view ${{ steps.pr-number.outputs.number }} --json baseRefName -q .baseRefName)
+            git fetch origin $BASE_REF
+            CHANGED_FILES=$(git diff --name-only origin/$BASE_REF...HEAD | grep -E '\.(md|mdx|ipynb)$' || echo "")
+          else
+            git fetch origin ${{ github.base_ref }}
+            CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -E '\.(md|mdx|ipynb)$' || echo "")
+          fi
+
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "No relevant files changed"
+            echo "has_files=false" >> $GITHUB_OUTPUT
+          else
+            echo "Changed files:"
+            echo "$CHANGED_FILES"
+            echo "$CHANGED_FILES" > changed_files.txt
+            echo "has_files=true" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run Claude Link Review
+        if: steps.changed-files.outputs.has_files == 'true'
         uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          prompt: "/link-review"
+          prompt: |
+            /link-review
+
+            Changed files to review:
+            $(cat changed_files.txt)
           claude_args: |
             --allowedTools "Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(echo:*),Read,Glob,Grep,WebFetch"
         env:
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_NUMBER: ${{ steps.pr-number.outputs.number }}

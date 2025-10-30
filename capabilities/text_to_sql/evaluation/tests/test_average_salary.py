@@ -1,8 +1,9 @@
 from utils import extract_sql, execute_sql
 
+
 def get_assert(output, context):
     sql = extract_sql(output)
-    
+
     try:
         results = execute_sql(sql)
         execution_success = True
@@ -15,5 +16,5 @@ def get_assert(output, context):
     return {
         "pass": execution_success and result_valid,
         "score": 1 if (execution_success and result_valid) else 0,
-        "reason": f"SQL {'executed successfully with valid results' if (execution_success and result_valid) else 'failed or produced invalid results'}."
+        "reason": f"SQL {'executed successfully with valid results' if (execution_success and result_valid) else 'failed or produced invalid results'}.",
     }

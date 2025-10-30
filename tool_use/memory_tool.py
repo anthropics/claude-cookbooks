@@ -139,8 +139,7 @@ class MemoryToolHandler:
                     return {"success": f"Directory: {path}\n(empty)"}
 
                 return {
-                    "success": f"Directory: {path}\n"
-                    + "\n".join([f"- {item}" for item in items])
+                    "success": f"Directory: {path}\n" + "\n".join([f"- {item}" for item in items])
                 }
             except Exception as e:
                 return {"error": f"Cannot read directory {path}: {e}"}
@@ -161,9 +160,7 @@ class MemoryToolHandler:
                     start_num = 1
 
                 # Format with line numbers
-                numbered_lines = [
-                    f"{i + start_num:4d}: {line}" for i, line in enumerate(lines)
-                ]
+                numbered_lines = [f"{i + start_num:4d}: {line}" for i, line in enumerate(lines)]
                 return {"success": "\n".join(numbered_lines)}
 
             except UnicodeDecodeError:
@@ -223,8 +220,7 @@ class MemoryToolHandler:
             count = content.count(old_str)
             if count == 0:
                 return {
-                    "error": f"String not found in {path}. "
-                    "The exact text must exist in the file."
+                    "error": f"String not found in {path}. The exact text must exist in the file."
                 }
             elif count > 1:
                 return {

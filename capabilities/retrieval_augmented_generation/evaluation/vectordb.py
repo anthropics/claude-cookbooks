@@ -4,6 +4,7 @@ import json
 import numpy as np
 import voyageai
 
+
 class VectorDB:
     def __init__(self, name, api_key=None):
         if api_key is None:
@@ -23,7 +24,7 @@ class VectorDB:
             print("Loading vector database from disk.")
             self.load_db()
             return
-        
+
         texts = [f"Heading: {item['chunk_heading']}\n\n Chunk Text:{item['text']}" for item in data]
         self._embed_and_store(texts, data)
         self.save_db()
@@ -32,10 +33,7 @@ class VectorDB:
     def _embed_and_store(self, texts, data):
         batch_size = 128
         result = [
-            self.client.embed(
-                texts[i : i + batch_size],
-                model="voyage-2"
-            ).embeddings
+            self.client.embed(texts[i : i + batch_size], model="voyage-2").embeddings
             for i in range(0, len(texts), batch_size)
         ]
         self.embeddings = [embedding for batch in result for embedding in batch]
@@ -54,7 +52,7 @@ class VectorDB:
         similarities = np.dot(self.embeddings, query_embedding)
         top_indices = np.argsort(similarities)[::-1]
         top_examples = []
-        
+
         for idx in top_indices:
             if similarities[idx] >= similarity_threshold:
                 example = {
@@ -62,7 +60,7 @@ class VectorDB:
                     "similarity": similarities[idx],
                 }
                 top_examples.append(example)
-                
+
                 if len(top_examples) >= k:
                     break
         self.save_db()
@@ -80,7 +78,9 @@ class VectorDB:
 
     def load_db(self):
         if not os.path.exists(self.db_path):
-            raise ValueError("Vector database file not found. Use load_data to create a new database.")
+            raise ValueError(
+                "Vector database file not found. Use load_data to create a new database."
+            )
         with open(self.db_path, "rb") as file:
             data = pickle.load(file)
         self.embeddings = data["embeddings"]
@@ -107,8 +107,10 @@ class SummaryIndexedVectorDB:
             print("Loading vector database from disk.")
             self.load_db()
             return
-        
-        texts = [f"{item['chunk_heading']}\n\n{item['text']}\n\n{item['summary']}" for item in data]  # Embed Chunk Heading + Text + Summary Together
+
+        texts = [
+            f"{item['chunk_heading']}\n\n{item['text']}\n\n{item['summary']}" for item in data
+        ]  # Embed Chunk Heading + Text + Summary Together
         self._embed_and_store(texts, data)
         self.save_db()
         print("Vector database loaded and saved.")
@@ -116,10 +118,7 @@ class SummaryIndexedVectorDB:
     def _embed_and_store(self, texts, data):
         batch_size = 128
         result = [
-            self.client.embed(
-                texts[i : i + batch_size],
-                model="voyage-2"
-            ).embeddings
+            self.client.embed(texts[i : i + batch_size], model="voyage-2").embeddings
             for i in range(0, len(texts), batch_size)
         ]
         self.embeddings = [embedding for batch in result for embedding in batch]
@@ -138,7 +137,7 @@ class SummaryIndexedVectorDB:
         similarities = np.dot(self.embeddings, query_embedding)
         top_indices = np.argsort(similarities)[::-1]
         top_examples = []
-        
+
         for idx in top_indices:
             if similarities[idx] >= similarity_threshold:
                 example = {
@@ -146,7 +145,7 @@ class SummaryIndexedVectorDB:
                     "similarity": similarities[idx],
                 }
                 top_examples.append(example)
-                
+
                 if len(top_examples) >= k:
                     break
         self.save_db()
@@ -164,7 +163,9 @@ class SummaryIndexedVectorDB:
 
     def load_db(self):
         if not os.path.exists(self.db_path):
-            raise ValueError("Vector database file not found. Use load_data to create a new database.")
+            raise ValueError(
+                "Vector database file not found. Use load_data to create a new database."
+            )
         with open(self.db_path, "rb") as file:
             data = pickle.load(file)
         self.embeddings = data["embeddings"]

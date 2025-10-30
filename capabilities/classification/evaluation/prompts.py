@@ -1,5 +1,6 @@
 from vectordb import VectorDB
 import textwrap
+
 vectordb = VectorDB()
 # Load the vector database
 vectordb.load_db()
@@ -57,8 +58,9 @@ categories = """<category>
 
 
 def simple_classify(context: dict):
-    X = context['vars']['text']
-    prompt = textwrap.dedent("""
+    X = context["vars"]["text"]
+    prompt = (
+        textwrap.dedent("""
     You will classify a customer support ticket into one of the following categories:
     <categories>
         {{categories}}
@@ -70,14 +72,16 @@ def simple_classify(context: dict):
     </ticket>
 
     Respond with just the label of the category between category tags.
-    """).replace("{{categories}}", categories).replace("{{ticket}}", X)
+    """)
+        .replace("{{categories}}", categories)
+        .replace("{{ticket}}", X)
+    )
     return prompt
 
 
-
 def rag_classify(context: dict):
-    X = context['vars']['text']
-    rag = vectordb.search(X,5)
+    X = context["vars"]["text"]
+    rag = vectordb.search(X, 5)
     rag_string = ""
     for example in rag:
         rag_string += textwrap.dedent(f"""
@@ -90,7 +94,8 @@ def rag_classify(context: dict):
             </label>
         </example>
         """)
-    prompt = textwrap.dedent("""
+    prompt = (
+        textwrap.dedent("""
     You will classify a customer support ticket into one of the following categories:
     <categories>
         {{categories}}
@@ -107,13 +112,17 @@ def rag_classify(context: dict):
     </examples>
 
     Respond with just the label of the category between category tags.
-    """).replace("{{categories}}", categories).replace("{{ticket}}", X).replace("{{examples}}", rag_string)
+    """)
+        .replace("{{categories}}", categories)
+        .replace("{{ticket}}", X)
+        .replace("{{examples}}", rag_string)
+    )
     return prompt
 
 
 def rag_chain_of_thought_classify(context: dict):
-    X = context['vars']['text']
-    rag = vectordb.search(X,5)
+    X = context["vars"]["text"]
+    rag = vectordb.search(X, 5)
     rag_string = ""
     for example in rag:
         rag_string += textwrap.dedent(f"""
@@ -126,7 +135,8 @@ def rag_chain_of_thought_classify(context: dict):
             </label>
         </example>
         """)
-    prompt = textwrap.dedent("""
+    prompt = (
+        textwrap.dedent("""
     You will classify a customer support ticket into one of the following categories:
     <categories>
         {{categories}}
@@ -150,5 +160,9 @@ def rag_chain_of_thought_classify(context: dict):
         <scratchpad>Your thoughts and analysis go here</scratchpad>
         <category>The category label you chose goes here</category>
     </response>
-    """).replace("{{categories}}", categories).replace("{{ticket}}", X).replace("{{examples}}", rag_string)
+    """)
+        .replace("{{categories}}", categories)
+        .replace("{{ticket}}", X)
+        .replace("{{examples}}", rag_string)
+    )
     return prompt
