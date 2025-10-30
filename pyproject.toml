@@ -12,7 +12,7 @@ dependencies = [
     "voyageai>=0.3.5",
     "python-dotenv>=1.1.1",
     "wikipedia>=1.4.0",
-    "transformers>=4.57.1",
+    "huggingface-hub>=1.0.0",
 ]
 
 [tool.uv.sources]
