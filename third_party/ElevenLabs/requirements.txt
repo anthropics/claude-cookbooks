@@ -1,6 +1,6 @@
 anthropic>=0.71.0
 elevenlabs>=2.15.0
-sounddevice>=0.5.2
+sounddevice>=0.5.1
 numpy>=1.26.0
 scipy>=1.16.2
 websocket-client>=1.8.0
