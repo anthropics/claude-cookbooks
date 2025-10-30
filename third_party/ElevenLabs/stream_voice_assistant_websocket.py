@@ -26,7 +26,7 @@ Usage:
 Key optimizations:
 - Text chunks sent to TTS immediately as they arrive from Claude
 - No sentence buffering required - audio generation begins instantly
-- PCM audio format eliminates MP3 encoding artifacts
+- MP3 audio format compatible with free tier accounts
 - Continuous audio streaming with pre-buffering prevents crackling
 """
 
@@ -43,6 +43,7 @@ import numpy as np
 import sounddevice as sd
 import websocket
 from dotenv import load_dotenv
+from pydub import AudioSegment
 from scipy.io import wavfile
 
 # Load environment variables from .env file
@@ -74,7 +75,7 @@ print(f"Using voice: {selected_voice.name} (ID: {VOICE_ID})")
 
 # TTS configuration
 TTS_MODEL_ID = "eleven_turbo_v2_5"  # Fast, low-latency model
-TTS_OUTPUT_FORMAT = "pcm_44100"  # PCM format eliminates MP3 encoding artifacts
+TTS_OUTPUT_FORMAT = "mp3_44100_128"  # MP3 format (free tier compatible)
 
 
 class AudioQueue:
@@ -103,20 +104,27 @@ class AudioQueue:
         self.read_position = 0
 
     def add(self, audio_data):
-        """Add PCM audio chunk to the playback buffer.
+        """Add MP3 audio chunk to the playback buffer.
 
         Args:
-            audio_data: Raw PCM audio bytes (16-bit signed integers)
+            audio_data: Raw MP3 audio bytes
         """
-        # Convert PCM int16 to float32
-        samples = np.frombuffer(audio_data, dtype=np.int16)
+        # Decode MP3 to PCM
+        audio_segment = AudioSegment.from_mp3(io.BytesIO(audio_data))
+
+        # Convert to numpy array
+        samples = np.array(audio_segment.get_array_of_samples(), dtype=np.int16)
         samples = samples.astype(np.float32) / 32768.0
 
         if not self.playing:
-            self.sample_rate = 44100
-            self.channels = 1
+            self.sample_rate = audio_segment.frame_rate
+            self.channels = audio_segment.channels
 
-        samples = samples.reshape((-1, 1))
+        # Reshape based on number of channels
+        if self.channels > 1:
+            samples = samples.reshape((-1, self.channels))
+        else:
+            samples = samples.reshape((-1, 1))
 
         with self.buffer_lock:
             self.buffer.extend(samples.tobytes())
@@ -289,7 +297,8 @@ def stream_claude_and_synthesize_ws(messages, audio_queue):
 
     def on_close(ws, close_status_code, close_msg):
         """Handle WebSocket connection closure."""
-        pass
+        if close_status_code or close_msg:
+            print(f"\nWebSocket closed with status {close_status_code}: {close_msg}")
 
     def on_open(ws):
         nonlocal ws_connected
