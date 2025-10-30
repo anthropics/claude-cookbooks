@@ -3,11 +3,11 @@ name: Push to Public Repository
 on:
   push:
     branches:
-      - main
+      - public  # Triggers when public branch is updated
   workflow_dispatch:  # Allow manual trigger
 
 jobs:
-  sync-to-public:
+  push-to-public:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,9 +20,10 @@ jobs:
           owner: anthropics
           repositories: claude-cookbooks,claude-cookbooks-private
 
-      - name: Checkout private repository
+      - name: Checkout public branch
         uses: actions/checkout@v4
         with:
+          ref: public
           fetch-depth: 0
           token: ${{ steps.generate-token.outputs.token }}
 
@@ -36,77 +37,59 @@ jobs:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
           # Add public repo with authentication
-          git remote add public https://x-access-token:${GITHUB_TOKEN}@github.com/anthropics/claude-cookbooks.git || true
+          git remote add public https://x-access-token:${GITHUB_TOKEN}@github.com/anthropics/claude-cookbooks.git
           git fetch public
 
-      - name: Pull latest changes from public
-        run: |
-          echo "Syncing latest changes from public repository first..."
-
-          # Ensure we're on main branch
-          git checkout main
-
-          # Try to merge public changes
-          if git merge public/main --no-edit; then
-            echo "✓ Successfully merged changes from public repository"
-
-            # Push the merged changes back to private repo
-            git push origin main
-            echo "✓ Private repository updated with latest public changes"
-          else
-            echo "⚠️  Merge conflict detected!"
-            echo "Aborting sync. Manual intervention required."
-            git merge --abort
-            exit 1
-          fi
-
-      - name: Prepare filtered branch for public
-        run: |
-          echo "Creating a temporary branch without private-only files..."
-
-          # Create a new temporary branch for public sync
-          git checkout -b temp-public-sync
-
-          # Remove private-only files from this branch
-          # Add any other private-only files or directories here
-          git rm -r .github/workflows/ || true
-
-          # Check if there are any changes to commit
-          if git diff --cached --quiet; then
-            echo "No private-only files to remove"
-          else
-            git commit -m "Remove private-only files for public sync"
-          fi
-
       - name: Push to public repository
+        id: push
         run: |
-          echo "Pushing changes to public repository..."
+          echo "Pushing public branch to public repository..."
 
-          # Get the current commit message from main branch
-          LATEST_COMMIT_MSG=$(git log main -1 --pretty=%B)
-
-          # Try to push to public
-          if git push public temp-public-sync:main; then
-            echo "✓ Successfully pushed changes to public repository"
+          # Push public branch to public repo's main
+          if git push public public:main; then
+            echo "✓ Successfully pushed to public repository"
+            echo "success=true" >> $GITHUB_OUTPUT
           else
             echo "⚠️  Push failed. This might be due to:"
-            echo "  - Divergent history between private and public"
+            echo "  - Divergent history"
             echo "  - Permission issues"
-            echo "  - Missing GitHub App credentials"
+            echo "  - Branch protection rules"
+            echo "  - Concurrent changes to public repo"
+            echo "success=false" >> $GITHUB_OUTPUT
             exit 1
           fi
 
-      - name: Cleanup
-        if: always()
+      - name: Create issue on push failure
+        if: failure() && steps.push.outputs.success == 'false'
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
-          git checkout main
-          git branch -D temp-public-sync || true
+          gh issue create \
+            --title "🚨 Push to public repository failed" \
+            --body "The automated push from private \`public\` branch to public repository failed.
+
+          **Workflow Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+          **Possible causes:**
+          - Divergent history between branches
+          - Concurrent changes pushed to public repo
+          - Permission or authentication issues
+
+          **Action Required:**
+          1. Check the workflow logs for specific error details
+          2. Verify the public repository state
+          3. If needed, manually sync: \`git push public public:main\`
+          4. Resolve any conflicts if they exist
+
+          This issue was automatically created by the push-to-public workflow." \
+            --label "sync-failure" \
+            --label "automation"
 
       - name: Report sync status
         if: always()
         run: |
-          if [ $? -eq 0 ]; then
+          if [ "${{ steps.push.outputs.success }}" == "true" ]; then
             echo "✓ Push to public completed successfully"
           else
-            echo "✗ Push to public failed - check logs for details"
+            echo "✗ Push to public failed - check logs and issue tracker"
           fi
