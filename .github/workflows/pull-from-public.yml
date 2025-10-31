@@ -1,0 +1,85 @@
+name: Pull from Public Repository
+
+on:
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  sync-from-public:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Generate GitHub App Token
+        id: generate-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.SYNC_APP_ID }}
+          private-key: ${{ secrets.SYNC_APP_PRIVATE_KEY }}
+          owner: anthropics
+          repositories: claude-cookbooks,claude-cookbooks-private
+
+      - name: Checkout private repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ steps.generate-token.outputs.token }}
+          ref: public
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Add public repository as remote
+        run: |
+          git remote add public https://github.com/anthropics/claude-cookbooks.git || true
+          git fetch public
+
+      - name: Merge changes from public
+        id: merge
+        run: |
+          echo "Attempting to merge changes from public repository..."
+
+          # Try to merge public changes
+          if git merge public/main --no-edit; then
+            echo "✓ Successfully merged changes from public repository"
+
+            # Push the merged changes back to private public branch
+            git push origin public
+            echo "✓ Changes pushed to private public branch"
+            echo "success=true" >> $GITHUB_OUTPUT
+          else
+            echo "⚠️  Merge conflict detected!"
+            echo "Manual intervention required. Please resolve conflicts locally."
+
+            # Abort the merge
+            git merge --abort
+            echo "success=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      - name: Create issue on merge conflict
+        if: failure() && steps.merge.outputs.success == 'false'
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+        run: |
+          gh issue create \
+            --title "🚨 Merge conflict: Public to Private sync failed" \
+            --body "The automated sync from the public repository to private \`public\` branch failed due to merge conflicts.
+
+          **Workflow Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+          **Action Required:**
+          1. Clone the private repository
+          2. Checkout the public branch: \`git checkout public\`
+          3. Add the public repository as a remote: \`git remote add public https://github.com/anthropics/claude-cookbooks.git\`
+          4. Fetch public changes: \`git fetch public\`
+          5. Merge manually: \`git merge public/main\`
+          6. Resolve conflicts
+          7. Push changes: \`git push origin public\`
+
+          This issue was automatically created by the pull-from-public workflow." \
+            --label "sync-conflict" \
+            --label "automation"

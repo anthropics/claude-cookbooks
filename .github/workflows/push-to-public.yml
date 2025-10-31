@@ -1,0 +1,95 @@
+name: Push to Public Repository
+
+on:
+  push:
+    branches:
+      - public  # Triggers when public branch is updated
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  push-to-public:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Generate GitHub App Token
+        id: generate-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.SYNC_APP_ID }}
+          private-key: ${{ secrets.SYNC_APP_PRIVATE_KEY }}
+          owner: anthropics
+          repositories: claude-cookbooks,claude-cookbooks-private
+
+      - name: Checkout public branch
+        uses: actions/checkout@v4
+        with:
+          ref: public
+          fetch-depth: 0
+          token: ${{ steps.generate-token.outputs.token }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Add public repository as remote
+        env:
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+        run: |
+          # Add public repo with authentication
+          git remote add public https://x-access-token:${GITHUB_TOKEN}@github.com/anthropics/claude-cookbooks.git
+          git fetch public
+
+      - name: Push to public repository
+        id: push
+        run: |
+          echo "Pushing public branch to public repository..."
+
+          # Push public branch to public repo's main
+          if git push public public:main; then
+            echo "✓ Successfully pushed to public repository"
+            echo "success=true" >> $GITHUB_OUTPUT
+          else
+            echo "⚠️  Push failed. This might be due to:"
+            echo "  - Divergent history"
+            echo "  - Permission issues"
+            echo "  - Branch protection rules"
+            echo "  - Concurrent changes to public repo"
+            echo "success=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      - name: Create issue on push failure
+        if: failure() && steps.push.outputs.success == 'false'
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+        run: |
+          gh issue create \
+            --title "🚨 Push to public repository failed" \
+            --body "The automated push from private \`public\` branch to public repository failed.
+
+          **Workflow Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+          **Possible causes:**
+          - Divergent history between branches
+          - Concurrent changes pushed to public repo
+          - Permission or authentication issues
+
+          **Action Required:**
+          1. Check the workflow logs for specific error details
+          2. Verify the public repository state
+          3. If needed, manually sync: \`git push public public:main\`
+          4. Resolve any conflicts if they exist
+
+          This issue was automatically created by the push-to-public workflow." \
+            --label "sync-failure" \
+            --label "automation"
+
+      - name: Report sync status
+        if: always()
+        run: |
+          if [ "${{ steps.push.outputs.success }}" == "true" ]; then
+            echo "✓ Push to public completed successfully"
+          else
+            echo "✗ Push to public failed - check logs and issue tracker"
+          fi
