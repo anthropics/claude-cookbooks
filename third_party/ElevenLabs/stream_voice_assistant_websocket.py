@@ -109,29 +109,37 @@ class AudioQueue:
         Args:
             audio_data: Raw MP3 audio bytes
         """
-        # Decode MP3 to PCM
-        audio_segment = AudioSegment.from_mp3(io.BytesIO(audio_data))
+        try:
+            # Decode MP3 to PCM
+            audio_segment = AudioSegment.from_mp3(io.BytesIO(audio_data))
 
-        # Convert to numpy array
-        samples = np.array(audio_segment.get_array_of_samples(), dtype=np.int16)
-        samples = samples.astype(np.float32) / 32768.0
+            # Convert to numpy array
+            samples = np.array(audio_segment.get_array_of_samples(), dtype=np.int16)
+            samples = samples.astype(np.float32) / 32768.0
 
-        if not self.playing:
-            self.sample_rate = audio_segment.frame_rate
-            self.channels = audio_segment.channels
+            if not self.playing:
+                self.sample_rate = audio_segment.frame_rate
+                self.channels = audio_segment.channels
 
-        # Reshape based on number of channels
-        if self.channels > 1:
-            samples = samples.reshape((-1, self.channels))
-        else:
-            samples = samples.reshape((-1, 1))
+            # Reshape based on number of channels
+            if self.channels > 1:
+                samples = samples.reshape((-1, self.channels))
+            else:
+                samples = samples.reshape((-1, 1))
 
-        with self.buffer_lock:
-            self.buffer.extend(samples.tobytes())
+            with self.buffer_lock:
+                self.buffer.extend(samples.tobytes())
 
-        # Start playback after pre-buffering
-        if not self.playing and len(self.buffer) >= self.PRE_BUFFER_SIZE:
-            self.start_playback()
+            # Start playback after pre-buffering
+            if not self.playing and len(self.buffer) >= self.PRE_BUFFER_SIZE:
+                self.start_playback()
+        except:
+            # Silently skip invalid MP3 chunks that fail to decode
+            # This is common when streaming MP3 data in real-time, as chunks may contain
+            # incomplete frames. Skipping these prevents console errors but may cause
+            # brief audio pops. To eliminate popping, upgrade to a paid ElevenLabs tier
+            # and use pcm_44100 format instead of MP3.
+            pass
 
     def start_playback(self):
         """Start the audio output stream."""
