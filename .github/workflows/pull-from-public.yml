@@ -47,8 +47,9 @@ jobs:
             echo "✓ Successfully merged changes from public repository"
 
             # Restore our workflow files (exclude workflows from sync)
-            # We need to restore them and amend the merge commit to exclude workflow changes
-            git checkout HEAD -- .github/workflows/
+            # After merge, HEAD is the merge commit. We need to restore from HEAD^1 (first parent)
+            # to get the state BEFORE the merge, ensuring all workflow changes are excluded
+            git checkout HEAD^1 -- .github/workflows/
             git add .github/workflows/
             git commit --amend --no-edit
             echo "✓ Restored private workflow configurations and amended merge commit"
