@@ -42,17 +42,18 @@ jobs:
         run: |
           echo "Attempting to merge changes from public repository..."
 
-          # Try to merge public changes
-          if git merge public/main --no-edit; then
+          # Merge changes but don't commit yet (so we can exclude workflows)
+          if git merge public/main --no-commit --no-ff; then
             echo "✓ Successfully merged changes from public repository"
 
-            # Restore our workflow files (exclude workflows from sync)
-            # After merge, HEAD is the merge commit. We need to restore from HEAD^1 (first parent)
-            # to get the state BEFORE the merge, ensuring all workflow changes are excluded
-            git checkout HEAD^1 -- .github/workflows/
-            git add .github/workflows/
-            git commit --amend --no-edit
-            echo "✓ Restored private workflow configurations and amended merge commit"
+            # Restore workflow files to their pre-merge state (exclude workflows from sync)
+            # This restores both the staging area and working tree to HEAD (current state before merge)
+            # This removes both modified workflows AND new workflow files added by public repo
+            git restore --source=HEAD --staged --worktree .github/workflows/
+            echo "✓ Restored private workflow configurations"
+
+            # Now commit the merge (without any workflow changes)
+            git commit --no-edit -m "Merge changes from public repository"
 
             # Push the merged changes back to private public branch
             git push origin public
