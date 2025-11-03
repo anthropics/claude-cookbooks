@@ -47,8 +47,11 @@ jobs:
             echo "✓ Successfully merged changes from public repository"
 
             # Restore our workflow files (exclude workflows from sync)
+            # We need to restore them and amend the merge commit to exclude workflow changes
             git checkout HEAD -- .github/workflows/
-            echo "✓ Restored private workflow configurations"
+            git add .github/workflows/
+            git commit --amend --no-edit
+            echo "✓ Restored private workflow configurations and amended merge commit"
 
             # Push the merged changes back to private public branch
             git push origin public
