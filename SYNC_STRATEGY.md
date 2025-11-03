@@ -101,7 +101,43 @@ git push --force origin staging
 - Checks out private `public` branch
 - Fetches from public repo
 - Merges public repo `main` into private `public`
+- **Restores private workflow configurations** (excludes `.github/workflows/` from sync)
+- Pushes merged changes to private repo
 - Creates issue on merge conflicts
+
+**Note**: Workflows are explicitly excluded from sync to:
+- Avoid GitHub App permission issues
+- Allow independent CI/CD evolution per repository
+- Prevent accidental workflow modifications
+
+## Workflow Isolation
+
+**Workflows are NOT synced between repositories.** Each repository maintains its own independent CI/CD configuration.
+
+### Why workflows are excluded:
+
+1. **Security**: Workflows reference repository-specific secrets and variables
+2. **Permission requirements**: GitHub Apps need elevated `workflows` permission to modify workflow files
+3. **Different needs**: Private repo needs sync workflows; public repo doesn't
+4. **Independent evolution**: Each repository can evolve its CI/CD independently
+5. **Prevents accidents**: No risk of accidentally pushing private workflows to public
+
+### Implementation:
+
+- **pull-from-public.yml**: After merging, runs `git checkout HEAD -- .github/workflows/` to restore private workflows
+- **push-to-public.yml**: Only the `public` branch is pushed (which doesn't contain sync workflows)
+- **Result**: Workflow changes in either repo remain isolated
+
+### Workflow Distribution:
+
+**Private repo workflows:**
+- `pull-from-public.yml` - Pulls changes from public repo (main branch only)
+- `push-to-public.yml` - Pushes to public repo (main branch only)
+- CI/test workflows - Same as public repo
+
+**Public repo workflows:**
+- CI/test workflows only
+- No sync workflows
 
 ## Key Principles
 
@@ -111,6 +147,7 @@ git push --force origin staging
 ✅ **Clear release gate** - the PR from `staging` → `public`
 ✅ **Flexible for bugfixes** - can work on `staging` without triggering releases
 ✅ **Sync workflows isolated** - only in `main`, not in public branches
+✅ **Workflows never sync** - each repository maintains independent CI/CD configuration
 
 ## Handling Feature Branches
 
