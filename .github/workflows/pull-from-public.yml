@@ -46,14 +46,28 @@ jobs:
           if git merge public/main --no-commit --no-ff; then
             echo "✓ Successfully merged changes from public repository"
 
-            # Restore workflow files to their pre-merge state (exclude workflows from sync)
-            # This restores both the staging area and working tree to HEAD (current state before merge)
-            # This removes both modified workflows AND new workflow files added by public repo
-            git restore --source=HEAD --staged --worktree .github/workflows/
+            # Remove workflow files from the staging area
+            # This ensures they won't be included in the commit
+            git rm --cached -r .github/workflows/ 2>/dev/null || true
+            echo "✓ Removed workflow files from staging"
+
+            # Restore workflow files to working tree from HEAD
+            # This keeps our private workflow files in place
+            git checkout HEAD -- .github/workflows/
             echo "✓ Restored private workflow configurations"
 
-            # Now commit the merge (without any workflow changes)
+            # Commit the merge (workflows are now excluded from the commit)
             git commit --no-edit -m "Merge changes from public repository"
+
+            # Verify no workflow files were included in the commit
+            if git diff --name-only HEAD^1..HEAD | grep -q "^\.github/workflows/"; then
+              echo "ERROR: Workflow files detected in merge commit!"
+              echo "The following workflow files were found:"
+              git diff --name-only HEAD^1..HEAD | grep "^\.github/workflows/"
+              exit 1
+            else
+              echo "✓ Verified: No workflow files in merge commit"
+            fi
 
             # Push the merged changes back to private public branch
             git push origin public
