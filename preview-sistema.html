@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview - Sistema de Captação Anderson Enside Madeiras</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            animation: fadeIn 0.6s ease;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .preview-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: slideUp 0.6s ease;
+        }
+        
+        .preview-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%);
+            color: white;
+            padding: 20px;
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .card-subtitle {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        .feature-list {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+        
+        .feature-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+        
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .feature-icon {
+            width: 30px;
+            height: 30px;
+            background: #10B981;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+        
+        .preview-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 38, 38, 0.4);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #1F2937;
+            border: 2px solid #1F2937;
+        }
+        
+        .btn-secondary:hover {
+            background: #1F2937;
+            color: white;
+        }
+        
+        .status-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            animation: fadeIn 0.8s ease;
+        }
+        
+        .status-title {
+            font-size: 1.8rem;
+            color: #1F2937;
+            margin-bottom: 20px;
+        }
+        
+        .checklist {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .check-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: #F3F4F6;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .check-item:hover {
+            background: #E5E7EB;
+        }
+        
+        .check-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .check-icon.done {
+            background: #10B981;
+            color: white;
+        }
+        
+        .check-icon.pending {
+            background: #F59E0B;
+            color: white;
+        }
+        
+        .check-icon.error {
+            background: #DC2626;
+            color: white;
+        }
+        
+        .check-text {
+            flex: 1;
+        }
+        
+        .check-title {
+            font-weight: 600;
+            color: #1F2937;
+            margin-bottom: 5px;
+        }
+        
+        .check-desc {
+            color: #6B7280;
+            font-size: 0.9rem;
+        }
+        
+        .iframe-preview {
+            width: 100%;
+            height: 600px;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #E5E7EB;
+        }
+        
+        .tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            color: #6B7280;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+        
+        .tab:hover {
+            color: #1F2937;
+        }
+        
+        .tab.active {
+            color: #DC2626;
+            border-bottom-color: #DC2626;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .mobile-preview {
+            max-width: 375px;
+            margin: 0 auto;
+            border: 10px solid #1F2937;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Sistema de Captação de Leads</h1>
+            <p class="subtitle">Anderson Enside Madeiras - Preview e Teste</p>
+        </header>
+        
+        <!-- Status de Configuração -->
+        <div class="status-section">
+            <h2 class="status-title">📋 Status de Configuração</h2>
+            
+            <div class="checklist">
+                <div class="check-item">
+                    <div class="check-icon done">✓</div>
+                    <div class="check-text">
+                        <div class="check-title">Páginas HTML</div>
+                        <div class="check-desc">3 páginas responsivas criadas</div>
+                    </div>
+                </div>
+                
+                <div class="check-item">
+                    <div class="check-icon done">✓</div>
+                    <div class="check-text">
+                        <div class="check-title">Google Apps Script</div>
+                        <div class="check-desc">Script de integração pronto</div>
+                    </div>
+                </div>
+                
+                <div class="check-item">
+                    <div class="check-icon pending">⚠</div>
+                    <div class="check-text">
+                        <div class="check-title">Google Sheets</div>
+                        <div class="check-desc">Aguardando configuração</div>
+                    </div>
+                </div>
+                
+                <div class="check-item">
+                    <div class="check-icon pending">⚠</div>
+                    <div class="check-text">
+                        <div class="check-title">URL do Web App</div>
+                        <div class="check-desc">Pendente deploy</div>
+                    </div>
+                </div>
+                
+                <div class="check-item">
+                    <div class="check-icon done">✓</div>
+                    <div class="check-text">
+                        <div class="check-title">Validações JavaScript</div>
+                        <div class="check-desc">Todas implementadas</div>
+                    </div>
+                </div>
+                
+                <div class="check-item">
+                    <div class="check-icon done">✓</div>
+                    <div class="check-text">
+                        <div class="check-title">Design Responsivo</div>
+                        <div class="check-desc">Mobile-first otimizado</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Cards de Preview -->
+        <div class="preview-grid">
+            <!-- Página 1 -->
+            <div class="preview-card">
+                <div class="card-header">
+                    <h3 class="card-title">📝 Página 1 - Captura Inicial</h3>
+                    <p class="card-subtitle">index.html</p>
+                </div>
+                <div class="card-body">
+                    <ul class="feature-list">
+                        <li>
+                            <span class="feature-icon">1</span>
+                            <span>Formulário de captura de WhatsApp e nome</span>
+                        </li>
+                        <li>
+                            <span class="feature-icon">2</span>
+                            <span>Seleção interativa de rotas origem/destino</span>
+                        </li>
+                        <li>
+                            <span class="feature-icon">3</span>
+                            <span>Cálculo automático de distâncias</span>
+                        </li>
+                        <li>
+                            <span class="feature-icon">4</span>
+                            <span>Validação em tempo real</span>
+                        </li>
+                        <li>
+                            <span class="feature-icon">5</span>
+                            <span>Integração com localStorage</span>
+                        </li>
+                    </ul>
+                    <div class="preview-buttons">
+                        <a href="index.html" target="_blank" class="btn btn-primary">Abrir Página</a>
+                        <button onclick="previewMobile('index.html')" class="btn btn-secondary">Preview Mobile</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Página 2 -->
+            <div class="preview-card">
+                <div class="card-header">
+                    <h3 class="card-title">💰 Página 2 - Cotação</h3>
+                    <p class="card-subtitle">cotacao.html</p>
+                </div>
+                <div class="card-body">
+                    <ul class="feature-list">
+                        <li>
+                            <span class="feature-icon">1</span>
+                            <span>Tabela com 10 rotas de exemplo</span>
+                        </li>
+                        <li>
+                            <span class="feature-icon">2</span>
+                            <span>Sistema de propostas interativo</span>
+                        </li>
+                        <li>
+                            <span class="feature-icon">3</span>
+                            <span>Seção de fretes urgentes</span>
+                        </li>
+                        <li>
+                            <span class="feature-icon">4</span>
+                            <span>Captura de rotas favoritas</span>
+                        </li>
+                        <li>
+                            <span class="feature-icon">5</span>
+                            <span>Cálculo automático de diferenças</span>
+                        </li>
+                    </ul>
+                    <div class="preview-buttons">
+                        <a href="cotacao.html" target="_blank" class="btn btn-primary">Abrir Página</a>
+                        <button onclick="previewMobile('cotacao.html')" class="btn btn-secondary">Preview Mobile</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Página 3 -->
+            <div class="preview-card">
+                <div class="card-header">
+                    <h3 class="card-title">✅ Página 3 - Confirmação</h3>
+                    <p class="card-subtitle">confirmacao.html</p>
+                </div>
+                <div class="card-body">
+                    <ul class="feature-list">
+                        <li>
+                            <span class="feature-icon">1</span>
+                            <span>Análise visual das propostas</span>
+                        </li>
+                        <li>
+                            <span class="feature-icon">2</span>
+                            <span>Cards com métricas calculadas</span>
+                        </li>
+                        <li>
+                            <span class="feature-icon">3</span>
+                            <span>Próximos passos claros</span>
+                        </li>
+                        <li>
+                            <span class="feature-icon">4</span>
+                            <span>Link direto para WhatsApp</span>
+                        </li>
+                        <li>
+                            <span class="feature-icon">5</span>
+                            <span>Seção de benefícios e bônus</span>
+                        </li>
+                    </ul>
+                    <div class="preview-buttons">
+                        <a href="confirmacao.html" target="_blank" class="btn btn-primary">Abrir Página</a>
+                        <button onclick="previewMobile('confirmacao.html')" class="btn btn-secondary">Preview Mobile</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Google Sheets -->
+            <div class="preview-card">
+                <div class="card-header" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%);">
+                    <h3 class="card-title">📊 Google Sheets</h3>
+                    <p class="card-subtitle">script.gs</p>
+                </div>
+                <div class="card-body">
+                    <ul class="feature-list">
+                        <li>
+                            <span class="feature-icon">1</span>
+                            <span>5 abas automáticas</span>
+                        </li>
+                        <li>
+                            <span class="feature-icon">2</span>
+                            <span>Função doPost para receber dados</span>
+                        </li>
+                        <li>
+                            <span class="feature-icon">3</span>
+                            <span>Validação e tratamento de erros</span>
+                        </li>
+                        <li>
+                            <span class="feature-icon">4</span>
+                            <span>Notificações por email (opcional)</span>
+                        </li>
+                        <li>
+                            <span class="feature-icon">5</span>
+                            <span>Backup automático de dados</span>
+                        </li>
+                    </ul>
+                    <div class="preview-buttons">
+                        <a href="script.gs" download class="btn btn-primary">Download Script</a>
+                        <a href="README.md" target="_blank" class="btn btn-secondary">Ver Instruções</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tabs de Preview -->
+        <div class="status-section">
+            <h2 class="status-title">🖼️ Preview Interativo</h2>
+            
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('desktop')">Desktop</button>
+                <button class="tab" onclick="switchTab('mobile')">Mobile</button>
+                <button class="tab" onclick="switchTab('stats')">Estatísticas</button>
+            </div>
+            
+            <div id="desktop" class="tab-content active">
+                <iframe src="index.html" class="iframe-preview"></iframe>
+            </div>
+            
+            <div id="mobile" class="tab-content">
+                <div class="mobile-preview">
+                    <iframe src="index.html" style="width: 100%; height: 667px; border: none;"></iframe>
+                </div>
+            </div>
+            
+            <div id="stats" class="tab-content">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">3</div>
+                        <div class="stat-label">Páginas HTML</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);">
+                        <div class="stat-number">20</div>
+                        <div class="stat-label">Rotas de Exemplo</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%);">
+                        <div class="stat-number">5</div>
+                        <div class="stat-label">Planilhas Sheets</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%);">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Responsivo</div>
+                    </div>
+                </div>
+                
+                <h3 style="margin-top: 30px; color: #1F2937;">Funcionalidades Implementadas:</h3>
+                <ul style="list-style: none; padding: 0; margin-top: 20px;">
+                    <li style="padding: 10px; background: #F3F4F6; margin-bottom: 10px; border-radius: 5px;">
+                        ✅ Validação de WhatsApp com máscara brasileira
+                    </li>
+                    <li style="padding: 10px; background: #F3F4F6; margin-bottom: 10px; border-radius: 5px;">
+                        ✅ Cálculo automático de distâncias entre cidades
+                    </li>
+                    <li style="padding: 10px; background: #F3F4F6; margin-bottom: 10px; border-radius: 5px;">
+                        ✅ Sistema de propostas com análise em tempo real
+                    </li>
+                    <li style="padding: 10px; background: #F3F4F6; margin-bottom: 10px; border-radius: 5px;">
+                        ✅ Integração completa com Google Sheets
+                    </li>
+                    <li style="padding: 10px; background: #F3F4F6; margin-bottom: 10px; border-radius: 5px;">
+                        ✅ Backup local em localStorage
+                    </li>
+                    <li style="padding: 10px; background: #F3F4F6; margin-bottom: 10px; border-radius: 5px;">
+                        ✅ Design mobile-first responsivo
+                    </li>
+                    <li style="padding: 10px; background: #F3F4F6; margin-bottom: 10px; border-radius: 5px;">
+                        ✅ Animações e transições suaves
+                    </li>
+                    <li style="padding: 10px; background: #F3F4F6; margin-bottom: 10px; border-radius: 5px;">
+                        ✅ Link direto para WhatsApp Business
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function switchTab(tabName) {
+            // Remove active de todos os tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active de todos os conteúdos
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Adiciona active ao tab clicado
+            event.target.classList.add('active');
+            
+            // Mostra o conteúdo correspondente
+            document.getElementById(tabName).classList.add('active');
+        }
+        
+        function previewMobile(page) {
+            // Abre em nova janela com tamanho mobile
+            window.open(page, 'mobile-preview', 'width=375,height=812,toolbar=no,location=no,status=no,menubar=no');
+        }
+        
+        // Simula dados no localStorage para teste
+        const testData = {
+            nome: 'Teste Anderson',
+            whatsapp: '17991234567',
+            tipoVeiculo: 'Carreta LS',
+            estadoOrigem: 'SP',
+            cidadeOrigem: 'Votuporanga',
+            estadoDestino: 'PR',
+            cidadeDestino: 'Curitiba',
+            distancia: 750
+        };
+        
+        localStorage.setItem('leadData', JSON.stringify(testData));
+        localStorage.setItem('rotaConsultada', JSON.stringify(testData));
+        
+        console.log('✅ Sistema de Preview Carregado!');
+        console.log('📦 Dados de teste inseridos no localStorage');
+    </script>
+</body>
+</html>

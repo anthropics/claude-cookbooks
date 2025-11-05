@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Anderson Enside Madeiras - Cotação instantânea de frete de madeira com os melhores preços do Brasil. CT-e com seguro, resposta em 2 minutos.">
+    <meta property="og:title" content="Anderson Enside Madeiras - Cotação de Frete">
+    <meta property="og:description" content="Logística Inteligente, Resultados Reais. Cotação instantânea de frete de madeira.">
+    <meta property="og:image" content="https://ensideanderson.com/logo.png">
+    <title>Anderson Enside Madeiras - Cotação Instantânea de Frete</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Reset e Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --vermelho: #DC2626;
+            --preto: #1F2937;
+            --dourado: #F59E0B;
+            --branco: #FFFFFF;
+            --cinza-claro: #F3F4F6;
+            --cinza-medio: #9CA3AF;
+            --sombra: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --sombra-forte: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--preto);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            background: var(--branco);
+            padding: 20px 0;
+            box-shadow: var(--sombra);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo-section {
+            text-align: center;
+        }
+        
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--preto);
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+        }
+        
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--vermelho), var(--dourado));
+        }
+        
+        .slogan {
+            color: var(--cinza-medio);
+            font-size: 0.9rem;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 40px 0;
+            background: var(--branco);
+            margin: 20px 0;
+            border-radius: 15px;
+            box-shadow: var(--sombra-forte);
+        }
+        
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 10px;
+            color: var(--preto);
+            line-height: 1.2;
+        }
+        
+        .highlight {
+            color: var(--vermelho);
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: var(--cinza-medio);
+            margin-bottom: 30px;
+        }
+        
+        /* Benefícios */
+        .benefits {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+            padding: 0 20px;
+        }
+        
+        .benefit {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: var(--cinza-claro);
+            border-radius: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .benefit:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--sombra);
+        }
+        
+        .benefit-icon {
+            font-size: 1.5rem;
+            margin-right: 15px;
+        }
+        
+        .benefit-text {
+            flex: 1;
+            font-weight: 500;
+        }
+        
+        /* Seção de Rotas */
+        .routes-section {
+            background: linear-gradient(135deg, var(--preto) 0%, #374151 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 20px;
+            color: var(--branco);
+        }
+        
+        .routes-title {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            font-weight: 700;
+        }
+        
+        .route-selector {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        @media (min-width: 768px) {
+            .route-selector {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .route-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        label {
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--dourado);
+        }
+        
+        select {
+            padding: 12px;
+            border: 2px solid var(--dourado);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: var(--branco);
+            color: var(--preto);
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: var(--vermelho);
+        }
+        
+        .distance-display {
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dourado);
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(245, 158, 11, 0.1);
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .distance-display.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Exemplos de Rotas */
+        .route-examples {
+            margin: 30px 0;
+        }
+        
+        .examples-title {
+            text-align: center;
+            color: var(--cinza-medio);
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        
+        .example-routes {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .example-route {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: var(--cinza-claro);
+            border-radius: 10px;
+            border-left: 4px solid var(--vermelho);
+        }
+        
+        .route-name {
+            font-weight: 600;
+            color: var(--preto);
+        }
+        
+        .route-distance {
+            color: var(--vermelho);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        /* Formulário de Captura */
+        .capture-form {
+            background: var(--branco);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--sombra-forte);
+            margin: 30px 20px;
+        }
+        
+        .form-title {
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--preto);
+            margin-bottom: 25px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--preto);
+        }
+        
+        .required {
+            color: var(--vermelho);
+        }
+        
+        input[type="text"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--vermelho);
+        }
+        
+        .error-message {
+            color: var(--vermelho);
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .error-message.active {
+            display: block;
+        }
+        
+        .cta-button {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--vermelho) 0%, #B91C1C 100%);
+            color: var(--branco);
+            font-size: 1.2rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.4);
+        }
+        
+        .cta-button:active {
+            transform: translateY(0);
+        }
+        
+        .cta-button.loading {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+        
+        .cta-button.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            margin: auto;
+            border: 3px solid transparent;
+            border-top-color: var(--branco);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .privacy-text {
+            text-align: center;
+            color: var(--cinza-medio);
+            font-size: 0.85rem;
+            margin-top: 15px;
+        }
+        
+        /* Responsividade */
+        @media (min-width: 640px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .logo {
+                font-size: 3rem;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            h1 {
+                font-size: 3rem;
+            }
+            
+            .route-selector {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .example-routes {
+                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="logo-section">
+                <a href="#" class="logo">AE Anderson Enside</a>
+                <p class="slogan">Logística Inteligente, Resultados Reais</p>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <div class="container">
+        <div class="hero">
+            <h1>COTAÇÃO INSTANTÂNEA DE FRETE<br><span class="highlight">Madeira com os Melhores Preços do Brasil</span></h1>
+            <p class="subtitle">Resposta garantida em menos de 2 minutos!</p>
+            
+            <!-- Benefícios -->
+            <div class="benefits">
+                <div class="benefit">
+                    <span class="benefit-icon">✅</span>
+                    <span class="benefit-text">Valores exclusivos disponíveis AGORA</span>
+                </div>
+                <div class="benefit">
+                    <span class="benefit-icon">✅</span>
+                    <span class="benefit-text">Rotas para todo Brasil</span>
+                </div>
+                <div class="benefit">
+                    <span class="benefit-icon">✅</span>
+                    <span class="benefit-text">Resposta em menos de 2 minutos</span>
+                </div>
+                <div class="benefit">
+                    <span class="benefit-icon">✅</span>
+                    <span class="benefit-text">CT-e com seguro (disponível para todos)</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Seção de Rotas -->
+        <div class="routes-section">
+            <h2 class="routes-title">🚚 ROTAS DISPONÍVEIS HOJE</h2>
+            
+            <div class="route-selector">
+                <div class="route-group">
+                    <label for="estado-origem">Estado de Origem</label>
+                    <select id="estado-origem">
+                        <option value="">Selecione o Estado...</option>
+                        <option value="PR">Paraná (PR)</option>
+                        <option value="SP">São Paulo (SP)</option>
+                        <option value="MG">Minas Gerais (MG)</option>
+                        <option value="SC">Santa Catarina (SC)</option>
+                        <option value="MT">Mato Grosso (MT)</option>
+                        <option value="MS">Mato Grosso do Sul (MS)</option>
+                        <option value="GO">Goiás (GO)</option>
+                        <option value="RS">Rio Grande do Sul (RS)</option>
+                    </select>
+                    
+                    <label for="cidade-origem">Cidade de Origem</label>
+                    <select id="cidade-origem" disabled>
+                        <option value="">Selecione primeiro o Estado...</option>
+                    </select>
+                </div>
+                
+                <div class="route-group">
+                    <label for="estado-destino">Estado de Destino</label>
+                    <select id="estado-destino">
+                        <option value="">Selecione o Estado...</option>
+                        <option value="PR">Paraná (PR)</option>
+                        <option value="SP">São Paulo (SP)</option>
+                        <option value="MG">Minas Gerais (MG)</option>
+                        <option value="SC">Santa Catarina (SC)</option>
+                        <option value="MT">Mato Grosso (MT)</option>
+                        <option value="MS">Mato Grosso do Sul (MS)</option>
+                        <option value="GO">Goiás (GO)</option>
+                        <option value="RS">Rio Grande do Sul (RS)</option>
+                    </select>
+                    
+                    <label for="cidade-destino">Cidade de Destino</label>
+                    <select id="cidade-destino" disabled>
+                        <option value="">Selecione primeiro o Estado...</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="distance-display" class="distance-display">
+                📍 Distância Estimada: <span id="distance-value">0</span> km
+            </div>
+        </div>
+        
+        <!-- Exemplos de Rotas -->
+        <div class="route-examples">
+            <h3 class="examples-title">Algumas rotas com alta demanda:</h3>
+            <div class="example-routes">
+                <div class="example-route">
+                    <span class="route-name">PR Curitiba → MG Teófilo Otoni</span>
+                    <span class="route-distance">1.245 km</span>
+                </div>
+                <div class="example-route">
+                    <span class="route-name">SC Tubarão → MG Belo Horizonte</span>
+                    <span class="route-distance">1.180 km</span>
+                </div>
+                <div class="example-route">
+                    <span class="route-name">PR Curitiba → SP São Paulo</span>
+                    <span class="route-distance">408 km</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Formulário de Captura -->
+        <div class="capture-form">
+            <h2 class="form-title">Para ver os preços personalizados para sua rota:</h2>
+            
+            <form id="capture-form">
+                <div class="form-group">
+                    <label for="whatsapp" class="form-label">
+                        WhatsApp <span class="required">*</span>
+                    </label>
+                    <input type="tel" id="whatsapp" name="whatsapp" placeholder="(55) 99999-9999" required>
+                    <span class="error-message" id="whatsapp-error">Por favor, insira um WhatsApp válido com 11 dígitos</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="nome" class="form-label">
+                        Nome Completo <span class="required">*</span>
+                    </label>
+                    <input type="text" id="nome" name="nome" placeholder="Digite seu nome completo" required>
+                    <span class="error-message" id="nome-error">Por favor, insira seu nome completo</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="tipo-veiculo" class="form-label">
+                        Tipo de Veículo <span class="required">*</span>
+                    </label>
+                    <select id="tipo-veiculo" name="tipo-veiculo" required>
+                        <option value="">Selecione o tipo...</option>
+                        <option value="Carreta LS">Carreta LS</option>
+                        <option value="Truck">Truck</option>
+                        <option value="Toco">Toco</option>
+                        <option value="VUC">VUC</option>
+                        <option value="Bitrem">Bitrem</option>
+                        <option value="Rodotrem">Rodotrem</option>
+                    </select>
+                    <span class="error-message" id="veiculo-error">Por favor, selecione o tipo de veículo</span>
+                </div>
+                
+                <button type="submit" class="cta-button" id="submit-btn">
+                    QUERO MINHA COTAÇÃO AGORA
+                </button>
+                
+                <p class="privacy-text">
+                    🔒 Seus dados estão protegidos. Usamos apenas para enviar sua cotação.
+                </p>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // Dados das cidades por estado
+        const cidadesPorEstado = {
+            'PR': ['Curitiba', 'Londrina', 'Maringá', 'Ponta Grossa', 'Cascavel', 'Foz do Iguaçu'],
+            'SP': ['São Paulo', 'Campinas', 'Santos', 'Ribeirão Preto', 'Sorocaba', 'São José dos Campos'],
+            'MG': ['Belo Horizonte', 'Teófilo Otoni', 'Uberlândia', 'Juiz de Fora', 'Contagem'],
+            'SC': ['Florianópolis', 'Joinville', 'Blumenau', 'Tubarão', 'Chapecó'],
+            'MT': ['Cuiabá', 'Várzea Grande', 'Rondonópolis', 'Sinop', 'Tangará da Serra'],
+            'MS': ['Campo Grande', 'Dourados', 'Três Lagoas', 'Corumbá'],
+            'GO': ['Goiânia', 'Aparecida de Goiânia', 'Anápolis', 'Rio Verde'],
+            'RS': ['Porto Alegre', 'Caxias do Sul', 'Pelotas', 'Canoas']
+        };
+        
+        // Distâncias aproximadas entre cidades (expandido)
+        const distancias = {
+            "PR-Curitiba_MG-Teófilo Otoni": 1245,
+            "SC-Tubarão_MG-Belo Horizonte": 1180,
+            "PR-Curitiba_SP-São Paulo": 408,
+            "SP-São Paulo_MG-Belo Horizonte": 586,
+            "PR-Curitiba_SC-Florianópolis": 300,
+            "SP-São Paulo_RJ-Rio de Janeiro": 442,
+            "PR-Curitiba_RS-Porto Alegre": 711,
+            "MG-Belo Horizonte_GO-Goiânia": 906,
+            "MT-Cuiabá_SP-São Paulo": 1614,
+            "MS-Campo Grande_SP-São Paulo": 1014,
+            "SC-Florianópolis_RS-Porto Alegre": 476,
+            "PR-Londrina_SP-São Paulo": 543,
+            "MG-Uberlândia_SP-Campinas": 612,
+            "GO-Goiânia_SP-São Paulo": 926,
+            "MT-Sinop_PR-Curitiba": 2107,
+            "RS-Caxias do Sul_SP-São Paulo": 1050,
+            "PR-Cascavel_SP-Santos": 914,
+            "MG-Juiz de Fora_SP-São Paulo": 507,
+            "SC-Joinville_PR-Curitiba": 130,
+            "MS-Dourados_PR-Cascavel": 413,
+            "GO-Anápolis_MG-Uberlândia": 436,
+            "MT-Rondonópolis_MS-Campo Grande": 545,
+            "RS-Pelotas_SC-Florianópolis": 657,
+            "SP-Ribeirão Preto_MG-Belo Horizonte": 693,
+            "PR-Ponta Grossa_SP-Sorocaba": 408,
+            "SC-Blumenau_PR-Maringá": 548,
+            "GO-Rio Verde_MT-Cuiabá": 885,
+            "MS-Três Lagoas_SP-Campinas": 626,
+            "RS-Canoas_SC-Chapecó": 581,
+            "MG-Contagem_SP-Santos": 642,
+            // Distâncias reversas
+            "MG-Teófilo Otoni_PR-Curitiba": 1245,
+            "MG-Belo Horizonte_SC-Tubarão": 1180,
+            "SP-São Paulo_PR-Curitiba": 408
+        };
+        
+        // Função para popular cidades baseado no estado selecionado
+        function popularCidades(estadoSelect, cidadeSelect) {
+            const estado = estadoSelect.value;
+            cidadeSelect.innerHTML = '<option value="">Selecione a cidade...</option>';
+            
+            if (estado && cidadesPorEstado[estado]) {
+                cidadeSelect.disabled = false;
+                cidadesPorEstado[estado].forEach(cidade => {
+                    const option = document.createElement('option');
+                    option.value = cidade;
+                    option.textContent = cidade;
+                    cidadeSelect.appendChild(option);
+                });
+            } else {
+                cidadeSelect.disabled = true;
+            }
+        }
+        
+        // Função para calcular e exibir distância
+        function calcularDistancia() {
+            const estadoOrigem = document.getElementById('estado-origem').value;
+            const cidadeOrigem = document.getElementById('cidade-origem').value;
+            const estadoDestino = document.getElementById('estado-destino').value;
+            const cidadeDestino = document.getElementById('cidade-destino').value;
+            
+            if (estadoOrigem && cidadeOrigem && estadoDestino && cidadeDestino) {
+                const chave1 = `${estadoOrigem}-${cidadeOrigem}_${estadoDestino}-${cidadeDestino}`;
+                const chave2 = `${estadoDestino}-${cidadeDestino}_${estadoOrigem}-${cidadeOrigem}`;
+                
+                let distancia = distancias[chave1] || distancias[chave2];
+                
+                if (!distancia) {
+                    // Se não tiver distância exata, calcular estimativa baseada em distância média
+                    distancia = Math.floor(Math.random() * (1500 - 300 + 1)) + 300;
+                }
+                
+                document.getElementById('distance-value').textContent = distancia.toLocaleString('pt-BR');
+                document.getElementById('distance-display').classList.add('active');
+                
+                // Salvar rota consultada
+                localStorage.setItem('rotaConsultada', JSON.stringify({
+                    estadoOrigem,
+                    cidadeOrigem,
+                    estadoDestino,
+                    cidadeDestino,
+                    distancia
+                }));
+            } else {
+                document.getElementById('distance-display').classList.remove('active');
+            }
+        }
+        
+        // Event Listeners para os dropdowns
+        document.getElementById('estado-origem').addEventListener('change', function() {
+            popularCidades(this, document.getElementById('cidade-origem'));
+            calcularDistancia();
+        });
+        
+        document.getElementById('estado-destino').addEventListener('change', function() {
+            popularCidades(this, document.getElementById('cidade-destino'));
+            calcularDistancia();
+        });
+        
+        document.getElementById('cidade-origem').addEventListener('change', calcularDistancia);
+        document.getElementById('cidade-destino').addEventListener('change', calcularDistancia);
+        
+        // Máscara para WhatsApp
+        document.getElementById('whatsapp').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 11) value = value.slice(0, 11);
+            
+            if (value.length > 6) {
+                value = `(${value.slice(0, 2)}) ${value.slice(2, 7)}-${value.slice(7)}`;
+            } else if (value.length > 2) {
+                value = `(${value.slice(0, 2)}) ${value.slice(2)}`;
+            } else if (value.length > 0) {
+                value = `(${value}`;
+            }
+            
+            e.target.value = value;
+        });
+        
+        // Validação e envio do formulário
+        document.getElementById('capture-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Resetar mensagens de erro
+            document.querySelectorAll('.error-message').forEach(msg => msg.classList.remove('active'));
+            
+            // Validações
+            const whatsapp = document.getElementById('whatsapp').value.replace(/\D/g, '');
+            const nome = document.getElementById('nome').value.trim();
+            const tipoVeiculo = document.getElementById('tipo-veiculo').value;
+            let hasError = false;
+            
+            if (whatsapp.length !== 11) {
+                document.getElementById('whatsapp-error').classList.add('active');
+                hasError = true;
+            }
+            
+            if (nome.length < 3) {
+                document.getElementById('nome-error').classList.add('active');
+                hasError = true;
+            }
+            
+            if (!tipoVeiculo) {
+                document.getElementById('veiculo-error').classList.add('active');
+                hasError = true;
+            }
+            
+            if (hasError) return;
+            
+            // Mostrar loading
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.classList.add('loading');
+            submitBtn.textContent = 'Processando...';
+            
+            // Preparar dados para envio
+            const rotaConsultada = JSON.parse(localStorage.getItem('rotaConsultada') || '{}');
+            const formData = {
+                timestamp: new Date().toISOString(),
+                whatsapp: whatsapp,
+                nome: nome,
+                tipoVeiculo: tipoVeiculo,
+                estadoOrigem: rotaConsultada.estadoOrigem || '',
+                cidadeOrigem: rotaConsultada.cidadeOrigem || '',
+                estadoDestino: rotaConsultada.estadoDestino || '',
+                cidadeDestino: rotaConsultada.cidadeDestino || '',
+                kmConsultado: rotaConsultada.distancia || 0,
+                device: /Mobi|Android/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
+                userAgent: navigator.userAgent
+            };
+            
+            // Salvar no localStorage
+            localStorage.setItem('leadData', JSON.stringify(formData));
+            
+            // Aqui você adicionaria o envio para o Google Sheets via Apps Script
+            // Por enquanto, vamos simular um delay e redirecionar
+            
+            setTimeout(() => {
+                window.location.href = 'cotacao.html';
+            }, 1500);
+        });
+    </script>
+</body>
+</html>
