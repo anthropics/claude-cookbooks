@@ -79,8 +79,8 @@ jobs:
         run: |
           FILES=""
 
-          # Add changed markdown files from skills directory
-          echo "${{ steps.changed-files.outputs.files }}" | grep '^skills/.*\.md$' | while read f; do
+          # Add all changed markdown files (from any directory)
+          echo "${{ steps.changed-files.outputs.files }}" | grep '\.md$' | while read f; do
             if [ -f "$f" ]; then
               FILES="$FILES $f"
             fi
@@ -89,11 +89,6 @@ jobs:
           # Add converted notebooks
           if [ -d "temp_md" ]; then
             FILES="$FILES temp_md/*.md"
-          fi
-
-          # Add README.md if changed
-          if echo "${{ steps.changed-files.outputs.files }}" | grep -q '^README\.md$'; then
-            FILES="$FILES README.md"
           fi
 
           # Remove leading/trailing whitespace
