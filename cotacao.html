@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Anderson Enside Madeiras - Propostas de frete personalizadas">
+    <title>Cotação de Frete - Anderson Enside Madeiras</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Reset e Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --vermelho: #DC2626;
+            --preto: #1F2937;
+            --dourado: #F59E0B;
+            --branco: #FFFFFF;
+            --cinza-claro: #F3F4F6;
+            --cinza-medio: #9CA3AF;
+            --verde: #10B981;
+            --verde-claro: #D1FAE5;
+            --vermelho-claro: #FEE2E2;
+            --sombra: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --sombra-forte: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--preto);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        .header {
+            background: var(--branco);
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: var(--sombra-forte);
+            margin-bottom: 30px;
+        }
+        
+        .welcome {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--preto);
+            margin-bottom: 10px;
+        }
+        
+        .welcome-name {
+            color: var(--vermelho);
+        }
+        
+        .subtitle {
+            color: var(--cinza-medio);
+            font-size: 1.1rem;
+        }
+        
+        /* Tabela de Fretes */
+        .freight-section {
+            background: var(--branco);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--sombra-forte);
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--preto);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .freight-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+        
+        .freight-table th {
+            background: linear-gradient(135deg, var(--preto) 0%, #374151 100%);
+            color: var(--branco);
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .freight-table td {
+            padding: 15px;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        
+        .freight-table tr:hover {
+            background: var(--cinza-claro);
+        }
+        
+        .route-name {
+            font-weight: 600;
+            color: var(--preto);
+            font-size: 1rem;
+        }
+        
+        .negotiation-badge {
+            background: var(--vermelho);
+            color: var(--branco);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: inline-block;
+        }
+        
+        .price-suggested {
+            font-weight: 700;
+            color: var(--verde);
+            font-size: 1.1rem;
+        }
+        
+        .proposal-input {
+            width: 120px;
+            padding: 8px;
+            border: 2px solid #E5E7EB;
+            border-radius: 5px;
+            font-size: 1rem;
+            text-align: right;
+        }
+        
+        .proposal-input:focus {
+            outline: none;
+            border-color: var(--vermelho);
+        }
+        
+        .difference-badge {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-left: 10px;
+            display: inline-block;
+        }
+        
+        .difference-positive {
+            background: var(--verde-claro);
+            color: var(--verde);
+        }
+        
+        .difference-negative {
+            background: var(--vermelho-claro);
+            color: var(--vermelho);
+        }
+        
+        /* Seção Urgente */
+        .urgent-section {
+            background: linear-gradient(135deg, var(--vermelho) 0%, #B91C1C 100%);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--sombra-forte);
+            margin-bottom: 30px;
+            color: var(--branco);
+        }
+        
+        .urgent-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .urgent-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .urgent-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .urgent-badge {
+            background: var(--dourado);
+            color: var(--preto);
+            padding: 5px 15px;
+            border-radius: 5px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        
+        .urgent-route {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .urgent-details {
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+            opacity: 0.95;
+        }
+        
+        .urgent-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--branco);
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        .urgent-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .urgent-input:focus {
+            outline: none;
+            border-color: var(--dourado);
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Formulário de Rotas Favoritas */
+        .favorite-section {
+            background: var(--branco);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--sombra-forte);
+            margin-bottom: 30px;
+        }
+        
+        .favorite-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--preto);
+            margin-bottom: 10px;
+        }
+        
+        .favorite-subtitle {
+            color: var(--cinza-medio);
+            margin-bottom: 25px;
+        }
+        
+        .route-form {
+            background: var(--cinza-claro);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .route-form-title {
+            font-weight: 600;
+            color: var(--vermelho);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        @media (min-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            font-weight: 500;
+            color: var(--preto);
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+        
+        select, input {
+            padding: 10px;
+            border: 2px solid #E5E7EB;
+            border-radius: 5px;
+            font-size: 1rem;
+            background: var(--branco);
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--vermelho);
+        }
+        
+        .price-input {
+            position: relative;
+        }
+        
+        .price-input input {
+            padding-left: 35px;
+        }
+        
+        .price-input::before {
+            content: 'R$';
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--cinza-medio);
+            font-weight: 600;
+        }
+        
+        .profile-section {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        @media (min-width: 768px) {
+            .profile-section {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .radio-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 10px;
+            border: 2px solid #E5E7EB;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .radio-label:hover {
+            border-color: var(--vermelho);
+            background: var(--cinza-claro);
+        }
+        
+        input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--vermelho);
+        }
+        
+        input[type="radio"]:checked + span {
+            font-weight: 600;
+            color: var(--vermelho);
+        }
+        
+        /* Botão CTA */
+        .cta-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .cta-button {
+            padding: 18px 50px;
+            background: linear-gradient(135deg, var(--vermelho) 0%, #B91C1C 100%);
+            color: var(--branco);
+            font-size: 1.2rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(220, 38, 38, 0.3);
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4);
+        }
+        
+        .cta-button.loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        
+        /* Contador de visualizações */
+        .view-counter {
+            display: inline-block;
+            background: var(--dourado);
+            color: var(--preto);
+            padding: 5px 15px;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-left: 10px;
+        }
+        
+        .availability-badge {
+            background: var(--verde);
+            color: var(--branco);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: inline-block;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="welcome">Olá <span class="welcome-name" id="user-name">Motorista</span>!</h1>
+            <p class="subtitle">Separamos estas oportunidades EXCLUSIVAS para você:</p>
+        </div>
+        
+        <!-- Tabela de Fretes -->
+        <div class="freight-section">
+            <h2 class="section-title">
+                🚚 Fretes Disponíveis Agora
+                <span class="view-counter">127 pessoas consultaram hoje</span>
+            </h2>
+            
+            <table class="freight-table">
+                <thead>
+                    <tr>
+                        <th>Rota</th>
+                        <th>KM</th>
+                        <th>Tipo Carga</th>
+                        <th>Toneladas</th>
+                        <th>Preço Sugerido</th>
+                        <th>Sua Proposta</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="freight-tbody">
+                    <!-- Rotas com preço -->
+                    <tr>
+                        <td class="route-name">PR Curitiba → SP São Paulo</td>
+                        <td>408</td>
+                        <td>Pinus Seco</td>
+                        <td>28</td>
+                        <td class="price-suggested">R$ 4.500</td>
+                        <td>
+                            <input type="number" class="proposal-input" placeholder="R$ 0,00" data-route="1" data-suggested="4500">
+                            <span class="difference-badge" id="diff-1"></span>
+                        </td>
+                        <td><span class="availability-badge">Alta chance</span></td>
+                    </tr>
+                    <tr>
+                        <td class="route-name">SC Tubarão → MG Belo Horizonte</td>
+                        <td>1.180</td>
+                        <td>Eucalipto</td>
+                        <td>32</td>
+                        <td class="price-suggested">R$ 8.900</td>
+                        <td>
+                            <input type="number" class="proposal-input" placeholder="R$ 0,00" data-route="2" data-suggested="8900">
+                            <span class="difference-badge" id="diff-2"></span>
+                        </td>
+                        <td><span class="view-counter">Apenas 2 vagas</span></td>
+                    </tr>
+                    <tr>
+                        <td class="route-name">PR Londrina → SP Campinas</td>
+                        <td>543</td>
+                        <td>Madeira Tratada</td>
+                        <td>30</td>
+                        <td class="price-suggested">R$ 5.200</td>
+                        <td>
+                            <input type="number" class="proposal-input" placeholder="R$ 0,00" data-route="3" data-suggested="5200">
+                            <span class="difference-badge" id="diff-3"></span>
+                        </td>
+                        <td><span class="availability-badge">Alta chance</span></td>
+                    </tr>
+                    <tr>
+                        <td class="route-name">MG Uberlândia → SP São Paulo</td>
+                        <td>612</td>
+                        <td>Compensado</td>
+                        <td>26</td>
+                        <td class="price-suggested">R$ 5.800</td>
+                        <td>
+                            <input type="number" class="proposal-input" placeholder="R$ 0,00" data-route="4" data-suggested="5800">
+                            <span class="difference-badge" id="diff-4"></span>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="route-name">RS Porto Alegre → PR Curitiba</td>
+                        <td>711</td>
+                        <td>MDF</td>
+                        <td>29</td>
+                        <td class="price-suggested">R$ 6.400</td>
+                        <td>
+                            <input type="number" class="proposal-input" placeholder="R$ 0,00" data-route="5" data-suggested="6400">
+                            <span class="difference-badge" id="diff-5"></span>
+                        </td>
+                        <td><span class="view-counter">Apenas 1 vaga</span></td>
+                    </tr>
+                    <!-- Rotas em negociação -->
+                    <tr>
+                        <td class="route-name">MT Cuiabá → SP São Paulo</td>
+                        <td>1.614</td>
+                        <td>Toras</td>
+                        <td>35</td>
+                        <td><span class="negotiation-badge">EM NEGOCIAÇÃO 🔥</span></td>
+                        <td>
+                            <input type="number" class="proposal-input" placeholder="Faça sua oferta" data-route="6">
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="route-name">GO Goiânia → MG Belo Horizonte</td>
+                        <td>906</td>
+                        <td>Pinus Verde</td>
+                        <td>31</td>
+                        <td><span class="negotiation-badge">EM NEGOCIAÇÃO 🔥</span></td>
+                        <td>
+                            <input type="number" class="proposal-input" placeholder="Faça sua oferta" data-route="7">
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="route-name">MS Campo Grande → SP São Paulo</td>
+                        <td>1.014</td>
+                        <td>Madeira Serrada</td>
+                        <td>28</td>
+                        <td><span class="negotiation-badge">EM NEGOCIAÇÃO 🔥</span></td>
+                        <td>
+                            <input type="number" class="proposal-input" placeholder="Faça sua oferta" data-route="8">
+                        </td>
+                        <td><span class="availability-badge">Alta chance</span></td>
+                    </tr>
+                    <tr>
+                        <td class="route-name">SC Florianópolis → RS Porto Alegre</td>
+                        <td>476</td>
+                        <td>OSB</td>
+                        <td>27</td>
+                        <td><span class="negotiation-badge">EM NEGOCIAÇÃO 🔥</span></td>
+                        <td>
+                            <input type="number" class="proposal-input" placeholder="Faça sua oferta" data-route="9">
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="route-name">PR Cascavel → MS Dourados</td>
+                        <td>413</td>
+                        <td>Compensado Naval</td>
+                        <td>25</td>
+                        <td><span class="negotiation-badge">EM NEGOCIAÇÃO 🔥</span></td>
+                        <td>
+                            <input type="number" class="proposal-input" placeholder="Faça sua oferta" data-route="10">
+                        </td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Seção Urgente -->
+        <div class="urgent-section">
+            <h2 class="urgent-title">⚡ OPORTUNIDADES URGENTES</h2>
+            
+            <div class="urgent-cards">
+                <div class="urgent-card">
+                    <span class="urgent-badge">CARREGAMENTO AMANHÃ</span>
+                    <div class="urgent-route">PR Curitiba → MG Teófilo Otoni</div>
+                    <div class="urgent-details">
+                        📦 34 toneladas - Eucalipto Tratado<br>
+                        📍 1.245 km
+                    </div>
+                    <input type="number" class="urgent-input" placeholder="Sua proposta em R$" data-urgent="1">
+                </div>
+                
+                <div class="urgent-card">
+                    <span class="urgent-badge">URGENTE</span>
+                    <div class="urgent-route">SP Santos → MT Sinop</div>
+                    <div class="urgent-details">
+                        📦 30 toneladas - Container Madeira<br>
+                        📍 2.107 km
+                    </div>
+                    <input type="number" class="urgent-input" placeholder="Sua proposta em R$" data-urgent="2">
+                </div>
+                
+                <div class="urgent-card">
+                    <span class="urgent-badge">ÚLTIMA VAGA</span>
+                    <div class="urgent-route">MG Juiz de Fora → SP Sorocaba</div>
+                    <div class="urgent-details">
+                        📦 28 toneladas - MDF<br>
+                        📍 507 km
+                    </div>
+                    <input type="number" class="urgent-input" placeholder="Sua proposta em R$" data-urgent="3">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Formulário de Rotas Favoritas -->
+        <div class="favorite-section">
+            <h2 class="favorite-title">AGORA NOS AJUDE A TE AJUDAR</h2>
+            <p class="favorite-subtitle">Compartilhe suas rotas favoritas e conseguiremos melhores preços para você!</p>
+            
+            <!-- Rota Favorita 1 -->
+            <div class="route-form">
+                <h3 class="route-form-title">📍 Rota Favorita 1</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="estado-origem-1">Estado de Origem</label>
+                        <select id="estado-origem-1">
+                            <option value="">Selecione...</option>
+                            <option value="PR">Paraná (PR)</option>
+                            <option value="SP">São Paulo (SP)</option>
+                            <option value="MG">Minas Gerais (MG)</option>
+                            <option value="SC">Santa Catarina (SC)</option>
+                            <option value="MT">Mato Grosso (MT)</option>
+                            <option value="MS">Mato Grosso do Sul (MS)</option>
+                            <option value="GO">Goiás (GO)</option>
+                            <option value="RS">Rio Grande do Sul (RS)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cidade-origem-1">Cidade de Origem</label>
+                        <select id="cidade-origem-1" disabled>
+                            <option value="">Selecione o estado primeiro...</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="estado-destino-1">Estado de Destino</label>
+                        <select id="estado-destino-1">
+                            <option value="">Selecione...</option>
+                            <option value="PR">Paraná (PR)</option>
+                            <option value="SP">São Paulo (SP)</option>
+                            <option value="MG">Minas Gerais (MG)</option>
+                            <option value="SC">Santa Catarina (SC)</option>
+                            <option value="MT">Mato Grosso (MT)</option>
+                            <option value="MS">Mato Grosso do Sul (MS)</option>
+                            <option value="GO">Goiás (GO)</option>
+                            <option value="RS">Rio Grande do Sul (RS)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cidade-destino-1">Cidade de Destino</label>
+                        <select id="cidade-destino-1" disabled>
+                            <option value="">Selecione o estado primeiro...</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group price-input">
+                        <label for="preco-praticado-1">Preço que você costuma praticar</label>
+                        <input type="number" id="preco-praticado-1" placeholder="0,00">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Rota Favorita 2 -->
+            <div class="route-form">
+                <h3 class="route-form-title">📍 Rota Favorita 2 (Opcional)</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="estado-origem-2">Estado de Origem</label>
+                        <select id="estado-origem-2">
+                            <option value="">Selecione...</option>
+                            <option value="PR">Paraná (PR)</option>
+                            <option value="SP">São Paulo (SP)</option>
+                            <option value="MG">Minas Gerais (MG)</option>
+                            <option value="SC">Santa Catarina (SC)</option>
+                            <option value="MT">Mato Grosso (MT)</option>
+                            <option value="MS">Mato Grosso do Sul (MS)</option>
+                            <option value="GO">Goiás (GO)</option>
+                            <option value="RS">Rio Grande do Sul (RS)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cidade-origem-2">Cidade de Origem</label>
+                        <select id="cidade-origem-2" disabled>
+                            <option value="">Selecione o estado primeiro...</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="estado-destino-2">Estado de Destino</label>
+                        <select id="estado-destino-2">
+                            <option value="">Selecione...</option>
+                            <option value="PR">Paraná (PR)</option>
+                            <option value="SP">São Paulo (SP)</option>
+                            <option value="MG">Minas Gerais (MG)</option>
+                            <option value="SC">Santa Catarina (SC)</option>
+                            <option value="MT">Mato Grosso (MT)</option>
+                            <option value="MS">Mato Grosso do Sul (MS)</option>
+                            <option value="GO">Goiás (GO)</option>
+                            <option value="RS">Rio Grande do Sul (RS)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cidade-destino-2">Cidade de Destino</label>
+                        <select id="cidade-destino-2" disabled>
+                            <option value="">Selecione o estado primeiro...</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group price-input">
+                        <label for="preco-praticado-2">Preço que você costuma praticar</label>
+                        <input type="number" id="preco-praticado-2" placeholder="0,00">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Perfil do Motorista -->
+            <div class="profile-section">
+                <div class="form-group">
+                    <label>Quantos fretes você faz por mês?</label>
+                    <select id="fretes-mes">
+                        <option value="">Selecione...</option>
+                        <option value="1-5">1-5 fretes</option>
+                        <option value="6-10">6-10 fretes</option>
+                        <option value="11-20">11-20 fretes</option>
+                        <option value="20+">Mais de 20 fretes</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Você é:</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="perfil" value="autonomo">
+                            <span>Motorista autônomo</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="perfil" value="pequena">
+                            <span>Transportadora pequena</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="perfil" value="media-grande">
+                            <span>Transportadora média-grande</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Botão CTA -->
+            <div class="cta-container">
+                <button class="cta-button" id="submit-proposals">
+                    ENVIAR MINHAS PROPOSTAS E ROTAS
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Dados das cidades por estado
+        const cidadesPorEstado = {
+            'PR': ['Curitiba', 'Londrina', 'Maringá', 'Ponta Grossa', 'Cascavel', 'Foz do Iguaçu'],
+            'SP': ['São Paulo', 'Campinas', 'Santos', 'Ribeirão Preto', 'Sorocaba', 'São José dos Campos'],
+            'MG': ['Belo Horizonte', 'Teófilo Otoni', 'Uberlândia', 'Juiz de Fora', 'Contagem'],
+            'SC': ['Florianópolis', 'Joinville', 'Blumenau', 'Tubarão', 'Chapecó'],
+            'MT': ['Cuiabá', 'Várzea Grande', 'Rondonópolis', 'Sinop', 'Tangará da Serra'],
+            'MS': ['Campo Grande', 'Dourados', 'Três Lagoas', 'Corumbá'],
+            'GO': ['Goiânia', 'Aparecida de Goiânia', 'Anápolis', 'Rio Verde'],
+            'RS': ['Porto Alegre', 'Caxias do Sul', 'Pelotas', 'Canoas']
+        };
+        
+        // Recuperar dados do localStorage
+        const leadData = JSON.parse(localStorage.getItem('leadData') || '{}');
+        
+        // Personalizar saudação
+        if (leadData.nome) {
+            document.getElementById('user-name').textContent = leadData.nome.split(' ')[0];
+        }
+        
+        // Função para popular cidades
+        function popularCidades(estadoSelect, cidadeSelect) {
+            const estado = estadoSelect.value;
+            cidadeSelect.innerHTML = '<option value="">Selecione a cidade...</option>';
+            
+            if (estado && cidadesPorEstado[estado]) {
+                cidadeSelect.disabled = false;
+                cidadesPorEstado[estado].forEach(cidade => {
+                    const option = document.createElement('option');
+                    option.value = cidade;
+                    option.textContent = cidade;
+                    cidadeSelect.appendChild(option);
+                });
+            } else {
+                cidadeSelect.disabled = true;
+            }
+        }
+        
+        // Event listeners para dropdowns de rotas favoritas
+        document.getElementById('estado-origem-1').addEventListener('change', function() {
+            popularCidades(this, document.getElementById('cidade-origem-1'));
+        });
+        
+        document.getElementById('estado-destino-1').addEventListener('change', function() {
+            popularCidades(this, document.getElementById('cidade-destino-1'));
+        });
+        
+        document.getElementById('estado-origem-2').addEventListener('change', function() {
+            popularCidades(this, document.getElementById('cidade-origem-2'));
+        });
+        
+        document.getElementById('estado-destino-2').addEventListener('change', function() {
+            popularCidades(this, document.getElementById('cidade-destino-2'));
+        });
+        
+        // Calcular diferença de propostas
+        document.querySelectorAll('.proposal-input').forEach(input => {
+            input.addEventListener('input', function() {
+                const routeId = this.dataset.route;
+                const suggested = parseFloat(this.dataset.suggested);
+                const proposal = parseFloat(this.value);
+                
+                if (suggested && proposal) {
+                    const difference = proposal - suggested;
+                    const percentage = ((difference / suggested) * 100).toFixed(1);
+                    const diffBadge = document.getElementById(`diff-${routeId}`);
+                    
+                    if (diffBadge) {
+                        if (difference > 0) {
+                            diffBadge.textContent = `+${percentage}%`;
+                            diffBadge.className = 'difference-badge difference-positive';
+                        } else {
+                            diffBadge.textContent = `${percentage}%`;
+                            diffBadge.className = 'difference-badge difference-negative';
+                        }
+                    }
+                }
+            });
+        });
+        
+        // Máscara para valores monetários
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+            input.addEventListener('blur', function() {
+                if (this.value) {
+                    this.value = parseFloat(this.value).toFixed(2);
+                }
+            });
+        });
+        
+        // Submissão do formulário
+        document.getElementById('submit-proposals').addEventListener('click', async function() {
+            const button = this;
+            button.classList.add('loading');
+            button.textContent = 'Enviando...';
+            
+            // Coletar todas as propostas
+            const propostas = [];
+            
+            // Propostas da tabela principal
+            document.querySelectorAll('.proposal-input').forEach(input => {
+                if (input.value) {
+                    const row = input.closest('tr');
+                    propostas.push({
+                        rota: row.querySelector('.route-name').textContent,
+                        km: row.cells[1].textContent,
+                        tipoCarga: row.cells[2].textContent,
+                        toneladas: row.cells[3].textContent,
+                        precoSugerido: input.dataset.suggested || 'Em negociação',
+                        proposta: input.value
+                    });
+                }
+            });
+            
+            // Propostas urgentes
+            document.querySelectorAll('.urgent-input').forEach(input => {
+                if (input.value) {
+                    const card = input.closest('.urgent-card');
+                    propostas.push({
+                        rota: card.querySelector('.urgent-route').textContent,
+                        proposta: input.value,
+                        tipo: 'urgente'
+                    });
+                }
+            });
+            
+            // Rotas favoritas
+            const rotasFavoritas = [];
+            
+            // Rota 1
+            const estadoOrigem1 = document.getElementById('estado-origem-1').value;
+            const cidadeOrigem1 = document.getElementById('cidade-origem-1').value;
+            const estadoDestino1 = document.getElementById('estado-destino-1').value;
+            const cidadeDestino1 = document.getElementById('cidade-destino-1').value;
+            const preco1 = document.getElementById('preco-praticado-1').value;
+            
+            if (estadoOrigem1 && cidadeOrigem1 && estadoDestino1 && cidadeDestino1) {
+                rotasFavoritas.push({
+                    rota: `${estadoOrigem1} ${cidadeOrigem1} → ${estadoDestino1} ${cidadeDestino1}`,
+                    preco: preco1
+                });
+            }
+            
+            // Rota 2
+            const estadoOrigem2 = document.getElementById('estado-origem-2').value;
+            const cidadeOrigem2 = document.getElementById('cidade-origem-2').value;
+            const estadoDestino2 = document.getElementById('estado-destino-2').value;
+            const cidadeDestino2 = document.getElementById('cidade-destino-2').value;
+            const preco2 = document.getElementById('preco-praticado-2').value;
+            
+            if (estadoOrigem2 && cidadeOrigem2 && estadoDestino2 && cidadeDestino2) {
+                rotasFavoritas.push({
+                    rota: `${estadoOrigem2} ${cidadeOrigem2} → ${estadoDestino2} ${cidadeDestino2}`,
+                    preco: preco2
+                });
+            }
+            
+            // Perfil
+            const fretesMes = document.getElementById('fretes-mes').value;
+            const perfil = document.querySelector('input[name="perfil"]:checked')?.value;
+            
+            // Salvar tudo no localStorage
+            const dadosCompletos = {
+                ...leadData,
+                propostas,
+                rotasFavoritas,
+                fretesMes,
+                perfil,
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem('proposalData', JSON.stringify(dadosCompletos));
+            
+            // Simular envio e redirecionar
+            setTimeout(() => {
+                window.location.href = 'confirmacao.html';
+            }, 1500);
+        });
+    </script>
+</body>
+</html>

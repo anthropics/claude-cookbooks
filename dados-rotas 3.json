@@ -1,0 +1,403 @@
+{
+  "rotas_disponiveis": [
+    {
+      "id": 1,
+      "origem": {
+        "estado": "PR",
+        "cidade": "Curitiba"
+      },
+      "destino": {
+        "estado": "SP",
+        "cidade": "São Paulo"
+      },
+      "distancia_km": 408,
+      "tipo_carga": "Pinus Seco",
+      "toneladas": 28,
+      "preco_sugerido": 4500,
+      "status": "disponivel",
+      "vagas": 3,
+      "prazo_carregamento": "2024-01-15",
+      "observacoes": "Carga paletizada, necessário lona"
+    },
+    {
+      "id": 2,
+      "origem": {
+        "estado": "SC",
+        "cidade": "Tubarão"
+      },
+      "destino": {
+        "estado": "MG",
+        "cidade": "Belo Horizonte"
+      },
+      "distancia_km": 1180,
+      "tipo_carga": "Eucalipto Tratado",
+      "toneladas": 32,
+      "preco_sugerido": 8900,
+      "status": "disponivel",
+      "vagas": 2,
+      "prazo_carregamento": "2024-01-16",
+      "observacoes": "Madeira certificada FSC"
+    },
+    {
+      "id": 3,
+      "origem": {
+        "estado": "PR",
+        "cidade": "Londrina"
+      },
+      "destino": {
+        "estado": "SP",
+        "cidade": "Campinas"
+      },
+      "distancia_km": 543,
+      "tipo_carga": "Madeira Tratada",
+      "toneladas": 30,
+      "preco_sugerido": 5200,
+      "status": "disponivel",
+      "vagas": 1,
+      "prazo_carregamento": "2024-01-14",
+      "observacoes": "Carregamento lateral"
+    },
+    {
+      "id": 4,
+      "origem": {
+        "estado": "MG",
+        "cidade": "Uberlândia"
+      },
+      "destino": {
+        "estado": "SP",
+        "cidade": "São Paulo"
+      },
+      "distancia_km": 612,
+      "tipo_carga": "Compensado Naval",
+      "toneladas": 26,
+      "preco_sugerido": 5800,
+      "status": "disponivel",
+      "vagas": 4,
+      "prazo_carregamento": "2024-01-17",
+      "observacoes": "Material sensível à umidade"
+    },
+    {
+      "id": 5,
+      "origem": {
+        "estado": "RS",
+        "cidade": "Porto Alegre"
+      },
+      "destino": {
+        "estado": "PR",
+        "cidade": "Curitiba"
+      },
+      "distancia_km": 711,
+      "tipo_carga": "MDF",
+      "toneladas": 29,
+      "preco_sugerido": 6400,
+      "status": "disponivel",
+      "vagas": 1,
+      "prazo_carregamento": "2024-01-15",
+      "observacoes": "Chapas de 15mm e 18mm"
+    },
+    {
+      "id": 6,
+      "origem": {
+        "estado": "MT",
+        "cidade": "Cuiabá"
+      },
+      "destino": {
+        "estado": "SP",
+        "cidade": "São Paulo"
+      },
+      "distancia_km": 1614,
+      "tipo_carga": "Toras de Teca",
+      "toneladas": 35,
+      "preco_sugerido": null,
+      "status": "negociacao",
+      "vagas": 2,
+      "prazo_carregamento": "2024-01-18",
+      "observacoes": "Madeira nobre, necessário amarração especial"
+    },
+    {
+      "id": 7,
+      "origem": {
+        "estado": "GO",
+        "cidade": "Goiânia"
+      },
+      "destino": {
+        "estado": "MG",
+        "cidade": "Belo Horizonte"
+      },
+      "distancia_km": 906,
+      "tipo_carga": "Pinus Verde",
+      "toneladas": 31,
+      "preco_sugerido": null,
+      "status": "negociacao",
+      "vagas": 3,
+      "prazo_carregamento": "2024-01-16",
+      "observacoes": "Madeira recém cortada"
+    },
+    {
+      "id": 8,
+      "origem": {
+        "estado": "MS",
+        "cidade": "Campo Grande"
+      },
+      "destino": {
+        "estado": "SP",
+        "cidade": "São Paulo"
+      },
+      "distancia_km": 1014,
+      "tipo_carga": "Madeira Serrada",
+      "toneladas": 28,
+      "preco_sugerido": null,
+      "status": "negociacao",
+      "vagas": 5,
+      "prazo_carregamento": "2024-01-19",
+      "observacoes": "Vigas e caibros diversos"
+    },
+    {
+      "id": 9,
+      "origem": {
+        "estado": "SC",
+        "cidade": "Florianópolis"
+      },
+      "destino": {
+        "estado": "RS",
+        "cidade": "Porto Alegre"
+      },
+      "distancia_km": 476,
+      "tipo_carga": "OSB",
+      "toneladas": 27,
+      "preco_sugerido": null,
+      "status": "negociacao",
+      "vagas": 2,
+      "prazo_carregamento": "2024-01-14",
+      "observacoes": "Chapas OSB 11mm"
+    },
+    {
+      "id": 10,
+      "origem": {
+        "estado": "PR",
+        "cidade": "Cascavel"
+      },
+      "destino": {
+        "estado": "MS",
+        "cidade": "Dourados"
+      },
+      "distancia_km": 413,
+      "tipo_carga": "Compensado",
+      "toneladas": 25,
+      "preco_sugerido": null,
+      "status": "negociacao",
+      "vagas": 4,
+      "prazo_carregamento": "2024-01-17",
+      "observacoes": "Compensado plastificado"
+    },
+    {
+      "id": 11,
+      "origem": {
+        "estado": "SP",
+        "cidade": "Ribeirão Preto"
+      },
+      "destino": {
+        "estado": "MG",
+        "cidade": "Uberlândia"
+      },
+      "distancia_km": 335,
+      "tipo_carga": "Deck de Madeira",
+      "toneladas": 24,
+      "preco_sugerido": 3200,
+      "status": "disponivel",
+      "vagas": 2,
+      "prazo_carregamento": "2024-01-15",
+      "observacoes": "Madeira para deck de piscina"
+    },
+    {
+      "id": 12,
+      "origem": {
+        "estado": "PR",
+        "cidade": "Ponta Grossa"
+      },
+      "destino": {
+        "estado": "SP",
+        "cidade": "Sorocaba"
+      },
+      "distancia_km": 408,
+      "tipo_carga": "Pellets de Madeira",
+      "toneladas": 30,
+      "preco_sugerido": 3800,
+      "status": "disponivel",
+      "vagas": 6,
+      "prazo_carregamento": "2024-01-16",
+      "observacoes": "Carga ensacada em big bags"
+    },
+    {
+      "id": 13,
+      "origem": {
+        "estado": "SC",
+        "cidade": "Joinville"
+      },
+      "destino": {
+        "estado": "PR",
+        "cidade": "Maringá"
+      },
+      "distancia_km": 398,
+      "tipo_carga": "Portas de Madeira",
+      "toneladas": 22,
+      "preco_sugerido": 3500,
+      "status": "urgente",
+      "vagas": 1,
+      "prazo_carregamento": "2024-01-13",
+      "observacoes": "URGENTE - Carregamento amanhã"
+    },
+    {
+      "id": 14,
+      "origem": {
+        "estado": "MT",
+        "cidade": "Sinop"
+      },
+      "destino": {
+        "estado": "PR",
+        "cidade": "Curitiba"
+      },
+      "distancia_km": 2107,
+      "tipo_carga": "Madeira de Lei",
+      "toneladas": 34,
+      "preco_sugerido": null,
+      "status": "urgente",
+      "vagas": 1,
+      "prazo_carregamento": "2024-01-14",
+      "observacoes": "URGENTE - Material para exportação"
+    },
+    {
+      "id": 15,
+      "origem": {
+        "estado": "MG",
+        "cidade": "Teófilo Otoni"
+      },
+      "destino": {
+        "estado": "SP",
+        "cidade": "Santos"
+      },
+      "distancia_km": 1089,
+      "tipo_carga": "Eucalipto para Celulose",
+      "toneladas": 33,
+      "preco_sugerido": 9500,
+      "status": "disponivel",
+      "vagas": 3,
+      "prazo_carregamento": "2024-01-18",
+      "observacoes": "Carga para porto - exportação"
+    },
+    {
+      "id": 16,
+      "origem": {
+        "estado": "RS",
+        "cidade": "Caxias do Sul"
+      },
+      "destino": {
+        "estado": "SP",
+        "cidade": "São Paulo"
+      },
+      "distancia_km": 1050,
+      "tipo_carga": "Móveis de Madeira",
+      "toneladas": 26,
+      "preco_sugerido": 8200,
+      "status": "disponivel",
+      "vagas": 2,
+      "prazo_carregamento": "2024-01-17",
+      "observacoes": "Móveis embalados - frágil"
+    },
+    {
+      "id": 17,
+      "origem": {
+        "estado": "GO",
+        "cidade": "Anápolis"
+      },
+      "destino": {
+        "estado": "MG",
+        "cidade": "Uberlândia"
+      },
+      "distancia_km": 436,
+      "tipo_carga": "Carvão Vegetal",
+      "toneladas": 28,
+      "preco_sugerido": 4100,
+      "status": "disponivel",
+      "vagas": 4,
+      "prazo_carregamento": "2024-01-16",
+      "observacoes": "Carga ensacada"
+    },
+    {
+      "id": 18,
+      "origem": {
+        "estado": "MS",
+        "cidade": "Três Lagoas"
+      },
+      "destino": {
+        "estado": "SP",
+        "cidade": "Campinas"
+      },
+      "distancia_km": 626,
+      "tipo_carga": "Celulose",
+      "toneladas": 32,
+      "preco_sugerido": 5900,
+      "status": "disponivel",
+      "vagas": 5,
+      "prazo_carregamento": "2024-01-19",
+      "observacoes": "Fardos de celulose"
+    },
+    {
+      "id": 19,
+      "origem": {
+        "estado": "PR",
+        "cidade": "Foz do Iguaçu"
+      },
+      "destino": {
+        "estado": "SP",
+        "cidade": "São José dos Campos"
+      },
+      "distancia_km": 987,
+      "tipo_carga": "Madeira Beneficiada",
+      "toneladas": 27,
+      "preco_sugerido": null,
+      "status": "urgente",
+      "vagas": 1,
+      "prazo_carregamento": "2024-01-13",
+      "observacoes": "ÚLTIMA VAGA - Fechar hoje"
+    },
+    {
+      "id": 20,
+      "origem": {
+        "estado": "SC",
+        "cidade": "Chapecó"
+      },
+      "destino": {
+        "estado": "RS",
+        "cidade": "Pelotas"
+      },
+      "distancia_km": 657,
+      "tipo_carga": "Biomassa",
+      "toneladas": 31,
+      "preco_sugerido": 5600,
+      "status": "disponivel",
+      "vagas": 3,
+      "prazo_carregamento": "2024-01-20",
+      "observacoes": "Cavaco de madeira para energia"
+    }
+  ],
+  "estatisticas": {
+    "total_rotas": 20,
+    "rotas_com_preco": 11,
+    "rotas_em_negociacao": 6,
+    "rotas_urgentes": 3,
+    "distancia_media_km": 816,
+    "preco_medio": 5845,
+    "tonelagem_media": 29
+  },
+  "filtros_sugeridos": {
+    "por_estado_origem": ["PR", "SC", "SP", "MG", "RS", "MT", "MS", "GO"],
+    "por_tipo_carga": ["Pinus", "Eucalipto", "MDF", "Compensado", "OSB", "Madeira Serrada", "Toras"],
+    "por_faixa_km": [
+      {"label": "Até 500km", "min": 0, "max": 500},
+      {"label": "500-1000km", "min": 500, "max": 1000},
+      {"label": "Acima de 1000km", "min": 1000, "max": 9999}
+    ],
+    "por_urgencia": ["normal", "urgente", "negociacao"]
+  }
+}

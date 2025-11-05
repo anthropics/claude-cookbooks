@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Anderson Enside Madeiras - Confirmação de proposta">
+    <title>Proposta Recebida - Anderson Enside Madeiras</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Reset e Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --vermelho: #DC2626;
+            --preto: #1F2937;
+            --dourado: #F59E0B;
+            --branco: #FFFFFF;
+            --cinza-claro: #F3F4F6;
+            --cinza-medio: #9CA3AF;
+            --verde: #10B981;
+            --verde-claro: #D1FAE5;
+            --vermelho-claro: #FEE2E2;
+            --azul: #3B82F6;
+            --azul-claro: #DBEAFE;
+            --sombra: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --sombra-forte: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--preto);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Success Animation */
+        .success-container {
+            background: var(--branco);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: var(--sombra-forte);
+            text-align: center;
+            margin-bottom: 30px;
+            animation: slideDown 0.6s ease;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            background: var(--verde-claro);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 1s ease infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+        
+        .success-icon::before {
+            content: '✓';
+            font-size: 50px;
+            color: var(--verde);
+            font-weight: bold;
+        }
+        
+        .success-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--preto);
+            margin-bottom: 10px;
+        }
+        
+        .success-name {
+            color: var(--verde);
+        }
+        
+        .success-subtitle {
+            color: var(--cinza-medio);
+            font-size: 1.1rem;
+        }
+        
+        /* Análise Section */
+        .analysis-section {
+            background: var(--branco);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--sombra-forte);
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--preto);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .proposal-cards {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        @media (min-width: 768px) {
+            .proposal-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .proposal-card {
+            background: var(--cinza-claro);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid var(--vermelho);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .proposal-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--sombra);
+        }
+        
+        .card-route {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--preto);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-details {
+            display: grid;
+            gap: 10px;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .detail-label {
+            color: var(--cinza-medio);
+            font-size: 0.9rem;
+        }
+        
+        .detail-value {
+            font-weight: 600;
+            color: var(--preto);
+        }
+        
+        .value-positive {
+            color: var(--verde);
+        }
+        
+        .value-negative {
+            color: var(--vermelho);
+        }
+        
+        .analysis-message {
+            background: var(--azul-claro);
+            color: var(--azul);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-weight: 500;
+            text-align: center;
+        }
+        
+        .analysis-positive {
+            background: var(--verde-claro);
+            color: var(--verde);
+        }
+        
+        .analysis-negative {
+            background: var(--vermelho-claro);
+            color: var(--vermelho);
+        }
+        
+        /* Next Steps */
+        .steps-section {
+            background: linear-gradient(135deg, var(--preto) 0%, #374151 100%);
+            color: var(--branco);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--sombra-forte);
+            margin-bottom: 30px;
+        }
+        
+        .steps-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .checklist {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            animation: fadeInLeft 0.6s ease;
+        }
+        
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .checklist-icon {
+            font-size: 1.5rem;
+        }
+        
+        .checklist-text {
+            flex: 1;
+            font-size: 1.1rem;
+        }
+        
+        .whatsapp-display {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        .whatsapp-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dourado);
+            margin-top: 10px;
+        }
+        
+        .whatsapp-button {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #25D366 0%, #20BA5C 100%);
+            color: var(--branco);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .whatsapp-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.5);
+        }
+        
+        /* Bonus Section */
+        .bonus-section {
+            background: var(--branco);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--sombra-forte);
+            margin-bottom: 30px;
+        }
+        
+        .bonus-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--preto);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .bonus-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        @media (min-width: 768px) {
+            .bonus-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .bonus-item {
+            display: flex;
+            align-items: start;
+            gap: 15px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--dourado) 0%, #D97706 100%);
+            color: var(--branco);
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .bonus-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .bonus-icon {
+            font-size: 2rem;
+            min-width: 40px;
+        }
+        
+        .bonus-content {
+            flex: 1;
+        }
+        
+        .bonus-text {
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 500px;
+            margin: 30px auto;
+        }
+        
+        @media (min-width: 768px) {
+            .action-buttons {
+                flex-direction: row;
+                justify-content: center;
+            }
+        }
+        
+        .action-button {
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .button-primary {
+            background: linear-gradient(135deg, var(--vermelho) 0%, #B91C1C 100%);
+            color: var(--branco);
+            box-shadow: 0 5px 15px rgba(220, 38, 38, 0.3);
+        }
+        
+        .button-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4);
+        }
+        
+        .button-secondary {
+            background: var(--branco);
+            color: var(--preto);
+            border: 2px solid var(--preto);
+        }
+        
+        .button-secondary:hover {
+            background: var(--preto);
+            color: var(--branco);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Success Container -->
+        <div class="success-container">
+            <div class="success-icon"></div>
+            <h1 class="success-title">
+                Ótimo, <span class="success-name" id="user-name">Motorista</span>!
+            </h1>
+            <p class="success-subtitle">Sua proposta foi recebida com sucesso!</p>
+        </div>
+        
+        <!-- Análise de Propostas -->
+        <div class="analysis-section">
+            <h2 class="section-title">
+                📊 ANÁLISE RÁPIDA DA SUA PROPOSTA
+            </h2>
+            
+            <div class="proposal-cards" id="proposal-cards">
+                <!-- Cards serão inseridos via JavaScript -->
+            </div>
+        </div>
+        
+        <!-- Próximos Passos -->
+        <div class="steps-section">
+            <h2 class="steps-title">📋 PRÓXIMOS PASSOS</h2>
+            
+            <div class="checklist">
+                <div class="checklist-item" style="animation-delay: 0.2s">
+                    <span class="checklist-icon">✅</span>
+                    <span class="checklist-text">Proposta enviada para análise</span>
+                </div>
+                
+                <div class="checklist-item" style="animation-delay: 0.4s">
+                    <span class="checklist-icon">✅</span>
+                    <span class="checklist-text">Consulta aos fornecedores em andamento</span>
+                </div>
+                
+                <div class="checklist-item" style="animation-delay: 0.6s">
+                    <span class="checklist-icon">📱</span>
+                    <span class="checklist-text">Você receberá retorno via WhatsApp em até 15 minutos</span>
+                </div>
+            </div>
+            
+            <div class="whatsapp-display">
+                <p>Vamos entrar em contato no número:</p>
+                <p class="whatsapp-number" id="whatsapp-display">(55) 99999-9999</p>
+                <a href="#" class="whatsapp-button" id="whatsapp-button">
+                    💬 Falar agora com especialista no WhatsApp
+                </a>
+            </div>
+        </div>
+        
+        <!-- Bônus Section -->
+        <div class="bonus-section">
+            <h2 class="bonus-title">🎁 BÔNUS - O QUE VOCÊ GANHA</h2>
+            
+            <div class="bonus-grid">
+                <div class="bonus-item">
+                    <span class="bonus-icon">📱</span>
+                    <div class="bonus-content">
+                        <p class="bonus-text">Alertas de novas cargas nas suas rotas favoritas</p>
+                    </div>
+                </div>
+                
+                <div class="bonus-item">
+                    <span class="bonus-icon">💡</span>
+                    <div class="bonus-content">
+                        <p class="bonus-text">Dicas semanais de rotas rentáveis</p>
+                    </div>
+                </div>
+                
+                <div class="bonus-item">
+                    <span class="bonus-icon">⚡</span>
+                    <div class="bonus-content">
+                        <p class="bonus-text">Acesso prioritário a fretes urgentes</p>
+                    </div>
+                </div>
+                
+                <div class="bonus-item">
+                    <span class="bonus-icon">🛡️</span>
+                    <div class="bonus-content">
+                        <p class="bonus-text">CT-e com seguro para todas suas cargas</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a href="index.html" class="action-button button-primary">
+                Fazer nova cotação
+            </a>
+            <a href="cotacao.html" class="action-button button-secondary">
+                Ver todas as rotas disponíveis
+            </a>
+        </div>
+    </div>
+    
+    <script>
+        // Recuperar dados do localStorage
+        const proposalData = JSON.parse(localStorage.getItem('proposalData') || '{}');
+        const leadData = JSON.parse(localStorage.getItem('leadData') || '{}');
+        
+        // Personalizar elementos
+        if (leadData.nome) {
+            document.getElementById('user-name').textContent = leadData.nome.split(' ')[0];
+        }
+        
+        if (leadData.whatsapp) {
+            const whatsapp = leadData.whatsapp;
+            const formatted = `(${whatsapp.slice(0, 2)}) ${whatsapp.slice(2, 7)}-${whatsapp.slice(7)}`;
+            document.getElementById('whatsapp-display').textContent = formatted;
+            
+            // Configurar link do WhatsApp
+            const whatsappLink = document.getElementById('whatsapp-button');
+            const message = encodeURIComponent(`Olá! Sou ${leadData.nome} e acabei de fazer propostas de frete no site. Gostaria de mais informações!`);
+            whatsappLink.href = `https://wa.me/5517991234567?text=${message}`;
+        }
+        
+        // Gerar cards de análise
+        const cardsContainer = document.getElementById('proposal-cards');
+        
+        if (proposalData.propostas && proposalData.propostas.length > 0) {
+            proposalData.propostas.slice(0, 6).forEach(proposta => {
+                if (proposta.proposta) {
+                    const card = document.createElement('div');
+                    card.className = 'proposal-card';
+                    
+                    const propostaValor = parseFloat(proposta.proposta);
+                    const sugeridoValor = parseFloat(proposta.precoSugerido);
+                    
+                    let analysisClass = 'analysis-message';
+                    let analysisText = '';
+                    let differenceHTML = '';
+                    
+                    if (sugeridoValor && !isNaN(sugeridoValor)) {
+                        const difference = propostaValor - sugeridoValor;
+                        const percentage = ((difference / sugeridoValor) * 100).toFixed(1);
+                        
+                        if (difference < -sugeridoValor * 0.1) {
+                            analysisClass += ' analysis-negative';
+                            analysisText = `Sua proposta está ${Math.abs(percentage)}% abaixo da média do mercado. Vamos consultar nossos parceiros para viabilizar!`;
+                        } else if (difference > sugeridoValor * 0.1) {
+                            analysisClass += ' analysis-positive';
+                            analysisText = `Sua proposta está ${percentage}% acima da média. Isso aumenta suas chances de aprovação rápida!`;
+                        } else {
+                            analysisClass += ' analysis-message';
+                            analysisText = 'Sua proposta está alinhada com o mercado! Alta probabilidade de aprovação.';
+                        }
+                        
+                        const diffClass = difference >= 0 ? 'value-positive' : 'value-negative';
+                        const diffPrefix = difference >= 0 ? '+' : '';
+                        
+                        differenceHTML = `
+                            <div class="detail-row">
+                                <span class="detail-label">Nossa sugestão:</span>
+                                <span class="detail-value">R$ ${sugeridoValor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Sua proposta:</span>
+                                <span class="detail-value">R$ ${propostaValor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Diferença:</span>
+                                <span class="detail-value ${diffClass}">${diffPrefix}R$ ${Math.abs(difference).toLocaleString('pt-BR', {minimumFractionDigits: 2})} (${diffPrefix}${percentage}%)</span>
+                            </div>
+                        `;
+                    } else {
+                        differenceHTML = `
+                            <div class="detail-row">
+                                <span class="detail-label">Sua proposta:</span>
+                                <span class="detail-value">R$ ${propostaValor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
+                            </div>
+                        `;
+                        analysisText = 'Proposta em análise. Consultando disponibilidade com fornecedores.';
+                    }
+                    
+                    // Calcular valor por KM e por tonelada se disponível
+                    let metricsHTML = '';
+                    if (proposta.km) {
+                        const km = parseInt(proposta.km.replace(/\D/g, ''));
+                        const valorPorKm = (propostaValor / km).toFixed(2);
+                        metricsHTML += `
+                            <div class="detail-row">
+                                <span class="detail-label">Valor por KM:</span>
+                                <span class="detail-value">R$ ${valorPorKm}</span>
+                            </div>
+                        `;
+                    }
+                    
+                    if (proposta.toneladas) {
+                        const toneladas = parseInt(proposta.toneladas);
+                        const valorPorTon = (propostaValor / toneladas).toFixed(2);
+                        metricsHTML += `
+                            <div class="detail-row">
+                                <span class="detail-label">Valor por tonelada:</span>
+                                <span class="detail-value">R$ ${valorPorTon}</span>
+                            </div>
+                        `;
+                    }
+                    
+                    card.innerHTML = `
+                        <div class="card-route">
+                            📍 ${proposta.rota}
+                        </div>
+                        <div class="card-details">
+                            ${proposta.km ? `
+                            <div class="detail-row">
+                                <span class="detail-label">Distância:</span>
+                                <span class="detail-value">${proposta.km} km</span>
+                            </div>
+                            ` : ''}
+                            ${proposta.toneladas ? `
+                            <div class="detail-row">
+                                <span class="detail-label">Carga:</span>
+                                <span class="detail-value">${proposta.toneladas} toneladas</span>
+                            </div>
+                            ` : ''}
+                            ${differenceHTML}
+                            ${metricsHTML}
+                        </div>
+                        <div class="${analysisClass}">
+                            ${analysisText}
+                        </div>
+                    `;
+                    
+                    cardsContainer.appendChild(card);
+                }
+            });
+        } else {
+            cardsContainer.innerHTML = `
+                <div class="proposal-card" style="grid-column: 1 / -1;">
+                    <p style="text-align: center; color: var(--cinza-medio);">
+                        Nenhuma proposta específica foi registrada, mas já temos suas preferências de rotas!
+                    </p>
+                </div>
+            `;
+        }
+        
+        // Enviar dados finais para o Google Sheets (simulado)
+        // Na implementação real, isso seria enviado via fetch para o Apps Script
+        console.log('Dados para enviar ao Google Sheets:', {
+            leadData,
+            proposalData
+        });
+        
+        // Limpar localStorage após sucesso (opcional)
+        // localStorage.removeItem('leadData');
+        // localStorage.removeItem('proposalData');
+    </script>
+</body>
+</html>
