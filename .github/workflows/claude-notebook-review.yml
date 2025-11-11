@@ -76,6 +76,6 @@ jobs:
             Changed files to review:
             $(cat changed_files.txt)
           claude_args: |
-            --allowedTools "Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(echo:*),Read,Glob,Grep,WebFetch"
+            --allowedTools "SlashCommand,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(echo:*),Read,Glob,Grep,WebFetch"
         env:
           PR_NUMBER: ${{ steps.pr-number.outputs.number }}
