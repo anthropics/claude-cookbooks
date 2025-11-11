@@ -80,28 +80,32 @@ jobs:
           FILES=""
 
           # Add all changed markdown files (from any directory)
-          echo "${{ steps.changed-files.outputs.files }}" | grep '\.md$' | while read f; do
-            if [ -f "$f" ]; then
+          while IFS= read -r f; do
+            if [ -n "$f" ] && [ -f "$f" ]; then
               FILES="$FILES $f"
             fi
-          done
+          done < <(echo "${{ steps.changed-files.outputs.files }}" | grep '\.md$')
 
           # Add converted notebooks
-          if [ -d "temp_md" ]; then
+          if [ -d "temp_md" ] && [ -n "$(ls -A temp_md/*.md 2>/dev/null)" ]; then
             FILES="$FILES temp_md/*.md"
           fi
 
           # Remove leading/trailing whitespace
           FILES=$(echo $FILES | xargs)
 
+          echo "Prepared files for lychee: $FILES"
+
           if [ -z "$FILES" ]; then
             echo "file_args=" >> $GITHUB_OUTPUT
+            echo "has_files=false" >> $GITHUB_OUTPUT
           else
             echo "file_args=$FILES" >> $GITHUB_OUTPUT
+            echo "has_files=true" >> $GITHUB_OUTPUT
           fi
 
       - name: Check Links with Lychee (PR - changed files only)
-        if: github.event_name == 'pull_request' && steps.changed-files.outputs.has_changes == 'true'
+        if: github.event_name == 'pull_request' && steps.changed-files.outputs.has_changes == 'true' && steps.file-list.outputs.has_files == 'true'
         id: lychee
         uses: lycheeverse/lychee-action@v2
         with:
@@ -112,6 +116,7 @@ jobs:
             ${{ steps.file-list.outputs.file_args }}
           output: lychee-report.md
           fail: false
+          failIfEmpty: false
 
       - name: Check Links with Lychee (scheduled/manual - all files)
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
@@ -127,6 +132,7 @@ jobs:
             README.md
           output: lychee-report.md
           fail: false
+          failIfEmpty: false
       
       - name: Comment PR with results
         if: github.event_name == 'pull_request' && steps.lychee.outputs.exit_code != 0

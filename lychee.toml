@@ -29,6 +29,7 @@ exclude_path = [
     ".ipynb_checkpoints/",
     ".pyc",
     ".github/",
+    ".claude/",
     "scripts/"
 ]
 

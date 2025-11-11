@@ -7,24 +7,33 @@ description: Audit an Anthropic Cookbook notebook based on a rubric. Use wheneve
 
 ## Instructions
 
-Review the requested Cookbook notebook using the following guidelines. Provide a score based on scoring guidelines and recommendations on improving the cookbook.
+Review the requested Cookbook notebook using the guidelines and rubrics in `style_guide.md`. Provide a score based on scoring guidelines and recommendations on improving the cookbook.
+
+The style guide provides detailed templates and examples for:
+- Problem-focused introductions with Terminal Learning Objectives (TLOs) and Enabling Learning Objectives (ELOs)
+- Prerequisites and setup patterns
+- Core content structure
+- Conclusions that map back to learning objectives
+
+**IMPORTANT**: Always read `style_guide.md` first before conducting an audit. The style guide contains the canonical templates and good/bad examples to reference.
 
 ## Workflow
 
 Follow these steps for a comprehensive audit:
 
-1. **Identify the notebook**: Ask user for path if not provided
-2. **Run automated checks**: Use `python3 validate_notebook.py <path>` to catch technical issues and generate markdown
+1. **Read the style guide**: First review `style_guide.md` to understand current best practices
+2. **Identify the notebook**: Ask user for path if not provided
+3. **Run automated checks**: Use `python3 validate_notebook.py <path>` to catch technical issues and generate markdown
    - The script automatically runs detect-secrets to scan for hardcoded API keys and credentials
    - Uses custom patterns defined in `scripts/detect-secrets/plugins.py`
    - Checks against baseline at `scripts/detect-secrets/.secrets.baseline`
-3. **Review markdown output**: The script generates a markdown file in the `tmp/` folder for easier review (saves context vs raw .ipynb)
+4. **Review markdown output**: The script generates a markdown file in the `tmp/` folder for easier review (saves context vs raw .ipynb)
    - The tmp/ folder is gitignored to avoid committing review artifacts
    - Markdown includes code cells but excludes outputs for cleaner review
-4. **Manual review**: Read through the markdown version evaluating against rubric
-5. **Score each dimension**: Apply scoring guidelines objectively
-6. **Generate report**: Follow the audit report format below
-7. **Provide specific examples**: Show concrete improvements with line references
+5. **Manual review**: Read through the markdown version evaluating against style guide and rubric
+6. **Score each dimension**: Apply scoring guidelines objectively
+7. **Generate report**: Follow the audit report format below
+8. **Provide specific examples**: Show concrete improvements with line references using the style guide templates
 
 ## Audit Report Format
 
@@ -61,12 +70,34 @@ Present your audit using this structure:
 
 Use this to ensure comprehensive coverage:
 
+**Introduction** (See style_guide.md Section 1)
+- [ ] Hooks with the problem being solved (1-2 sentences)
+- [ ] Explains why it matters (1-2 sentences)
+- [ ] Lists learning objectives as bullet points (2-4 TLOs/ELOs)
+- [ ] Focuses on value delivered, not machinery built
+- [ ] Optional: mentions broader applications (1 sentence)
+
+**Prerequisites & Setup** (See style_guide.md Section 2)
+- [ ] Lists required knowledge clearly
+- [ ] Lists required tools (Python version, API keys)
+- [ ] Mentions recommended background if applicable
+- [ ] Uses %%capture for pip install to suppress output
+- [ ] Uses dotenv.load_dotenv() not os.environ
+- [ ] Defines MODEL constant at top
+- [ ] Groups related installs in single command
+
 **Structure & Organization**
-- [ ] Has clear introduction (1-2 paragraphs)
-- [ ] States problem, audience, and outcome
-- [ ] Lists prerequisites clearly
 - [ ] Has logical section progression
-- [ ] Includes conclusion/summary
+- [ ] Each section teaches through demonstration
+- [ ] Code blocks have explanatory text before them
+- [ ] Includes what we learned after code blocks
+- [ ] Uses headers to break up sections
+
+**Conclusion** (See style_guide.md Section 4)
+- [ ] Maps back to learning objectives
+- [ ] Summarizes what was accomplished
+- [ ] Suggests ways to apply lessons to user's context
+- [ ] Points to next steps or related resources
 
 **Code Quality**
 - [ ] All code blocks have explanatory text before them
@@ -102,11 +133,14 @@ Use this to ensure comprehensive coverage:
 
 Cookbooks are primarily action-oriented but strategically incorporate understanding and informed by Diataxis framework.
 
-Practical focus: Show users how to accomplish specific tasks with working code
-Builder's perspective: Written from the user's point of view, solving real problems
-Agency-building: Help users understand why approaches work, not just how
-Transferable knowledge: Teach patterns and principles that apply beyond the specific example
-Critical thinking: Encourage users to question outputs, recognize limitations, make informed choices
+**Core Principles:**
+- **Practical focus**: Show users how to accomplish specific tasks with working code
+- **Problem-first framing**: Lead with the problem being solved and value delivered, not the machinery
+- **Builder's perspective**: Written from the user's point of view, solving real problems
+- **Agency-building**: Help users understand why approaches work, not just how
+- **Transferable knowledge**: Teach patterns and principles that apply beyond the specific example
+- **Critical thinking**: Encourage users to question outputs, recognize limitations, make informed choices
+- **Learning contracts**: State learning objectives upfront, then map back to them in conclusions
 
 ### What Makes a Good Cookbook
 
@@ -123,160 +157,116 @@ Cookbooks are not production-ready code: They showcase use cases and capabilitie
 ### Style Guidelines
 
 #### Voice & Tone
-
-Educational and agency-building
-Professional but approachable
-Respectful of user intelligence and time
-Either second person ("you") or first person plural ("we") - be consistent within a notebook
+- Educational and agency-building
+- Professional but approachable
+- Respectful of user intelligence and time
+- Either second person ("you") or first person plural ("we") - be consistent within a notebook
 
 #### Writing Quality
-
-Clear, concise explanations
-Active voice preferred
-Short paragraphs (3-5 sentences)
-Avoid jargon without definition
-Use headers to break up sections
+- Clear, concise explanations
+- Active voice preferred
+- Short paragraphs (3-5 sentences)
+- Avoid jargon without definition
+- Use headers to break up sections
 
 #### Code Presentation
-
-Every code block should be preceded by explanatory text
-Comments should explain why, not what
-Use meaningful variable names
+- **Always explain before showing**: Every code block should be preceded by explanatory text
+- **Explain after running**: Include what we learned after code blocks execute
+- **Comments explain why, not what**: Use meaningful variable names
+- **Use constants**: Define MODEL as a constant at the top
+- **Good habits**: Use `dotenv.load_dotenv()` instead of `os.environ`
 
 #### Output Handling
-Remove extraneous output, e.g with %%capture
-pip install logs
-Verbose debug statements
-Lengthy stack traces (unless demonstrating error handling)
-Show relevant output:
-API responses that demonstrate functionality
-Examples of successful execution
+**Remove extraneous output** with %%capture:
+- pip install logs (always suppress these)
+- Verbose debug statements
+- Lengthy stack traces (unless demonstrating error handling)
+
+**Show relevant output**:
+- API responses that demonstrate functionality
+- Examples of successful execution
 
 ### Structural Requirements
 
-Required Sections
+**See style_guide.md for detailed templates and examples**
 
-1. Introduction (Required)
-[Cookbook Title]
+#### 1. Introduction (Required)
+Must include:
+- **Problem hook** (1-2 sentences): What problem are we solving?
+- **Why it matters** (1-2 sentences): Why is this important?
+- **Learning objectives** (2-4 bullet points): "By the end of this cookbook, you'll be able to..."
+  - Use action verbs (Build, Implement, Deploy, etc.)
+  - Be specific about capabilities
+  - Include context/constraints
+- **Optional**: Broader applications (1 sentence)
 
-[1-2 paragraphs covering:]
-- What problem this solves
-- Who this is for
-- What you'll build/accomplish
+❌ **Avoid**: Leading with machinery ("We will build a research agent...")
+✅ **Do**: Lead with problem/value ("Your team spends hours triaging CI failures...")
 
- Prerequisites
-- Required technical skills
-- API keys needed
-- Dependencies to install
+#### 2. Prerequisites & Setup (Required)
+Must include:
+- **Required Knowledge**: Technical skills needed
+- **Required Tools**: Python version, API keys with links
+- **Recommended**: Optional background that helps
+- **Setup**: Step-by-step with explanations
+  - Use `%%capture` for pip installs
+  - Use `dotenv.load_dotenv()` not `os.environ`
+  - Define `MODEL` constant at top
 
-2. Main Content (Required)
+#### 3. Main Content (Required)
 Organized by logical steps or phases, each with:
-Clear section headers
-Explanatory text before code blocks
-Code examples
-Expected outputs (where relevant)
-Understanding callouts: Brief explanations of why approaches work, when to use them, or important considerations
+- Clear section headers
+- **Explanatory text before code blocks** (what we're about to do)
+- Code examples
+- **Explanatory text after code blocks** (what we learned)
+- Expected outputs (where relevant)
+- Optional: Understanding callouts (why it works, when to use, limitations)
 
-3. Conclusion (Recommended)
+#### 4. Conclusion (Recommended)
+Must include:
+- **Recap**: Map back to learning objectives
+- **What was accomplished**: Summary of key points
+- **Application guidance**: How to apply lessons to user's context
+- **Next steps**: Related resources or ideas to pursue
 
-Summary of what was accomplished
-Limitations or considerations
-Next steps or related resources
+❌ **Avoid**: Generic summaries ("We've demonstrated how the SDK enables...")
+✅ **Do**: Actionable guidance ("Consider applying this to X... Next, try Y...")
 
-Optional Sections
-How It Works: Brief explanation of the underlying approach or mechanism
-When to Use This: Guidance on appropriate use cases and contexts
-Limitations & Considerations: Important caveats, failure modes, or constraints
-Troubleshooting: Common issues and solutions
-Variations: Alternative approaches or extensions
-Performance Notes: Optimization considerations
-Further Reading: Links to relevant docs, papers, or deeper explanations
+#### Optional Sections
+- **How It Works**: Brief explanation of underlying mechanism
+- **When to Use This**: Appropriate use cases and contexts
+- **Limitations & Considerations**: Caveats, failure modes, constraints
+- **Troubleshooting**: Common issues and solutions
+- **Variations**: Alternative approaches or extensions
+- **Performance Notes**: Optimization considerations
+- **Further Reading**: Links to relevant docs, papers, or deeper explanations
 
-## Examples
+### Common Anti-Patterns to Flag
 
-### Example 1: High-Quality Notebook Audit (Score: 18/20)
+Refer to style_guide.md for detailed good/bad examples. Watch for these issues:
 
-**Notebook**: "Building a Customer Support Agent with Tool Use"
+#### Introduction Anti-Patterns
+❌ Leading with machinery: "We will build a research agent using the Claude SDK..."
+❌ Feature dumps: Listing SDK methods or tool capabilities
+❌ Vague learning objectives: "Learn about agents" or "Understand the API"
+✅ Problem-first framing with specific, actionable learning objectives
 
-#### Executive Summary
-- **Overall Score**: 18/20
-- **Key Strengths**:
-  - Excellent narrative flow from problem to solution
-  - Clean, well-documented code with proper error handling
-  - Strong focus on transferable patterns (tool schema design, error recovery)
-- **Critical Issues**:
-  - Missing %%capture on pip install cells
-  - Could benefit from a limitations section discussing when NOT to use this approach
+#### Setup Anti-Patterns
+❌ Noisy pip install output without `%%capture`
+❌ Multiple separate pip install commands
+❌ Using `os.environ["API_KEY"] = "your_key"` instead of dotenv
+❌ Hardcoding model names throughout instead of using a MODEL constant
+✅ Clean setup with grouped installs, dotenv, and constants
 
-#### Detailed Scoring
+#### Code Presentation Anti-Patterns
+❌ Code blocks without explanatory text before them
+❌ No explanation of what we learned after running code
+❌ Comments that explain "what" the code does (code should be self-documenting)
+❌ Over-explaining obvious code
+✅ Context before code, insights after code, comments explain "why"
 
-**1. Narrative Quality: 5/5**
-Opens with clear problem statement about reducing support ticket volume. Each section builds logically. Concludes with discussion of production considerations.
-
-**2. Code Quality: 4/5**
-Excellent structure and naming. Clean, idiomatic code. Model defined as constant. Minor issue: pip install output not suppressed in cells 1-2.
-
-**3. Technical Accuracy: 5/5**
-Demonstrates best practices for tool use. Appropriate model selection (using valid claude-sonnet-4-5 model). Correct API usage with streaming.
-
-**4. Actionability & Understanding: 4/5**
-Very practical with clear adaptation points. Explains why tool schemas are designed certain ways. Could add more discussion on when this approach isn't suitable.
-
-#### Specific Recommendations
-1. Add `%%capture` to cells 1-2 to suppress pip install logs
-2. Add "Limitations & Considerations" section discussing scenarios where simpler approaches might be better
-3. Consider adding a "Variations" section showing how to adapt for different support scenarios
-
----
-
-### Example 2: Needs Improvement Notebook Audit (Score: 11/20)
-
-**Notebook**: "Text Classification with Claude"
-
-#### Executive Summary
-- **Overall Score**: 11/20
-- **Key Strengths**:
-  - Working code that demonstrates basic classification
-  - Covers multiple classification approaches
-- **Critical Issues**:
-  - No introduction explaining use case or prerequisites
-  - Code blocks lack explanatory text
-  - No discussion of why approaches work or when to use them
-  - Missing error handling and best practices
-
-#### Detailed Scoring
-
-**1. Narrative Quality: 2/5**
-Jumps directly into code without context. No introduction explaining what problem this solves or who it's for. Sections lack connecting narrative.
-
-**2. Code Quality: 3/5**
-Code is functional but lacks structure. Variable names like `x1`, `result`, `temp` are unclear. No comments explaining non-obvious choices. Model not defined as constant at top.
-
-**3. Technical Accuracy: 3/5**
-API calls work but use invalid or deprecated model names. Model selection not explained. No discussion of token efficiency or performance.
-
-**4. Actionability & Understanding: 3/5**
-Shows multiple approaches but doesn't explain when to use each. No discussion of trade-offs. Unclear how to adapt to different classification tasks.
-
-#### Specific Recommendations
-
-**High Priority:**
-1. Add introduction section (1-2 paragraphs) explaining:
-   - What classification problems this addresses
-   - Prerequisites (basic Python, API key, familiarity with classification)
-   - What readers will accomplish
-
-2. Add explanatory text before EVERY code block explaining what it does and why
-
-3. Update to current API patterns and explain model selection rationale
-
-**Medium Priority:**
-4. Improve variable names: `x1` → `sample_text`, `result` → `classification_result`
-5. Define model as constant at top: `MODEL = 'claude-sonnet-4-5'`
-6. Update to use valid model names (claude-sonnet-4-5, claude-haiku-4-5, or claude-opus-4-1)
-7. Add "When to Use This" section explaining which approach for which scenario
-
-**Low Priority:**
-8. Add conclusion summarizing trade-offs between approaches
-9. Add "Limitations" section discussing accuracy considerations
-10. Consider adding evaluation metrics example
+#### Conclusion Anti-Patterns
+❌ Generic summaries: "We've demonstrated how the SDK enables..."
+❌ Simply restating what the notebook did without guidance
+❌ Not mapping back to the stated learning objectives
+✅ Actionable guidance on applying lessons to user's specific context
