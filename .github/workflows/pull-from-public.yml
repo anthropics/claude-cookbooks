@@ -42,31 +42,42 @@ jobs:
         run: |
           echo "Attempting to merge changes from public repository..."
 
+          # Check if we're already up to date first
+          if git merge-base --is-ancestor public/main HEAD; then
+            echo "✓ Already up to date with public repository"
+            echo "success=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
           # Merge changes but don't commit yet (so we can exclude workflows)
           if git merge public/main --no-commit --no-ff; then
             echo "✓ Successfully merged changes from public repository"
 
-            # Remove workflow files from the staging area
-            # This ensures they won't be included in the commit
-            git rm --cached -r .github/workflows/ 2>/dev/null || true
-            echo "✓ Removed workflow files from staging"
+            # Remove sync workflow files from the staging area if present
+            # These files should ONLY exist in the main branch, not in public
+            git rm --cached .github/workflows/pull-from-public.yml 2>/dev/null || true
+            git rm --cached .github/workflows/push-to-public.yml 2>/dev/null || true
+            echo "✓ Ensured sync workflow files are not in staging"
 
-            # Restore workflow files to working tree from HEAD
-            # This keeps our private workflow files in place
-            git checkout HEAD -- .github/workflows/
-            echo "✓ Restored private workflow configurations"
+            # Check if there's anything to commit after filtering
+            if git diff --cached --quiet; then
+              echo "✓ No changes to commit after filtering workflows"
+              git merge --abort
+              echo "success=true" >> $GITHUB_OUTPUT
+              exit 0
+            fi
 
             # Commit the merge (workflows are now excluded from the commit)
             git commit --no-edit -m "Merge changes from public repository"
 
-            # Verify no workflow files were included in the commit
-            if git diff --name-only HEAD^1..HEAD | grep -q "^\.github/workflows/"; then
-              echo "ERROR: Workflow files detected in merge commit!"
-              echo "The following workflow files were found:"
-              git diff --name-only HEAD^1..HEAD | grep "^\.github/workflows/"
+            # Verify sync workflow files were not included in the commit
+            if git diff --name-only HEAD^1..HEAD | grep -q "^\.github/workflows/pull-from-public\.yml$\|^\.github/workflows/push-to-public\.yml$"; then
+              echo "ERROR: Sync workflow files detected in merge commit!"
+              echo "The following sync workflow files were found:"
+              git diff --name-only HEAD^1..HEAD | grep "^\.github/workflows/p.*-.*-public\.yml$"
               exit 1
             else
-              echo "✓ Verified: No workflow files in merge commit"
+              echo "✓ Verified: No sync workflow files in merge commit"
             fi
 
             # Push the merged changes back to private public branch
@@ -103,6 +114,4 @@ jobs:
           6. Resolve conflicts
           7. Push changes: \`git push origin public\`
 
-          This issue was automatically created by the pull-from-public workflow." \
-            --label "sync-conflict" \
-            --label "automation"
+          This issue was automatically created by the pull-from-public workflow."
