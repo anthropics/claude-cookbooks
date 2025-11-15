@@ -73,7 +73,7 @@ class CodeReviewAssistant:
         Args:
             memory_storage_path: Path for memory storage
         """
-        self.client = Anthropic(api_key=API_KEY)
+        self.client = Anthropic()
         self.memory_handler = MemoryToolHandler(base_path=memory_storage_path)
         self.messages: List[Dict[str, Any]] = []
 

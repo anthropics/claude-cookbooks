@@ -198,11 +198,25 @@ def print_context_management_info(response: Any) -> tuple[bool, int]:
         edits = getattr(response.context_management, "applied_edits", []) or []
         if edits:
             context_cleared = True
-            cleared_uses = getattr(edits[0], 'cleared_tool_uses', 0) or 0
-            saved_tokens = getattr(edits[0], 'cleared_input_tokens', 0) or 0
             print(f"  ✂️  Context editing triggered!")
-            print(f"      • Cleared {cleared_uses} tool uses")
-            print(f"      • Saved {saved_tokens:,} tokens")
+
+            # Process all edits and sum up what was cleared
+            total_tokens = 0
+            for edit in edits:
+                edit_type = getattr(edit, 'type', 'unknown')
+                tokens = getattr(edit, 'cleared_input_tokens', 0) or 0
+                total_tokens += tokens
+
+                if 'thinking' in edit_type:
+                    thinking_turns = getattr(edit, 'cleared_thinking_turns', 0) or 0
+                    if thinking_turns > 0 or tokens > 0:
+                        print(f"      • Cleared {thinking_turns} thinking turn(s), saved {tokens:,} tokens")
+                elif 'tool_uses' in edit_type:
+                    tool_uses = getattr(edit, 'cleared_tool_uses', 0) or 0
+                    if tool_uses > 0 or tokens > 0:
+                        print(f"      • Cleared {tool_uses} tool use(s), saved {tokens:,} tokens")
+
+            saved_tokens = total_tokens
             print(f"      • After clearing: {response.usage.input_tokens:,} tokens")
         else:
             print(f"  ℹ️  Context below threshold - no clearing triggered")
