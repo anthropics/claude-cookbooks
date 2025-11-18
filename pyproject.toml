@@ -9,6 +9,8 @@ dependencies = [
     "notebook>=7.2.2",
     "numpy>=1.26.4",
     "pandas>=2.2.3",
+    "rich>=14.2.0",
+    "python-dotenv>=1.2.1",
 ]
 
 [project.optional-dependencies]
