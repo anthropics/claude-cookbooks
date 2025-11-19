@@ -35,10 +35,12 @@ packages = ["anthropic_cookbook"]  # Dummy package for build system
 line-length = 100
 target-version = "py311"
 extend-include = ["*.ipynb"]  # Ruff v0.6.0+ includes notebooks by default, but explicit is better
-select = ["E", "F", "I", "W", "UP", "S", "B"]
-ignore = ["E501", "S101"]  # E501: line too long, S101: assert used (ok in tests)
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "UP", "S", "B"]
+ignore = ["E501", "S101", "S311"]  # E501: line too long, S101: assert used (ok in tests)
+
+[tool.ruff.lint.per-file-ignores]
 # Notebooks have different conventions than regular Python files
 "*.ipynb" = ["E402", "E501", "F401", "F811"]  # Allow: imports mid-file, long lines, unused imports, redefinitions
 

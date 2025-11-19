@@ -138,9 +138,7 @@ def render_tool_use(content: ParsedContent, tree: Tree) -> None:
     tool_input = content.data.get("input", {})
     caller = content.data.get("caller", {})
 
-    tool_node = tree.add(
-        f"[yellow]Tool Use:[/yellow] [bold yellow]{tool_name}[/bold yellow]"
-    )
+    tool_node = tree.add(f"[yellow]Tool Use:[/yellow] [bold yellow]{tool_name}[/bold yellow]")
 
     if tool_id:
         tool_node.add(f"[dim white]ID:[/dim white] {tool_id}")
@@ -158,9 +156,7 @@ def render_tool_use(content: ParsedContent, tree: Tree) -> None:
 
     if tool_input:
         input_node = tool_node.add("[green]Input:[/green]")
-        json_syntax = Syntax(
-            format_json(tool_input), "json", theme="monokai", line_numbers=False
-        )
+        json_syntax = Syntax(format_json(tool_input), "json", theme="monokai", line_numbers=False)
         input_node.add(json_syntax)
 
 
@@ -261,9 +257,7 @@ def render_code_execution_result(content: ParsedContent, tree: Tree) -> None:
             result_node.add("[dim white](no output)[/dim white]")
     else:
         result_node = tree.add("[yellow]Code Execution Result[/yellow]")
-        json_syntax = Syntax(
-            format_json(content.data), "json", theme="monokai", line_numbers=False
-        )
+        json_syntax = Syntax(format_json(content.data), "json", theme="monokai", line_numbers=False)
         result_node.add(json_syntax)
 
 
@@ -282,9 +276,7 @@ def render_content_block(content: ParsedContent, tree: Tree) -> None:
     else:
         # Unknown content type
         unknown_node = tree.add(f"[magenta]Unknown Type:[/magenta] {content.type}")
-        json_syntax = Syntax(
-            format_json(content.data), "json", theme="monokai", line_numbers=False
-        )
+        json_syntax = Syntax(format_json(content.data), "json", theme="monokai", line_numbers=False)
         unknown_node.add(json_syntax)
 
 
@@ -301,9 +293,7 @@ def visualize_message(message: ParsedMessage, console: Console = None) -> None:
         total_tokens = input_tokens + output_tokens
         usage_str = f" [dim white]│[/dim white] [magenta]tokens:[/magenta] [cyan]{input_tokens:,}[/cyan] in • [green]{output_tokens:,}[/green] out • [yellow]{total_tokens:,}[/yellow] total"
 
-    tree = Tree(
-        f"[bold cyan]Claude Message[/bold cyan] ([green]{message.role}[/green]){usage_str}"
-    )
+    tree = Tree(f"[bold cyan]Claude Message[/bold cyan] ([green]{message.role}[/green]){usage_str}")
 
     # Add metadata
     if message.model:
@@ -314,9 +304,7 @@ def visualize_message(message: ParsedMessage, console: Console = None) -> None:
 
     # Add content blocks
     if message.content:
-        content_tree = tree.add(
-            f"[bold white]Content[/bold white] ({len(message.content)} blocks)"
-        )
+        content_tree = tree.add(f"[bold white]Content[/bold white] ({len(message.content)} blocks)")
         for i, content in enumerate(message.content, 1):
             block_tree = content_tree.add(f"[dim white]Block {i}[/dim white]")
             render_content_block(content, block_tree)

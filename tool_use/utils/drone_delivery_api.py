@@ -1,85 +1,63 @@
+"""
+Example Mock API for Drone Delivery Demo
+
+This is a domain-specific API used in the programmatic tool calling cookbook.
+It provides mock tools for drone delivery operations including delivery logs,
+container logs, and pod health checks.
+"""
+
+import json
 import random
+import time
 from datetime import datetime, timedelta
 
+from anthropic import beta_tool
+
 DELIVERY_LOGS_COUNT = 500
-CONTAINER_LOGS_COUNT = 300
-DELAY_MULTIPLIER = 1.0  # Adjust this to speed up or slow down simulated delays
-
-# Claude tool definitions for the Messages API
-TOOLS = [
-    {
-        "name": "get_delivery_logs",
-        "description": "Returns unstructured backend application logs for drone delivery operations. Includes order creation, job assignments, delivery status, warnings, and errors from the drone delivery system. Use this to identify which jobs failed and what error codes were reported. Logs include timestamp, log level (INFO/WARN/ERROR), job_id, drone_id, and message. Logs should be processed programmatically to extract relevant information.\n\nExample log line format: '2025-06-02T13:30:45Z [ERROR] Job J_42 FAILED: BATTERY_CRITICAL'. Note this is a toy API, therefore subsequent calls will return different logs and timestamps. For demo purposes, this is okay.",
-        "input_schema": {
-            "type": "object",
-            "properties": {
-                "start_time": {
-                    "type": "string",
-                    "description": "ISO format timestamp (e.g., '2024-01-15T10:00:00Z') for the beginning of the log range. Defaults to 1 hour ago if not specified.",
-                },
-                "end_time": {
-                    "type": "string",
-                    "description": "ISO format timestamp (e.g., '2024-01-15T11:00:00Z') for the end of the log range. Defaults to current time if not specified.",
-                },
-            },
-        },
-    },
-    {
-        "name": "get_container_logs",
-        "description": 'Returns kubernetes-style container logs from the drone infrastructure. Includes logs from flight controllers, navigation services, weather monitors, battery management systems, and telemetry collectors. Returns JSON-formatted log entries with timestamp, pod name, level (INFO/WARN/ERROR), and message. Use this to investigate infrastructure issues that may have caused delivery failures. Filter by pod_name prefix to narrow results. Logs should be processed programmatically to extract relevant information.\n\nExample JSON log line format: \'{"timestamp": "2025-06-02T13:20:15Z", "namespace": "skynet-prod", "pod": "battery-mgmt-7a3f", "level": "ERROR", "msg": "battery voltage sensor malfunction - reporting incorrect readings across fleet"}. Note this is a toy API, therefore subsequent calls will return different logs and timestamps. For demo purposes, this is okay.',
-        "input_schema": {
-            "type": "object",
-            "properties": {
-                "pod_name": {
-                    "type": "string",
-                    "description": "Optional filter to only return logs from pods whose names start with this prefix. Common prefixes: 'battery-mgmt' (battery management systems), 'flight-controller' (flight control), 'drone-' (specific drone controllers), 'navigation-service' (GPS/navigation), 'weather-monitor' (weather systems), 'telemetry-collector' (telemetry data). If not specified, returns logs from all pods (200-300 entries).",
-                },
-                "start_time": {
-                    "type": "string",
-                    "description": "ISO format timestamp (e.g., '2024-01-15T10:00:00Z') for the beginning of the log range. Defaults to 1 hour ago if not specified.",
-                },
-                "end_time": {
-                    "type": "string",
-                    "description": "ISO format timestamp (e.g., '2024-01-15T11:00:00Z') for the end of the log range. Defaults to current time if not specified.",
-                },
-            },
-        },
-    },
-    {
-        "name": "check_pod_health",
-        "description": 'Returns health status for a specific pod type in the drone infrastructure. Use this for health checks to identify which systems are healthy vs degraded/unhealthy. Returns JSON with: status (healthy/degraded/unhealthy), response_time_ms, pod_count, healthy_pods, unhealthy_pods, health_percentage, and error_message if applicable. Available pod prefixes: \'flight-controller\', \'navigation-service\', \'weather-monitor\', \'battery-mgmt\', \'telemetry-collector\', \'drone-\'. Health check can take between 2-5 seconds per call due to API delays.\n\nExample JSON response format: \'{"pod_prefix": "battery-mgmt", "status": "unhealthy", "response_time_ms": 120, "pod_count": 8, "healthy_pods": 3, "unhealthy_pods": 5, "health_percentage": 37.5, "error_message": "Critical: 5 of 8 pods are unhealthy"}\'\nAnother example (healthy): \'{"pod_prefix": "flight-controller", "status": "healthy", "response_time_ms": 45, "pod_count": 5, "healthy_pods": 5, "unhealthy_pods": 0, "health_percentage": 100.0, "error_message": null}\'',
-        "input_schema": {
-            "type": "object",
-            "properties": {
-                "pod_prefix": {
-                    "type": "string",
-                    "description": "The pod prefix to check health for. Common values: 'flight-controller', 'battery-mgmt', 'drone-', 'navigation-service', 'weather-monitor', 'telemetry-collector'.",
-                },
-            },
-            "required": ["pod_prefix"],
-        },
-    },
-]
+CONTAINER_LOGS_COUNT = 500
+DELAY_MULTIPLIER = 0  # Adjust this to speed up or slow down simulated delays
 
 
-def get_delivery_logs(start_time=None, end_time=None):
-    """Returns unstructured backend application logs"""
+@beta_tool
+def get_delivery_logs(start_time: str | None = None, end_time: str | None = None) -> str:
+    """Returns unstructured backend application logs for drone delivery operations.
 
-    # Generate time range
+    Includes order creation, job assignments, delivery status, warnings, and errors from the
+    drone delivery system. Use this to identify which jobs failed and what error codes were
+    reported. Logs include timestamp, log level (INFO/WARN/ERROR), job_id, drone_id, and message.
+    Logs should be processed programmatically to extract relevant information.
+
+    Example log line format: '2025-06-02T13:30:45Z [ERROR] Job J_42 FAILED: BATTERY_CRITICAL'.
+    Note this is a toy API, therefore subsequent calls will return different logs and timestamps.
+    For demo purposes, this is okay.
+
+    Args:
+        start_time: ISO format timestamp (e.g., '2024-01-15T10:00:00Z') for the beginning of
+            the log range. Defaults to 1 hour ago if not specified.
+        end_time: ISO format timestamp (e.g., '2024-01-15T11:00:00Z') for the end of the log
+            range. Defaults to current time if not specified.
+
+    Returns:
+        Newline-separated log entries
+    """
+    # Parse time range
+    start_dt: datetime
+    end_dt: datetime
+
     if start_time is None:
-        start_time = datetime.now() - timedelta(hours=1)
-    elif isinstance(start_time, str):
-        start_time = datetime.fromisoformat(start_time.replace("Z", "+00:00"))
+        start_dt = datetime.now() - timedelta(hours=1)
+    else:
+        start_dt = datetime.fromisoformat(start_time.replace("Z", "+00:00"))
 
     if end_time is None:
-        end_time = datetime.now()
-    elif isinstance(end_time, str):
-        end_time = datetime.fromisoformat(end_time.replace("Z", "+00:00"))
+        end_dt = datetime.now()
+    else:
+        end_dt = datetime.fromisoformat(end_time.replace("Z", "+00:00"))
 
     # Validate time range
-    if start_time >= end_time:
+    if start_dt >= end_dt:
         raise ValueError(
-            f"start_time must be before end_time. Got start_time={start_time}, end_time={end_time}"
+            f"start_time must be before end_time. Got start_time={start_dt}, end_time={end_dt}"
         )
 
     logs = []
@@ -145,11 +123,11 @@ def get_delivery_logs(start_time=None, end_time=None):
         ("[ERROR]", "Drone drone_{drone_id} sensor malfunction"),
     ]
 
-    current_time = start_time
-    time_delta = (end_time - start_time) / num_logs
+    current_time = start_dt
+    time_delta = (end_dt - start_dt) / num_logs
     random.seed(42)  # For reproducibility
     for i in range(num_logs):
-        level, msg_template = random.choice(log_templates)
+        level, msg_template = random.choice(log_templates)  # noqa: S311
 
         # Generate IDs
         order_id = random.randint(1, 9)
@@ -167,7 +145,7 @@ def get_delivery_logs(start_time=None, end_time=None):
         current_time += time_delta
 
     # Generate some specific logs for J_42 failure
-    failure_time = start_time + (end_time - start_time) / 2
+    failure_time = start_dt + (end_dt - start_dt) / 2
     return_time = failure_time + timedelta(minutes=5)
 
     # Add J_42 specific logs with their timestamps
@@ -188,23 +166,30 @@ def get_delivery_logs(start_time=None, end_time=None):
     logs.sort(key=lambda x: x[0])
     log_lines = [log[1] for log in logs]
 
-    return log_lines
+    return "\n".join(log_lines)
 
 
-def check_pod_health(pod_prefix):
-    """
-    Returns health status for a specific pod type.
+@beta_tool
+def check_pod_health(pod_prefix: str) -> str:
+    """Returns health status for a specific pod type in the drone infrastructure.
+
+    Use this for health checks to identify which systems are healthy vs degraded/unhealthy.
+    Returns JSON with: status (healthy/degraded/unhealthy), response_time_ms, pod_count,
+    healthy_pods, unhealthy_pods, health_percentage, and error_message if applicable.
+    Health check can take between 2-5 seconds per call due to API delays.
+
+    Example JSON response format:
+    {"pod_prefix": "battery-mgmt", "status": "unhealthy", "response_time_ms": 120,
+     "pod_count": 8, "healthy_pods": 3, "unhealthy_pods": 5, "health_percentage": 37.5,
+     "error_message": "Critical: 5 of 8 pods are unhealthy"}
 
     Args:
-        pod_prefix: The pod prefix to check health for (e.g., 'flight-controller', 'battery-mgmt')
-        namespace: Kubernetes namespace (default: 'skynet-prod')
+        pod_prefix: The pod prefix to check health for. Common values: 'flight-controller',
+            'battery-mgmt', 'drone-', 'navigation-service', 'weather-monitor', 'telemetry-collector'.
 
     Returns:
-        JSON string with health status including: status (healthy/degraded/unhealthy),
-        response_time_ms, pod_count, healthy_pods, and any error messages
+        JSON string with health status
     """
-    import json
-    import time
 
     # Set seed for reproducibility
     random.seed(hash(pod_prefix) % 100)
@@ -245,9 +230,7 @@ def check_pod_health(pod_prefix):
 
     # Simulate pod count
     pod_count = random.randint(3, 10)
-    healthy_pods = sum(
-        1 for _ in range(pod_count) if random.random() > config["failure_rate"]
-    )
+    healthy_pods = sum(1 for _ in range(pod_count) if random.random() > config["failure_rate"])
 
     # Calculate response time with some variance
     response_time = int(config["avg_response"] * random.uniform(0.8, 1.5))
@@ -262,9 +245,7 @@ def check_pod_health(pod_prefix):
         error_msg = f"{pod_count - healthy_pods} of {pod_count} pods are unhealthy"
     else:
         status = "unhealthy"
-        error_msg = (
-            f"Critical: {pod_count - healthy_pods} of {pod_count} pods are unhealthy"
-        )
+        error_msg = f"Critical: {pod_count - healthy_pods} of {pod_count} pods are unhealthy"
 
     result = {
         "pod_prefix": pod_prefix,
@@ -280,28 +261,53 @@ def check_pod_health(pod_prefix):
     return json.dumps(result)
 
 
-def get_container_logs(pod_name=None, start_time=None, end_time=None):
-    """Returns kubernetes-style container logs"""
-    import json
+@beta_tool
+def get_container_logs(
+    pod_name: str | None = None, start_time: str | None = None, end_time: str | None = None
+) -> str:
+    """Returns kubernetes-style container logs from the drone infrastructure.
 
-    # Handle case where arguments are passed as a dictionary (common with tool calling)
-    if isinstance(pod_name, dict):
-        params = pod_name
-        pod_name = params.get("pod_name")
-        start_time = params.get("start_time")
-        end_time = params.get("end_time")
+    Includes logs from flight controllers, navigation services, weather monitors, battery
+    management systems, and telemetry collectors. Returns JSON-formatted log entries with
+    timestamp, pod name, level (INFO/WARN/ERROR), and message. Use this to investigate
+    infrastructure issues that may have caused delivery failures. Filter by pod_name prefix
+    to narrow results. Logs should be processed programmatically to extract relevant information.
 
+    Example JSON log line format:
+    {"timestamp": "2025-06-02T13:20:15Z", "namespace": "skynet-prod", "pod": "battery-mgmt-7a3f",
+     "level": "ERROR", "msg": "battery voltage sensor malfunction - reporting incorrect readings across fleet"}
+
+    Note this is a toy API, therefore subsequent calls will return different logs and timestamps.
+
+    Args:
+        pod_name: Optional filter to only return logs from pods whose names start with this prefix.
+            Common prefixes: 'battery-mgmt' (battery management systems), 'flight-controller'
+            (flight control), 'drone-' (specific drone controllers), 'navigation-service'
+            (GPS/navigation), 'weather-monitor' (weather systems), 'telemetry-collector'
+            (telemetry data). If not specified, returns logs from all pods (200-300 entries).
+        start_time: ISO format timestamp (e.g., '2024-01-15T10:00:00Z') for the beginning of
+            the log range. Defaults to 1 hour ago if not specified.
+        end_time: ISO format timestamp (e.g., '2024-01-15T11:00:00Z') for the end of the log
+            range. Defaults to current time if not specified.
+
+    Returns:
+        Newline-separated JSON-formatted log entry strings
+    """
     random.seed(42)  # For reproducibility
-    # Generate time range
+
+    # Parse time range
+    start_dt: datetime
+    end_dt: datetime
+
     if start_time is None:
-        start_time = datetime.now() - timedelta(hours=1)
-    elif isinstance(start_time, str):
-        start_time = datetime.fromisoformat(start_time.replace("Z", "+00:00"))
+        start_dt = datetime.now() - timedelta(hours=1)
+    else:
+        start_dt = datetime.fromisoformat(start_time.replace("Z", "+00:00"))
 
     if end_time is None:
-        end_time = datetime.now()
-    elif isinstance(end_time, str):
-        end_time = datetime.fromisoformat(end_time.replace("Z", "+00:00"))
+        end_dt = datetime.now()
+    else:
+        end_dt = datetime.fromisoformat(end_time.replace("Z", "+00:00"))
 
     logs = []
     num_logs = CONTAINER_LOGS_COUNT  # Total number of logs to generate
@@ -368,7 +374,7 @@ def get_container_logs(pod_name=None, start_time=None, end_time=None):
         ("INFO", "authentication token refreshed"),
         ("INFO", "session maintained"),
         ("INFO", "data backup successful"),
-        ("WARN", "battery voltage drop"),
+        ("[WARN", "battery voltage drop"),
         ("WARN", "wind speed exceeding safe limits"),
         ("WARN", "GPS signal degraded"),
         ("ERROR", "critical battery level, initiating RTB"),
@@ -422,16 +428,14 @@ def get_container_logs(pod_name=None, start_time=None, end_time=None):
         ),
     ]
 
-    current_time = start_time
-    time_delta = (end_time - start_time) / num_logs
+    current_time = start_dt
+    time_delta = (end_dt - current_time) / num_logs
 
-    for i in range(num_logs):
+    for _ in range(num_logs):
         # Generate pod name
         pod_prefix = random.choice(pod_prefixes)
         drone_id = f"{random.randint(100, 9999):04d}"
-        pod_suffix = "".join(
-            random.choices("abcdefghijklmnopqrstuvwxyz0123456789", k=4)
-        )
+        pod_suffix = "".join(random.choices("abcdefghijklmnopqrstuvwxyz0123456789", k=4))
 
         # Format pod name
         if "{drone_id}" in pod_prefix:
@@ -465,7 +469,7 @@ def get_container_logs(pod_name=None, start_time=None, end_time=None):
         current_time += time_delta
 
     # Insert specific battery management system failure around the time J_42 failed
-    failure_time = start_time + (end_time - start_time) / 2 - timedelta(minutes=10)
+    failure_time = current_time + (end_dt - current_time) / 2 - timedelta(minutes=10)
     battery_failure = {
         "timestamp": failure_time.strftime("%Y-%m-%dT%H:%M:%SZ"),
         "namespace": "skynet-prod",
@@ -477,7 +481,7 @@ def get_container_logs(pod_name=None, start_time=None, end_time=None):
     # Insert failure in the middle of logs
     logs.insert(len(logs) // 2, json.dumps(battery_failure))
 
-    return logs
+    return "\n".join(logs)
 
 
 if __name__ == "__main__":
@@ -516,57 +520,3 @@ if __name__ == "__main__":
     for line in log_lines[:5]:
         print(line)
     print(f"\n... ({len(log_lines)} total log entries for flight-controller pods)")
-
-"""
-================================================================================
-DEMO: get_delivery_logs()
-================================================================================
-
-Generating unstructured backend application logs...
-
-2025-11-14T12:52:40Z [INFO] Drone drone_0095 battery health check passed
-2025-11-14T12:52:47Z [INFO] Job J_29 waypoint 3 reached
-2025-11-14T12:52:55Z [INFO] Base station communication nominal
-2025-11-14T12:53:02Z [INFO] Drone drone_0055 motors online
-2025-11-14T12:53:09Z [INFO] Order O_1 payment processed
-2025-11-14T12:53:16Z [INFO] Job J_78 in progress - altitude 200m
-2025-11-14T12:53:23Z [INFO] Drone drone_0090 telemetry link established
-2025-11-14T12:53:31Z [INFO] Drone drone_0058 motors online
-2025-11-14T12:53:38Z [INFO] Drone drone_0098 charging at 50%
-2025-11-14T12:53:45Z [WARN] Job J_90 weather advisory - wind speed 25mph
-
-... (502 total log entries)
-
-================================================================================
-DEMO: get_container_logs()
-================================================================================
-
-Generating Kubernetes-style container logs...
-
-{"timestamp": "2025-11-14T12:52:40Z", "namespace": "skynet-prod", "pod": "telemetry-collector-aji0", "level": "INFO", "msg": "SSL handshake completed with drone_1924"}
-{"timestamp": "2025-11-14T12:52:52Z", "namespace": "skynet-prod", "pod": "battery-mgmt-bdiv", "level": "INFO", "msg": "cell balancing in progress"}
-{"timestamp": "2025-11-14T12:53:04Z", "namespace": "skynet-prod", "pod": "drone-9028-controller-pqk5", "level": "INFO", "msg": "GPS accuracy within tolerance"}
-{"timestamp": "2025-11-14T12:53:16Z", "namespace": "skynet-prod", "pod": "telemetry-collector-mf8m", "level": "INFO", "msg": "SSL handshake completed with drone_7024"}
-{"timestamp": "2025-11-14T12:53:28Z", "namespace": "skynet-prod", "pod": "weather-monitor-mmjb", "level": "INFO", "msg": "descent rate nominal"}
-{"timestamp": "2025-11-14T12:53:40Z", "namespace": "skynet-prod", "pod": "battery-mgmt-9nt3", "level": "INFO", "msg": "discharge curve nominal"}
-{"timestamp": "2025-11-14T12:53:52Z", "namespace": "skynet-prod", "pod": "navigation-service-gcx1", "level": "INFO", "msg": "connection health check passed for drone_9559"}
-{"timestamp": "2025-11-14T12:54:04Z", "namespace": "skynet-prod", "pod": "drone-1754-controller-nq4f", "level": "INFO", "msg": "message queue consumer processing"}
-{"timestamp": "2025-11-14T12:54:16Z", "namespace": "skynet-prod", "pod": "drone-4474-controller-zycw", "level": "INFO", "msg": "voltage reading: 12.5V nominal"}
-{"timestamp": "2025-11-14T12:54:28Z", "namespace": "skynet-prod", "pod": "drone-7673-controller-n9xu", "level": "INFO", "msg": "health endpoint responding"}
-
-... (301 total log entries)
-
-================================================================================
-DEMO: get_container_logs(pod_name='flight-controller')
-================================================================================
-
-Filtering for flight-controller pods...
-
-{"timestamp": "2025-11-14T12:52:40Z", "namespace": "skynet-prod", "pod": "flight-controller-d4v3", "level": "INFO", "msg": "descent rate nominal"}
-{"timestamp": "2025-11-14T12:52:52Z", "namespace": "skynet-prod", "pod": "flight-controller-32oc", "level": "INFO", "msg": "metrics published to monitoring"}
-{"timestamp": "2025-11-14T12:53:04Z", "namespace": "skynet-prod", "pod": "flight-controller-w2pc", "level": "INFO", "msg": "session maintained"}
-{"timestamp": "2025-11-14T12:53:16Z", "namespace": "skynet-prod", "pod": "flight-controller-pq85", "level": "INFO", "msg": "cell balance within tolerance"}
-{"timestamp": "2025-11-14T12:53:28Z", "namespace": "skynet-prod", "pod": "flight-controller-ciyh", "level": "INFO", "msg": "system diagnostics passed"}
-
-... (43 total log entries for flight-controller pods)
-"""
