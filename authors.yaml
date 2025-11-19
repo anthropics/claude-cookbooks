@@ -1,0 +1,53 @@
+# yaml-language-server: $schema=./.github/authors_schema.json
+# Authors mapping: GitHub username -> Author details
+# This file maps author GitHub usernames (used in registry.yaml) to their full details
+# for display on the website.
+
+Anthropic:
+  name: Anthropic
+  website: https://www.anthropic.com
+  avatar: https://github.com/anthropics.png
+Briiick:
+  name: Alexander Bricken
+  website: https://bricken.co
+  avatar: https://avatars.githubusercontent.com/u/44481408?v=4
+GarvanD:
+  name: Garvan Doyle
+  website: https://garvandoyle.com
+  avatar: https://avatars.githubusercontent.com/u/22383376?v=4
+JiriDeJonghe:
+  name: Jiri De Jonghe
+  website: https://github.com/JiriDeJonghe
+  avatar: https://avatars.githubusercontent.com/u/33628402?v=4
+alexalbertt:
+  name: Alex Albert
+  website: https://github.com/alexalbertt
+  avatar: https://avatars.githubusercontent.com/u/34638987?v=4
+davidhershey:
+  name: David Hershey
+  website: https://github.com/davidhershey
+  avatar: https://avatars.githubusercontent.com/u/11651858?v=4
+james-briggs:
+  name: james-briggs
+  website: https://github.com/James-Briggs
+  avatar: https://avatars.githubusercontent.com/u/64431405?v=4
+jpvajda:
+  name: john-vajda
+  website: https://github.com/jpvajda
+  avatar: https://github.com/jpvajda.png
+maheshmurag:
+  name: Mahesh Murag
+  website: https://github.com/maheshmurag
+  avatar: https://avatars.githubusercontent.com/u/5667029?v=4
+ravi03071991:
+  name: Ravi Theja
+  website: https://sites.google.com/view/ravi-theja
+  avatar: https://avatars.githubusercontent.com/u/12198101?v=4
+rgb-prithvi:
+  name: Prithvi Rajasekaran
+  website: https://x.com/rgb_prithvi
+  avatar: https://avatars.githubusercontent.com/u/64937816
+RichmondAlake:
+  name: richmond-alake
+  website: https://github.com/RichmondAlake
+  avatar: https://github.com/RichmondAlake.png

@@ -1,0 +1,33 @@
+name: Verify Authors
+
+on:
+  pull_request:
+    paths:
+      - 'authors.yaml'
+      - 'registry.yaml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'authors.yaml'
+      - 'registry.yaml'
+
+jobs:
+  verify-urls:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install pyyaml requests jsonschema
+
+      - name: Verify authors and registry
+        run: |
+          python .github/scripts/verify_registry.py

@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Authors Schema",
+  "description": "Schema for authors.yml - maps GitHub usernames to author details",
+  "type": "object",
+  "patternProperties": {
+    "^[a-zA-Z0-9_-]+$": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Full display name of the author"
+        },
+        "website": {
+          "type": "string",
+          "format": "uri",
+          "description": "Author's website URL (optional)"
+        },
+        "avatar": {
+          "type": "string",
+          "format": "uri",
+          "description": "Avatar image URL (optional, defaults to https://github.com/username.png)"
+        }
+      },
+      "required": ["name"],
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
