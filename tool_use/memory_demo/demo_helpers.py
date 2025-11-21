@@ -37,7 +37,7 @@ def run_conversation_turn(
     context_management: dict[str, Any] | None = None,
     thinking: dict[str, Any] | None = None,
     max_tokens: int = 1024,
-    verbose: bool = False
+    verbose: bool = False,
 ) -> tuple[Any, list[dict[str, Any]], list[dict[str, Any]]]:
     """
     Run a single conversation turn, handling tool uses.
@@ -64,7 +64,7 @@ def run_conversation_turn(
         "system": system,
         "messages": messages,
         "tools": [memory_tool],
-        "betas": ["context-management-2025-06-27"]
+        "betas": ["context-management-2025-06-27"],
     }
 
     if thinking:
@@ -83,10 +83,14 @@ def run_conversation_turn(
             # Include thinking blocks in assistant content (required for tool use with thinking)
             # Must include signature field when passing back to API
             if verbose:
-                thinking_preview = content.thinking[:100] + "..." if len(content.thinking) > 100 else content.thinking
+                thinking_preview = (
+                    content.thinking[:100] + "..."
+                    if len(content.thinking) > 100
+                    else content.thinking
+                )
                 print(f"🧠 Thinking: {thinking_preview}")
             thinking_block = {"type": "thinking", "thinking": content.thinking}
-            if hasattr(content, 'signature') and content.signature:
+            if hasattr(content, "signature") and content.signature:
                 thinking_block["signature"] = content.signature
             assistant_content.append(thinking_block)
         elif content.type == "text":
@@ -95,8 +99,8 @@ def run_conversation_turn(
             assistant_content.append({"type": "text", "text": content.text})
         elif content.type == "tool_use":
             if verbose:
-                cmd = content.input.get('command')
-                path = content.input.get('path', '')
+                cmd = content.input.get("command")
+                path = content.input.get("path", "")
                 print(f"  🔧 Memory tool: {cmd} {path}")
 
             result = execute_tool(content, memory_handler)
@@ -105,17 +109,12 @@ def run_conversation_turn(
                 result_preview = result[:80] + "..." if len(result) > 80 else result
                 print(f"  ✓ Result: {result_preview}")
 
-            assistant_content.append({
-                "type": "tool_use",
-                "id": content.id,
-                "name": content.name,
-                "input": content.input
-            })
-            tool_results.append({
-                "type": "tool_result",
-                "tool_use_id": content.id,
-                "content": result
-            })
+            assistant_content.append(
+                {"type": "tool_use", "id": content.id, "name": content.name, "input": content.input}
+            )
+            tool_results.append(
+                {"type": "tool_result", "tool_use_id": content.id, "content": result}
+            )
 
     return response, assistant_content, tool_results
 
@@ -130,7 +129,7 @@ def run_conversation_loop(
     thinking: dict[str, Any] | None = None,
     max_tokens: int = 1024,
     max_turns: int = 5,
-    verbose: bool = False
+    verbose: bool = False,
 ) -> Any:
     """
     Run a complete conversation loop until Claude stops using tools.
@@ -166,7 +165,7 @@ def run_conversation_loop(
             context_management=context_management,
             thinking=thinking,
             max_tokens=max_tokens,
-            verbose=verbose
+            verbose=verbose,
         )
 
         messages.append({"role": "assistant", "content": assistant_content})
@@ -198,29 +197,31 @@ def print_context_management_info(response: Any) -> tuple[bool, int]:
         edits = getattr(response.context_management, "applied_edits", []) or []
         if edits:
             context_cleared = True
-            print(f"  ✂️  Context editing triggered!")
+            print("  ✂️  Context editing triggered!")
 
             # Process all edits and sum up what was cleared
             total_tokens = 0
             for edit in edits:
-                edit_type = getattr(edit, 'type', 'unknown')
-                tokens = getattr(edit, 'cleared_input_tokens', 0) or 0
+                edit_type = getattr(edit, "type", "unknown")
+                tokens = getattr(edit, "cleared_input_tokens", 0) or 0
                 total_tokens += tokens
 
-                if 'thinking' in edit_type:
-                    thinking_turns = getattr(edit, 'cleared_thinking_turns', 0) or 0
+                if "thinking" in edit_type:
+                    thinking_turns = getattr(edit, "cleared_thinking_turns", 0) or 0
                     if thinking_turns > 0 or tokens > 0:
-                        print(f"      • Cleared {thinking_turns} thinking turn(s), saved {tokens:,} tokens")
-                elif 'tool_uses' in edit_type:
-                    tool_uses = getattr(edit, 'cleared_tool_uses', 0) or 0
+                        print(
+                            f"      • Cleared {thinking_turns} thinking turn(s), saved {tokens:,} tokens"
+                        )
+                elif "tool_uses" in edit_type:
+                    tool_uses = getattr(edit, "cleared_tool_uses", 0) or 0
                     if tool_uses > 0 or tokens > 0:
                         print(f"      • Cleared {tool_uses} tool use(s), saved {tokens:,} tokens")
 
             saved_tokens = total_tokens
             print(f"      • After clearing: {response.usage.input_tokens:,} tokens")
         else:
-            print(f"  ℹ️  Context below threshold - no clearing triggered")
+            print("  ℹ️  Context below threshold - no clearing triggered")
     else:
-        print(f"  ℹ️  No context management applied")
+        print("  ℹ️  No context management applied")
 
     return context_cleared, saved_tokens
