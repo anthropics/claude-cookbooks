@@ -16,37 +16,123 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+        with:
+          fetch-depth: 0
+
+      - name: Get changed files
+        id: changed-files
+        if: github.event_name == 'pull_request'
+        run: |
+          # Get list of changed files
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -E '\.(md|ipynb)$' || true)
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+
+          # Save changed files to output
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "files<<EOF" >> $GITHUB_OUTPUT
+            echo "$CHANGED_FILES" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          fi
+
       - name: Setup Python
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || steps.changed-files.outputs.has_changes == 'true'
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
-      - name: Convert notebooks for link extraction
+
+      - name: Convert notebooks for link extraction (PR - changed files only)
+        if: github.event_name == 'pull_request' && steps.changed-files.outputs.has_changes == 'true'
         run: |
           pip install jupyter nbconvert
           mkdir -p temp_md
-          
+
+          # Convert only changed notebooks
+          echo "${{ steps.changed-files.outputs.files }}" | grep '\.ipynb$' | while read nb; do
+            if [ -f "$nb" ]; then
+              echo "Converting: $nb"
+              jupyter nbconvert --to markdown "$nb" \
+                --output-dir=temp_md \
+                --ExtractOutputPreprocessor.enabled=False
+            fi
+          done
+
+      - name: Convert notebooks for link extraction (scheduled/manual - all files)
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: |
+          pip install jupyter nbconvert
+          mkdir -p temp_md
+
           for nb in $(find . -name "*.ipynb" -not -path "*/.*"); do
             echo "Converting: $nb"
             jupyter nbconvert --to markdown "$nb" \
               --output-dir=temp_md \
               --ExtractOutputPreprocessor.enabled=False
           done
-      
-      - name: Check Links with Lychee
+
+      - name: Prepare file list for link checking (PR)
+        if: github.event_name == 'pull_request' && steps.changed-files.outputs.has_changes == 'true'
+        id: file-list
+        run: |
+          FILES=""
+
+          # Add all changed markdown files (from any directory)
+          while IFS= read -r f; do
+            if [ -n "$f" ] && [ -f "$f" ]; then
+              FILES="$FILES $f"
+            fi
+          done < <(echo "${{ steps.changed-files.outputs.files }}" | grep '\.md$')
+
+          # Add converted notebooks
+          if [ -d "temp_md" ] && [ -n "$(ls -A temp_md/*.md 2>/dev/null)" ]; then
+            FILES="$FILES temp_md/*.md"
+          fi
+
+          # Remove leading/trailing whitespace
+          FILES=$(echo $FILES | xargs)
+
+          echo "Prepared files for lychee: $FILES"
+
+          if [ -z "$FILES" ]; then
+            echo "file_args=" >> $GITHUB_OUTPUT
+            echo "has_files=false" >> $GITHUB_OUTPUT
+          else
+            echo "file_args=$FILES" >> $GITHUB_OUTPUT
+            echo "has_files=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check Links with Lychee (PR - changed files only)
+        if: github.event_name == 'pull_request' && steps.changed-files.outputs.has_changes == 'true' && steps.file-list.outputs.has_files == 'true'
         id: lychee
         uses: lycheeverse/lychee-action@v2
         with:
           args: |
-            --config lychee.toml 
+            --config lychee.toml
             --format markdown
             --no-progress
-            skills/**/*.md 
-            temp_md/*.md 
+            ${{ steps.file-list.outputs.file_args }}
+          output: lychee-report.md
+          fail: false
+          failIfEmpty: false
+
+      - name: Check Links with Lychee (scheduled/manual - all files)
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        id: lychee-full
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: |
+            --config lychee.toml
+            --format markdown
+            --no-progress
+            skills/**/*.md
+            temp_md/*.md
             README.md
           output: lychee-report.md
           fail: false
+          failIfEmpty: false
       
       - name: Comment PR with results
         if: github.event_name == 'pull_request' && steps.lychee.outputs.exit_code != 0

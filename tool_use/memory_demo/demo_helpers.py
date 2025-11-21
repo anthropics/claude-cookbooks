@@ -71,7 +71,7 @@ def run_conversation_turn(
         request_params["thinking"] = thinking
 
     if context_management:
-        request_params["extra_body"] = {"context_management": context_management}
+        request_params["context_management"] = context_management
 
     response = client.beta.messages.create(**request_params)
 

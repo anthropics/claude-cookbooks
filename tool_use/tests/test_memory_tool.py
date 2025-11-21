@@ -34,25 +34,19 @@ class TestMemoryToolHandler(unittest.TestCase):
 
     def test_path_validation_prevents_traversal_dotdot(self):
         """Test that .. traversal is blocked."""
-        result = self.handler.execute(
-            command="view", path="/memories/../../../etc/passwd"
-        )
+        result = self.handler.execute(command="view", path="/memories/../../../etc/passwd")
         self.assertIn("error", result)
         self.assertIn("escape", result["error"].lower())
 
     def test_path_validation_prevents_traversal_encoded(self):
         """Test that URL-encoded traversal is blocked."""
-        result = self.handler.execute(
-            command="view", path="/memories/%2e%2e/%2e%2e/etc/passwd"
-        )
+        result = self.handler.execute(command="view", path="/memories/%2e%2e/%2e%2e/etc/passwd")
         # The path will be processed and should fail validation
         self.assertIn("error", result)
 
     def test_path_validation_allows_valid_paths(self):
         """Test that valid memory paths are accepted."""
-        result = self.handler.execute(
-            command="create", path="/memories/test.txt", file_text="test"
-        )
+        result = self.handler.execute(command="create", path="/memories/test.txt", file_text="test")
         self.assertIn("success", result)
 
     # View Command Tests
@@ -66,12 +60,8 @@ class TestMemoryToolHandler(unittest.TestCase):
     def test_view_directory_with_files(self):
         """Test viewing a directory with files."""
         # Create some test files
-        self.handler.execute(
-            command="create", path="/memories/file1.txt", file_text="content1"
-        )
-        self.handler.execute(
-            command="create", path="/memories/file2.txt", file_text="content2"
-        )
+        self.handler.execute(command="create", path="/memories/file1.txt", file_text="content1")
+        self.handler.execute(command="create", path="/memories/file2.txt", file_text="content2")
 
         result = self.handler.execute(command="view", path="/memories")
         self.assertIn("success", result)
@@ -81,9 +71,7 @@ class TestMemoryToolHandler(unittest.TestCase):
     def test_view_file_with_line_numbers(self):
         """Test viewing a file with line numbers."""
         content = "line 1\nline 2\nline 3"
-        self.handler.execute(
-            command="create", path="/memories/test.txt", file_text=content
-        )
+        self.handler.execute(command="create", path="/memories/test.txt", file_text=content)
 
         result = self.handler.execute(command="view", path="/memories/test.txt")
         self.assertIn("success", result)
@@ -94,13 +82,9 @@ class TestMemoryToolHandler(unittest.TestCase):
     def test_view_file_with_range(self):
         """Test viewing specific line range."""
         content = "line 1\nline 2\nline 3\nline 4"
-        self.handler.execute(
-            command="create", path="/memories/test.txt", file_text=content
-        )
+        self.handler.execute(command="create", path="/memories/test.txt", file_text=content)
 
-        result = self.handler.execute(
-            command="view", path="/memories/test.txt", view_range=[2, 3]
-        )
+        result = self.handler.execute(command="view", path="/memories/test.txt", view_range=[2, 3])
         self.assertIn("success", result)
         self.assertIn("   2: line 2", result["success"])
         self.assertIn("   3: line 3", result["success"])
@@ -141,17 +125,13 @@ class TestMemoryToolHandler(unittest.TestCase):
 
     def test_create_requires_file_extension(self):
         """Test that create only allows text file extensions."""
-        result = self.handler.execute(
-            command="create", path="/memories/noext", file_text="content"
-        )
+        result = self.handler.execute(command="create", path="/memories/noext", file_text="content")
         self.assertIn("error", result)
         self.assertIn("text files are supported", result["error"])
 
     def test_create_overwrites_existing_file(self):
         """Test that create overwrites existing files."""
-        self.handler.execute(
-            command="create", path="/memories/test.txt", file_text="original"
-        )
+        self.handler.execute(command="create", path="/memories/test.txt", file_text="original")
         result = self.handler.execute(
             command="create", path="/memories/test.txt", file_text="updated"
         )
@@ -183,9 +163,7 @@ class TestMemoryToolHandler(unittest.TestCase):
 
     def test_str_replace_string_not_found(self):
         """Test replacement when string doesn't exist."""
-        self.handler.execute(
-            command="create", path="/memories/test.txt", file_text="Hello World"
-        )
+        self.handler.execute(command="create", path="/memories/test.txt", file_text="Hello World")
 
         result = self.handler.execute(
             command="str_replace",
@@ -276,9 +254,7 @@ class TestMemoryToolHandler(unittest.TestCase):
 
     def test_insert_invalid_line(self):
         """Test insert with invalid line number."""
-        self.handler.execute(
-            command="create", path="/memories/test.txt", file_text="line 1"
-        )
+        self.handler.execute(command="create", path="/memories/test.txt", file_text="line 1")
 
         result = self.handler.execute(
             command="insert",
@@ -293,9 +269,7 @@ class TestMemoryToolHandler(unittest.TestCase):
 
     def test_delete_file(self):
         """Test deleting a file."""
-        self.handler.execute(
-            command="create", path="/memories/test.txt", file_text="content"
-        )
+        self.handler.execute(command="create", path="/memories/test.txt", file_text="content")
 
         result = self.handler.execute(command="delete", path="/memories/test.txt")
         self.assertIn("success", result)
@@ -331,9 +305,7 @@ class TestMemoryToolHandler(unittest.TestCase):
 
     def test_rename_file(self):
         """Test renaming a file."""
-        self.handler.execute(
-            command="create", path="/memories/old.txt", file_text="content"
-        )
+        self.handler.execute(command="create", path="/memories/old.txt", file_text="content")
 
         result = self.handler.execute(
             command="rename", old_path="/memories/old.txt", new_path="/memories/new.txt"
@@ -347,9 +319,7 @@ class TestMemoryToolHandler(unittest.TestCase):
 
     def test_rename_to_subdirectory(self):
         """Test moving a file to a subdirectory."""
-        self.handler.execute(
-            command="create", path="/memories/file.txt", file_text="content"
-        )
+        self.handler.execute(command="create", path="/memories/file.txt", file_text="content")
 
         result = self.handler.execute(
             command="rename",
@@ -373,12 +343,8 @@ class TestMemoryToolHandler(unittest.TestCase):
 
     def test_rename_destination_exists(self):
         """Test rename when destination already exists."""
-        self.handler.execute(
-            command="create", path="/memories/file1.txt", file_text="content1"
-        )
-        self.handler.execute(
-            command="create", path="/memories/file2.txt", file_text="content2"
-        )
+        self.handler.execute(command="create", path="/memories/file1.txt", file_text="content1")
+        self.handler.execute(command="create", path="/memories/file2.txt", file_text="content2")
 
         result = self.handler.execute(
             command="rename",
@@ -406,12 +372,8 @@ class TestMemoryToolHandler(unittest.TestCase):
     def test_clear_all_memory(self):
         """Test clearing all memory."""
         # Create some files
-        self.handler.execute(
-            command="create", path="/memories/file1.txt", file_text="content1"
-        )
-        self.handler.execute(
-            command="create", path="/memories/file2.txt", file_text="content2"
-        )
+        self.handler.execute(command="create", path="/memories/file1.txt", file_text="content1")
+        self.handler.execute(command="create", path="/memories/file2.txt", file_text="content2")
 
         result = self.handler.clear_all_memory()
         self.assertIn("success", result)

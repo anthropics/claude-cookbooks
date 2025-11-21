@@ -130,7 +130,7 @@ Remember: Your memory persists across conversations. Use it wisely."""
                 messages=self.messages,
                 tools=[{"type": "memory_20250818", "name": "memory"}],
                 betas=["context-management-2025-06-27"],
-                extra_body={"context_management": CONTEXT_MANAGEMENT},
+                context_management=CONTEXT_MANAGEMENT,
             )
 
             print(" ✓")
@@ -140,7 +140,7 @@ Remember: Your memory persists across conversations. Use it wisely."""
 
             # Check for context management
             if hasattr(response, "context_management") and response.context_management:
-                applied = response.context_management.get("applied_edits", [])
+                applied = getattr(response.context_management, "applied_edits", [])
                 if applied:
                     context_edits_applied.extend(applied)
 
@@ -292,9 +292,9 @@ def run_session_3() -> None:
     if result["context_edits"]:
         print("\n🧹 Context Management Applied:")
         for edit in result["context_edits"]:
-            print(f"  - Type: {edit.get('type')}")
-            print(f"  - Cleared tool uses: {edit.get('cleared_tool_uses', 0)}")
-            print(f"  - Tokens saved: {edit.get('cleared_input_tokens', 0):,}")
+            print(f"  - Type: {getattr(edit, 'type', 'unknown')}")
+            print(f"  - Cleared tool uses: {getattr(edit, 'cleared_tool_uses', 0)}")
+            print(f"  - Tokens saved: {getattr(edit, 'cleared_input_tokens', 0):,}")
 
     print("\n✅ Session 3 complete - Context editing kept conversation manageable!\n")
 

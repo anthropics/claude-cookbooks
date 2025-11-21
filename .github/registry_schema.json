@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Registry Schema",
+  "description": "Schema for registry.yaml - cookbook metadata",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "title": {
+        "type": "string",
+        "description": "Title of the cookbook"
+      },
+      "description": {
+        "type": "string",
+        "description": "Brief description of the cookbook"
+      },
+      "path": {
+        "type": "string",
+        "description": "Path to the notebook file"
+      },
+      "slug": {
+        "type": "string",
+        "pattern": "^[a-z0-9-]+$",
+        "description": "URL-friendly slug for the cookbook"
+      },
+      "categories": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": [
+            "Agent Patterns",
+            "Claude Agent SDK",
+            "Evals",
+            "Fine-Tuning",
+            "Multimodal",
+            "Integrations",
+            "Observability",
+            "RAG & Retrieval",
+            "Responses",
+            "Skills",
+            "Thinking",
+            "Tools"
+          ]
+        },
+        "minItems": 1,
+        "description": "Categories of the cookbook"
+      },
+      "github_url": {
+        "type": "string",
+        "format": "uri",
+        "description": "GitHub URL to the notebook"
+      },
+      "authors": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "description": "GitHub username (must match keys in authors.yml)"
+        },
+        "minItems": 1,
+        "description": "List of author GitHub usernames"
+      },
+      "date": {
+        "type": "string",
+        "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+        "description": "Publication date in YYYY-MM-DD format"
+      },
+      "tags": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Tags for the cookbook"
+      },
+      "difficulty": {
+        "type": "string",
+        "enum": ["beginner", "intermediate", "advanced", ""],
+        "description": "Difficulty level (optional)"
+      },
+      "use_case": {
+        "type": "string",
+        "description": "Use case category (optional)"
+      },
+      "thumbnail": {
+        "type": "string",
+        "description": "Thumbnail image URL (optional)"
+      },
+      "archived": {
+        "type": "boolean",
+        "description": "Whether the cookbook is archived (optional, defaults to false)"
+      }
+    },
+    "required": ["title", "path", "categories", "authors", "date"],
+    "additionalProperties": false
+  }
+}

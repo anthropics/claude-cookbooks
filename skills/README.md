@@ -17,15 +17,17 @@ Skills are organized packages of instructions, executable code, and resources th
 
 ## Key Features
 
-✨ **Progressive Disclosure Architecture** - Skills load only when needed, optimizing token usage
-📊 **Financial Focus** - Real-world examples for finance and business analytics
-🔧 **Custom Skills Development** - Learn to build and deploy your own skills
-🎯 **Production-Ready Examples** - Code you can adapt for immediate use
+- ✨ **Progressive Disclosure Architecture** - Skills load only when needed, optimizing token usage
+- 📊 **Financial Focus** - Real-world examples for finance and business analytics
+- 🔧 **Custom Skills Development** - Learn to build and deploy your own skills
+- 🎯 **Production-Ready Examples** - Code you can adapt for immediate use
 
 ## Cookbook Structure
 
 ### 📚 [Notebook 1: Introduction to Skills](notebooks/01_skills_introduction.ipynb)
+
 Learn the fundamentals of Claude's Skills feature with quick-start examples.
+
 - Understanding Skills architecture
 - Setting up the API with beta headers
 - Creating your first Excel spreadsheet
@@ -33,14 +35,18 @@ Learn the fundamentals of Claude's Skills feature with quick-start examples.
 - Exporting to PDF format
 
 ### 💼 [Notebook 2: Financial Applications](notebooks/02_skills_financial_applications.ipynb)
+
 Explore powerful business use cases with real financial data.
+
 - Building financial dashboards with charts and pivot tables
 - Portfolio analysis and investment reporting
 - Cross-format workflows: CSV → Excel → PowerPoint → PDF
 - Token optimization strategies
 
 ### 🔧 [Notebook 3: Custom Skills Development](notebooks/03_skills_custom_development.ipynb)
+
 Master the art of creating your own specialized skills.
+
 - Building a financial ratio calculator
 - Creating company brand guidelines skill
 - Advanced: Financial modeling suite
@@ -57,35 +63,40 @@ Master the art of creating your own specialized skills.
 ### Installation
 
 1. **Clone the repository**
+
 ```bash
 git clone https://github.com/anthropics/claude-cookbooks.git
 cd claude-cookbooks/skills
 ```
 
 2. **Create virtual environment** (recommended)
+
 ```bash
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
 3. **Install dependencies**
+
 ```bash
 pip install -r requirements.txt
 ```
 
 4. **Configure API key**
+
 ```bash
 cp .env.example .env
 # Edit .env and add your ANTHROPIC_API_KEY
 ```
 
 5. **Launch Jupyter**
+
 ```bash
 jupyter notebook
 ```
 
 6. **Start with Notebook 1**
-Open `notebooks/01_skills_introduction.ipynb` and follow along!
+   Open `notebooks/01_skills_introduction.ipynb` and follow along!
 
 ## Sample Data
 
@@ -136,6 +147,7 @@ client = Anthropic(
 ```
 
 **Required Beta Headers:**
+
 - `code-execution-2025-08-25` - Enables code execution for Skills
 - `files-api-2025-04-14` - Required for downloading generated files
 - `skills-2025-10-02` - Enables Skills feature
@@ -216,6 +228,7 @@ client.beta.files.delete(file_id="file_abc123...")
 ```
 
 **Important Notes:**
+
 - Files are stored temporarily on Anthropic's servers
 - Downloaded files should be saved to your local `outputs/` directory
 - The Files API uses the same API key as the Messages API
@@ -228,12 +241,12 @@ See the [Files API documentation](https://docs.claude.com/en/api/files-content) 
 
 Claude comes with these pre-built skills:
 
-| Skill | ID | Description |
-|-------|-----|-------------|
-| Excel | `xlsx` | Create and manipulate Excel workbooks with formulas, charts, and formatting |
-| PowerPoint | `pptx` | Generate professional presentations with slides, charts, and transitions |
-| PDF | `pdf` | Create formatted PDF documents with text, tables, and images |
-| Word | `docx` | Generate Word documents with rich formatting and structure |
+| Skill      | ID     | Description                                                                 |
+| ---------- | ------ | --------------------------------------------------------------------------- |
+| Excel      | `xlsx` | Create and manipulate Excel workbooks with formulas, charts, and formatting |
+| PowerPoint | `pptx` | Generate professional presentations with slides, charts, and transitions    |
+| PDF        | `pdf`  | Create formatted PDF documents with text, tables, and images                |
+| Word       | `docx` | Generate Word documents with rich formatting and structure                  |
 
 ## Creating Custom Skills
 
@@ -253,16 +266,19 @@ Learn more in [Notebook 3](notebooks/03_skills_custom_development.ipynb).
 ## Common Use Cases
 
 ### Financial Reporting
+
 - Automated quarterly reports
 - Budget variance analysis
 - Investment performance dashboards
 
 ### Data Analysis
+
 - Excel-based analytics with complex formulas
 - Pivot table generation
 - Statistical analysis and visualization
 
 ### Document Automation
+
 - Branded presentation generation
 - Report compilation from multiple sources
 - Cross-format document conversion
@@ -279,34 +295,43 @@ Learn more in [Notebook 3](notebooks/03_skills_custom_development.ipynb).
 ### Common Issues
 
 **API Key Not Found**
+
 ```
 ValueError: ANTHROPIC_API_KEY not found
 ```
+
 → Make sure you've copied `.env.example` to `.env` and added your key
 
 **Skills Beta Header Missing**
+
 ```
 Error: Skills feature requires beta header
 ```
+
 → Ensure you're using the correct beta headers as shown in the notebooks
 
 **Token Limit Exceeded**
+
 ```
 Error: Request exceeds token limit
 ```
+
 → Break large operations into smaller chunks or use progressive disclosure
 
 ## Resources
 
 ### Documentation
+
 - 📖 [Claude API Documentation](https://docs.anthropic.com/en/api/messages)
 - 🔧 [Skills Documentation](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview)
 
 ### Support Articles
+
 - 📚 [Teach Claude your way of working using Skills](https://support.claude.com/en/articles/12580051-teach-claude-your-way-of-working-using-skills) - User guide for working with Skills
 - 🛠️ [How to create a skill with Claude through conversation](https://support.claude.com/en/articles/12599426-how-to-create-a-skill-with-claude-through-conversation) - Interactive skill creation guide
 
 ### Community & Support
+
 - 💬 [Claude Support](https://support.claude.com)
 - 🐙 [GitHub Issues](https://github.com/anthropics/claude-cookbooks/issues)
 
