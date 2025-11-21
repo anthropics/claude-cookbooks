@@ -3,18 +3,19 @@ Standalone Claude API Response Visualizer
 """
 
 import json
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
+
 from rich.console import Console
 from rich.panel import Panel
 from rich.syntax import Syntax
-from rich.tree import Tree
 from rich.text import Text
+from rich.tree import Tree
 
 
 class ParsedContent:
     """Represents a parsed content block from a Claude message."""
 
-    def __init__(self, content_type: str, data: Dict[str, Any]):
+    def __init__(self, content_type: str, data: dict[str, Any]):
         self.type = content_type
         self.data = data
 
@@ -25,10 +26,10 @@ class ParsedMessage:
     def __init__(
         self,
         role: str,
-        content: List[ParsedContent],
-        model: Optional[str] = None,
-        stop_reason: Optional[str] = None,
-        usage: Optional[Dict[str, int]] = None,
+        content: list[ParsedContent],
+        model: str | None = None,
+        stop_reason: str | None = None,
+        usage: dict[str, int] | None = None,
     ):
         self.role = role
         self.content = content
@@ -37,7 +38,7 @@ class ParsedMessage:
         self.usage = usage or {}
 
 
-def parse_content_block(block: Union[Dict[str, Any], Any]) -> ParsedContent:
+def parse_content_block(block: dict[str, Any] | Any) -> ParsedContent:
     """Parse a single content block from a message."""
     # Handle dict format (from JSON)
     if isinstance(block, dict):
@@ -63,7 +64,7 @@ def parse_content_block(block: Union[Dict[str, Any], Any]) -> ParsedContent:
     return ParsedContent("unknown", {"raw": str(block)})
 
 
-def parse_response(response: Union[Dict[str, Any], Any]) -> ParsedMessage:
+def parse_response(response: dict[str, Any] | Any) -> ParsedMessage:
     """Parse a Claude API response into a structured format."""
     # Handle dict format (from JSON)
     if isinstance(response, dict):

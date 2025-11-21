@@ -217,8 +217,10 @@ def get_team_members(department: str) -> str:
 def get_expenses(employee_id: str, quarter: str) -> str:
     """Returns all expense line items for a given employee in a specific quarter.
 
-    Each expense includes date, category, description, amount, and status.
-    An employee may have anywhere from a few to 150+ expense line items per quarter.
+    Each expense includes comprehensive metadata: date, category, description, amount,
+    receipt details, approval chain, merchant information, and more. An employee may
+    have anywhere from a few to 150+ expense line items per quarter, and each line
+    item contains substantial metadata for audit and compliance purposes.
 
     Args:
         employee_id: The unique employee identifier (e.g., 'ENG001', 'SAL002')
@@ -233,6 +235,14 @@ def get_expenses(employee_id: str, quarter: str) -> str:
         - amount: Dollar amount (float)
         - currency: Currency code (default 'USD')
         - status: Approval status (approved, pending, rejected)
+        - receipt_url: URL to uploaded receipt image
+        - approved_by: Manager or finance person who approved
+        - store_name: Merchant or vendor name
+        - store_location: City and state of merchant
+        - reimbursement_date: When the expense was reimbursed (if applicable)
+        - payment_method: How it was paid (corporate_card, personal_reimbursement)
+        - project_code: Project or cost center code
+        - notes: Employee justification or additional context
     """
 
     time.sleep(DELAY_MULTIPLIER * 0.2)
@@ -259,12 +269,12 @@ def get_expenses(employee_id: str, quarter: str) -> str:
     # Expense categories and typical amounts
     expense_categories = [
         ("travel", "Flight to client meeting", 400, 1500),
-        ("travel", "Train ticket", 100, 500),
-        ("travel", "Rental car", 100, 500),
-        ("travel", "Taxi/Uber", 15, 200),
+        ("travel", "Train ticket", 1000, 1500),
+        ("travel", "Rental car", 1000, 1500),
+        ("travel", "Taxi/Uber", 150, 200),
         ("travel", "Parking fee", 10, 50),
-        ("lodging", "Hotel stay", 150, 900),
-        ("lodging", "Airbnb rental", 100, 950),
+        ("lodging", "Hotel stay", 150, 1900),
+        ("lodging", "Airbnb rental", 1000, 1950),
         ("meals", "Client dinner", 50, 250),
         ("meals", "Team lunch", 20, 100),
         ("meals", "Conference breakfast", 15, 40),
@@ -283,6 +293,109 @@ def get_expenses(employee_id: str, quarter: str) -> str:
         ("internet", "WiFi hotspot", 20, 60),
     ]
 
+    # Manager names for approvals
+    managers = [
+        "Sarah Johnson",
+        "Michael Chen",
+        "Emily Rodriguez",
+        "David Park",
+        "Jennifer Martinez",
+    ]
+
+    # Store/merchant names by category
+    merchants = {
+        "travel": [
+            "United Airlines",
+            "Delta",
+            "American Airlines",
+            "Southwest",
+            "Enterprise Rent-A-Car",
+        ],
+        "lodging": ["Marriott", "Hilton", "Hyatt", "Airbnb", "Holiday Inn"],
+        "meals": ["Olive Garden", "Starbucks", "The Capital Grille", "Chipotle", "Panera Bread"],
+        "software": ["AWS", "GitHub", "Linear", "Notion", "Figma"],
+        "equipment": ["Amazon", "Best Buy", "Apple Store", "B&H Photo", "Newegg"],
+        "conference": ["EventBrite", "WWDC", "AWS re:Invent", "Google I/O", "ReactConf"],
+        "office": ["Staples", "Office Depot", "Amazon", "Target"],
+        "internet": ["Verizon", "AT&T", "T-Mobile", "Comcast"],
+    }
+
+    # US cities for store locations
+    cities = [
+        "San Francisco, CA",
+        "New York, NY",
+        "Austin, TX",
+        "Seattle, WA",
+        "Boston, MA",
+        "Chicago, IL",
+        "Denver, CO",
+        "Los Angeles, CA",
+        "Portland, OR",
+        "Miami, FL",
+    ]
+
+    # Project codes
+    project_codes = [
+        "PROJ-1001",
+        "PROJ-1002",
+        "PROJ-2001",
+        "DEPT-ENG",
+        "DEPT-OPS",
+        "CLIENT-A",
+        "CLIENT-B",
+    ]
+
+    # Justification templates
+    justifications = {
+        "travel": [
+            "Client meeting to discuss Q4 roadmap and requirements",
+            "On-site visit for infrastructure review and planning",
+            "Conference attendance for professional development",
+            "Team offsite for strategic planning session",
+            "Customer presentation and product demo",
+        ],
+        "lodging": [
+            "Hotel for multi-day client visit",
+            "Accommodation during conference attendance",
+            "Extended stay for project implementation",
+            "Lodging for team collaboration week",
+        ],
+        "meals": [
+            "Client dinner discussing partnership opportunities",
+            "Team lunch during sprint planning",
+            "Breakfast meeting with stakeholders",
+            "Working dinner during crunch period",
+        ],
+        "software": [
+            "Required tool for development workflow",
+            "API credits for production workload",
+            "Team collaboration platform subscription",
+            "Design and prototyping tool license",
+        ],
+        "equipment": [
+            "Replacing failed hardware",
+            "Upgraded monitor for productivity",
+            "Required for remote work setup",
+            "Better equipment for video calls",
+        ],
+        "conference": [
+            "Professional development - learning new technologies",
+            "Networking with industry leaders and potential partners",
+            "Presenting company work at industry event",
+            "Training workshop for certification",
+        ],
+        "office": [
+            "Supplies for home office setup",
+            "Reference materials for project work",
+            "Team whiteboarding supplies",
+        ],
+        "internet": [
+            "Mobile hotspot for reliable connectivity",
+            "Upgraded internet for remote work",
+            "International data plan for travel",
+        ],
+    }
+
     expenses = []
     for i in range(num_expenses):
         category, desc_template, min_amt, max_amt = random.choice(expense_categories)
@@ -298,6 +411,20 @@ def get_expenses(employee_id: str, quarter: str) -> str:
         # Status (most are approved)
         status = random.choices(["approved", "pending", "rejected"], weights=[0.85, 0.10, 0.05])[0]
 
+        # Generate additional metadata
+        approved_by = random.choice(managers) if status == "approved" else None
+        store_name = random.choice(merchants.get(category, ["Unknown Merchant"]))
+        store_location = random.choice(cities)
+        payment_method = random.choice(["corporate_card", "personal_reimbursement"])
+        project_code = random.choice(project_codes)
+        notes = random.choice(justifications.get(category, ["Business expense"]))
+
+        # Reimbursement date is 15-30 days after expense date for approved expenses
+        reimbursement_date = None
+        if status == "approved" and payment_method == "personal_reimbursement":
+            reimb_days = random.randint(15, 30)
+            reimbursement_date = (expense_date + timedelta(days=reimb_days)).strftime("%Y-%m-%d")
+
         expenses.append(
             {
                 "expense_id": f"{employee_id}_{quarter}_{i:03d}",
@@ -307,6 +434,14 @@ def get_expenses(employee_id: str, quarter: str) -> str:
                 "amount": amount,
                 "currency": "USD",
                 "status": status,
+                "receipt_url": f"https://receipts.company.com/{employee_id}/{quarter}/{i:03d}.pdf",
+                "approved_by": approved_by,
+                "store_name": store_name,
+                "store_location": store_location,
+                "reimbursement_date": reimbursement_date,
+                "payment_method": payment_method,
+                "project_code": project_code,
+                "notes": notes,
             }
         )
 
@@ -316,128 +451,131 @@ def get_expenses(employee_id: str, quarter: str) -> str:
     return json.dumps(expenses, indent=2)
 
 
-def get_budget_by_level(level: str) -> str:
-    """Returns budget limits for a given employee level.
+def get_custom_budget(user_id: str) -> str:
+    """Get the custom quarterly travel budget for a specific employee.
 
-    Budget limits include quarterly caps for different expense categories like travel,
-    meals, equipment, software, and conferences.
+    Most employees have a standard $5,000 quarterly travel budget. However, some
+    employees have custom budget exceptions based on their role requirements.
+    This function checks if a specific employee has a custom budget assigned.
 
     Args:
-        level: Employee level (junior, mid, senior, staff, principal)
+        user_id: The unique employee identifier (e.g., 'ENG001', 'SAL002')
 
     Returns:
-        JSON string containing budget limits object with fields:
-        - level: Employee level
-        - quarterly_limits: Dictionary of category limits
-        - travel_limit: Total quarterly travel budget (includes flights, lodging, ground transport)
-        - meals_limit: Quarterly meals and entertainment budget
-        - equipment_limit: Quarterly equipment budget
-        - software_limit: Quarterly software/tools budget
-        - conference_limit: Quarterly conference/training budget
-        - total_limit: Overall quarterly expense limit
+        JSON string containing:
+        - user_id: Employee identifier
+        - has_custom_budget: Boolean indicating if custom budget exists
+        - travel_budget: Quarterly travel budget amount (custom or standard $5,000)
+        - reason: Explanation for custom budget (if applicable)
+        - currency: Currency code (default 'USD')
     """
-    import time
-
     time.sleep(DELAY_MULTIPLIER * 0.05)
 
-    level = level.lower()
-
-    # Budget structures by level
-    budgets = {
-        "junior": {
-            "level": "junior",
-            "travel_limit": 2000,
-            "meals_limit": 500,
-            "equipment_limit": 1000,
-            "software_limit": 300,
-            "conference_limit": 1500,
-            "total_limit": 5300,
+    # Employees with custom budget exceptions
+    custom_budgets = {
+        "ENG002": {
+            "user_id": "ENG002",
+            "has_custom_budget": True,
+            "travel_budget": 8000,
+            "reason": "Staff engineer with regular client site visits",
             "currency": "USD",
         },
-        "mid": {
-            "level": "mid",
-            "travel_limit": 4000,
-            "meals_limit": 1000,
-            "equipment_limit": 1500,
-            "software_limit": 500,
-            "conference_limit": 2500,
-            "total_limit": 9500,
+        "ENG004": {
+            "user_id": "ENG004",
+            "has_custom_budget": True,
+            "travel_budget": 12000,
+            "reason": "Principal engineer leading distributed team across multiple offices",
             "currency": "USD",
         },
-        "senior": {
-            "level": "senior",
-            "travel_limit": 6000,
-            "meals_limit": 1500,
-            "equipment_limit": 2000,
-            "software_limit": 800,
-            "conference_limit": 3500,
-            "total_limit": 13800,
+        "SAL004": {
+            "user_id": "SAL004",
+            "has_custom_budget": True,
+            "travel_budget": 15000,
+            "reason": "Regional sales director covering west coast territory",
             "currency": "USD",
         },
-        "staff": {
-            "level": "staff",
-            "travel_limit": 8000,
-            "meals_limit": 2000,
-            "equipment_limit": 2500,
-            "software_limit": 1200,
-            "conference_limit": 5000,
-            "total_limit": 18700,
+        "SAL006": {
+            "user_id": "SAL006",
+            "has_custom_budget": True,
+            "travel_budget": 20000,
+            "reason": "VP of Sales with extensive client travel requirements",
             "currency": "USD",
         },
-        "principal": {
-            "level": "principal",
-            "travel_limit": 12000,
-            "meals_limit": 3000,
-            "equipment_limit": 3000,
-            "software_limit": 1500,
-            "conference_limit": 7500,
-            "total_limit": 27000,
+        "MKT004": {
+            "user_id": "MKT004",
+            "has_custom_budget": True,
+            "travel_budget": 10000,
+            "reason": "Director of Marketing attending industry conferences and partner meetings",
             "currency": "USD",
         },
     }
 
-    if level not in budgets:
-        return json.dumps(
-            {"error": f"Invalid level '{level}'. Must be one of: {', '.join(budgets.keys())}"}
-        )
+    # Check if user has custom budget
+    if user_id in custom_budgets:
+        return json.dumps(custom_budgets[user_id], indent=2)
 
-    return json.dumps(budgets[level], indent=2)
+    # Return standard budget
+    return json.dumps(
+        {
+            "user_id": user_id,
+            "has_custom_budget": False,
+            "travel_budget": 5000,
+            "reason": "Standard quarterly travel budget",
+            "currency": "USD",
+        },
+        indent=2,
+    )
 
 
 # Helper function to get all available tools
 def get_expense_tools():
     """Returns a list of all expense management tools for use with Claude API."""
-    return [get_team_members, get_expenses, get_budget_by_level]
+    return [get_team_members, get_expenses, get_custom_budget]
 
 
 if __name__ == "__main__":
-    # Example usage demonstrating the toy example from the request
+    # Example usage demonstrating custom budget checking
     print("=== Team Expense Analysis Example ===\n")
 
     # Get team members
     team = json.loads(get_team_members("engineering"))
 
-    exceeded = []
-    for member in team[:5]:  # Just check first 3 for demo
+    exceeded_standard = []
+    for member in team[:5]:  # Just check first 5 for demo
         print(f"Checking expenses for {member['name']}...")
 
         # Fetch this person's expenses (could be 100+ line items)
         expenses = json.loads(get_expenses(member["id"], "Q3"))
 
-        # Get budget for their level
-        budget = json.loads(get_budget_by_level(member["level"]))
-
-        # Sum all their expense line items
-        total = sum(exp["amount"] for exp in expenses if exp["status"] == "approved")
+        # Calculate total travel expenses
+        travel_total = sum(
+            exp["amount"]
+            for exp in expenses
+            if exp["status"] == "approved" and exp["category"] in ["travel", "lodging"]
+        )
 
         print(f"  - Found {len(expenses)} expense line items")
-        print(f"  - Total approved expenses: ${total:,.2f}")
-        print(f"  - Travel limit: ${budget['travel_limit']:,}\n")
+        print(f"  - Total approved travel expenses: ${travel_total:,.2f}")
 
-        if total > budget["travel_limit"]:
-            exceeded.append(
-                {"name": member["name"], "spent": total, "limit": budget["travel_limit"]}
-            )
+        # Check against standard $5,000 budget
+        if travel_total > 5000:
+            print("  ⚠️  Exceeded standard $5,000 budget")
+            # Now check if they have a custom budget exception
+            custom = json.loads(get_custom_budget(member["id"]))
+            print(f"  - Custom budget: ${custom['travel_budget']:,}")
 
-    print("\n=== Summary: Employees Over Budget ===")
-    print(json.dumps(exceeded, indent=2))
+            if travel_total > custom["travel_budget"]:
+                print("  ❌ VIOLATION: Exceeded custom budget!")
+                exceeded_standard.append(
+                    {
+                        "name": member["name"],
+                        "spent": travel_total,
+                        "custom_limit": custom["travel_budget"],
+                    }
+                )
+            else:
+                print("  ✅ Within custom budget limit")
+        print()
+
+    print("\n=== Summary: Employees Over Custom Budget ===")
+    print(json.dumps(exceeded_standard, indent=2))
