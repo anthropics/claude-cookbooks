@@ -12,19 +12,17 @@ Requires:
 """
 
 import os
-from typing import Any, Dict, List
+import sys
+from pathlib import Path
+from typing import Any
 
 from anthropic import Anthropic
 from dotenv import load_dotenv
-
-import sys
-from pathlib import Path
 
 # Add parent directory to path to import memory_tool
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from memory_tool import MemoryToolHandler
-
 
 # Load environment variables
 load_dotenv()
@@ -69,9 +67,9 @@ class CodeReviewAssistant:
         Args:
             memory_storage_path: Path for memory storage
         """
-        self.client = Anthropic(api_key=API_KEY)
+        self.client = Anthropic()
         self.memory_handler = MemoryToolHandler(base_path=memory_storage_path)
-        self.messages: List[Dict[str, Any]] = []
+        self.messages: list[dict[str, Any]] = []
 
     def _create_system_prompt(self) -> str:
         """Create system prompt with memory instructions."""
@@ -97,7 +95,7 @@ Remember: Your memory persists across conversations. Use it wisely."""
             return result.get("success") or result.get("error", "Unknown error")
         return f"Unknown tool: {tool_use.name}"
 
-    def review_code(self, code: str, filename: str, description: str = "") -> Dict[str, Any]:
+    def review_code(self, code: str, filename: str, description: str = "") -> dict[str, Any]:
         """
         Review code with memory-enhanced analysis.
 
@@ -212,7 +210,7 @@ def run_session_1() -> None:
     assistant = CodeReviewAssistant()
 
     # Read sample code
-    with open("memory_demo/sample_code/web_scraper_v1.py", "r") as f:
+    with open("memory_demo/sample_code/web_scraper_v1.py") as f:
         code = f.read()
 
     print("\n📋 Reviewing web_scraper_v1.py...")
@@ -245,7 +243,7 @@ def run_session_2() -> None:
     assistant = CodeReviewAssistant()
 
     # Read different sample code with similar bug
-    with open("memory_demo/sample_code/api_client_v1.py", "r") as f:
+    with open("memory_demo/sample_code/api_client_v1.py") as f:
         code = f.read()
 
     print("\n📋 Reviewing api_client_v1.py...")
@@ -274,7 +272,7 @@ def run_session_3() -> None:
     assistant = CodeReviewAssistant()
 
     # Read data processor code (has multiple issues)
-    with open("memory_demo/sample_code/data_processor_v1.py", "r") as f:
+    with open("memory_demo/sample_code/data_processor_v1.py") as f:
         code = f.read()
 
     print("\n📋 Reviewing data_processor_v1.py...")
