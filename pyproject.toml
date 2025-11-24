@@ -22,8 +22,6 @@ dev = [
     "nbconvert>=7.16.0",  # For executing notebooks in CI
 ]
 
-[tool.uv.sources]
-
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
