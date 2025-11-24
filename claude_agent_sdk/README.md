@@ -1,6 +1,6 @@
-# Building Powerful Agents with the Claude Code SDK
+# Building Powerful Agents with the Claude Agent SDK
 
-A tutorial series demonstrating how to build sophisticated general-purpose agentic systems using the [Claude Code SDK](https://github.com/anthropics/claude-code-sdk-python), progressing from simple research agents to multi-agent orchestration with external system integration.
+A tutorial series demonstrating how to build sophisticated general-purpose agentic systems using the [Claude Agent SDK](https://github.com/anthropics/claude-agent-sdk-python), progressing from simple research agents to multi-agent orchestration with external system integration.
 
 ## Getting Started
 
@@ -14,7 +14,7 @@ A tutorial series demonstrating how to build sophisticated general-purpose agent
 
 ```git clone https://github.com/anthropics/anthropic-cookbook.git ```
 
-```cd anthropic-cookbook/claude_code_sdk```
+```cd anthropic-cookbook/claude_agent_sdk```
 
 ```uv sync ```
 
@@ -42,7 +42,7 @@ This tutorial series takes you on a journey from basic agent implementation to s
 ### What You'll Learn
 
 Through this series, you'll be exposed to:
-- **Core SDK fundamentals** with `query()` and the `ClaudeSDKClient` & `ClaudeCodeOptions` interfaces in the Python SDK
+- **Core SDK fundamentals** with `query()` and the `ClaudeSDKClient` & `ClaudeAgentOptions` interfaces in the Python SDK
 - **Tool usage patterns** from basic WebSearch to complex MCP server integration
 - **Multi-agent orchestration** with specialized subagents and coordination
 - **Enterprise features** by leveraging hooks for compliance tracking and audit trails
@@ -54,7 +54,7 @@ Note: This tutorial assumes you have some level of familiarity with Claude Code.
 
 ### [Notebook 00: The One-Liner Research Agent](00_The_one_liner_research_agent.ipynb)
 
-Start your journey with a simple yet powerful research agent built in just a few lines of code. This notebook introduces core SDK concepts and demonstrates how the Claude Code SDK enables autonomous information gathering and synthesis.
+Start your journey with a simple yet powerful research agent built in just a few lines of code. This notebook introduces core SDK concepts and demonstrates how the Claude Agent SDK enables autonomous information gathering and synthesis.
 
 **Key Concepts:**
 - Basic agent loops with `query()` and async iteration
@@ -95,7 +95,7 @@ Each notebook includes an agent implementation in its respective directory:
 - **`observability_agent/`** - DevOps monitoring agent with GitHub integration
 
 ## Background
-### The Evolution of Claude Code SDK
+### The Evolution of Claude Agent SDK
 
 Claude Code has emerged as one of Anthropic's most successful products, but not just for its SOTA coding capabilities. Its true breakthrough lies in something more fundamental: **Claude is exceptionally good at agentic work**.
 
@@ -110,7 +110,7 @@ These capabilities have made Claude Code the closest thing to a "bare metal" har
 
 ### Beyond Coding: The Agent Builder's Toolkit
 
-Originally an internal tool built by Anthropic engineers to accelerate development workflows, the SDK's public release revealed unexpected potential. After the release of the Claude Code SDK and its GitHub integration, developers began using it for tasks far beyond coding:
+Originally an internal tool built by Anthropic engineers to accelerate development workflows, the SDK's public release revealed unexpected potential. After the release of the Claude Agent SDK and its GitHub integration, developers began using it for tasks far beyond coding:
 
 - **Research agents** that gather and synthesize information across multiple sources
 - **Data analysis agents** that explore datasets and generate insights
@@ -120,7 +120,7 @@ Originally an internal tool built by Anthropic engineers to accelerate developme
 
 The pattern was clear: the SDK had inadvertently become an effective agent-building framework. Its architecture, designed to handle software development complexity, proved remarkably well-suited for general-purpose agent creation.
 
-This tutorial series demonstrates how to leverage the Claude Code SDK to build highly efficient agents for any domain or use case, from simple automation to complex enterprise systems. 
+This tutorial series demonstrates how to leverage the Claude Agent SDK to build highly efficient agents for any domain or use case, from simple automation to complex enterprise systems. 
 
 ## Contributing
 

@@ -61,6 +61,7 @@ skills/
 - Required beta headers: `code-execution-2025-08-25`, `files-api-2025-04-14`, `skills-2025-10-02`
 - Must use `client.beta.messages.create()` with `container` parameter
 - Code execution tool (`code_execution_20250825`) is REQUIRED
+- Use pre-built Agent skills by referencing their `skill_id` or create and upload your own via the Skills API
 
 **Files API Integration:**
 - Skills generate files and return `file_id` attributes

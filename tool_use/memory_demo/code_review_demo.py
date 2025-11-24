@@ -12,19 +12,17 @@ Requires:
 """
 
 import os
-from typing import Any, Dict, List, Optional
+import sys
+from pathlib import Path
+from typing import Any
 
 from anthropic import Anthropic
 from dotenv import load_dotenv
-
-import sys
-from pathlib import Path
 
 # Add parent directory to path to import memory_tool
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from memory_tool import MemoryToolHandler
-
 
 # Load environment variables
 load_dotenv()
@@ -33,14 +31,10 @@ API_KEY = os.getenv("ANTHROPIC_API_KEY")
 MODEL = os.getenv("ANTHROPIC_MODEL")
 
 if not API_KEY:
-    raise ValueError(
-        "ANTHROPIC_API_KEY not found. Copy .env.example to .env and add your API key."
-    )
+    raise ValueError("ANTHROPIC_API_KEY not found. Copy .env.example to .env and add your API key.")
 
 if not MODEL:
-    raise ValueError(
-        "ANTHROPIC_MODEL not found. Copy .env.example to .env and set the model."
-    )
+    raise ValueError("ANTHROPIC_MODEL not found. Copy .env.example to .env and set the model.")
 
 
 # Context management configuration
@@ -75,7 +69,7 @@ class CodeReviewAssistant:
         """
         self.client = Anthropic()
         self.memory_handler = MemoryToolHandler(base_path=memory_storage_path)
-        self.messages: List[Dict[str, Any]] = []
+        self.messages: list[dict[str, Any]] = []
 
     def _create_system_prompt(self) -> str:
         """Create system prompt with memory instructions."""
@@ -101,9 +95,7 @@ Remember: Your memory persists across conversations. Use it wisely."""
             return result.get("success") or result.get("error", "Unknown error")
         return f"Unknown tool: {tool_use.name}"
 
-    def review_code(
-        self, code: str, filename: str, description: str = ""
-    ) -> Dict[str, Any]:
+    def review_code(self, code: str, filename: str, description: str = "") -> dict[str, Any]:
         """
         Review code with memory-enhanced analysis.
 
@@ -138,7 +130,7 @@ Remember: Your memory persists across conversations. Use it wisely."""
                 messages=self.messages,
                 tools=[{"type": "memory_20250818", "name": "memory"}],
                 betas=["context-management-2025-06-27"],
-                extra_body={"context_management": CONTEXT_MANAGEMENT},
+                context_management=CONTEXT_MANAGEMENT,
             )
 
             print(" ✓")
@@ -148,7 +140,7 @@ Remember: Your memory persists across conversations. Use it wisely."""
 
             # Check for context management
             if hasattr(response, "context_management") and response.context_management:
-                applied = response.context_management.get("applied_edits", [])
+                applied = getattr(response.context_management, "applied_edits", [])
                 if applied:
                     context_edits_applied.extend(applied)
 
@@ -162,8 +154,8 @@ Remember: Your memory persists across conversations. Use it wisely."""
                     assistant_content.append({"type": "text", "text": content.text})
                     final_text.append(content.text)
                 elif content.type == "tool_use":
-                    cmd = content.input.get('command', 'unknown')
-                    path = content.input.get('path', '')
+                    cmd = content.input.get("command", "unknown")
+                    path = content.input.get("path", "")
                     print(f"    🔧 Memory: {cmd} {path}")
 
                     # Execute tool
@@ -218,7 +210,7 @@ def run_session_1() -> None:
     assistant = CodeReviewAssistant()
 
     # Read sample code
-    with open("memory_demo/sample_code/web_scraper_v1.py", "r") as f:
+    with open("memory_demo/sample_code/web_scraper_v1.py") as f:
         code = f.read()
 
     print("\n📋 Reviewing web_scraper_v1.py...")
@@ -251,7 +243,7 @@ def run_session_2() -> None:
     assistant = CodeReviewAssistant()
 
     # Read different sample code with similar bug
-    with open("memory_demo/sample_code/api_client_v1.py", "r") as f:
+    with open("memory_demo/sample_code/api_client_v1.py") as f:
         code = f.read()
 
     print("\n📋 Reviewing api_client_v1.py...")
@@ -280,7 +272,7 @@ def run_session_3() -> None:
     assistant = CodeReviewAssistant()
 
     # Read data processor code (has multiple issues)
-    with open("memory_demo/sample_code/data_processor_v1.py", "r") as f:
+    with open("memory_demo/sample_code/data_processor_v1.py") as f:
         code = f.read()
 
     print("\n📋 Reviewing data_processor_v1.py...")
@@ -300,9 +292,9 @@ def run_session_3() -> None:
     if result["context_edits"]:
         print("\n🧹 Context Management Applied:")
         for edit in result["context_edits"]:
-            print(f"  - Type: {edit.get('type')}")
-            print(f"  - Cleared tool uses: {edit.get('cleared_tool_uses', 0)}")
-            print(f"  - Tokens saved: {edit.get('cleared_input_tokens', 0):,}")
+            print(f"  - Type: {getattr(edit, 'type', 'unknown')}")
+            print(f"  - Cleared tool uses: {getattr(edit, 'cleared_tool_uses', 0)}")
+            print(f"  - Tokens saved: {getattr(edit, 'cleared_input_tokens', 0):,}")
 
     print("\n✅ Session 3 complete - Context editing kept conversation manageable!\n")
 

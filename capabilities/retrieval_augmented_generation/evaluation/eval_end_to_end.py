@@ -1,11 +1,10 @@
-from typing import Dict, Union, Any, List
+from typing import Dict, Union, Any
 from anthropic import Anthropic
 import re
 import os
-import xml.etree.ElementTree as ET
+
 
 def evaluate_end_to_end(query, generated_answer, correct_answer):
-    
     prompt = f"""
     You are an AI assistant tasked with evaluating the correctness of answers to questions about Anthropic's documentation.
     
@@ -31,63 +30,60 @@ def evaluate_end_to_end(query, generated_answer, correct_answer):
     </content>
     </evaluation>
     """
-    
-    client = Anthropic(api_key=os.environ.get('ANTHROPIC_API_KEY'))
+
+    client = Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
     try:
         response = client.messages.create(
-            model="claude-3-5-sonnet-20241022",
+            model="claude-sonnet-4-5",
             max_tokens=1500,
             messages=[
                 {"role": "user", "content": prompt},
-                {"role": "assistant", "content": "<evaluation>"}
+                {"role": "assistant", "content": "<evaluation>"},
             ],
             temperature=0,
-            stop_sequences=["</evaluation>"]
+            stop_sequences=["</evaluation>"],
         )
-        
+
         response_text = response.content[0].text
 
         # Use regex to extract explanation and is_correct
-        explanation_match = re.search(r'<explanation>(.*?)</explanation>', response_text, re.DOTALL)
-        is_correct_match = re.search(r'<is_correct>(.*?)</is_correct>', response_text, re.DOTALL)
-        
+        explanation_match = re.search(r"<explanation>(.*?)</explanation>", response_text, re.DOTALL)
+        is_correct_match = re.search(r"<is_correct>(.*?)</is_correct>", response_text, re.DOTALL)
+
         is_correct = True
         if explanation_match and is_correct_match:
             explanation = explanation_match.group(1).strip()
-            is_correct = is_correct_match.group(1).strip().lower() == 'true'
+            is_correct = is_correct_match.group(1).strip().lower() == "true"
         else:
             raise ValueError("Could not extract explanation or is_correct from response")
-        
+
         result = {
-            'question': query,
-            'correct_answer': correct_answer,
-            'generated_answer': generated_answer,
-            'is_correct': is_correct,
-            'explanation': explanation
+            "question": query,
+            "correct_answer": correct_answer,
+            "generated_answer": generated_answer,
+            "is_correct": is_correct,
+            "explanation": explanation,
         }
 
     except Exception as e:
         print(f"Unexpected error: {e}")
         result = {
-            'question': query,
-            'correct_answer': correct_answer,
-            'generated_answer': generated_answer,
-            'is_correct': False,
-            'explanation': f"Unexpected error: {str(e)}"
+            "question": query,
+            "correct_answer": correct_answer,
+            "generated_answer": generated_answer,
+            "is_correct": False,
+            "explanation": f"Unexpected error: {str(e)}",
         }
-    
+
     return result
 
+
 def get_assert(output: str, context) -> Union[bool, float, Dict[str, Any]]:
-    correct_answer = context['vars']['correct_answer']
-    query = context['vars']['query']
+    correct_answer = context["vars"]["correct_answer"]
+    query = context["vars"]["query"]
     result = evaluate_end_to_end(query, output, correct_answer)
     score = 1
-    if result['is_correct'] == False:
+    if not result["is_correct"]:
         score = 0
-    
-    return {
-        "pass": result['is_correct'],
-        "score": score,
-        "reason": result["explanation"]
-    }
+
+    return {"pass": result["is_correct"], "score": score, "reason": result["explanation"]}

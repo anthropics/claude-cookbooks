@@ -4,6 +4,7 @@ import voyageai
 import pickle
 import json
 
+
 class VectorDB:
     def __init__(self, api_key=None):
         if api_key is None:
@@ -30,10 +31,7 @@ class VectorDB:
         # Embed more than 128 documents with a for loop
         batch_size = 128
         result = [
-            self.client.embed(
-                texts[i : i + batch_size],
-                model="voyage-2"
-            ).embeddings
+            self.client.embed(texts[i : i + batch_size], model="voyage-2").embeddings
             for i in range(0, len(texts), batch_size)
         ]
 
@@ -57,7 +55,7 @@ class VectorDB:
         similarities = np.dot(self.embeddings, query_embedding)
         top_indices = np.argsort(similarities)[::-1]
         top_examples = []
-        
+
         for idx in top_indices:
             if similarities[idx] >= similarity_threshold:
                 example = {
@@ -65,16 +63,18 @@ class VectorDB:
                     "similarity": similarities[idx],
                 }
                 top_examples.append(example)
-                
+
                 if len(top_examples) >= k:
                     break
-        
+
         return top_examples
 
     def load_db(self):
         if not os.path.exists(self.db_path):
-            raise ValueError("Vector database file not found. Use load_data to create a new database.")
-        
+            raise ValueError(
+                "Vector database file not found. Use load_data to create a new database."
+            )
+
         with open(self.db_path, "rb") as file:
             data = pickle.load(file)
         self.embeddings = data["embeddings"]

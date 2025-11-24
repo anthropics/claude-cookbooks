@@ -1,0 +1,154 @@
+name: Lint and Format Check
+
+on:
+  pull_request:
+    paths:
+      - '**/*.py'
+      - '**/*.ipynb'
+      - 'pyproject.toml'
+      - 'uv.lock'
+      - 'Makefile'
+  push:
+    branches: [main]
+    paths:
+      - '**/*.py'
+      - '**/*.ipynb'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  lint-and-format:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Set up Python 3.11
+        run: uv python install 3.11
+
+      - name: Install dependencies
+        run: |
+          uv sync --frozen --all-extras
+
+      - name: Get changed files
+        id: changed-files
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            # For PRs, get files changed compared to base branch
+            git fetch origin ${{ github.base_ref }}
+            CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -E '\.(py|ipynb)$' || echo "")
+          else
+            # For push to main, check all files
+            CHANGED_FILES=$(find . -type f \( -name "*.py" -o -name "*.ipynb" \) -not -path "./.venv/*" -not -path "./venv/*" -not -path "*/build/*" -not -path "*/dist/*")
+          fi
+
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "No Python or notebook files changed"
+            echo "has_files=false" >> $GITHUB_OUTPUT
+            echo "" > changed_files.txt
+          else
+            echo "Changed files:"
+            echo "$CHANGED_FILES"
+            echo "$CHANGED_FILES" > changed_files.txt
+            echo "has_files=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check formatting with ruff
+        id: format-check
+        if: steps.changed-files.outputs.has_files == 'true'
+        run: |
+          echo "## Formatting Check Results" >> $GITHUB_STEP_SUMMARY
+          CHANGED_FILES=$(cat changed_files.txt)
+
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "✅ No files to check" >> $GITHUB_STEP_SUMMARY
+            echo "has_format_issues=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          if echo "$CHANGED_FILES" | xargs uv run ruff format --check; then
+            echo "✅ All changed files are properly formatted" >> $GITHUB_STEP_SUMMARY
+            echo "has_format_issues=false" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Some changed files need formatting" >> $GITHUB_STEP_SUMMARY
+            echo "has_format_issues=true" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+        continue-on-error: true
+
+      - name: Run ruff linting
+        id: lint-check
+        if: steps.changed-files.outputs.has_files == 'true'
+        run: |
+          echo "## Linting Check Results" >> $GITHUB_STEP_SUMMARY
+          CHANGED_FILES=$(cat changed_files.txt)
+
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "✅ No files to check" >> $GITHUB_STEP_SUMMARY
+            echo "has_lint_issues=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          if echo "$CHANGED_FILES" | xargs uv run ruff check; then
+            echo "✅ No linting issues found in changed files" >> $GITHUB_STEP_SUMMARY
+            echo "has_lint_issues=false" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Linting issues found in changed files" >> $GITHUB_STEP_SUMMARY
+            echo "has_lint_issues=true" >> $GITHUB_OUTPUT
+            echo "$CHANGED_FILES" | xargs uv run ruff check 2>&1 | tee lint_output.txt || true
+            exit 1
+          fi
+        continue-on-error: true
+
+      - name: Post lint/format issues to PR
+        if: |
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name == github.repository &&
+          (steps.format-check.outputs.has_format_issues == 'true' ||
+           steps.lint-check.outputs.has_lint_issues == 'true')
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          prompt: |
+            The linting and formatting checks found issues.
+
+            Format check status: ${{ steps.format-check.outputs.has_format_issues == 'true' && 'Failed' || 'Passed' }}
+            Lint check status: ${{ steps.lint-check.outputs.has_lint_issues == 'true' && 'Failed' || 'Passed' }}
+
+            ${{ steps.lint-check.outputs.has_lint_issues == 'true' && format('Linting issues:\n```\n{0}\n```', steps.lint-check.outputs.lint_output) || '' }}
+
+            Create a helpful PR comment that:
+            - Summarizes the formatting and linting issues
+            - Explains how to fix them locally using: `make fix`
+            - Mentions they can check before pushing with: `make check`
+            - Uses friendly, constructive language
+
+            Post using: gh pr comment $PR_NUMBER --body "your comment"
+          claude_args: |
+            --allowedTools "Bash(gh pr comment:*)"
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+
+      - name: Fail if issues found
+        if: |
+          steps.format-check.outputs.has_format_issues == 'true' ||
+          steps.lint-check.outputs.has_lint_issues == 'true'
+        run: |
+          echo "❌ Linting or formatting issues found. Run 'make fix' locally to resolve."
+          exit 1
+
+      - name: Success
+        if: |
+          steps.format-check.outputs.has_format_issues == 'false' &&
+          steps.lint-check.outputs.has_lint_issues == 'false'
+        run: |
+          echo "✅ All linting and formatting checks passed!"

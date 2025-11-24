@@ -15,4 +15,4 @@ repos:
         entry: python scripts/validate_notebooks.py
         language: python
         files: '\.ipynb$'
-        pass_filenames: false
+        pass_filenames: true

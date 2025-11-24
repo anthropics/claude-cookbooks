@@ -6,12 +6,12 @@ prompts:
   - prompts.py:summarize_long_document
 
 providers:
-  - id: anthropic:messages:claude-3-haiku-20240307
+  - id: anthropic:messages:claude-haiku-4-5
     label: "3.0 Haiku"
     config:
       max_tokens: 4096
       temperature: 0
-  - id: anthropic:messages:claude-3-5-sonnet-20241022
+  - id: anthropic:messages:claude-sonnet-4-5
     label: "3.5 Sonnet"
     config:
       max_tokens: 4096

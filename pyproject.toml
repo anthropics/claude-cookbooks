@@ -3,28 +3,29 @@ name = "anthropic-cookbook"
 version = "0.1.0"
 requires-python = ">=3.11,<3.13"
 dependencies = [
-    "anthropic>=0.39.0",
+    "anthropic>=0.71.0",
+    "ipykernel>=7.1.0",
+    "notebook>=7.4.7",
+    "numpy>=2.3.4",
+    "pandas>=2.3.3",
     "jupyter>=1.1.1",
-    "ipykernel>=6.29.5",
-    "notebook>=7.2.2",
-    "numpy>=1.26.4",
-    "pandas>=2.2.3",
     "rich>=14.2.0",
     "python-dotenv>=1.2.1",
-]
-
-[project.optional-dependencies]
-dev = [
-    "ruff>=0.7.0",
-    "pytest>=8.3.3",
-    "nbval>=0.11.0",
-    "pre-commit>=3.8.0",
-    "nbconvert>=7.16.0",  # For executing notebooks in CI
+    "voyageai>=0.3.5",
 ]
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.14.2",
+    "pytest>=8.3.3",
+    "nbval>=0.11.0",
+    "pre-commit>=3.8.0",
+    "nbconvert>=7.16.0", 
+]
 
 [tool.hatch.build.targets.wheel]
 packages = ["anthropic_cookbook"]  # Dummy package for build system
@@ -34,11 +35,26 @@ line-length = 100
 target-version = "py311"
 extend-include = ["*.ipynb"]  # Ruff v0.6.0+ includes notebooks by default, but explicit is better
 
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
 [tool.ruff.lint]
 select = ["E", "F", "I", "W", "UP", "S", "B"]
-ignore = ["E501", "S101", "S311"]  # E501: line too long, S101: assert used (ok in tests)
+ignore = [
+    "E501",   # line too long
+    "S101",   # assert used (ok in tests)
+    "S311",   # pseudo-random generators ok for non-crypto
+    "N806",   # variable in function should be lowercase (allow for API responses)
+]
 
 [tool.ruff.lint.per-file-ignores]
 # Notebooks have different conventions than regular Python files
-"*.ipynb" = ["E402", "E501", "F401", "F811"]  # Allow: imports mid-file, long lines, unused imports, redefinitions
+"*.ipynb" = [
+    "E402",   # imports mid-file
+    "F811",   # redefinitions (common in notebooks)
+    "N803",   # argument name should be lowercase
+    "N806",   # variable in function should be lowercase
+]
 
