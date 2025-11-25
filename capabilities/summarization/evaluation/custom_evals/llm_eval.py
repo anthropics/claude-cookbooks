@@ -1,7 +1,8 @@
-import anthropic
-import os
 import json
-from typing import Dict, Union, Any
+import os
+from typing import Any
+
+import anthropic
 
 
 def llm_eval(summary, input):
@@ -34,7 +35,7 @@ def llm_eval(summary, input):
     5. Does the summary accurately reflect the language and tone of the legal document?
     6. Does the summary capture the key concepts and principles embodied in the legal document?
     7. Does the summary omit any important ideas that should be captured to make decisions using the document?
-    
+
     Provide a score for each criterion in JSON format. Here is the format you should follow always:
 
     <json>
@@ -48,9 +49,9 @@ def llm_eval(summary, input):
     </json>
 
     Original Text: {input}
-    
+
     Summary to Evaluate: {summary}
-    
+
     Evaluation (JSON format):"""
 
     response = client.messages.create(
@@ -68,7 +69,7 @@ def llm_eval(summary, input):
     return avg_score, evaluation["explanation"]
 
 
-def get_assert(output: str, context, threshold=0.5) -> Union[bool, float, Dict[str, Any]]:
+def get_assert(output: str, context, threshold=0.5) -> bool | float | dict[str, Any]:
     input = context["vars"]["input"]
     score, evaluation = llm_eval(output, input)
 

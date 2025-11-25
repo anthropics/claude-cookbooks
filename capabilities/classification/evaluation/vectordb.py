@@ -1,8 +1,9 @@
+import json
 import os
+import pickle
+
 import numpy as np
 import voyageai
-import pickle
-import json
 
 
 class VectorDB:

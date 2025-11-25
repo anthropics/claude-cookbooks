@@ -4,10 +4,9 @@ Brand Validation Script
 Validates content against brand guidelines including colors, fonts, tone, and messaging.
 """
 
-import re
 import json
-from typing import Dict, List, Tuple, Optional
-from dataclasses import dataclass, asdict
+import re
+from dataclasses import asdict, dataclass
 
 
 @dataclass
@@ -15,13 +14,13 @@ class BrandGuidelines:
     """Brand guidelines configuration"""
 
     brand_name: str
-    primary_colors: List[str]
-    secondary_colors: List[str]
-    fonts: List[str]
-    tone_keywords: List[str]
-    prohibited_words: List[str]
-    tagline: Optional[str] = None
-    logo_usage_rules: Optional[Dict] = None
+    primary_colors: list[str]
+    secondary_colors: list[str]
+    fonts: list[str]
+    tone_keywords: list[str]
+    prohibited_words: list[str]
+    tagline: str | None = None
+    logo_usage_rules: dict | None = None
 
 
 @dataclass
@@ -30,9 +29,9 @@ class ValidationResult:
 
     passed: bool
     score: float
-    violations: List[str]
-    warnings: List[str]
-    suggestions: List[str]
+    violations: list[str]
+    warnings: list[str]
+    suggestions: list[str]
 
 
 class BrandValidator:
@@ -41,7 +40,7 @@ class BrandValidator:
     def __init__(self, guidelines: BrandGuidelines):
         self.guidelines = guidelines
 
-    def validate_colors(self, content: str) -> Tuple[List[str], List[str]]:
+    def validate_colors(self, content: str) -> tuple[list[str], list[str]]:
         """
         Validate color usage in content (hex codes, RGB, color names)
         Returns: (violations, warnings)
@@ -65,7 +64,7 @@ class BrandValidator:
 
         return violations, warnings
 
-    def validate_fonts(self, content: str) -> Tuple[List[str], List[str]]:
+    def validate_fonts(self, content: str) -> tuple[list[str], list[str]]:
         """
         Validate font usage in content
         Returns: (violations, warnings)
@@ -92,7 +91,7 @@ class BrandValidator:
 
         return violations, warnings
 
-    def validate_tone(self, content: str) -> Tuple[List[str], List[str]]:
+    def validate_tone(self, content: str) -> tuple[list[str], list[str]]:
         """
         Validate tone and messaging
         Returns: (violations, warnings)
@@ -119,7 +118,7 @@ class BrandValidator:
 
         return violations, warnings
 
-    def validate_brand_name(self, content: str) -> Tuple[List[str], List[str]]:
+    def validate_brand_name(self, content: str) -> tuple[list[str], list[str]]:
         """
         Validate brand name usage and capitalization
         Returns: (violations, warnings)
@@ -140,7 +139,7 @@ class BrandValidator:
 
         return violations, warnings
 
-    def calculate_score(self, violations: List[str], warnings: List[str]) -> float:
+    def calculate_score(self, violations: list[str], warnings: list[str]) -> float:
         """Calculate compliance score (0-100)"""
         violation_penalty = len(violations) * 10
         warning_penalty = len(warnings) * 3
@@ -148,7 +147,7 @@ class BrandValidator:
         score = max(0, 100 - violation_penalty - warning_penalty)
         return round(score, 2)
 
-    def generate_suggestions(self, violations: List[str], warnings: List[str]) -> List[str]:
+    def generate_suggestions(self, violations: list[str], warnings: list[str]) -> list[str]:
         """Generate helpful suggestions based on violations and warnings"""
         suggestions = []
 
@@ -224,15 +223,17 @@ def load_guidelines_from_json(filepath: str) -> BrandGuidelines:
         TypeError: If required fields are missing
     """
     try:
-        with open(filepath, "r") as f:
+        with open(filepath) as f:
             data = json.load(f)
         return BrandGuidelines(**data)
-    except FileNotFoundError:
-        raise FileNotFoundError(f"Brand guidelines file not found: {filepath}")
+    except FileNotFoundError as e:
+        raise FileNotFoundError(f"Brand guidelines file not found: {filepath}") from e
     except json.JSONDecodeError as e:
-        raise json.JSONDecodeError(f"Invalid JSON in brand guidelines file: {e.msg}", e.doc, e.pos)
+        raise json.JSONDecodeError(
+            f"Invalid JSON in brand guidelines file: {e.msg}", e.doc, e.pos
+        ) from e
     except TypeError as e:
-        raise TypeError(f"Missing required fields in brand guidelines: {e}")
+        raise TypeError(f"Missing required fields in brand guidelines: {e}") from e
 
 
 def get_acme_corporation_guidelines() -> BrandGuidelines:

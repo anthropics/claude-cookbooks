@@ -3,13 +3,11 @@ SQL query builder with SQL injection vulnerability.
 Demonstrates dangerous string formatting in SQL queries.
 """
 
-from typing import List, Optional
-
 
 class UserDatabase:
     """Simple database interface (mock)."""
 
-    def execute(self, query: str) -> List[dict]:
+    def execute(self, query: str) -> list[dict]:
         """Mock execute - just returns the query for inspection."""
         print(f"Executing: {query}")
         return []
@@ -21,7 +19,7 @@ class QueryBuilder:
     def __init__(self, db: UserDatabase):
         self.db = db
 
-    def get_user_by_name(self, username: str) -> Optional[dict]:
+    def get_user_by_name(self, username: str) -> dict | None:
         """
         Get user by username.
 
@@ -33,7 +31,7 @@ class QueryBuilder:
         results = self.db.execute(query)
         return results[0] if results else None
 
-    def get_user_by_name_safe(self, username: str) -> Optional[dict]:
+    def get_user_by_name_safe(self, username: str) -> dict | None:
         """Safe version using parameterized queries."""
         # Use parameterized queries (this is pseudo-code for the concept)
         query = "SELECT * FROM users WHERE username = ?"
@@ -41,7 +39,7 @@ class QueryBuilder:
         print(f"Safe query with parameter: {query}, params: ({username},)")
         return None
 
-    def search_users(self, search_term: str, limit: int = 10) -> List[dict]:
+    def search_users(self, search_term: str, limit: int = 10) -> list[dict]:
         """
         Search users by term.
 
@@ -63,7 +61,7 @@ class QueryBuilder:
         self.db.execute(query)
         return True
 
-    def get_users_by_role(self, role: str, order_by: str = "name") -> List[dict]:
+    def get_users_by_role(self, role: str, order_by: str = "name") -> list[dict]:
         """
         Get users by role.
 

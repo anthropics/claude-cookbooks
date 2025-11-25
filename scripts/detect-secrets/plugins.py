@@ -1,14 +1,14 @@
 import re
 
-from detect_secrets.plugins.base import BasePlugin
 from detect_secrets.core.log import log
+from detect_secrets.plugins.base import BasePlugin
 
 
 class AnthropicSecretsDetector(BasePlugin):
     """Scans for common API keys and credentials in notebooks."""
 
     log.info("Running Anthropic Secrets Detector")
-    secret_type = "API Credentials"  # type: ignore
+    secret_type = "API Credentials"  # type: ignore  # noqa: S105
 
     denylist = [
         # Anthropic API keys (sk-ant-api03-...)

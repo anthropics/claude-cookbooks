@@ -1,13 +1,13 @@
 import json
 import os
-from typing import List, Dict
-from vectordb import VectorDB, SummaryIndexedVectorDB
+
 from anthropic import Anthropic
+from vectordb import SummaryIndexedVectorDB, VectorDB
 
 # Initialize the VectorDB
 db = VectorDB("anthropic_docs")
 # Load the Claude Documentation
-with open("../data/anthropic_docs.json", "r") as f:
+with open("../data/anthropic_docs.json") as f:
     anthropic_docs = json.load(f)
 db.load_data(anthropic_docs)
 
@@ -26,7 +26,7 @@ def retrieve_base(query, options, context):
 # Initialize the VectorDB
 db_summary = SummaryIndexedVectorDB("anthropic_docs_summaries")
 # Load the Claude Documentation
-with open("../data/anthropic_summary_indexed_docs.json", "r") as f:
+with open("../data/anthropic_summary_indexed_docs.json") as f:
     anthropic_docs_summaries = json.load(f)
 db_summary.load_data(anthropic_docs_summaries)
 
@@ -42,7 +42,7 @@ def retrieve_level_two(query, options, context):
     return result
 
 
-def _rerank_results(query: str, results: List[Dict], k: int = 3) -> List[Dict]:
+def _rerank_results(query: str, results: list[dict], k: int = 3) -> list[dict]:
     # Prepare the summaries with their indices
     summaries = []
     print(len(results))
@@ -59,9 +59,9 @@ def _rerank_results(query: str, results: List[Dict], k: int = 3) -> List[Dict]:
     prompt = f"""
     Query: {query}
     You are about to be given a group of documents, each preceded by its index number in square brackets. Your task is to select the only {k} most relevant documents from the list to help us answer the query.
-    
+
     {joined_summaries}
-    
+
     Output only the indices of {k} most relevant documents in order of relevance, separated by commas, enclosed in XML tags here:
     <relevant_indices>put the numbers of your indices here, seeparted by commas</relevant_indices>
     """
@@ -116,7 +116,7 @@ def _rerank_results(query: str, results: List[Dict], k: int = 3) -> List[Dict]:
 # Initialize the VectorDB
 db_rerank = SummaryIndexedVectorDB("anthropic_docs_summaries_rerank")
 # Load the Claude Documentation
-with open("../data/anthropic_summary_indexed_docs.json", "r") as f:
+with open("../data/anthropic_summary_indexed_docs.json") as f:
     anthropic_docs_summaries = json.load(f)
 db_rerank.load_data(anthropic_docs_summaries)
 

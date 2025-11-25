@@ -3,7 +3,7 @@ Brand application module for corporate document styling.
 Applies consistent branding to Excel, PowerPoint, and PDF documents.
 """
 
-from typing import Dict, Any, List
+from typing import Any
 
 
 class BrandFormatter:
@@ -48,7 +48,7 @@ class BrandFormatter:
         self.fonts = self.FONTS
         self.company = self.COMPANY
 
-    def format_excel(self, workbook_config: Dict[str, Any]) -> Dict[str, Any]:
+    def format_excel(self, workbook_config: dict[str, Any]) -> dict[str, Any]:
         """
         Apply brand formatting to Excel workbook configuration.
 
@@ -99,7 +99,7 @@ class BrandFormatter:
 
         return branded_config
 
-    def format_powerpoint(self, presentation_config: Dict[str, Any]) -> Dict[str, Any]:
+    def format_powerpoint(self, presentation_config: dict[str, Any]) -> dict[str, Any]:
         """
         Apply brand formatting to PowerPoint presentation configuration.
 
@@ -167,7 +167,7 @@ class BrandFormatter:
 
         return branded_config
 
-    def format_pdf(self, document_config: Dict[str, Any]) -> Dict[str, Any]:
+    def format_pdf(self, document_config: dict[str, Any]) -> dict[str, Any]:
         """
         Apply brand formatting to PDF document configuration.
 
@@ -271,7 +271,7 @@ class BrandFormatter:
 
         return branded_config
 
-    def validate_colors(self, colors_used: List[str]) -> Dict[str, Any]:
+    def validate_colors(self, colors_used: list[str]) -> dict[str, Any]:
         """
         Validate that colors match brand guidelines.
 
@@ -309,7 +309,7 @@ class BrandFormatter:
         # Simplified - in reality would calculate color distance
         return self.colors["primary"]["acme_blue"]["hex"]
 
-    def apply_watermark(self, document_type: str) -> Dict[str, Any]:
+    def apply_watermark(self, document_type: str) -> dict[str, Any]:
         """
         Generate watermark configuration for documents.
 
@@ -345,7 +345,7 @@ class BrandFormatter:
 
         return watermarks.get(document_type, watermarks["draft"])
 
-    def get_chart_palette(self, num_series: int = 4) -> List[str]:
+    def get_chart_palette(self, num_series: int = 4) -> list[str]:
         """
         Get color palette for charts.
 
@@ -392,7 +392,7 @@ class BrandFormatter:
             return f"{value:,.0f}" if value >= 1000 else f"{value:.2f}"
 
 
-def apply_brand_to_document(document_type: str, config: Dict[str, Any]) -> Dict[str, Any]:
+def apply_brand_to_document(document_type: str, config: dict[str, Any]) -> dict[str, Any]:
     """
     Main function to apply branding to any document type.
 

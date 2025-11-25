@@ -4,7 +4,7 @@ This is one of Python's most common gotchas.
 """
 
 from datetime import datetime
-from typing import Dict, List, Optional, Any
+from typing import Any
 
 
 class CacheManager:
@@ -16,7 +16,7 @@ class CacheManager:
     def add_items(
         self,
         key: str,
-        items: List[str] = [],  # BUG: Mutable default argument!
+        items: list[str] = None,  # BUG: Mutable default argument!
     ) -> None:
         """
         Add items to cache.
@@ -25,10 +25,12 @@ class CacheManager:
         This is one of Python's classic gotchas.
         """
         # The items list is shared across ALL calls that don't provide items
+        if items is None:
+            items = []
         items.append(f"Added at {datetime.now()}")
         self.cache[key] = items
 
-    def add_items_fixed(self, key: str, items: Optional[List[str]] = None) -> None:
+    def add_items_fixed(self, key: str, items: list[str] | None = None) -> None:
         """Add items with proper default handling."""
         if items is None:
             items = []
@@ -39,13 +41,15 @@ class CacheManager:
     def merge_configs(
         self,
         name: str,
-        overrides: Dict[str, Any] = {},  # BUG: Mutable default!
-    ) -> Dict[str, Any]:
+        overrides: dict[str, Any] = None,  # BUG: Mutable default!
+    ) -> dict[str, Any]:
         """
         Merge configuration with overrides.
 
         BUG: The default dict is shared across all calls!
         """
+        if overrides is None:
+            overrides = {}
         defaults = {"timeout": 30, "retries": 3, "cache_enabled": True}
 
         # This modifies the SHARED overrides dict
@@ -53,8 +57,8 @@ class CacheManager:
         return overrides
 
     def merge_configs_fixed(
-        self, name: str, overrides: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+        self, name: str, overrides: dict[str, Any] | None = None
+    ) -> dict[str, Any]:
         """Merge configs properly."""
         if overrides is None:
             overrides = {}
@@ -71,14 +75,16 @@ class DataProcessor:
 
     def process_batch(
         self,
-        data: List[int],
-        filters: List[str] = [],  # BUG: Mutable default!
-    ) -> List[int]:
+        data: list[int],
+        filters: list[str] = None,  # BUG: Mutable default!
+    ) -> list[int]:
         """
         Process data with optional filters.
 
         BUG: filters list is shared across calls!
         """
+        if filters is None:
+            filters = []
         filters.append("default_filter")  # Modifies shared list!
 
         result = []

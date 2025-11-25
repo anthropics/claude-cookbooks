@@ -1,5 +1,6 @@
+from typing import Any
+
 import numpy as np
-from typing import Dict, Union, Any
 from rouge_score import rouge_scorer
 
 
@@ -26,7 +27,7 @@ def rouge_eval(summary, ground_truth, threshold=0.3) -> float:
     return float(avg_rouge)
 
 
-def get_assert(output: str, context, threshold=0.3) -> Union[bool, float, Dict[str, Any]]:
+def get_assert(output: str, context, threshold=0.3) -> bool | float | dict[str, Any]:
     ground_truth = context["vars"]["ground_truth"]
     score = rouge_eval(output, ground_truth)
 

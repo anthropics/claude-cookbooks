@@ -10,11 +10,12 @@ This module provides helper functions for:
 import json
 import os
 from pathlib import Path
-from typing import Optional, List, Dict, Any
+from typing import Any
+
 from anthropic import Anthropic
 
 
-def extract_file_ids(response) -> List[str]:
+def extract_file_ids(response) -> list[str]:
     """
     Extract all file IDs from a Claude API response.
 
@@ -88,7 +89,7 @@ def extract_file_ids(response) -> List[str]:
 
 def download_file(
     client: Anthropic, file_id: str, output_path: str, overwrite: bool = True
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Download a file from Claude's Files API and save it locally.
 
@@ -160,7 +161,7 @@ def download_all_files(
     output_dir: str = "outputs",
     prefix: str = "",
     overwrite: bool = True,
-) -> List[Dict[str, Any]]:
+) -> list[dict[str, Any]]:
     """
     Extract and download all files from a Claude API response.
 
@@ -212,7 +213,7 @@ def download_all_files(
     return results
 
 
-def get_file_info(client: Anthropic, file_id: str) -> Optional[Dict[str, Any]]:
+def get_file_info(client: Anthropic, file_id: str) -> dict[str, Any] | None:
     """
     Retrieve metadata about a file from the Files API.
 
@@ -246,7 +247,7 @@ def get_file_info(client: Anthropic, file_id: str) -> Optional[Dict[str, Any]]:
         return None
 
 
-def print_download_summary(results: List[Dict[str, Any]]) -> None:
+def print_download_summary(results: list[dict[str, Any]]) -> None:
     """
     Print a formatted summary of file download results.
 
