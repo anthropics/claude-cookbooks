@@ -1,3 +1,5 @@
 anthropic>=0.18.0
 python-dotenv>=1.0.0
 ipykernel>=6.29.0  # For Jupyter in VSCode
+rich>=13.0.0
+pandas>=2.0.0

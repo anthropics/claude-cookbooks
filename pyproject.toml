@@ -9,10 +9,10 @@ dependencies = [
     "numpy>=2.3.4",
     "pandas>=2.3.3",
     "jupyter>=1.1.1",
+    "rich>=14.2.0",
+    "python-dotenv>=1.2.1",
     "voyageai>=0.3.5",
 ]
-
-[tool.uv.sources]
 
 [build-system]
 requires = ["hatchling"]
@@ -41,7 +41,11 @@ indent-style = "space"
 line-ending = "auto"
 
 [tool.ruff.lint]
+select = ["E", "F", "I", "W", "UP", "S", "B"]
 ignore = [
+    "E501",   # line too long
+    "S101",   # assert used (ok in tests)
+    "S311",   # pseudo-random generators ok for non-crypto
     "N806",   # variable in function should be lowercase (allow for API responses)
 ]
 
