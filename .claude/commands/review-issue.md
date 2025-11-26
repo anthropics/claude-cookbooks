@@ -15,7 +15,7 @@ Review the specified GitHub issue and help draft an appropriate response based o
 
 Get the issue details including comments:
 ```bash
-gh issue view $ARGUMENTS --repo anthropics/anthropic-cookbook --json number,title,body,author,labels,state,comments,createdAt
+gh issue view $ARGUMENTS --repo anthropics/claude-cookbooks --json number,title,body,author,labels,state,comments,createdAt
 ```
 
 ### Step 2: Classify the issue
@@ -114,21 +114,21 @@ Based on user approval:
 
 **To post a comment:**
 ```bash
-gh issue comment $ARGUMENTS --repo anthropics/anthropic-cookbook --body "YOUR_RESPONSE"
+gh issue comment $ARGUMENTS --repo anthropics/claude-cookbooks --body "YOUR_RESPONSE"
 ```
 
 **To add labels:**
 ```bash
-gh issue edit $ARGUMENTS --repo anthropics/anthropic-cookbook --add-label "label1,label2"
+gh issue edit $ARGUMENTS --repo anthropics/claude-cookbooks --add-label "label1,label2"
 ```
 
 **To close an issue:**
 ```bash
-gh issue close $ARGUMENTS --repo anthropics/anthropic-cookbook --reason "not planned"
+gh issue close $ARGUMENTS --repo anthropics/claude-cookbooks --reason "not planned"
 ```
 Or with a comment:
 ```bash
-gh issue close $ARGUMENTS --repo anthropics/anthropic-cookbook --comment "Closing because..."
+gh issue close $ARGUMENTS --repo anthropics/claude-cookbooks --comment "Closing because..."
 ```
 
 ## Response Tone Guidelines

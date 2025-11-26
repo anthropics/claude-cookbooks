@@ -7,5 +7,5 @@ contact_links:
     url: https://docs.claude.com
     about: Official documentation and API reference
   - name: Contributing Guide
-    url: https://github.com/anthropics/anthropic-cookbook/blob/main/CONTRIBUTING.md
+    url: https://github.com/anthropics/claude-cookbooks/blob/main/CONTRIBUTING.md
     about: Guidelines for contributing to this repository

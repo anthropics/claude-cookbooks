@@ -8,7 +8,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for proposing a new cookbook! Please read our [Issue Guidelines](https://github.com/anthropics/anthropic-cookbook/blob/main/.github/ISSUE_GUIDELINES.md) before submitting.
+        Thanks for proposing a new cookbook! Please read our [Issue Guidelines](https://github.com/anthropics/claude-cookbooks/blob/main/.github/ISSUE_GUIDELINES.md) before submitting.
 
         **We're looking for notebooks that:**
         - Showcase Claude API/SDK capabilities directly

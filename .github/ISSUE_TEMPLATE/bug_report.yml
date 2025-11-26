@@ -10,7 +10,7 @@ body:
         Thanks for taking the time to report this issue! Please fill out the sections below to help us understand and fix the problem.
 
         Before submitting, please:
-        - Search [existing issues](https://github.com/anthropics/anthropic-cookbook/issues) to check if this has been reported
+        - Search [existing issues](https://github.com/anthropics/claude-cookbooks/issues) to check if this has been reported
         - Verify you're using the latest version of dependencies
 
   - type: input
