@@ -179,7 +179,7 @@ Be specific with file and line references (e.g., `file_path:line_number`). Provi
 
 **Critical Issue Example:**
 ```
-🔴 CRITICAL: Hardcoded API key detected in notebook
+[CRITICAL] Hardcoded API key detected in notebook
 - File: `capabilities/new_feature/guide.ipynb:15`
 - Issue: `os.environ["ANTHROPIC_API_KEY"] = "sk-ant-..."`
 - Fix: Use `dotenv.load_dotenv()` and `.env` file instead
@@ -188,7 +188,7 @@ Be specific with file and line references (e.g., `file_path:line_number`). Provi
 
 **Important Issue Example:**
 ```
-⚠️ IMPORTANT: Notebook introduction doesn't follow TLO pattern
+[IMPORTANT] Notebook introduction doesn't follow TLO pattern
 - File: `patterns/new_agent/guide.ipynb:1-10`
 - Issue: Introduction focuses on implementation ("we'll build an agent with X tool") instead of problem/value
 - Fix: Rewrite to explain the problem being solved and list learning objectives as bullets
@@ -197,7 +197,7 @@ Be specific with file and line references (e.g., `file_path:line_number`). Provi
 
 **Suggestion Example:**
 ```
-💡 SUGGESTION: Group pip install commands
+[SUGGESTION] Group pip install commands
 - File: `multimodal/guide.ipynb:5-10`
 - Current: Multiple separate `%pip install` commands
 - Better: `%%capture\n%pip install -U anthropic pillow opencv-python`
