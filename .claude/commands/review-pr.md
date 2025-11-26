@@ -39,13 +39,39 @@ The code-reviewer agent will analyze:
 
 ### Step 4: Present the review
 
-After the code review is complete, present a summary of the review to the user with:
-- **Overall assessment**: Approve, Request Changes, or Comment
-- **Summary**: Brief overview of the changes
-- **Detailed findings**: List of specific comments, suggestions, and issues found
-- **Line-specific comments**: Format these as `file:line - comment` for clarity
+After the code review is complete, present the review to the user using this format:
 
-**Note for Jupyter notebooks:** Cell numbers are hard to identify, so when commenting on notebook code, include a snippet of the actual code or context to help locate the issue. For example, instead of "Cell 12, line 5", write "In the cell containing `financial_data_2024 = ...`" or include the relevant code snippet.
+```
+## PR Review
+
+**Recommendation**: APPROVE | REQUEST_CHANGES | COMMENT
+
+### Summary
+[1-2 sentence overview of what this PR does]
+
+### Actionable Feedback (N items)
+- [ ] `file.py:42` - Description of issue or required change
+- [ ] `notebook.ipynb` (in cell with `some_code = ...`) - Description
+
+### Detailed Review
+
+#### Code Quality
+[Analysis of code patterns, readability, maintainability]
+
+#### Security
+[Any security considerations]
+
+#### Suggestions
+[Optional improvements]
+
+#### Positive Notes
+[What was done well]
+```
+
+**Guidelines:**
+- Use checkboxes for actionable items so authors can track progress
+- For Jupyter notebooks, reference code snippets instead of cell numbers
+- Be specific with file:line references where possible
 
 ### Step 5: Ask about posting the review
 
@@ -58,6 +84,31 @@ Use the AskUserQuestion tool to ask the user:
 If the user confirms, post the review using:
 ```
 gh pr review $ARGUMENTS --body "YOUR_REVIEW_BODY" --approve|--request-changes|--comment
+```
+
+When posting to GitHub, wrap the Detailed Review section in a collapsible `<details>` tag to reduce noise:
+
+```markdown
+## PR Review
+
+**Recommendation**: APPROVE | REQUEST_CHANGES | COMMENT
+
+### Summary
+[summary]
+
+<details>
+<summary>Actionable Feedback (N items)</summary>
+
+- [ ] items...
+
+</details>
+
+<details>
+<summary>Detailed Review</summary>
+
+[full review content]
+
+</details>
 ```
 
 Use the appropriate flag based on the user's choice:
