@@ -1,0 +1,59 @@
+name: Question
+description: Ask a question about a cookbook or Claude usage
+title: "[QUESTION] "
+labels:
+  - question
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have a question? We're happy to help!
+
+        **Before asking, please check:**
+        - [Claude Documentation](https://docs.claude.com) - comprehensive API reference
+        - [Discord Community](https://anthropic.com/discord) - for faster community responses
+        - Existing issues - your question may already be answered
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: What would you like to know?
+      placeholder: |
+        I'm trying to understand how the prompt caching example works.
+        In cell 5, why do we need to set cache_control on the system message?
+    validations:
+      required: true
+
+  - type: input
+    id: notebook
+    attributes:
+      label: Related Notebook (if applicable)
+      description: Which notebook is this question about?
+      placeholder: "e.g., misc/prompt_caching.ipynb"
+    validations:
+      required: false
+
+  - type: textarea
+    id: tried
+    attributes:
+      label: What I've Tried
+      description: What have you already tried or researched?
+      placeholder: |
+        I've read the prompt caching documentation at docs.claude.com/en/docs/...
+        I also tried modifying the example to use user messages instead, but got an error...
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Any code snippets, error messages, or screenshots
+      placeholder: |
+        Here's the code I'm trying:
+        ```python
+        client.messages.create(...)
+        ```
+    validations:
+      required: false
