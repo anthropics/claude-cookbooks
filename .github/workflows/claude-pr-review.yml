@@ -3,6 +3,12 @@ name: Claude PR Review
 on:
   pull_request:
     types: [opened, synchronize]
+    paths:
+      - '**/*.ipynb'
+      - '**/*.py'
+      - '.github/workflows/**'
+      - 'pyproject.toml'
+      - 'uv.lock'
   workflow_dispatch:
     inputs:
       pr_number:
