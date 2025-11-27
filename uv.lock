@@ -129,7 +129,6 @@ dependencies = [
     { name = "pandas" },
     { name = "python-dotenv" },
     { name = "rich" },
-    { name = "ruff" },
     { name = "voyageai" },
 ]
 
@@ -152,7 +151,6 @@ requires-dist = [
     { name = "pandas", specifier = ">=2.3.3" },
     { name = "python-dotenv", specifier = ">=1.2.1" },
     { name = "rich", specifier = ">=14.2.0" },
-    { name = "ruff", specifier = ">=0.14.6" },
     { name = "voyageai", specifier = ">=0.3.5" },
 ]
 
