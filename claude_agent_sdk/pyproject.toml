@@ -5,7 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "claude-agent-sdk>=0.0.20",
+    "claude-agent-sdk>=0.1.6",
     "ipykernel>=6.29.5",
     "mcp-server-git>=2025.1.14",
     "python-dotenv>=1.1.1",

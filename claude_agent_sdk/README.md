@@ -2,6 +2,8 @@
 
 A tutorial series demonstrating how to build sophisticated general-purpose agentic systems using the [Claude Agent SDK](https://github.com/anthropics/claude-agent-sdk-python), progressing from simple research agents to multi-agent orchestration with external system integration.
 
+> **📌 Updated for SDK v0.1.6**: These notebooks use the latest Claude Agent SDK v0.1.6 features. Requires Claude Code 2.0.0+. See the [migration guide](https://docs.claude.com/en/api/agent-sdk/migrate-to-claude-agent-sdk) for details if you started developing with the Claude Code SDK.
+
 ## Getting Started
 
 #### 1. Install uv, [node](https://nodejs.org/en/download/), and the Claude Code CLI (if you haven't already)
@@ -42,11 +44,12 @@ This tutorial series takes you on a journey from basic agent implementation to s
 ### What You'll Learn
 
 Through this series, you'll be exposed to:
-- **Core SDK fundamentals** with `query()` and the `ClaudeSDKClient` & `ClaudeAgentOptions` interfaces in the Python SDK
+- **Core Claude Agent SDK fundamentals** with `query()` and the `ClaudeSDKClient` & `ClaudeAgentOptions` interfaces in the Python SDK
 - **Tool usage patterns** from basic WebSearch to complex MCP server integration
 - **Multi-agent orchestration** with specialized subagents and coordination
 - **Enterprise features** by leveraging hooks for compliance tracking and audit trails
 - **External system integration** via Model Context Protocol (MCP)
+- **Custom tool creation** with in-process SDK MCP servers
 
 Note: This tutorial assumes you have some level of familiarity with Claude Code. Ideally, if you have been using Claude Code to supercharge your coding tasks and would like to leverage its raw agentic power for tasks beyond Software Engineering, this tutorial will help you get started.
 
@@ -72,20 +75,21 @@ Build a comprehensive AI Chief of Staff for a startup CEO, showcasing advanced S
 - **Output Styles:** Tailored communication for different audiences
 - **Plan Mode:** Strategic planning without execution for complex tasks
 - **Custom Slash Commands:** User-friendly shortcuts for common operations
-- **Hooks:** Automated compliance tracking and audit trails
-- **Subagent Orchestration:** Coordinating specialized agents for domain expertise
+- **Hooks:** Automated compliance tracking and audit trails (PreToolUse & PostToolUse). Defined programmatically or via filesystem.
+- **Subagent Orchestration:** Coordinating specialized agents for domain expertise. Defined programmatically or via filesystem.
 - **Bash Tool Integration:** Python script execution for procedural knowledge and complex computations
+- **System Prompt Patterns:** Append to presets and custom replacements.
+- **Session Management:** Resume and fork conversations with session IDs for multi-day workflows
 
 ### [Notebook 02: The Observability Agent](02_The_observability_agent.ipynb)
 
 Expand beyond local capabilities by connecting agents to external systems through the Model Context Protocol. Transform your agent from a passive observer into an active participant in DevOps workflows.
 
-**Advanced Capabilities:**
+**Integration:**
 - **Git MCP Server:** 13+ tools for repository analysis and version control
 - **GitHub MCP Server:** 100+ tools for complete GitHub platform integration
+- **SDK MCP Servers:** Create custom in-process tools with `create_sdk_mcp_server()` and `@tool` decorator
 - **Real-time Monitoring:** CI/CD pipeline analysis and failure detection
-- **Intelligent Incident Response:** Automated root cause analysis
-- **Production Workflow Automation:** From monitoring to actionable insights
 
 ## Complete Agent Implementations
 

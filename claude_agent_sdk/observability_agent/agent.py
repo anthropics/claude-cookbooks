@@ -10,7 +10,14 @@ from typing import Any
 
 from dotenv import load_dotenv
 
-from claude_agent_sdk import ClaudeAgentOptions, ClaudeSDKClient
+from claude_agent_sdk import (
+    AssistantMessage,
+    ClaudeAgentOptions,
+    ClaudeSDKClient,
+    ResultMessage,
+    ToolUseBlock,
+    UserMessage,
+)
 
 load_dotenv()
 
@@ -18,13 +25,12 @@ load_dotenv()
 def get_activity_text(msg) -> str | None:
     """Extract activity text from a message"""
     try:
-        if "Assistant" in msg.__class__.__name__:
-            if hasattr(msg, "content") and msg.content:
-                first_content = msg.content[0] if isinstance(msg.content, list) else msg.content
-                if hasattr(first_content, "name"):
-                    return f"🤖 Using: {first_content.name}()"
+        if isinstance(msg, AssistantMessage):
+            first_content = msg.content[0] if isinstance(msg.content, list) else msg.content
+            if isinstance(first_content, ToolUseBlock):
+                return f"🤖 Using: {first_content.name}()"
             return "🤖 Thinking..."
-        elif "User" in msg.__class__.__name__:
+        elif isinstance(msg, UserMessage):
             return "✓ Tool completed"
     except (AttributeError, IndexError):
         pass
@@ -102,7 +108,7 @@ async def send_query(
                 else:
                     activity_handler(msg)
 
-                if hasattr(msg, "result"):
+                if isinstance(msg, ResultMessage):
                     result = msg.result
     except Exception as e:
         print(f"❌ Query error: {e}")
