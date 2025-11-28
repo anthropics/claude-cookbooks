@@ -1,5 +1,6 @@
 import json
 import logging
+
 from inference_adapter import InferenceAdapter
 from s3_adapter import S3Adapter
 
@@ -24,7 +25,7 @@ contextual_retrieval_prompt = """
 
 
 def lambda_handler(event, context):
-    logger.debug("input={}".format(json.dumps(event)))
+    logger.debug(f"input={json.dumps(event)}")
 
     s3_adapter = S3Adapter()
     inference_adapter = InferenceAdapter()

@@ -10,12 +10,13 @@ This module provides helper functions for:
 """
 
 from pathlib import Path
-from typing import Optional, List, Dict, Any
+from typing import Any
+
 from anthropic import Anthropic
 from anthropic.lib import files_from_dir
 
 
-def create_skill(client: Anthropic, skill_path: str, display_title: str) -> Dict[str, Any]:
+def create_skill(client: Anthropic, skill_path: str, display_title: str) -> dict[str, Any]:
     """
     Create a new custom skill from a directory.
 
@@ -74,7 +75,7 @@ def create_skill(client: Anthropic, skill_path: str, display_title: str) -> Dict
         return {"success": False, "error": str(e)}
 
 
-def list_custom_skills(client: Anthropic) -> List[Dict[str, Any]]:
+def list_custom_skills(client: Anthropic) -> list[dict[str, Any]]:
     """
     List all custom skills in the workspace.
 
@@ -113,7 +114,7 @@ def list_custom_skills(client: Anthropic) -> List[Dict[str, Any]]:
 
 def get_skill_version(
     client: Anthropic, skill_id: str, version: str = "latest"
-) -> Optional[Dict[str, Any]]:
+) -> dict[str, Any] | None:
     """
     Get detailed information about a specific skill version.
 
@@ -147,7 +148,7 @@ def get_skill_version(
         return None
 
 
-def create_skill_version(client: Anthropic, skill_id: str, skill_path: str) -> Dict[str, Any]:
+def create_skill_version(client: Anthropic, skill_id: str, skill_path: str) -> dict[str, Any]:
     """
     Create a new version of an existing skill.
 
@@ -213,7 +214,7 @@ def test_skill(
     skill_id: str,
     test_prompt: str,
     model: str = "claude-sonnet-4-5",
-    include_anthropic_skills: Optional[List[str]] = None,
+    include_anthropic_skills: list[str] | None = None,
 ) -> Any:
     """
     Test a custom skill with a prompt.
@@ -256,7 +257,7 @@ def test_skill(
     return response
 
 
-def list_skill_versions(client: Anthropic, skill_id: str) -> List[Dict[str, Any]]:
+def list_skill_versions(client: Anthropic, skill_id: str) -> list[dict[str, Any]]:
     """
     List all versions of a skill.
 
@@ -287,7 +288,7 @@ def list_skill_versions(client: Anthropic, skill_id: str) -> List[Dict[str, Any]
         return []
 
 
-def validate_skill_directory(skill_path: str) -> Dict[str, Any]:
+def validate_skill_directory(skill_path: str) -> dict[str, Any]:
     """
     Validate a skill directory structure before upload.
 
@@ -380,7 +381,7 @@ def validate_skill_directory(skill_path: str) -> Dict[str, Any]:
     return result
 
 
-def print_skill_summary(skill_info: Dict[str, Any]) -> None:
+def print_skill_summary(skill_info: dict[str, Any]) -> None:
     """
     Print a formatted summary of a skill.
 

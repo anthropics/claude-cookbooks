@@ -1,15 +1,15 @@
 import json
 import os
-from typing import List, Dict, Tuple
-from vectordb import VectorDB, SummaryIndexedVectorDB
+
 from anthropic import Anthropic
+from vectordb import SummaryIndexedVectorDB, VectorDB
 
 client = Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
 
 # Initialize the VectorDB
 db = VectorDB("anthropic_docs")
 # Load the Claude Documentation
-with open("../data/anthropic_docs.json", "r") as f:
+with open("../data/anthropic_docs.json") as f:
     anthropic_docs = json.load(f)
 db.load_data(anthropic_docs)
 
@@ -27,7 +27,7 @@ def answer_query_base(context):
     input_query = context["vars"]["query"]
     documents, document_context = _retrieve_base(input_query, db)
     prompt = f"""
-    You have been tasked with helping us to answer the following query: 
+    You have been tasked with helping us to answer the following query:
     <query>
     {input_query}
     </query>
@@ -35,7 +35,7 @@ def answer_query_base(context):
     <documents>
     {document_context}
     </documents>
-    Please remain faithful to the underlying context, and only deviate from it if you are 100% sure that you know the answer already. 
+    Please remain faithful to the underlying context, and only deviate from it if you are 100% sure that you know the answer already.
     Answer the question now, and avoid providing preamble such as 'Here is the answer', etc
     """
 
@@ -45,7 +45,7 @@ def answer_query_base(context):
 # Initialize the VectorDB
 db_summary = SummaryIndexedVectorDB("anthropic_docs_summaries")
 # Load the Claude Documentation
-with open("../data/anthropic_summary_indexed_docs.json", "r") as f:
+with open("../data/anthropic_summary_indexed_docs.json") as f:
     anthropic_docs_summaries = json.load(f)
 db_summary.load_data(anthropic_docs_summaries)
 
@@ -63,7 +63,7 @@ def answer_query_level_two(context):
     input_query = context["vars"]["query"]
     documents, document_context = retrieve_level_two(input_query)
     prompt = f"""
-    You have been tasked with helping us to answer the following query: 
+    You have been tasked with helping us to answer the following query:
     <query>
     {input_query}
     </query>
@@ -71,7 +71,7 @@ def answer_query_level_two(context):
     <documents>
     {document_context}
     </documents>
-    Please remain faithful to the underlying context, and only deviate from it if you are 100% sure that you know the answer already. 
+    Please remain faithful to the underlying context, and only deviate from it if you are 100% sure that you know the answer already.
     Answer the question now, and avoid providing preamble such as 'Here is the answer', etc
     """
 
@@ -81,12 +81,12 @@ def answer_query_level_two(context):
 # Initialize the VectorDB
 db_rerank = SummaryIndexedVectorDB("anthropic_docs_rerank")
 # Load the Claude Documentation
-with open("../data/anthropic_summary_indexed_docs.json", "r") as f:
+with open("../data/anthropic_summary_indexed_docs.json") as f:
     anthropic_docs_summaries = json.load(f)
 db_rerank.load_data(anthropic_docs_summaries)
 
 
-def _rerank_results(query: str, results: List[Dict], k: int = 5) -> List[Dict]:
+def _rerank_results(query: str, results: list[dict], k: int = 5) -> list[dict]:
     # Prepare the summaries with their indices
     summaries = []
     print(len(results))
@@ -103,9 +103,9 @@ def _rerank_results(query: str, results: List[Dict], k: int = 5) -> List[Dict]:
     prompt = f"""
     Query: {query}
     You are about to be given a group of documents, each preceded by its index number in square brackets. Your task is to select the only {k} most relevant documents from the list to help us answer the query.
-    
+
     {joined_summaries}
-    
+
     Output only the indices of {k} most relevant documents in order of relevance, separated by commas, enclosed in XML tags here:
     <relevant_indices>put the numbers of your indices here, seeparted by commas</relevant_indices>
     """
@@ -155,7 +155,7 @@ def _rerank_results(query: str, results: List[Dict], k: int = 5) -> List[Dict]:
         return results[:k]
 
 
-def _retrieve_advanced(query: str, k: int = 3, initial_k: int = 20) -> Tuple[List[Dict], str]:
+def _retrieve_advanced(query: str, k: int = 3, initial_k: int = 20) -> tuple[list[dict], str]:
     # Step 1: Get initial results
     initial_results = db_rerank.search(query, k=initial_k)
 
@@ -178,7 +178,7 @@ def answer_query_level_three(context):
     input_query = context["vars"]["query"]
     documents, document_context = _retrieve_advanced(input_query)
     prompt = f"""
-    You have been tasked with helping us to answer the following query: 
+    You have been tasked with helping us to answer the following query:
     <query>
     {input_query}
     </query>
@@ -186,7 +186,7 @@ def answer_query_level_three(context):
     <documents>
     {document_context}
     </documents>
-    Please remain faithful to the underlying context, and only deviate from it if you are 100% sure that you know the answer already. 
+    Please remain faithful to the underlying context, and only deviate from it if you are 100% sure that you know the answer already.
     Answer the question now, and avoid providing preamble such as 'Here is the answer', etc
     """
     return prompt

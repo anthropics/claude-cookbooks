@@ -1,4 +1,4 @@
-from utils import extract_sql, execute_sql
+from utils import execute_sql, extract_sql
 
 
 def get_assert(output, context):

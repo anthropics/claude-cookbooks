@@ -3,9 +3,11 @@ Sensitivity analysis module for financial models.
 Tests impact of variable changes on key outputs.
 """
 
+from collections.abc import Callable
+from typing import Any
+
 import numpy as np
 import pandas as pd
-from typing import Dict, List, Any, Optional, Tuple, Callable
 
 
 class SensitivityAnalyzer:
@@ -77,10 +79,10 @@ class SensitivityAnalyzer:
         self,
         var1_name: str,
         var1_base: float,
-        var1_range: List[float],
+        var1_range: list[float],
         var2_name: str,
         var2_base: float,
-        var2_range: List[float],
+        var2_range: list[float],
         output_func: Callable,
         model_update_func: Callable,
     ) -> pd.DataFrame:
@@ -125,7 +127,7 @@ class SensitivityAnalyzer:
         return df
 
     def tornado_analysis(
-        self, variables: Dict[str, Dict[str, Any]], output_func: Callable
+        self, variables: dict[str, dict[str, Any]], output_func: Callable
     ) -> pd.DataFrame:
         """
         Create tornado diagram data showing relative impact of variables.
@@ -182,10 +184,10 @@ class SensitivityAnalyzer:
 
     def scenario_analysis(
         self,
-        scenarios: Dict[str, Dict[str, float]],
-        variable_updates: Dict[str, Callable],
+        scenarios: dict[str, dict[str, float]],
+        variable_updates: dict[str, Callable],
         output_func: Callable,
-        probability_weights: Optional[Dict[str, float]] = None,
+        probability_weights: dict[str, float] | None = None,
     ) -> pd.DataFrame:
         """
         Analyze multiple scenarios with different variable combinations.
@@ -295,8 +297,8 @@ class SensitivityAnalyzer:
 
 
 def create_data_table(
-    row_variable: Tuple[str, List[float], Callable],
-    col_variable: Tuple[str, List[float], Callable],
+    row_variable: tuple[str, list[float], Callable],
+    col_variable: tuple[str, list[float], Callable],
     output_func: Callable,
 ) -> pd.DataFrame:
     """
