@@ -1,0 +1,77 @@
+name: Cookbook Proposal
+description: Propose a new cookbook or significant addition
+title: "[PROPOSAL] "
+labels:
+  - enhancement
+  - proposal
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for proposing a new cookbook! Please read our [Issue Guidelines](https://github.com/anthropics/claude-cookbooks/blob/main/.github/ISSUE_GUIDELINES.md) before submitting.
+
+        **We're looking for notebooks that:**
+        - Showcase Claude API/SDK capabilities directly
+        - Solve practical, real-world problems
+        - Provide clear educational value
+        - Are self-contained and runnable
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Preflight Checklist
+      options:
+        - label: I have searched existing cookbooks and this topic isn't already covered
+          required: true
+        - label: This proposal focuses on Claude API/SDK capabilities (not external frameworks)
+          required: true
+        - label: I am prepared to implement this cookbook (or have a clear implementation plan)
+          required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What problem does this cookbook solve? Why would users need this?
+      placeholder: |
+        Users often need to process large documents but don't know how to efficiently
+        chunk and summarize them while maintaining context. This leads to poor results
+        when using naive approaches...
+    validations:
+      required: true
+
+  - type: textarea
+    id: capabilities
+    attributes:
+      label: Claude Capabilities Demonstrated
+      description: Which Claude API/SDK features will this cookbook showcase?
+      placeholder: |
+        - Prompt caching for efficient multi-turn processing
+        - Structured outputs for consistent summaries
+        - Tool use for document navigation
+    validations:
+      required: true
+
+  - type: textarea
+    id: differentiation
+    attributes:
+      label: Differentiation
+      description: How is this different from existing cookbooks or documentation?
+      placeholder: |
+        The existing RAG cookbook focuses on retrieval, but doesn't cover the
+        summarization workflow. This fills that gap by showing end-to-end
+        document processing...
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Any other information, mockups, or references
+      placeholder: |
+        Related resources:
+        - Similar approach in LangChain: [link]
+        - User request on Discord: [link]
+    validations:
+      required: false

@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Discord Community
+    url: https://anthropic.com/discord
+    about: Get help, ask questions, share community projects, and chat with other Claude users
+  - name: Claude Documentation
+    url: https://docs.claude.com
+    about: Official documentation and API reference
+  - name: Contributing Guide
+    url: https://github.com/anthropics/claude-cookbooks/blob/main/CONTRIBUTING.md
+    about: Guidelines for contributing to this repository

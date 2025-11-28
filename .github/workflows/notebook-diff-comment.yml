@@ -54,7 +54,7 @@ jobs:
           HEAD_SHA=${{ github.event.pull_request.head.sha }}
 
           # Create output file
-          echo "# Notebook Changes" > diff_comment.md
+          echo "## Notebook Changes" > diff_comment.md
           echo "" >> diff_comment.md
           echo "This PR modifies the following notebooks:" >> diff_comment.md
           echo "" >> diff_comment.md

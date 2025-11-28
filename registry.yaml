@@ -1,4 +1,50 @@
 # yaml-language-server: $schema=./.github/registry_schema.json
+- title: Giving Claude a Crop Tool for Better Image Analysis
+  description: Give Claude a crop tool to zoom into image regions for detailed analysis
+    of charts, documents, and diagrams.
+  path: multimodal/crop_tool.ipynb
+  authors:
+  - nadine-anthropic
+  date: '2025-11-22'
+  categories:
+  - Multimodal
+  - Tools
+- title: Programmatic Tool Calling (PTC)
+  description: Reduce latency and token consumption by letting Claude write code that
+    calls tools programmatically in the code execution environment.
+  path: tool_use/programmatic_tool_calling_ptc.ipynb
+  authors:
+  - PedramNavid
+  date: '2025-11-24'
+  categories:
+  - Tools
+- title: Tool Search with Embeddings
+  description: Scale Claude applications to thousands of tools using semantic embeddings
+    for dynamic tool discovery.
+  path: tool_use/tool_search_with_embeddings.ipynb
+  authors:
+  - henrykeetay
+  date: '2025-11-24'
+  categories:
+  - Tools
+- title: Automatic Context Compaction
+  description: Manage context limits in long-running agentic workflows by automatically
+    compressing conversation history.
+  path: tool_use/automatic-context-compaction.ipynb
+  authors:
+  - PedramNavid
+  date: '2025-11-24'
+  categories:
+  - Tools
+- title: Low Latency Voice Assistant with ElevenLabs
+  description: Build a low-latency voice assistant using ElevenLabs for speech-to-text
+    and text-to-speech combined with Claude.
+  path: third_party/ElevenLabs/low_latency_stt_claude_tts.ipynb
+  authors:
+  - Adriaan-ANT
+  date: '2025-11-24'
+  categories:
+  - Integrations
 - title: Prompting for Frontend Aesthetics
   description: Guide to prompting Claude for distinctive, polished frontend designs
     avoiding generic aesthetics.
@@ -523,3 +569,4 @@
   categories:
   - Multimodal
   - Tools
+

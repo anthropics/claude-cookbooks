@@ -24,6 +24,7 @@
 - [ ] Includes a problem statement or use case description
 - [ ] Code is well-commented and easy to follow
 - [ ] Includes expected outputs or results
+- [ ] Added entry to `registry.yaml` (run `/add-registry <notebook-path>` or add manually)
 
 ## Testing
 

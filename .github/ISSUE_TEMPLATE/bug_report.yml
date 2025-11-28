@@ -1,0 +1,82 @@
+name: Bug Report
+description: Report a bug or issue with a cookbook
+title: "[BUG] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this issue! Please fill out the sections below to help us understand and fix the problem.
+
+        Before submitting, please:
+        - Search [existing issues](https://github.com/anthropics/claude-cookbooks/issues) to check if this has been reported
+        - Verify you're using the latest version of dependencies
+
+  - type: input
+    id: notebook
+    attributes:
+      label: Affected Notebook/File
+      description: Which notebook or file has the issue?
+      placeholder: "e.g., misc/prompt_caching.ipynb"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: What's wrong? Be specific about what you expected vs what happened.
+      placeholder: |
+        When I run cell 5 in the prompt caching notebook, I get an ImportError...
+
+        Expected: The cell should execute and show cached response times
+        Actual: ImportError: No module named 'anthropic'
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: How can we reproduce this issue?
+      placeholder: |
+        1. Open the notebook in Jupyter
+        2. Run cells 1-4 (setup)
+        3. Run cell 5
+        4. Error appears
+    validations:
+      required: true
+
+  - type: textarea
+    id: error
+    attributes:
+      label: Error Message
+      description: If there's an error message or traceback, paste it here
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Your environment details
+      placeholder: |
+        - Python version: 3.11.5
+        - OS: macOS 14.0 / Ubuntu 22.04 / Windows 11
+        - anthropic SDK version: 0.71.0
+        - Jupyter: notebook 7.0.0 / VS Code
+    validations:
+      required: false
+
+  - type: dropdown
+    id: willing_to_pr
+    attributes:
+      label: Would you be willing to submit a PR to fix this?
+      options:
+        - "Yes, I can submit a PR"
+        - "Maybe, with guidance"
+        - "No, I'm just reporting"
+    validations:
+      required: false
