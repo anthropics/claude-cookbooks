@@ -4,13 +4,13 @@ Provides functions to calculate key financial metrics and ratios.
 """
 
 import json
-from typing import Dict, Any
+from typing import Any
 
 
 class FinancialRatioCalculator:
     """Calculate financial ratios from financial statement data."""
 
-    def __init__(self, financial_data: Dict[str, Any]):
+    def __init__(self, financial_data: dict[str, Any]):
         """
         Initialize with financial statement data.
 
@@ -30,7 +30,7 @@ class FinancialRatioCalculator:
             return default
         return numerator / denominator
 
-    def calculate_profitability_ratios(self) -> Dict[str, float]:
+    def calculate_profitability_ratios(self) -> dict[str, float]:
         """Calculate profitability ratios."""
         ratios = {}
 
@@ -58,7 +58,7 @@ class FinancialRatioCalculator:
 
         return ratios
 
-    def calculate_liquidity_ratios(self) -> Dict[str, float]:
+    def calculate_liquidity_ratios(self) -> dict[str, float]:
         """Calculate liquidity ratios."""
         ratios = {}
 
@@ -79,7 +79,7 @@ class FinancialRatioCalculator:
 
         return ratios
 
-    def calculate_leverage_ratios(self) -> Dict[str, float]:
+    def calculate_leverage_ratios(self) -> dict[str, float]:
         """Calculate leverage/solvency ratios."""
         ratios = {}
 
@@ -103,7 +103,7 @@ class FinancialRatioCalculator:
 
         return ratios
 
-    def calculate_efficiency_ratios(self) -> Dict[str, float]:
+    def calculate_efficiency_ratios(self) -> dict[str, float]:
         """Calculate efficiency/activity ratios."""
         ratios = {}
 
@@ -127,7 +127,7 @@ class FinancialRatioCalculator:
 
         return ratios
 
-    def calculate_valuation_ratios(self) -> Dict[str, float]:
+    def calculate_valuation_ratios(self) -> dict[str, float]:
         """Calculate valuation ratios."""
         ratios = {}
 
@@ -165,7 +165,7 @@ class FinancialRatioCalculator:
 
         return ratios
 
-    def calculate_all_ratios(self) -> Dict[str, Any]:
+    def calculate_all_ratios(self) -> dict[str, Any]:
         """Calculate all financial ratios."""
         return {
             "profitability": self.calculate_profitability_ratios(),
@@ -240,7 +240,7 @@ class FinancialRatioCalculator:
             return f"{value:.2f}"
 
 
-def calculate_ratios_from_data(financial_data: Dict[str, Any]) -> Dict[str, Any]:
+def calculate_ratios_from_data(financial_data: dict[str, Any]) -> dict[str, Any]:
     """
     Main function to calculate all ratios from financial data.
 
@@ -271,7 +271,7 @@ def calculate_ratios_from_data(financial_data: Dict[str, Any]) -> Dict[str, Any]
     }
 
 
-def generate_summary(ratios: Dict[str, Any]) -> str:
+def generate_summary(ratios: dict[str, Any]) -> str:
     """Generate a text summary of the financial analysis."""
     summary_parts = []
 

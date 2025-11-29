@@ -3,8 +3,9 @@ Discounted Cash Flow (DCF) valuation model.
 Implements enterprise valuation using free cash flow projections.
 """
 
+from typing import Any
+
 import numpy as np
-from typing import Dict, List, Any, Optional
 
 
 class DCFModel:
@@ -26,11 +27,11 @@ class DCFModel:
 
     def set_historical_financials(
         self,
-        revenue: List[float],
-        ebitda: List[float],
-        capex: List[float],
-        nwc: List[float],
-        years: List[int],
+        revenue: list[float],
+        ebitda: list[float],
+        capex: list[float],
+        nwc: list[float],
+        years: list[int],
     ):
         """
         Set historical financial data.
@@ -55,11 +56,11 @@ class DCFModel:
     def set_assumptions(
         self,
         projection_years: int = 5,
-        revenue_growth: List[float] = None,
-        ebitda_margin: List[float] = None,
+        revenue_growth: list[float] = None,
+        ebitda_margin: list[float] = None,
         tax_rate: float = 0.25,
-        capex_percent: List[float] = None,
-        nwc_percent: List[float] = None,
+        capex_percent: list[float] = None,
+        nwc_percent: list[float] = None,
         terminal_growth: float = 0.03,
     ):
         """
@@ -108,7 +109,7 @@ class DCFModel:
         market_premium: float,
         cost_of_debt: float,
         debt_to_equity: float,
-        tax_rate: Optional[float] = None,
+        tax_rate: float | None = None,
     ) -> float:
         """
         Calculate Weighted Average Cost of Capital (WACC).
@@ -152,7 +153,7 @@ class DCFModel:
 
         return wacc
 
-    def project_cash_flows(self) -> Dict[str, List[float]]:
+    def project_cash_flows(self) -> dict[str, list[float]]:
         """
         Project future cash flows based on assumptions.
 
@@ -224,7 +225,7 @@ class DCFModel:
         return projections
 
     def calculate_terminal_value(
-        self, method: str = "growth", exit_multiple: Optional[float] = None
+        self, method: str = "growth", exit_multiple: float | None = None
     ) -> float:
         """
         Calculate terminal value using perpetuity growth or exit multiple.
@@ -264,8 +265,8 @@ class DCFModel:
         return terminal_value
 
     def calculate_enterprise_value(
-        self, terminal_method: str = "growth", exit_multiple: Optional[float] = None
-    ) -> Dict[str, Any]:
+        self, terminal_method: str = "growth", exit_multiple: float | None = None
+    ) -> dict[str, Any]:
         """
         Calculate enterprise value by discounting cash flows.
 
@@ -318,7 +319,7 @@ class DCFModel:
 
     def calculate_equity_value(
         self, net_debt: float, cash: float = 0, shares_outstanding: float = 100
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Calculate equity value from enterprise value.
 
@@ -353,7 +354,7 @@ class DCFModel:
         return equity_results
 
     def sensitivity_analysis(
-        self, variable1: str, range1: List[float], variable2: str, range2: List[float]
+        self, variable1: str, range1: list[float], variable2: str, range2: list[float]
     ) -> np.ndarray:
         """
         Perform two-way sensitivity analysis on valuation.
@@ -450,7 +451,7 @@ class DCFModel:
 # Helper functions for common calculations
 
 
-def calculate_beta(stock_returns: List[float], market_returns: List[float]) -> float:
+def calculate_beta(stock_returns: list[float], market_returns: list[float]) -> float:
     """
     Calculate beta from return series.
 
@@ -467,7 +468,7 @@ def calculate_beta(stock_returns: List[float], market_returns: List[float]) -> f
     return beta
 
 
-def calculate_fcf_cagr(fcf_series: List[float]) -> float:
+def calculate_fcf_cagr(fcf_series: list[float]) -> float:
     """
     Calculate compound annual growth rate of FCF.
 

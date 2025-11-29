@@ -1,27 +1,28 @@
-from typing import Dict, Union, Any
-from anthropic import Anthropic
-import re
 import os
+import re
+from typing import Any
+
+from anthropic import Anthropic
 
 
 def evaluate_end_to_end(query, generated_answer, correct_answer):
     prompt = f"""
     You are an AI assistant tasked with evaluating the correctness of answers to questions about Anthropic's documentation.
-    
+
     Question: {query}
-    
+
     Correct Answer: {correct_answer}
-    
+
     Generated Answer: {generated_answer}
-    
-    Is the Generated Answer correct based on the Correct Answer? You should pay attention to the substance of the answer, and ignore minute details that may differ. 
-    
-    Small differences or changes in wording don't matter. If the generated answer and correct answer are saying essentially the same thing then that generated answer should be marked correct. 
-    
-    However, if there is any critical piece of information which is missing from the generated answer in comparison to the correct answer, then we should mark this as incorrect. 
-    
+
+    Is the Generated Answer correct based on the Correct Answer? You should pay attention to the substance of the answer, and ignore minute details that may differ.
+
+    Small differences or changes in wording don't matter. If the generated answer and correct answer are saying essentially the same thing then that generated answer should be marked correct.
+
+    However, if there is any critical piece of information which is missing from the generated answer in comparison to the correct answer, then we should mark this as incorrect.
+
     Finally, if there are any direct contradictions between the correct answer and generated answer, we should deem the generated answer to be incorrect.
-    
+
     Respond in the following XML format:
     <evaluation>
     <content>
@@ -78,7 +79,7 @@ def evaluate_end_to_end(query, generated_answer, correct_answer):
     return result
 
 
-def get_assert(output: str, context) -> Union[bool, float, Dict[str, Any]]:
+def get_assert(output: str, context) -> bool | float | dict[str, Any]:
     correct_answer = context["vars"]["correct_answer"]
     query = context["vars"]["query"]
     result = evaluate_end_to_end(query, output, correct_answer)

@@ -3,7 +3,7 @@ Financial ratio interpretation module.
 Provides industry benchmarks and contextual analysis.
 """
 
-from typing import Dict, Any, List, Optional
+from typing import Any
 
 
 class RatioInterpreter:
@@ -57,7 +57,7 @@ class RatioInterpreter:
         self.industry = industry.lower()
         self.benchmarks = self.BENCHMARKS.get(self.industry, self._get_general_benchmarks())
 
-    def _get_general_benchmarks(self) -> Dict[str, Any]:
+    def _get_general_benchmarks(self) -> dict[str, Any]:
         """Get general industry-agnostic benchmarks."""
         return {
             "current_ratio": {"excellent": 2.0, "good": 1.5, "acceptable": 1.0, "poor": 0.8},
@@ -67,7 +67,7 @@ class RatioInterpreter:
             "pe_ratio": {"undervalued": 15, "fair": 22, "growth": 30, "expensive": 45},
         }
 
-    def interpret_ratio(self, ratio_name: str, value: float) -> Dict[str, Any]:
+    def interpret_ratio(self, ratio_name: str, value: float) -> dict[str, Any]:
         """
         Interpret a single ratio with context.
 
@@ -185,8 +185,8 @@ class RatioInterpreter:
         return "Continue monitoring this metric"
 
     def analyze_trend(
-        self, ratio_name: str, values: List[float], periods: List[str]
-    ) -> Dict[str, Any]:
+        self, ratio_name: str, values: list[float], periods: list[str]
+    ) -> dict[str, Any]:
         """
         Analyze trend in a ratio over time.
 
@@ -223,10 +223,10 @@ class RatioInterpreter:
             "change": change,
             "pct_change": pct_change,
             "message": f"{ratio_name} has {'increased' if change > 0 else 'decreased'} by {abs(pct_change):.1f}% from {periods[0]} to {periods[-1]}",
-            "values": list(zip(periods, values)),
+            "values": list(zip(periods, values, strict=False)),
         }
 
-    def generate_report(self, ratios: Dict[str, Any]) -> str:
+    def generate_report(self, ratios: dict[str, Any]) -> str:
         """
         Generate a comprehensive interpretation report.
 
@@ -259,10 +259,10 @@ class RatioInterpreter:
 
 
 def perform_comprehensive_analysis(
-    ratios: Dict[str, Any],
+    ratios: dict[str, Any],
     industry: str = "general",
-    historical_data: Optional[Dict[str, Any]] = None,
-) -> Dict[str, Any]:
+    historical_data: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     """
     Perform comprehensive ratio analysis with interpretations.
 
@@ -311,11 +311,11 @@ def perform_comprehensive_analysis(
     return analysis
 
 
-def _assess_overall_health(current_analysis: Dict[str, Any]) -> Dict[str, str]:
+def _assess_overall_health(current_analysis: dict[str, Any]) -> dict[str, str]:
     """Assess overall financial health based on ratio analysis."""
     ratings = []
-    for category, category_analysis in current_analysis.items():
-        for ratio_name, ratio_analysis in category_analysis.items():
+    for _category, category_analysis in current_analysis.items():
+        for _ratio_name, ratio_analysis in category_analysis.items():
             if "rating" in ratio_analysis:
                 ratings.append(ratio_analysis["rating"])
 
@@ -350,12 +350,12 @@ def _assess_overall_health(current_analysis: Dict[str, Any]) -> Dict[str, str]:
     return {"status": health, "message": message, "score": f"{avg_score:.1f}/4.0"}
 
 
-def _generate_key_recommendations(analysis: Dict[str, Any]) -> List[str]:
+def _generate_key_recommendations(analysis: dict[str, Any]) -> list[str]:
     """Generate prioritized recommendations based on analysis."""
     recommendations = []
 
     # Check for critical issues
-    for category, category_analysis in analysis["current_analysis"].items():
+    for _category, category_analysis in analysis["current_analysis"].items():
         for ratio_name, ratio_analysis in category_analysis.items():
             if ratio_analysis.get("rating") == "Poor":
                 recommendations.append(

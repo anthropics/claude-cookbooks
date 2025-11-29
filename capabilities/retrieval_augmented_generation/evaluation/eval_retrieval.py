@@ -1,8 +1,8 @@
-from typing import Dict, Union, Any, List
 import ast
+from typing import Any
 
 
-def calculate_mrr(retrieved_links: List[str], correct_links) -> float:
+def calculate_mrr(retrieved_links: list[str], correct_links) -> float:
     for i, link in enumerate(retrieved_links, 1):
         if link in correct_links:
             return 1 / i
@@ -19,12 +19,12 @@ def evaluate_retrieval(retrieved_links, correct_links):
     return precision, recall, mrr, f1
 
 
-def get_assert(output: str, context) -> Union[bool, float, Dict[str, Any]]:
+def get_assert(output: str, context) -> bool | float | dict[str, Any]:
     correct_chunks = context["vars"]["correct_chunks"]
 
     try:
         precision, recall, mrr, f1 = evaluate_retrieval(output, correct_chunks)
-        metrics: Dict[str, float] = {}
+        metrics: dict[str, float] = {}
         metrics["precision"] = precision
         metrics["recall"] = recall
         metrics["f1"] = f1

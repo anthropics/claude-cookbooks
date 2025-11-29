@@ -1,8 +1,9 @@
-import numpy as np
-from typing import Dict, Union, Any
+from typing import Any
+
 import nltk
-from nltk.translate.bleu_score import sentence_bleu
+import numpy as np
 from nltk.tokenize import word_tokenize
+from nltk.translate.bleu_score import sentence_bleu
 
 # Download required NLTK data
 nltk.download("punkt", quiet=True)
@@ -49,7 +50,7 @@ def nltk_bleu_eval(output, ground_truth) -> float:
     return bleu_score_float
 
 
-def get_assert(output: str, context, threshold=0.3) -> Union[bool, float, Dict[str, Any]]:
+def get_assert(output: str, context, threshold=0.3) -> bool | float | dict[str, Any]:
     ground_truth = context["vars"]["ground_truth"]
     score = nltk_bleu_eval(output, ground_truth)
 

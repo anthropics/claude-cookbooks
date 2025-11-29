@@ -30,7 +30,7 @@ def generate_prompt(context):
     user_query = context["vars"]["user_query"]
     schema = get_schema_info()
     return f"""
-    You are an AI assistant that converts natural language queries into SQL. 
+    You are an AI assistant that converts natural language queries into SQL.
     Given the following SQL database schema:
 
     {schema}

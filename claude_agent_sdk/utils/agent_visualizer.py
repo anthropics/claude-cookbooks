@@ -37,7 +37,7 @@ def visualize_conversation(messages):
     print("🤖 AGENT CONVERSATION TIMELINE")
     print("=" * 60 + "\n")
 
-    for i, msg in enumerate(messages):
+    for _i, msg in enumerate(messages):
         msg_type = msg.__class__.__name__
 
         if msg_type == "SystemMessage":
