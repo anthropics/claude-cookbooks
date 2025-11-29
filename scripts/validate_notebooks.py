@@ -5,12 +5,17 @@ import json
 import sys
 from pathlib import Path
 
+# Ensure UTF-8 output on Windows
+if sys.platform == "win32":
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
+
 
 def validate_notebook(path: Path) -> list:
     """Validate a single notebook."""
     issues = []
 
-    with open(path) as f:
+    with open(path, encoding="utf-8") as f:
         nb = json.load(f)
 
     # Check for empty cells
