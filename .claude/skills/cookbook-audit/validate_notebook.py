@@ -327,7 +327,7 @@ class NotebookValidator:
     def check_deprecated_patterns(self):
         """Check for deprecated API patterns and invalid models."""
         # Valid models
-        valid_models = ["claude-sonnet-4-5", "claude-haiku-4-5", "claude-opus-4-1"]
+        valid_models = ["claude-sonnet-4-5", "claude-haiku-4-5", "claude-opus-4-5"]
 
         # Pattern to match model strings
         model_pattern = r'["\']claude-([a-z0-9\.-]+)["\']'
