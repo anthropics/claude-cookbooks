@@ -332,6 +332,11 @@ class NotebookValidator:
         # Pattern to match model strings
         model_pattern = r'["\']claude-([a-z0-9\.-]+)["\']'
 
+        # Deprecated models that should be migrated
+        deprecated_models = {
+            "claude-opus-4-1": "claude-opus-4-5",
+        }
+
         deprecated_patterns = {
             r"\.completion\(": "Using old completion API (use messages API)",
         }
@@ -342,11 +347,16 @@ class NotebookValidator:
 
             source = self.get_cell_source(cell)
 
-            # Check for invalid models
+            # Check for invalid or deprecated models
             model_matches = re.findall(model_pattern, source)
             for match in model_matches:
                 full_model = f"claude-{match}"
-                if full_model not in valid_models:
+                if full_model in deprecated_models:
+                    self.warnings.append(
+                        f"Cell {i}: Deprecated model '{full_model}'. "
+                        f"Please update to '{deprecated_models[full_model]}'"
+                    )
+                elif full_model not in valid_models:
                     self.issues.append(
                         f"Cell {i}: Invalid model '{full_model}'. "
                         f"Valid models are: {', '.join(valid_models)}"

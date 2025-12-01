@@ -114,10 +114,11 @@ class NotebookValidator:
             "claude-3-5-sonnet-latest": "claude-sonnet-4-5",
             "claude-3-haiku-20240307": "claude-haiku-4-5",
             "claude-3-5-haiku-20241022": "claude-haiku-4-5",
-            "claude-3-opus-20240229": "claude-opus-4-1",
-            "claude-3-opus-latest": "claude-opus-4-1",
+            "claude-3-opus-20240229": "claude-opus-4-5",
+            "claude-3-opus-latest": "claude-opus-4-5",
             "claude-sonnet-4-20250514": "claude-sonnet-4-5",
-            "claude-opus-4-20250514": "claude-opus-4-1",
+            "claude-opus-4-20250514": "claude-opus-4-5",
+            "claude-opus-4-1": "claude-opus-4-5",
         }
 
         for i, cell in enumerate(nb.get("cells", [])):
@@ -643,10 +644,11 @@ Overall: {passing}/{total} notebooks passing ({percentage:.1f}%)
                 "claude-3-5-sonnet-latest": "claude-sonnet-4-5",
                 "claude-3-haiku-20240307": "claude-haiku-4-5",
                 "claude-3-5-haiku-20241022": "claude-haiku-4-5",
-                "claude-3-opus-20240229": "claude-opus-4-1",
-                "claude-3-opus-latest": "claude-opus-4-1",
+                "claude-3-opus-20240229": "claude-opus-4-5",
+                "claude-3-opus-latest": "claude-opus-4-5",
                 "claude-sonnet-4-20250514": "claude-sonnet-4-5",
-                "claude-opus-4-20250514": "claude-opus-4-1",
+                "claude-opus-4-20250514": "claude-opus-4-5",
+                "claude-opus-4-1": "claude-opus-4-5",
             }
 
             modified = False

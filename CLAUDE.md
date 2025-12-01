@@ -64,6 +64,7 @@ style: lint/format
 3. **Models:** Use current Claude models. Check docs.anthropic.com for latest versions.
    - Sonnet: `claude-sonnet-4-5-20250929`
    - Haiku: `claude-haiku-4-5-20251001`
+   - Opus: `claude-opus-4-5-20251101`
 
 4. **Notebooks:**
    - Keep outputs in notebooks (intentional for demonstration)
