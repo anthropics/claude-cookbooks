@@ -123,7 +123,7 @@ Use this to ensure comprehensive coverage:
 **Technical Requirements**
 - [ ] Executable without modification (except API keys)
 - [ ] Uses non-deprecated API patterns
-- [ ] Uses valid model names (claude-sonnet-4-5, claude-haiku-4-5, claude-opus-4-1)
+- [ ] Uses valid model names (claude-sonnet-4-5, claude-haiku-4-5, claude-opus-4-5)
 - [ ] Model name defined as constant at top of notebook
 - [ ] Includes dependency specifications
 - [ ] Assigned to primary category
