@@ -12,7 +12,7 @@ repos:
     hooks:
       - id: validate-notebooks
         name: Validate notebook structure
-        entry: python scripts/validate_notebooks.py
-        language: python
+        entry: uv run python scripts/validate_notebooks.py
+        language: system
         files: '\.ipynb$'
         pass_filenames: true
