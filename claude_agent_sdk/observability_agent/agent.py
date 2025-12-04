@@ -1,6 +1,14 @@
 """
-Observability Agent - GitHub monitoring with MCP servers
-Built on top of the research agent pattern
+Observability Agent - GitHub monitoring with MCP servers.
+
+This agent demonstrates MCP (Model Context Protocol) integration for GitHub
+monitoring and CI/CD workflow analysis. It uses the official GitHub MCP server
+to interact with the GitHub API.
+
+Key design decisions:
+- Uses disallowed_tools to ensure MCP tools are used (not Bash with gh CLI)
+- Focused on read-only GitHub operations for observability
+- Supports multi-turn conversations for deep-dive analysis
 """
 
 import asyncio
@@ -9,94 +17,117 @@ from collections.abc import Callable
 from typing import Any
 
 from dotenv import load_dotenv
+from utils.agent_visualizer import (
+    display_agent_response,
+    print_activity,
+    reset_activity_context,
+)
 
-from claude_agent_sdk import ClaudeAgentOptions, ClaudeSDKClient
+from claude_agent_sdk import ClaudeAgentOptions, ClaudeSDKClient, McpServerConfig
 
 load_dotenv()
 
+# Default model for the observability agent
+DEFAULT_MODEL = "claude-opus-4-5"
 
-def get_activity_text(msg) -> str | None:
-    """Extract activity text from a message"""
-    try:
-        if "Assistant" in msg.__class__.__name__:
-            if hasattr(msg, "content") and msg.content:
-                first_content = msg.content[0] if isinstance(msg.content, list) else msg.content
-                if hasattr(first_content, "name"):
-                    return f"🤖 Using: {first_content.name}()"
-            return "🤖 Thinking..."
-        elif "User" in msg.__class__.__name__:
-            return "✓ Tool completed"
-    except (AttributeError, IndexError):
-        pass
-    return None
+# System prompt optimized for observability tasks
+DEFAULT_SYSTEM_PROMPT = """You are an observability agent specialized in monitoring \
+GitHub repositories and CI/CD workflows. Provide concise, actionable insights \
+suitable for on-call engineers. Focus on identifying issues, assessing severity, \
+and recommending next steps."""
 
 
-def print_activity(msg) -> None:
-    """Print activity to console"""
-    activity = get_activity_text(msg)
-    if activity:
-        print(activity)
+def get_github_mcp_server() -> dict[str, McpServerConfig]:
+    """
+    Get the GitHub MCP server configuration.
 
+    Returns:
+        MCP server config dict, or empty dict if GITHUB_TOKEN not set.
+    """
+    token = os.environ.get("GITHUB_TOKEN")
+    if not token:
+        return {}
 
-# Pre-configured GitHub MCP server
-GITHUB_MCP_SERVER = {
-    "github": {
-        "command": "docker",
-        "args": [
-            "run",
-            "-i",
-            "--rm",
-            "-e",
-            "GITHUB_PERSONAL_ACCESS_TOKEN",
-            "ghcr.io/github/github-mcp-server",
-        ],
-        "env": {"GITHUB_PERSONAL_ACCESS_TOKEN": os.environ.get("GITHUB_TOKEN")},
+    return {
+        "github": {
+            "command": "docker",
+            "args": [
+                "run",
+                "-i",
+                "--rm",
+                "-e",
+                "GITHUB_PERSONAL_ACCESS_TOKEN",
+                "ghcr.io/github/github-mcp-server",
+            ],
+            "env": {"GITHUB_PERSONAL_ACCESS_TOKEN": token},
+        }
     }
-}
 
 
 async def send_query(
     prompt: str,
     activity_handler: Callable[[Any], None | Any] = print_activity,
     continue_conversation: bool = False,
-    mcp_servers: dict[str, Any] | None = None,
+    mcp_servers: dict[str, McpServerConfig] | None = None,
     use_github: bool = True,
+    model: str = DEFAULT_MODEL,
+    restrict_to_mcp: bool = True,
+    display_result: bool = True,
 ) -> str | None:
     """
     Send a query to the observability agent with MCP server support.
 
     Args:
         prompt: The query to send
-        activity_handler: Callback for activity updates
+        activity_handler: Callback for activity updates (default: print_activity)
         continue_conversation: Continue the previous conversation if True
-        mcp_servers: Custom MCP servers configuration
+        mcp_servers: Custom MCP servers configuration (merged with GitHub if enabled)
         use_github: Include GitHub MCP server (default: True)
+        model: Model to use (default: claude-opus-4-5)
+        restrict_to_mcp: If True, disallow Bash/Task to ensure MCP tools are used.
+            Set to False if you want the agent to have fallback options.
+        display_result: If True, display the response using display_agent_response()
+            after completion. Set to False for programmatic use.
 
     Returns:
-        The final result text or None if no result
+        The final result text or None if no result.
     """
+    # Only reset activity context for new conversations, not continuations
+    if not continue_conversation:
+        reset_activity_context()
+
     # Build MCP servers config
-    servers = {}
-    if use_github and os.environ.get("GITHUB_TOKEN"):
-        servers.update(GITHUB_MCP_SERVER)
+    servers: dict[str, McpServerConfig] = {}
+    if use_github:
+        servers.update(get_github_mcp_server())
     if mcp_servers:
         servers.update(mcp_servers)
 
+    # Build allowed tools list based on configured MCP servers
+    allowed_tools = [f"mcp__{name}" for name in servers]
+
+    # Configure disallowed tools to ensure MCP usage
+    # Without this, the agent could bypass MCP by using Bash with gh CLI
+    disallowed_tools = ["Bash", "Task", "WebSearch", "WebFetch"] if restrict_to_mcp else []
+
     options = ClaudeAgentOptions(
-        model="claude-sonnet-4-5",
-        allowed_tools=["mcp__github", "WebSearch", "Read"],
+        model=model,
+        allowed_tools=allowed_tools,
+        disallowed_tools=disallowed_tools,
         continue_conversation=continue_conversation,
-        system_prompt="You are an observability agent specialized in monitoring GitHub repositories and CI/CD workflows",
-        mcp_servers=servers if servers else None,
+        system_prompt=DEFAULT_SYSTEM_PROMPT,
+        mcp_servers=servers,  # Empty dict is valid, no need for None
         permission_mode="acceptEdits",
     )
 
     result = None
+    messages: list[Any] = []
 
     try:
         async with ClaudeSDKClient(options=options) as agent:
             await agent.query(prompt=prompt)
             async for msg in agent.receive_response():
+                messages.append(msg)
                 if asyncio.iscoroutinefunction(activity_handler):
                     await activity_handler(msg)
                 else:
@@ -107,5 +138,9 @@ async def send_query(
     except Exception as e:
         print(f"❌ Query error: {e}")
         raise
+
+    # Display the result using the shared visualization utility
+    if display_result and messages:
+        display_agent_response(messages)
 
     return result

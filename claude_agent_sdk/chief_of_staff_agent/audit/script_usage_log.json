@@ -31,6 +31,22 @@
       "description": "Calculate hiring impact for 3 engineers at $200K",
       "tool_used": "Bash",
       "success": true
+    },
+    {
+      "timestamp": "2025-12-04T15:38:06.071673",
+      "script": "simple_calculation.py",
+      "command": "python /home/rudycosta3/anthropic-cookbook/claude_agent_sdk/chief_of_staff_agent/scripts/simple_calculation.py 10000000 500000",
+      "description": "Run financial calculation script",
+      "tool_used": "Bash",
+      "success": true
+    },
+    {
+      "timestamp": "2025-12-04T15:44:06.248339",
+      "script": "hiring_impact.py",
+      "command": "python /home/rudycosta3/anthropic-cookbook/claude_agent_sdk/chief_of_staff_agent/scripts/hiring_impact.py 3 200000",
+      "description": "Calculate hiring impact for 3 senior engineers",
+      "tool_used": "Bash",
+      "success": true
     }
   ]
 }

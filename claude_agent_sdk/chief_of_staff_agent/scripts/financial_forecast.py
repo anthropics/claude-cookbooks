@@ -6,12 +6,20 @@ Custom Python tool executed via Bash by the Chief of Staff agent
 
 import argparse
 import json
+from typing import Any
 
 
-def forecast_financials(current_arr, growth_rate, months, burn_rate):
+def forecast_financials(
+    current_arr: float, growth_rate: float, months: int, burn_rate: float
+) -> dict[str, Any]:
     """Generate financial forecast with multiple scenarios"""
 
-    forecasts = {"base_case": [], "optimistic": [], "pessimistic": [], "metrics": {}}
+    forecasts: dict[str, Any] = {
+        "base_case": [],
+        "optimistic": [],
+        "pessimistic": [],
+        "metrics": {},
+    }
 
     # Base case
     arr = current_arr
@@ -54,15 +62,15 @@ def forecast_financials(current_arr, growth_rate, months, burn_rate):
     return forecasts
 
 
-def calculate_profitability_date(forecast):
+def calculate_profitability_date(forecast: list[dict[str, Any]]) -> int:
     """Find when company becomes profitable"""
     for entry in forecast:
         if entry["net_burn"] <= 0:
-            return entry["month"]
+            return int(entry["month"])
     return -1  # Not profitable in forecast period
 
 
-def calculate_cash_needed(forecast):
+def calculate_cash_needed(forecast: list[dict[str, Any]]) -> int:
     """Calculate total cash needed until profitability"""
     total_burn = 0
     for entry in forecast:
@@ -73,7 +81,7 @@ def calculate_cash_needed(forecast):
     return round(total_burn)
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description="Financial forecasting tool")
     parser.add_argument("--arr", type=float, default=2400000, help="Current ARR")
     parser.add_argument("--growth", type=float, default=0.15, help="Monthly growth rate")

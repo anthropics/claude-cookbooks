@@ -6,15 +6,55 @@ Custom Python script for the Chief of Staff agent
 
 import argparse
 import json
+from typing import Any, TypedDict
 
 
-def create_decision_matrix(options: list[dict], criteria: list[dict]) -> dict:
+class OptionScore(TypedDict):
+    name: str
+    scores: dict[str, float]
+    weighted_scores: dict[str, float]
+    total: float
+    pros: list[str]
+    cons: list[str]
+    verdict: str
+
+
+class Analysis(TypedDict):
+    clear_winner: bool
+    margin: float
+    recommendation: str
+    key_differentiators: list[str]
+    risks: list[str]
+
+
+class DecisionMatrix(TypedDict):
+    options: list[OptionScore]
+    winner: str | None
+    analysis: Analysis
+
+
+def create_decision_matrix(
+    options: list[dict[str, Any]], criteria: list[dict[str, Any]]
+) -> DecisionMatrix:
     """Create a weighted decision matrix for strategic choices"""
 
-    results = {"options": [], "winner": None, "analysis": {}}
+    # Initialize analysis separately with explicit type for proper type checking
+    initial_analysis: Analysis = {
+        "clear_winner": False,
+        "margin": 0.0,
+        "recommendation": "",
+        "key_differentiators": [],
+        "risks": [],
+    }
+
+    results: DecisionMatrix = {
+        "options": [],
+        "winner": None,
+        "analysis": initial_analysis,
+    }
 
     for option in options:
-        option_scores = {
+        option_scores: OptionScore = {
             "name": option["name"],
             "scores": {},
             "weighted_scores": {},
@@ -71,10 +111,10 @@ def create_decision_matrix(options: list[dict], criteria: list[dict]) -> dict:
     return results
 
 
-def generate_analysis(options: list[dict]) -> dict:
+def generate_analysis(options: list[OptionScore]) -> Analysis:
     """Generate strategic analysis of the decision"""
 
-    analysis = {
+    analysis: Analysis = {
         "clear_winner": False,
         "margin": 0,
         "recommendation": "",
@@ -115,7 +155,7 @@ def generate_analysis(options: list[dict]) -> dict:
     return analysis
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description="Strategic decision matrix tool")
     parser.add_argument("--scenario", type=str, help="Predefined scenario")
     parser.add_argument("--input", type=str, help="JSON file with options and criteria")
