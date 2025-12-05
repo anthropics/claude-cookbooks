@@ -8,7 +8,7 @@ import json
 import sys
 
 
-def calculate_metrics(total_runway, monthly_burn):
+def calculate_metrics(total_runway: float, monthly_burn: float) -> dict[str, float]:
     """Calculate key financial metrics."""
     runway_months = total_runway / monthly_burn
     quarterly_burn = monthly_burn * 3

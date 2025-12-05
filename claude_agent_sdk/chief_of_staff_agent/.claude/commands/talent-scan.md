@@ -3,7 +3,7 @@ name: talent-scan
 description: Scan the talent market for specific roles and provide hiring recommendations
 ---
 
-Use the recruiter subagent to perform a talent market scan for: {{args}}
+Use the recruiter subagent to perform a talent market scan for: $ARGUMENTS
 
 Analyze and report on:
 1. Talent availability in target markets

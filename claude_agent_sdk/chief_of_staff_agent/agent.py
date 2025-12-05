@@ -15,7 +15,7 @@ from claude_agent_sdk import ClaudeAgentOptions, ClaudeSDKClient
 load_dotenv()
 
 
-def get_activity_text(msg) -> str | None:
+def get_activity_text(msg: Any) -> str | None:
     """Extract activity text from a message"""
     try:
         if "Assistant" in msg.__class__.__name__:
@@ -31,7 +31,7 @@ def get_activity_text(msg) -> str | None:
     return None
 
 
-def print_activity(msg) -> None:
+def print_activity(msg: Any) -> None:
     """Print activity to console"""
     activity = get_activity_text(msg)
     if activity:
@@ -78,9 +78,13 @@ async def send_query(
         """
 
     # build options with optional output style
-    options_dict = {
-        "model": "claude-sonnet-4-5",
-        "allowed_tools": [
+    settings = None
+    if output_style:
+        settings = json.dumps({"outputStyle": output_style})
+
+    options = ClaudeAgentOptions(
+        model="claude-opus-4-5",
+        allowed_tools=[
             "Task",  # enables subagent delegation
             "Read",
             "Write",
@@ -88,17 +92,19 @@ async def send_query(
             "Bash",
             "WebSearch",
         ],
-        "continue_conversation": continue_conversation,
-        "system_prompt": system_prompt,
-        "permission_mode": permission_mode,
-        "cwd": os.path.dirname(os.path.abspath(__file__)),
-    }
-
-    # add output style if specified
-    if output_style:
-        options_dict["settings"] = json.dumps({"outputStyle": output_style})
-
-    options = ClaudeAgentOptions(**options_dict)
+        continue_conversation=continue_conversation,
+        system_prompt=system_prompt,
+        permission_mode=permission_mode,
+        cwd=os.path.dirname(os.path.abspath(__file__)),
+        settings=settings,
+        # IMPORTANT: setting_sources must include "project" to load filesystem settings:
+        # - Slash commands from .claude/commands/
+        # - CLAUDE.md project instructions
+        # - Subagent definitions from .claude/agents/
+        # - Hooks from .claude/settings.local.json
+        # Without this, the SDK operates in isolation mode with no filesystem settings loaded.
+        setting_sources=["project", "local"],
+    )
 
     result = None
     messages = []  # this is to append the messages ONLY for this agent turn

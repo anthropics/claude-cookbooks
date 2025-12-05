@@ -94,6 +94,11 @@ Each notebook includes an agent implementation in its respective directory:
 - **`chief_of_staff_agent/`** - Multi-agent executive assistant with financial modeling and compliance
 - **`observability_agent/`** - DevOps monitoring agent with GitHub integration
 
+**Running standalone agents:** To import agent modules outside of notebooks, either run from the `claude_agent_sdk/` directory or install the package in editable mode:
+```bash
+uv pip install -e .
+```
+
 ## Background
 ### The Evolution of Claude Agent SDK
 

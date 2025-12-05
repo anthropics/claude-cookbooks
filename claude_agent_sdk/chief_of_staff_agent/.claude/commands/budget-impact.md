@@ -3,7 +3,7 @@ name: budget-impact
 description: Analyze the financial impact of a decision on budget, burn rate, and runway
 ---
 
-Use the financial-analyst subagent to analyze the budget impact of: {{args}}
+Use the financial-analyst subagent to analyze the budget impact of: $ARGUMENTS
 
 Provide a comprehensive analysis including:
 1. Total cost (one-time and recurring)

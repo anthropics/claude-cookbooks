@@ -8,7 +8,9 @@ import json
 import sys
 
 
-def calculate_hiring_impact(num_engineers, salary_per_engineer=200000):
+def calculate_hiring_impact(
+    num_engineers: int, salary_per_engineer: int = 200000
+) -> dict[str, int | float | str]:
     """
     Calculate the financial impact of hiring engineers.
 
@@ -64,7 +66,7 @@ def calculate_hiring_impact(num_engineers, salary_per_engineer=200000):
     }
 
 
-def main():
+def main() -> None:
     # Parse command line arguments
     if len(sys.argv) < 2:
         print("Usage: python hiring_impact.py <num_engineers> [salary_per_engineer]")

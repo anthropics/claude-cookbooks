@@ -108,7 +108,7 @@ def rank_candidates(candidates: list[dict]) -> list[dict]:
     return sorted(scored, key=lambda x: x["total_score"], reverse=True)
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description="Candidate scoring tool")
     parser.add_argument("--input", type=str, help="JSON file with candidate data")
     parser.add_argument("--name", type=str, help="Candidate name")

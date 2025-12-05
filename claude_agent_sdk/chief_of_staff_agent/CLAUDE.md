@@ -8,7 +8,7 @@
 - **HQ**: San Francisco, CA
 
 ## Financial Snapshot
-- **Monthly Burn Rate**: $500,000
+- **Monthly Burn Rate**: ~$500,000
 - **Current Runway**: 20 months (until September 2025)
 - **ARR**: $2.4M (growing 15% MoM)
 - **Cash in Bank**: $10M
