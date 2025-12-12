@@ -355,7 +355,7 @@
     PowerPoint, PDF skills.
   path: skills/notebooks/01_skills_introduction.ipynb
   authors:
-  - Anthropic
+  - zealoushacker
   date: '2025-10-14'
   categories:
   - Skills
@@ -364,7 +364,7 @@
     PowerPoint, PDF skills.
   path: skills/notebooks/02_skills_financial_applications.ipynb
   authors:
-  - Anthropic
+  - zealoushacker
   date: '2025-10-15'
   categories:
   - Skills
@@ -373,7 +373,7 @@
     organizational workflows.
   path: skills/notebooks/03_skills_custom_development.ipynb
   authors:
-  - Anthropic
+  - zealoushacker
   date: '2025-10-15'
   categories:
   - Skills
@@ -528,7 +528,7 @@
     context editing.
   path: tool_use/memory_cookbook.ipynb
   authors:
-  - Anthropic
+  - zealoushacker
   date: '2025-05-22'
   categories:
   - Tools

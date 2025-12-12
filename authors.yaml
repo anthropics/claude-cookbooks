@@ -3,6 +3,13 @@
 # This file maps author GitHub usernames (used in registry.yaml) to their full details
 # for display on the website.
 
+Adriaan-ANT:
+  name: Adriaan Engelbrecht
+  avatar: https://avatars.githubusercontent.com/u/222316629?v=4
+alexalbertt:
+  name: Alex Albert
+  website: https://github.com/alexalbertt
+  avatar: https://avatars.githubusercontent.com/u/34638987?v=4
 Anthropic:
   name: Anthropic
   website: https://www.anthropic.com
@@ -11,26 +18,25 @@ Briiick:
   name: Alexander Bricken
   website: https://bricken.co
   avatar: https://avatars.githubusercontent.com/u/44481408?v=4
-GarvanD:
-  name: Garvan Doyle
-  website: https://garvandoyle.com
-  avatar: https://avatars.githubusercontent.com/u/22383376?v=4
-JiriDeJonghe:
-  name: Jiri De Jonghe
-  website: https://github.com/JiriDeJonghe
-  avatar: https://avatars.githubusercontent.com/u/33628402?v=4
-alexalbertt:
-  name: Alex Albert
-  website: https://github.com/alexalbertt
-  avatar: https://avatars.githubusercontent.com/u/34638987?v=4
 davidhershey:
   name: David Hershey
   website: https://github.com/davidhershey
   avatar: https://avatars.githubusercontent.com/u/11651858?v=4
+GarvanD:
+  name: Garvan Doyle
+  website: https://garvandoyle.com
+  avatar: https://avatars.githubusercontent.com/u/22383376?v=4
+henrykeetay:
+  name: Henry Keetay
+  avatar: https://avatars.githubusercontent.com/u/227475578?v=4
 james-briggs:
   name: james-briggs
   website: https://github.com/James-Briggs
   avatar: https://avatars.githubusercontent.com/u/64431405?v=4
+JiriDeJonghe:
+  name: Jiri De Jonghe
+  website: https://github.com/JiriDeJonghe
+  avatar: https://avatars.githubusercontent.com/u/33628402?v=4
 jpvajda:
   name: john-vajda
   website: https://github.com/jpvajda
@@ -39,6 +45,13 @@ maheshmurag:
   name: Mahesh Murag
   website: https://github.com/maheshmurag
   avatar: https://avatars.githubusercontent.com/u/5667029?v=4
+nadine-anthropic:
+  name: Nadine Yasser
+  avatar: https://avatars.githubusercontent.com/u/238355370?v=4
+PedramNavid:
+  name: Pedram Navid
+  website: http://x.com/pdrmnvd
+  avatar: https://avatars.githubusercontent.com/u/1045990
 ravi03071991:
   name: Ravi Theja
   website: https://sites.google.com/view/ravi-theja
@@ -51,16 +64,7 @@ RichmondAlake:
   name: Richmond Alake
   website: https://github.com/RichmondAlake
   avatar: https://github.com/RichmondAlake.png
-PedramNavid:
-  name: Pedram Navid
-  website: http://x.com/pdrmnvd
-  avatar: https://avatars.githubusercontent.com/u/1045990
-nadine-anthropic:
-  name: Nadine Yasser
-  avatar: https://avatars.githubusercontent.com/u/238355370?v=4
-henrykeetay:
-  name: Henry Keetay
-  avatar: https://avatars.githubusercontent.com/u/227475578?v=4
-Adriaan-ANT:
-  name: Adriaan Engelbrecht
-  avatar: https://avatars.githubusercontent.com/u/222316629?v=4
+zealoushacker:
+  name: Alex Notov
+  website: https://github.com/zealoushacker
+  avatar: https://avatars.githubusercontent.com/u/346275?v=4

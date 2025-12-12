@@ -1,4 +1,4 @@
-.PHONY: help format lint check fix test clean install
+.PHONY: help format lint check fix test clean install sort-authors
 
 # Default target
 help:
@@ -10,6 +10,7 @@ help:
 	@echo "  make test          - Run tests"
 	@echo "  make install       - Install dependencies"
 	@echo "  make clean         - Remove cache files"
+	@echo "  make sort-authors  - Sort authors.yaml alphabetically"
 
 # Format code with ruff
 format:
@@ -54,3 +55,8 @@ clean:
 	find . -type d -name ".ruff_cache" -exec rm -rf {} + 2>/dev/null || true
 	find . -type f -name "*.pyc" -delete 2>/dev/null || true
 	@echo "Cache cleaned!"
+
+# Sort authors.yaml alphabetically
+sort-authors:
+	@echo "Sorting authors.yaml..."
+	uv run python scripts/validate_authors_sorted.py --fix
