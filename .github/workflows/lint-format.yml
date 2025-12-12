@@ -40,11 +40,14 @@ jobs:
 
       - name: Get changed files
         id: changed-files
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_REF: ${{ github.base_ref }}
         run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
+          if [ "$EVENT_NAME" = "pull_request" ]; then
             # For PRs, get files changed compared to base branch
-            git fetch origin ${{ github.base_ref }}
-            CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -E '\.(py|ipynb)$' || echo "")
+            git fetch origin "$BASE_REF"
+            CHANGED_FILES=$(git diff --name-only "origin/$BASE_REF"...HEAD | grep -E '\.(py|ipynb)$' || echo "")
           else
             # For push to main, check all files
             CHANGED_FILES=$(find . -type f \( -name "*.py" -o -name "*.ipynb" \) -not -path "./.venv/*" -not -path "./venv/*" -not -path "*/build/*" -not -path "*/dist/*")
