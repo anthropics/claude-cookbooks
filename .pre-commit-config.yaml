@@ -18,7 +18,7 @@ repos:
         pass_filenames: true
 
       - id: validate-authors-sorted
-        name: Sort authors.yaml
+        name: Validate and sort authors.yaml
         entry: uv run python scripts/validate_authors_sorted.py --fix
         language: system
         files: 'authors\.yaml$'

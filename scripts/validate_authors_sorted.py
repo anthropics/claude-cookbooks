@@ -4,6 +4,7 @@
 import argparse
 import sys
 from pathlib import Path
+from typing import Any
 
 import yaml
 
@@ -23,7 +24,7 @@ HEADER = """\
 """
 
 
-def load_authors():
+def load_authors() -> dict[str, Any] | None:
     """Load authors.yaml and return the data."""
     with open(AUTHORS_FILE, encoding="utf-8") as f:
         return yaml.safe_load(f)
@@ -44,15 +45,12 @@ def sort_authors(data: dict, check_only: bool = False) -> bool:
 
     with open(AUTHORS_FILE, "w", encoding="utf-8") as f:
         f.write(HEADER)
-        for username, details in sorted_data.items():
-            f.write(f"{username}:\n")
-            for key, value in details.items():
-                f.write(f"  {key}: {value}\n")
+        yaml.dump(sorted_data, f, default_flow_style=False, allow_unicode=True, sort_keys=False)
 
     return True
 
 
-def show_diff(keys: list, sorted_keys: list):
+def show_diff(keys: list, sorted_keys: list) -> None:
     """Show the difference between current and expected order."""
     print("authors.yaml is not sorted alphabetically (case-insensitive).")
     print("\nCurrent order:")
