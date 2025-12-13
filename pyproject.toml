@@ -24,7 +24,8 @@ dev = [
     "pytest>=8.3.3",
     "nbval>=0.11.0",
     "pre-commit>=3.8.0",
-    "nbconvert>=7.16.0", 
+    "nbconvert>=7.16.0",
+    "pyyaml>=6.0.3",
 ]
 
 [tool.hatch.build.targets.wheel]

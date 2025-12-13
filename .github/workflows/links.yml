@@ -22,9 +22,11 @@ jobs:
       - name: Get changed files
         id: changed-files
         if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
         run: |
           # Get list of changed files
-          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -E '\.(md|ipynb)$' || true)
+          CHANGED_FILES=$(git diff --name-only "origin/$BASE_REF"...HEAD | grep -E '\.(md|ipynb)$' || true)
           echo "Changed files:"
           echo "$CHANGED_FILES"
 
@@ -46,12 +48,14 @@ jobs:
 
       - name: Convert notebooks for link extraction (PR - changed files only)
         if: github.event_name == 'pull_request' && steps.changed-files.outputs.has_changes == 'true'
+        env:
+          CHANGED_FILES: ${{ steps.changed-files.outputs.files }}
         run: |
           pip install jupyter nbconvert
           mkdir -p temp_md
 
           # Convert only changed notebooks
-          echo "${{ steps.changed-files.outputs.files }}" | grep '\.ipynb$' | while read nb; do
+          echo "$CHANGED_FILES" | grep '\.ipynb$' | while read nb; do
             if [ -f "$nb" ]; then
               echo "Converting: $nb"
               jupyter nbconvert --to markdown "$nb" \
@@ -76,6 +80,8 @@ jobs:
       - name: Prepare file list for link checking (PR)
         if: github.event_name == 'pull_request' && steps.changed-files.outputs.has_changes == 'true'
         id: file-list
+        env:
+          CHANGED_FILES: ${{ steps.changed-files.outputs.files }}
         run: |
           FILES=""
 
@@ -84,7 +90,7 @@ jobs:
             if [ -n "$f" ] && [ -f "$f" ]; then
               FILES="$FILES $f"
             fi
-          done < <(echo "${{ steps.changed-files.outputs.files }}" | grep '\.md$')
+          done < <(echo "$CHANGED_FILES" | grep '\.md$')
 
           # Add converted notebooks
           if [ -d "temp_md" ] && [ -n "$(ls -A temp_md/*.md 2>/dev/null)" ]; then

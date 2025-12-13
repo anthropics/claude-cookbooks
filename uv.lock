@@ -138,6 +138,7 @@ dev = [
     { name = "nbval" },
     { name = "pre-commit" },
     { name = "pytest" },
+    { name = "pyyaml" },
     { name = "ruff" },
 ]
 
@@ -160,6 +161,7 @@ dev = [
     { name = "nbval", specifier = ">=0.11.0" },
     { name = "pre-commit", specifier = ">=3.8.0" },
     { name = "pytest", specifier = ">=8.3.3" },
+    { name = "pyyaml", specifier = ">=6.0.3" },
     { name = "ruff", specifier = ">=0.14.2" },
 ]
 
