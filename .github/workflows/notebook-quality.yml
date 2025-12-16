@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       
       - name: Install uv
         uses: astral-sh/setup-uv@v4
@@ -120,7 +120,7 @@ jobs:
       
       - name: Upload test outputs
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: notebook-test-outputs
           path: test_outputs/
