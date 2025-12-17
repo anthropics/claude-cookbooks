@@ -100,7 +100,7 @@
   date: '2024-09-23'
   categories:
   - RAG & Retrieval
-- title: 00 - The One-Liner Research Agent
+- title: The One-Liner Research Agent
   description: Build a research agent using Claude Code SDK with WebSearch for autonomous
     research.
   path: claude_agent_sdk/00_The_one_liner_research_agent.ipynb
@@ -109,7 +109,7 @@
   date: '2025-09-12'
   categories:
   - Claude Agent SDK
-- title: 01 - The Chief of Staff Agent
+- title: The Chief of Staff Agent
   description: Build multi-agent systems with subagents, hooks, output styles, and
     plan mode features.
   path: claude_agent_sdk/01_The_chief_of_staff_agent.ipynb
@@ -118,7 +118,7 @@
   date: '2025-09-12'
   categories:
   - Claude Agent SDK
-- title: 02 - The Observability Agent
+- title: The Observability Agent
   description: Connect agents to external systems via MCP servers for GitHub monitoring
     and CI workflows.
   path: claude_agent_sdk/02_The_observability_agent.ipynb
