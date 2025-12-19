@@ -27,6 +27,7 @@
   date: '2025-11-24'
   categories:
   - Tools
+  - RAG & Retrieval
 - title: Automatic Context Compaction
   description: Manage context limits in long-running agentic workflows by automatically
     compressing conversation history.
@@ -36,6 +37,7 @@
   date: '2025-11-24'
   categories:
   - Tools
+  - Agent Patterns
 - title: Low Latency Voice Assistant with ElevenLabs
   description: Build a low-latency voice assistant using ElevenLabs for speech-to-text
     and text-to-speech combined with Claude.
@@ -91,6 +93,7 @@
   date: '2024-08-07'
   categories:
   - RAG & Retrieval
+  - Responses
 - title: Text to SQL with Claude
   description: Convert natural language queries to SQL using RAG, chain-of-thought,
     and self-improvement techniques.
@@ -109,6 +112,7 @@
   date: '2025-09-12'
   categories:
   - Claude Agent SDK
+  - Agent Patterns
 - title: The Chief of Staff Agent
   description: Build multi-agent systems with subagents, hooks, output styles, and
     plan mode features.
@@ -118,6 +122,7 @@
   date: '2025-09-12'
   categories:
   - Claude Agent SDK
+  - Agent Patterns
 - title: The Observability Agent
   description: Connect agents to external systems via MCP servers for GitHub monitoring
     and CI workflows.
@@ -127,6 +132,7 @@
   date: '2025-09-12'
   categories:
   - Claude Agent SDK
+  - Agent Patterns
 - title: Extended Thinking
   description: Use Claude's extended thinking for transparent step-by-step reasoning
     with budget management.
@@ -145,6 +151,7 @@
   date: '2025-02-24'
   categories:
   - Thinking
+  - Tools
 - title: Finetuning Claude 3 Haiku on Bedrock
   description: Step-by-step guide to finetuning Claude 3 Haiku on Amazon Bedrock for
     custom tasks.
@@ -270,6 +277,7 @@
   date: '2024-03-14'
   categories:
   - Responses
+  - RAG & Retrieval
 - title: Best practices for using vision with Claude
   description: Tips and techniques for optimal image processing performance with Claude's
     vision capabilities.
@@ -341,6 +349,7 @@
   date: '2024-12-19'
   categories:
   - Agent Patterns
+  - Evals
 - title: Orchestrator Workers
   description: Central LLM dynamically delegates tasks to worker LLMs and synthesizes
     their combined results.
@@ -387,6 +396,7 @@
   date: '2024-04-10'
   categories:
   - Integrations
+  - Multimodal
 - title: RAG Pipeline with LlamaIndex
   description: Build basic RAG pipeline with LlamaIndex for document retrieval and
     question answering.
@@ -396,6 +406,7 @@
   date: '2024-03-01'
   categories:
   - Integrations
+  - RAG & Retrieval
 - title: Multi-Document Agents
   description: Build RAG for large document collections using DocumentAgents with
     ReAct Agent pattern.
@@ -405,6 +416,8 @@
   date: '2024-03-02'
   categories:
   - Integrations
+  - RAG & Retrieval
+  - Agent Patterns
 - title: Multi-Modal
   description: Use LlamaIndex's Anthropic MultiModal LLM abstraction for image understanding
     and reasoning.
@@ -414,6 +427,7 @@
   date: '2024-03-08'
   categories:
   - Integrations
+  - Multimodal
 - title: ReAct Agent
   description: Create ReAct agents with LlamaIndex for tool-based reasoning and action
     workflows.
@@ -423,6 +437,8 @@
   date: '2024-03-02'
   categories:
   - Integrations
+  - Agent Patterns
+  - Tools
 - title: RouterQuery Engine
   description: Route queries to different indices using LlamaIndex RouterQueryEngine
     for multi-document search.
@@ -432,6 +448,7 @@
   date: '2024-03-01'
   categories:
   - Integrations
+  - RAG & Retrieval
 - title: SubQuestionQueryEngine
   description: Decompose complex queries into sub-questions across multiple documents
     using LlamaIndex engine.
@@ -441,6 +458,7 @@
   date: '2024-03-01'
   categories:
   - Integrations
+  - RAG & Retrieval
 - title: How to Build A RAG System Using Claude 3 And MongoDB
   description: Build chatbot RAG system with Claude and MongoDB using tech news as
     knowledge base.
@@ -450,6 +468,7 @@
   date: '2024-03-06'
   categories:
   - Integrations
+  - RAG & Retrieval
 - title: Claude 3 RAG Agents with LangChain v1
   description: Build RAG agents with Claude 3 using LangChain v1's updated agent framework
     patterns.
@@ -459,6 +478,8 @@
   date: '2024-03-14'
   categories:
   - Integrations
+  - RAG & Retrieval
+  - Agent Patterns
 - title: Retrieval-Augmented Generation using Pinecone
   description: Connect Claude with Pinecone vector database for retrieval-augmented
     generation and semantic search.
@@ -468,6 +489,7 @@
   date: '2024-02-18'
   categories:
   - Integrations
+  - RAG & Retrieval
 - title: Iteratively Searching Wikipedia with Claude
   description: Legacy notebook showing iterative Wikipedia searches with Claude 2
     for research workflows.
@@ -486,6 +508,7 @@
   date: '2024-04-03'
   categories:
   - Integrations
+  - Tools
 - title: Tool Evaluation
   description: Run parallel agent evaluations on tools independently from evaluation
     task files.
@@ -513,6 +536,7 @@
   date: '2024-04-03'
   categories:
   - Tools
+  - Agent Patterns
 - title: Extracting Structured JSON using Claude and Tool Use
   description: Extract structured JSON data from various inputs using Claude's tool
     use capabilities.
@@ -532,6 +556,7 @@
   date: '2025-05-22'
   categories:
   - Tools
+  - Agent Patterns
 - title: Parallel tool calls on Claude 3.7 Sonnet
   description: Enable parallel tool calls on Claude 3.7 Sonnet using batch tool meta-pattern
     workaround.
