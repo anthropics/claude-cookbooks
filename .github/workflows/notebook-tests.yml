@@ -1,0 +1,234 @@
+name: Notebook Tests
+
+on:
+  pull_request:
+    paths:
+      - '**/*.ipynb'
+      - 'tests/notebook_tests/**'
+      - 'pyproject.toml'
+      - 'uv.lock'
+  push:
+    branches: [main]
+    paths:
+      - '**/*.ipynb'
+      - 'tests/notebook_tests/**'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  test-notebooks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Need full history for diff
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Set up Python 3.11
+        run: uv python install 3.11
+
+      - name: Install dependencies
+        run: uv sync --frozen --all-extras
+
+      - name: Get changed notebooks
+        id: changed-notebooks
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            # For PRs, get notebooks changed compared to base branch
+            git fetch origin "$BASE_REF"
+            CHANGED_NOTEBOOKS=$(git diff --name-only "origin/$BASE_REF"...HEAD | grep '\.ipynb$' || echo "")
+          else
+            # For push to main, get notebooks changed in the push
+            CHANGED_NOTEBOOKS=$(git diff --name-only HEAD~1 HEAD | grep '\.ipynb$' || echo "")
+          fi
+
+          if [ -z "$CHANGED_NOTEBOOKS" ]; then
+            echo "No notebooks changed"
+            echo "has_notebooks=false" >> $GITHUB_OUTPUT
+            echo "" > changed_notebooks.txt
+          else
+            echo "Changed notebooks:"
+            echo "$CHANGED_NOTEBOOKS"
+            echo "$CHANGED_NOTEBOOKS" > changed_notebooks.txt
+            echo "has_notebooks=true" >> $GITHUB_OUTPUT
+
+            # Count notebooks
+            NOTEBOOK_COUNT=$(echo "$CHANGED_NOTEBOOKS" | wc -l | tr -d ' ')
+            echo "notebook_count=$NOTEBOOK_COUNT" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run notebook structure tests
+        id: structure-tests
+        if: steps.changed-notebooks.outputs.has_notebooks == 'true'
+        run: |
+          echo "## Notebook Structure Tests" >> $GITHUB_STEP_SUMMARY
+
+          FAILED_NOTEBOOKS=""
+          PASSED_COUNT=0
+          FAILED_COUNT=0
+
+          while IFS= read -r notebook; do
+            if [ -z "$notebook" ]; then
+              continue
+            fi
+
+            echo "Testing: $notebook"
+
+            # Run pytest on this specific notebook
+            if uv run pytest tests/notebook_tests/test_notebooks.py \
+                -v --tb=short \
+                -m "not slow" \
+                --notebook "$notebook" \
+                2>&1 | tee "test_output_$(echo "$notebook" | tr '/' '_').txt"; then
+              echo "✅ $notebook" >> $GITHUB_STEP_SUMMARY
+              PASSED_COUNT=$((PASSED_COUNT + 1))
+            else
+              echo "❌ $notebook" >> $GITHUB_STEP_SUMMARY
+              FAILED_NOTEBOOKS="$FAILED_NOTEBOOKS$notebook\n"
+              FAILED_COUNT=$((FAILED_COUNT + 1))
+            fi
+          done < changed_notebooks.txt
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Results:** $PASSED_COUNT passed, $FAILED_COUNT failed" >> $GITHUB_STEP_SUMMARY
+
+          # Set outputs
+          echo "passed_count=$PASSED_COUNT" >> $GITHUB_OUTPUT
+          echo "failed_count=$FAILED_COUNT" >> $GITHUB_OUTPUT
+
+          if [ "$FAILED_COUNT" -gt 0 ]; then
+            echo "has_failures=true" >> $GITHUB_OUTPUT
+            echo -e "$FAILED_NOTEBOOKS" > failed_notebooks.txt
+          else
+            echo "has_failures=false" >> $GITHUB_OUTPUT
+          fi
+        continue-on-error: true
+
+      - name: Collect test results
+        if: steps.changed-notebooks.outputs.has_notebooks == 'true'
+        run: |
+          # Combine all test outputs
+          cat test_output_*.txt > all_test_output.txt 2>/dev/null || echo "No test output files"
+
+      - name: Post test results to PR
+        if: |
+          github.event_name == 'pull_request' &&
+          steps.changed-notebooks.outputs.has_notebooks == 'true' &&
+          steps.structure-tests.outputs.has_failures == 'true'
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          prompt: |
+            The notebook tests found issues in the changed notebooks.
+
+            Test results: ${{ steps.structure-tests.outputs.passed_count }} passed, ${{ steps.structure-tests.outputs.failed_count }} failed
+
+            Here is the test output:
+            ```
+            $(cat all_test_output.txt | head -200)
+            ```
+
+            Create a helpful PR comment that:
+            - Lists which notebooks failed and why
+            - Groups similar issues (e.g., "cells not executed", "execution order issues")
+            - Explains how to fix common issues:
+              - "Cells not executed": Run all cells from top to bottom before committing
+              - "Execution order issues": Restart kernel and run all cells sequentially
+              - "Deprecated models": Update to current model versions (claude-sonnet-4-5-20250929, etc.)
+              - "Hardcoded API keys": Use os.environ.get("ANTHROPIC_API_KEY") instead
+            - Mentions they can test locally with: `make test-notebooks NOTEBOOK=path/to/notebook.ipynb`
+            - Uses friendly, constructive language
+
+            Post using: gh pr comment $PR_NUMBER --body "your comment"
+          claude_args: |
+            --allowedTools "Bash(gh pr comment:*),Bash(cat:*),Read"
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+
+      - name: Run notebook execution tests (maintainers only)
+        id: execution-tests
+        if: |
+          steps.changed-notebooks.outputs.has_notebooks == 'true' &&
+          (github.event_name == 'push' ||
+           github.event.pull_request.author_association == 'MEMBER' ||
+           github.event.pull_request.author_association == 'OWNER')
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          echo "## Notebook Execution Tests" >> $GITHUB_STEP_SUMMARY
+
+          # Only run if API key is available
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "⚠️ Skipping execution tests - no API key available" >> $GITHUB_STEP_SUMMARY
+            exit 0
+          fi
+
+          mkdir -p execution_outputs
+          EXEC_FAILED=0
+
+          while IFS= read -r notebook; do
+            if [ -z "$notebook" ]; then
+              continue
+            fi
+
+            echo "Executing: $notebook"
+
+            # Run execution test with timeout
+            if timeout 300 uv run pytest tests/notebook_tests/test_notebooks.py \
+                -v --tb=long \
+                --execute-notebooks \
+                --notebook-timeout 240 \
+                --notebook "$notebook" \
+                -k "test_notebook_executes_successfully" \
+                2>&1 | tee "execution_outputs/$(echo "$notebook" | tr '/' '_').txt"; then
+              echo "✅ Executed: $notebook" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "❌ Failed: $notebook" >> $GITHUB_STEP_SUMMARY
+              EXEC_FAILED=$((EXEC_FAILED + 1))
+            fi
+          done < changed_notebooks.txt
+
+          if [ "$EXEC_FAILED" -gt 0 ]; then
+            echo "exec_failures=$EXEC_FAILED" >> $GITHUB_OUTPUT
+          fi
+        continue-on-error: true
+
+      - name: Upload test artifacts
+        if: always() && steps.changed-notebooks.outputs.has_notebooks == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: notebook-test-results
+          path: |
+            test_output_*.txt
+            all_test_output.txt
+            failed_notebooks.txt
+            execution_outputs/
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Final status check
+        if: steps.changed-notebooks.outputs.has_notebooks == 'true'
+        run: |
+          if [ "${{ steps.structure-tests.outputs.has_failures }}" = "true" ]; then
+            echo "❌ Some notebook tests failed. Please fix the issues above."
+            exit 1
+          fi
+          echo "✅ All notebook tests passed!"
+
+      - name: No notebooks changed
+        if: steps.changed-notebooks.outputs.has_notebooks == 'false'
+        run: |
+          echo "✅ No notebooks were changed in this PR/push"
+          echo "No notebooks to test" >> $GITHUB_STEP_SUMMARY
