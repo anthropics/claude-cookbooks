@@ -123,7 +123,7 @@ Voyage embeddings are available on [AWS Marketplace](https://aws.amazon.com/mark
 
 2. Deploy the model package
 
-    From now on, we recommend you to continue with our provided [notebook](https://github.com/voyage-ai/voyageai-aws/blob/main/notebooks/deploy_voyage_code_2_sagemaker.ipynb) in [Sagemaker Studio](https://aws.amazon.com/sagemaker/studio/). Please create a JupyterLab space, upload our notebook, and continue from there.
+    From now on, we recommend you to continue with our provided [notebook](https://github.com/voyage-ai/voyageai-aws/blob/main/deploy_voyage_model_package_sagemaker.ipynb) in [Sagemaker Studio](https://aws.amazon.com/sagemaker/studio/). Please create a JupyterLab space, upload our notebook, and continue from there.
 
 
 ## Available Models
