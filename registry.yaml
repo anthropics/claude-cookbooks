@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=./.github/registry_schema.json
-- title: Giving Claude a Crop Tool for Better Image Analysis
+- title: Giving Claude a crop tool for better image analysis
   description: Give Claude a crop tool to zoom into image regions for detailed analysis
     of charts, documents, and diagrams.
   path: multimodal/crop_tool.ipynb
@@ -9,7 +9,7 @@
   categories:
   - Multimodal
   - Tools
-- title: Programmatic Tool Calling (PTC)
+- title: Programmatic tool calling (PTC)
   description: Reduce latency and token consumption by letting Claude write code that
     calls tools programmatically in the code execution environment.
   path: tool_use/programmatic_tool_calling_ptc.ipynb
@@ -18,7 +18,7 @@
   date: '2025-11-24'
   categories:
   - Tools
-- title: Tool Search with Embeddings
+- title: Tool search with embeddings
   description: Scale Claude applications to thousands of tools using semantic embeddings
     for dynamic tool discovery.
   path: tool_use/tool_search_with_embeddings.ipynb
@@ -28,7 +28,7 @@
   categories:
   - Tools
   - RAG & Retrieval
-- title: Automatic Context Compaction
+- title: Automatic context compaction
   description: Manage context limits in long-running agentic workflows by automatically
     compressing conversation history.
   path: tool_use/automatic-context-compaction.ipynb
@@ -38,7 +38,7 @@
   categories:
   - Tools
   - Agent Patterns
-- title: Low Latency Voice Assistant with ElevenLabs
+- title: Low latency voice assistant with ElevenLabs
   description: Build a low-latency voice assistant using ElevenLabs for speech-to-text
     and text-to-speech combined with Claude.
   path: third_party/ElevenLabs/low_latency_stt_claude_tts.ipynb
@@ -47,7 +47,7 @@
   date: '2025-11-24'
   categories:
   - Integrations
-- title: Prompting for Frontend Aesthetics
+- title: Prompting for frontend aesthetics
   description: Guide to prompting Claude for distinctive, polished frontend designs
     avoiding generic aesthetics.
   path: coding/prompting_for_frontend_aesthetics.ipynb
@@ -66,7 +66,7 @@
   date: '2024-05-19'
   categories:
   - RAG & Retrieval
-- title: Enhancing RAG with Contextual Retrieval
+- title: Enhancing RAG with contextual retrieval
   description: Improve RAG accuracy by adding context to chunks before embedding with
     prompt caching.
   path: capabilities/contextual-embeddings/guide.ipynb
@@ -75,7 +75,7 @@
   date: '2024-09-13'
   categories:
   - RAG & Retrieval
-- title: Retrieval Augmented Generation
+- title: Retrieval augmented generation
   description: Build and optimize RAG systems with Claude using summary indexing and
     reranking techniques.
   path: capabilities/retrieval_augmented_generation/guide.ipynb
@@ -103,7 +103,7 @@
   date: '2024-09-23'
   categories:
   - RAG & Retrieval
-- title: The One-Liner Research Agent
+- title: The one-liner research agent
   description: Build a research agent using Claude Code SDK with WebSearch for autonomous
     research.
   path: claude_agent_sdk/00_The_one_liner_research_agent.ipynb
@@ -113,7 +113,7 @@
   categories:
   - Claude Agent SDK
   - Agent Patterns
-- title: The Chief of Staff Agent
+- title: The chief of staff agent
   description: Build multi-agent systems with subagents, hooks, output styles, and
     plan mode features.
   path: claude_agent_sdk/01_The_chief_of_staff_agent.ipynb
@@ -123,7 +123,7 @@
   categories:
   - Claude Agent SDK
   - Agent Patterns
-- title: The Observability Agent
+- title: The observability agent
   description: Connect agents to external systems via MCP servers for GitHub monitoring
     and CI workflows.
   path: claude_agent_sdk/02_The_observability_agent.ipynb
@@ -133,7 +133,7 @@
   categories:
   - Claude Agent SDK
   - Agent Patterns
-- title: Extended Thinking
+- title: Extended thinking
   description: Use Claude's extended thinking for transparent step-by-step reasoning
     with budget management.
   path: extended_thinking/extended_thinking.ipynb
@@ -142,7 +142,7 @@
   date: '2025-02-24'
   categories:
   - Thinking
-- title: Extended Thinking with Tool Use
+- title: Extended thinking with tool use
   description: Combine extended thinking with tools for transparent reasoning during
     multi-step workflows.
   path: extended_thinking/extended_thinking_with_tool_use.ipynb
@@ -161,7 +161,7 @@
   date: '2024-08-19'
   categories:
   - Fine-Tuning
-- title: Batch Processing with Message Batches API
+- title: Batch processing with Message Batches API
   description: Process large volumes of Claude requests asynchronously with 50% cost
     reduction using batches.
   path: misc/batch_processing.ipynb
@@ -170,7 +170,7 @@
   date: '2024-10-08'
   categories:
   - Responses
-- title: Building Evals
+- title: Building evals
   description: Build robust evaluation systems to measure and improve Claude's performance
     on key metrics.
   path: misc/building_evals.ipynb
@@ -188,7 +188,7 @@
   date: '2024-03-03'
   categories:
   - Responses
-- title: Generate Synthetic Test Data for Your Prompt Template
+- title: Generate synthetic test data for your prompt template
   description: Generate synthetic test cases to evaluate and improve your Claude prompt
     templates effectively.
   path: misc/generate_test_cases.ipynb
@@ -197,7 +197,7 @@
   date: '2024-08-16'
   categories:
   - Evals
-- title: Prompting Claude for "JSON Mode"
+- title: Prompting Claude for "JSON mode"
   description: Get reliable JSON output from Claude using effective prompting techniques
     without constrained sampling.
   path: misc/how_to_enable_json_mode.ipynb
@@ -224,7 +224,7 @@
   date: '2024-03-18'
   categories:
   - Responses
-- title: '"Uploading" PDFs to Claude Via the API'
+- title: '"Uploading" PDFs to Claude via the API'
   description: Process and summarize PDF documents using Claude API with text extraction
     and encoding.
   path: misc/pdf_upload_summarization.ipynb
@@ -242,7 +242,7 @@
   date: '2024-08-14'
   categories:
   - Responses
-- title: Summarizing Web Page Content with Claude 3 Haiku
+- title: Summarizing web page content with Claude 3 Haiku
   description: Fetch and summarize web page content using Claude 3 Haiku via URL extraction.
   path: misc/read_web_pages_with_haiku.ipynb
   authors:
@@ -250,7 +250,7 @@
   date: '2024-03-13'
   categories:
   - RAG & Retrieval
-- title: Sampling Responses from Claude Beyond the Max Tokens Limit
+- title: Sampling responses from Claude beyond the max tokens limit
   description: Generate longer responses beyond max_tokens limit using prefill technique
     with message continuation.
   path: misc/sampling_past_max_tokens.ipynb
@@ -259,7 +259,7 @@
   date: '2024-05-08'
   categories:
   - Responses
-- title: Speculative Prompt Caching
+- title: Speculative prompt caching
   description: Reduce time-to-first-token by warming cache speculatively while users
     formulate their queries.
   path: misc/speculative_prompt_caching.ipynb
@@ -304,7 +304,7 @@
   date: '2024-03-03'
   categories:
   - Multimodal
-- title: Working with Charts, Graphs, and Slide Decks
+- title: Working with charts, graphs, and slide decks
   description: Extract insights from charts, graphs, and presentations using Claude's
     vision analysis capabilities.
   path: multimodal/reading_charts_graphs_powerpoints.ipynb
@@ -322,7 +322,7 @@
   date: '2024-03-13'
   categories:
   - Agent Patterns
-- title: Usage & Cost Admin API Cookbook
+- title: Usage & cost Admin API cookbook
   description: Programmatically access and analyze your Claude API usage and cost
     data via Admin API.
   path: observability/usage_cost_api.ipynb
@@ -331,7 +331,7 @@
   date: '2025-08-18'
   categories:
   - Observability
-- title: Basic Workflows
+- title: Basic workflows
   description: Three simple multi-LLM workflow patterns trading cost or latency for
     improved performance.
   path: patterns/agents/basic_workflows.ipynb
@@ -340,7 +340,7 @@
   date: '2024-12-19'
   categories:
   - Agent Patterns
-- title: Evaluator Optimizer
+- title: Evaluator optimizer
   description: Workflow pattern using one LLM for generation and another for evaluation
     feedback loop.
   path: patterns/agents/evaluator_optimizer.ipynb
@@ -350,7 +350,7 @@
   categories:
   - Agent Patterns
   - Evals
-- title: Orchestrator Workers
+- title: Orchestrator workers
   description: Central LLM dynamically delegates tasks to worker LLMs and synthesizes
     their combined results.
   path: patterns/agents/orchestrator_workers.ipynb
@@ -368,7 +368,7 @@
   date: '2025-10-14'
   categories:
   - Skills
-- title: Claude Skills for Financial Applications
+- title: Claude Skills for financial applications
   description: Build financial dashboards and portfolio analytics using Claude's Excel,
     PowerPoint, PDF skills.
   path: skills/notebooks/02_skills_financial_applications.ipynb
@@ -377,7 +377,7 @@
   date: '2025-10-15'
   categories:
   - Skills
-- title: Building Custom Skills for Claude
+- title: Building custom Skills for Claude
   description: Create, deploy, and manage custom skills extending Claude with specialized
     organizational workflows.
   path: skills/notebooks/03_skills_custom_development.ipynb
@@ -397,7 +397,7 @@
   categories:
   - Integrations
   - Multimodal
-- title: RAG Pipeline with LlamaIndex
+- title: RAG pipeline with LlamaIndex
   description: Build basic RAG pipeline with LlamaIndex for document retrieval and
     question answering.
   path: third_party/LlamaIndex/Basic_RAG_With_LlamaIndex.ipynb
@@ -407,7 +407,7 @@
   categories:
   - Integrations
   - RAG & Retrieval
-- title: Multi-Document Agents
+- title: Multi-document agents
   description: Build RAG for large document collections using DocumentAgents with
     ReAct Agent pattern.
   path: third_party/LlamaIndex/Multi_Document_Agents.ipynb
@@ -418,7 +418,7 @@
   - Integrations
   - RAG & Retrieval
   - Agent Patterns
-- title: Multi-Modal
+- title: Multi-modal
   description: Use LlamaIndex's Anthropic MultiModal LLM abstraction for image understanding
     and reasoning.
   path: third_party/LlamaIndex/Multi_Modal.ipynb
@@ -428,7 +428,7 @@
   categories:
   - Integrations
   - Multimodal
-- title: ReAct Agent
+- title: ReAct agent
   description: Create ReAct agents with LlamaIndex for tool-based reasoning and action
     workflows.
   path: third_party/LlamaIndex/ReAct_Agent.ipynb
@@ -439,7 +439,7 @@
   - Integrations
   - Agent Patterns
   - Tools
-- title: RouterQuery Engine
+- title: RouterQuery engine
   description: Route queries to different indices using LlamaIndex RouterQueryEngine
     for multi-document search.
   path: third_party/LlamaIndex/Router_Query_Engine.ipynb
@@ -459,7 +459,7 @@
   categories:
   - Integrations
   - RAG & Retrieval
-- title: How to Build A RAG System Using Claude 3 And MongoDB
+- title: How to build a RAG system using Claude 3 and MongoDB
   description: Build chatbot RAG system with Claude and MongoDB using tech news as
     knowledge base.
   path: third_party/MongoDB/rag_using_mongodb.ipynb
@@ -469,7 +469,7 @@
   categories:
   - Integrations
   - RAG & Retrieval
-- title: Claude 3 RAG Agents with LangChain v1
+- title: Claude 3 RAG agents with LangChain v1
   description: Build RAG agents with Claude 3 using LangChain v1's updated agent framework
     patterns.
   path: third_party/Pinecone/claude_3_rag_agent.ipynb
@@ -480,7 +480,7 @@
   - Integrations
   - RAG & Retrieval
   - Agent Patterns
-- title: Retrieval-Augmented Generation using Pinecone
+- title: Retrieval-augmented generation using Pinecone
   description: Connect Claude with Pinecone vector database for retrieval-augmented
     generation and semantic search.
   path: third_party/Pinecone/rag_using_pinecone.ipynb
@@ -490,7 +490,7 @@
   categories:
   - Integrations
   - RAG & Retrieval
-- title: Iteratively Searching Wikipedia with Claude
+- title: Iteratively searching Wikipedia with Claude
   description: Legacy notebook showing iterative Wikipedia searches with Claude 2
     for research workflows.
   path: third_party/Wikipedia/wikipedia-search-cookbook.ipynb
@@ -499,7 +499,7 @@
   date: '2023-08-15'
   categories:
   - Integrations
-- title: Using the Wolfram Alpha LLM API as a Tool with Claude
+- title: Using the Wolfram Alpha LLM API as a tool with Claude
   description: Integrate Wolfram Alpha LLM API as Claude tool for computational queries
     and answers.
   path: third_party/WolframAlpha/using_llm_api.ipynb
@@ -509,7 +509,7 @@
   categories:
   - Integrations
   - Tools
-- title: Tool Evaluation
+- title: Tool evaluation
   description: Run parallel agent evaluations on tools independently from evaluation
     task files.
   path: tool_evaluation/tool_evaluation.ipynb
@@ -518,7 +518,7 @@
   date: '2025-09-10'
   categories:
   - Evals
-- title: Using a Calculator Tool with Claude
+- title: Using a calculator tool with Claude
   description: Provide Claude with calculator tool for arithmetic operations and mathematical
     problem solving.
   path: tool_use/calculator_tool.ipynb
@@ -527,7 +527,7 @@
   date: '2024-04-03'
   categories:
   - Tools
-- title: Creating a Customer Service Agent with Client-Side Tools
+- title: Creating a customer service agent with client-side tools
   description: Build customer service chatbot with Claude using tools for customer
     lookup and order management.
   path: tool_use/customer_service_agent.ipynb
@@ -537,7 +537,7 @@
   categories:
   - Tools
   - Agent Patterns
-- title: Extracting Structured JSON using Claude and Tool Use
+- title: Extracting structured JSON using Claude and tool use
   description: Extract structured JSON data from various inputs using Claude's tool
     use capabilities.
   path: tool_use/extracting_structured_json.ipynb
@@ -547,7 +547,7 @@
   categories:
   - Responses
   - Tools
-- title: Memory & Context Management with Claude Sonnet 4.5
+- title: Memory & context management with Claude Sonnet 4.5
   description: Build AI agents with persistent memory using Claude's memory tool and
     context editing.
   path: tool_use/memory_cookbook.ipynb
@@ -575,7 +575,7 @@
   date: '2024-05-15'
   categories:
   - Tools
-- title: Note-Saving Tool with Pydantic and Anthropic Tool Use
+- title: Note-saving tool with Pydantic and Anthropic tool use
   description: Create validated tools using Pydantic models for type-safe Claude tool
     use interactions.
   path: tool_use/tool_use_with_pydantic.ipynb
@@ -584,7 +584,7 @@
   date: '2024-04-12'
   categories:
   - Tools
-- title: Using Vision with Tools
+- title: Using vision with tools
   description: Combine Claude's vision with tools to extract structured data from
     images like nutrition labels.
   path: tool_use/vision_with_tools.ipynb
@@ -594,4 +594,3 @@
   categories:
   - Multimodal
   - Tools
-
