@@ -1,204 +1,182 @@
+# ElevenLabs <> Claude 實用指南
+
 # ElevenLabs <> Claude Cookbooks
 
-[ElevenLabs](https://elevenlabs.io/) provides AI-powered speech-to-text and text-to-speech APIs for creating natural-sounding voice applications with advanced features like voice cloning and streaming synthesis.
+[ElevenLabs](https://elevenlabs.io/) 提供 AI 驅動的語音轉文字和文字轉語音 API，用於創建具有語音克隆和串流合成等進階功能的自然語音應用程式。
 
-This cookbook demonstrates how to build a low-latency voice assistant by combining ElevenLabs' speech processing with Claude's intelligent responses, progressively optimizing for real-time performance.
+> **[English version below](#english-version) | 英文版本請見下方**
 
-## What's Included
+本指南展示如何透過結合 ElevenLabs 的語音處理與 Claude 的智慧回應來建構低延遲語音助手，逐步優化以達到即時效能。
 
-* **[Low Latency Voice Assistant Notebook](./low_latency_stt_claude_tts.ipynb)** - An interactive tutorial that walks you through building a voice assistant step-by-step, demonstrating various optimization techniques to minimize latency through streaming.
+## 包含內容
 
-* **[WebSocket Streaming Script](./stream_voice_assistant_websocket.py)** - A production-ready conversational voice assistant featuring continuous microphone input, gapless audio playback, and the lowest possible latency using WebSocket streaming.
+* **[低延遲語音助手 Notebook](./low_latency_stt_claude_tts.ipynb)** - 一個互動式教學，逐步引導您建構語音助手，展示各種優化技術以透過串流最小化延遲。
 
-## How to Use This Cookbook
+* **[WebSocket 串流腳本](./stream_voice_assistant_websocket.py)** - 一個生產就緒的對話式語音助手，具有連續麥克風輸入、無縫音檔播放，以及使用 WebSocket 串流實現的最低延遲。
 
-We recommend following this sequence to get the most out of this cookbook:
+## 如何使用本指南
 
-### Step 1: Set Up Your Environment
+我們建議按照以下順序來充分利用本指南：
 
-1. **Create a virtual environment:**
+### 步驟 1：設定您的環境
+
+1. **創建虛擬環境：**
    ```bash
-   # Navigate to the ElevenLabs directory
+   # 導航到 ElevenLabs 目錄
    cd /path/to/claude-cookbooks/third_party/ElevenLabs
 
-   # Create virtual environment
+   # 創建虛擬環境
    python -m venv venv
 
-   # Activate it
-   source venv/bin/activate  # On macOS/Linux
-   # OR
-   venv\Scripts\activate     # On Windows
+   # 啟用它
+   source venv/bin/activate  # macOS/Linux
+   # 或
+   venv\Scripts\activate     # Windows
    ```
 
-2. **Get your API keys:**
-   - **ElevenLabs API key:** [elevenlabs.io/app/developers/api-keys](https://elevenlabs.io/app/developers/api-keys)
+2. **取得您的 API 金鑰：**
+   - **ElevenLabs API 金鑰：** [elevenlabs.io/app/developers/api-keys](https://elevenlabs.io/app/developers/api-keys)
 
-     When creating your API key, ensure it has the following minimum permissions:
-     - Text to speech
-     - Speech to text
-     - Read access on voices
-     - Read access on models
+     創建 API 金鑰時，確保它具有以下最低權限：
+     - 文字轉語音
+     - 語音轉文字
+     - 語音的讀取權限
+     - 模型的讀取權限
 
-   - **Anthropic API key:** [console.anthropic.com/settings/keys](https://console.anthropic.com/settings/keys)
+   - **Anthropic API 金鑰：** [console.anthropic.com/settings/keys](https://console.anthropic.com/settings/keys)
 
-3. **Configure your environment:**
+3. **設定您的環境：**
    ```bash
    cp .env.example .env
    ```
 
-   Edit `.env` and add your API keys:
+   編輯 `.env` 並添加您的 API 金鑰：
    ```
    ELEVENLABS_API_KEY=your_elevenlabs_api_key_here
    ANTHROPIC_API_KEY=sk-ant-api03-...
    ```
 
-4. **Install dependencies:**
+4. **安裝依賴項：**
    ```bash
-   # With venv activated
+   # 啟用 venv 後
    pip install -r requirements.txt
    ```
 
-### Step 2: Work Through the Notebook
+### 步驟 2：完成 Notebook
 
-Start with the **[Low Latency Voice Assistant Notebook](./low_latency_stt_claude_tts.ipynb)**. This interactive guide will teach you:
+從 **[低延遲語音助手 Notebook](./low_latency_stt_claude_tts.ipynb)** 開始。這個互動式指南將教您：
 
-- How to use ElevenLabs for speech-to-text transcription
-- How to generate Claude responses and measure latency
-- How streaming reduces time-to-first-token
-- How to stream text-to-speech for faster audio playback
-- The tradeoffs between different streaming approaches
-- Why WebSocket streaming provides the best balance of latency and quality
+- 如何使用 ElevenLabs 進行語音轉文字轉錄
+- 如何生成 Claude 回應並測量延遲
+- 串流如何減少首個 token 的回應時間
+- 如何串流文字轉語音以加快音檔播放
+- 不同串流方法之間的權衡
+- 為什麼 WebSocket 串流提供最佳的延遲和品質平衡
 
-The notebook includes performance metrics and comparisons at each step, helping you understand the impact of each optimization.
+Notebook 在每個步驟都包含效能指標和比較，幫助您理解每個優化的影響。
 
-### Step 3: Try the Production Script
+### 步驟 3：嘗試生產腳本
 
-After understanding the concepts from the notebook, run the **[WebSocket Streaming Script](./stream_voice_assistant_websocket.py)** to experience a fully functional voice assistant:
+在理解 Notebook 中的概念後，執行 **[WebSocket 串流腳本](./stream_voice_assistant_websocket.py)** 來體驗功能完整的語音助手：
 
 ```bash
 python stream_voice_assistant_websocket.py
 ```
 
-**How it works:**
-1. Press Enter to start recording
-2. Speak your question into the microphone
-3. Press Enter to stop recording
-4. The assistant will respond with natural speech
-5. Repeat or press Ctrl+C to exit
+**運作方式：**
+1. 按 Enter 開始錄音
+2. 對著麥克風說出您的問題
+3. 按 Enter 停止錄音
+4. 助手將以自然語音回應
+5. 重複或按 Ctrl+C 退出
 
-The script demonstrates production-ready implementations of:
-- Real-time microphone recording with sounddevice
-- Continuous conversation with context retention
-- WebSocket-based streaming for minimal latency
-- Custom audio queue for seamless playback
+## 疑難排解
 
-## Troubleshooting
+### 音檔爆音或雜訊
 
-### Audio Popping or Crackling
+**症狀：** 您可能偶爾在播放期間聽到短暫的爆音、咔嗒聲或音檔中斷。
 
-**Symptom:** You may occasionally hear brief pops, clicks, or audio dropouts during playback.
+**解釋：**
+這是因為腳本使用 MP3 格式音檔，這是 ElevenLabs 免費層所需的。當即時串流 MP3 資料區塊時，FFmpeg 偶爾會收到無法解碼的不完整幀。
 
-**Explanation:**
+**解決方案：**
+如果您想完全消除音檔爆音：
+1. 升級到付費 ElevenLabs 層級
+2. 修改腳本使用 `pcm_44100` 格式而非 MP3
+3. PCM 格式提供更乾淨的串流，沒有解碼問題
 
-This occurs because the script uses MP3 format audio, which is required for the ElevenLabs free tier. When streaming MP3 data in real-time chunks, FFmpeg occasionally receives incomplete frames that cannot be decoded. This typically happens:
-- At the start of streaming (first chunk may be too small)
-- During brief network delays
-- At the end of audio generation (final chunk may be partial)
+### API 金鑰問題
 
-The script automatically handles these failed chunks by skipping them (using a try-except pattern in the audio decoding logic), which prevents errors from appearing in the console but may result in brief audio gaps that manifest as pops or clicks.
+**症狀：** `AssertionError: ELEVENLABS_API_KEY is not set` 或 `AssertionError: ANTHROPIC_API_KEY is not set`
 
-**Impact:**
-- Audio playback continues normally
-- Brief pops or clicks are usually imperceptible or minor
-- The WebSocket connection remains stable
-- No functionality is lost
+**解決方案：**
+1. 確認您已將 `.env.example` 複製到 `.env`：`cp .env.example .env`
+2. 編輯 `.env` 並確保兩個 API 金鑰都正確設定
+3. 檢查 API 金鑰中是否有錯字或多餘空格
 
-**Solution:**
+### 依賴項問題
 
-This is expected behavior when using MP3 format on the free tier. If you want to eliminate audio popping entirely:
-1. Upgrade to a paid ElevenLabs tier
-2. Modify the script to use `pcm_44100` format instead of MP3
-3. PCM format provides cleaner streaming without decoding issues
+**症狀：** 錯誤如 `ImportError: PortAudio library not found` 或音檔播放失敗
 
-### API Key Issues
+**解決方案：**
 
-**Symptom:** `AssertionError: ELEVENLABS_API_KEY is not set` or `AssertionError: ANTHROPIC_API_KEY is not set`
-
-**Solution:**
-1. Verify you've copied `.env.example` to `.env`: `cp .env.example .env`
-2. Edit `.env` and ensure both API keys are set correctly
-3. Check for typos or extra spaces in your API keys
-4. Confirm your ElevenLabs key has the required permissions (see Step 1)
-
-### Dependency Issues
-
-**Symptom:** Errors like `ImportError: PortAudio library not found` or audio playback failures
-
-**Solution:**
-
-**macOS:**
+**macOS：**
 ```bash
 brew install portaudio ffmpeg
 ```
 
-**Ubuntu/Debian:**
+**Ubuntu/Debian：**
 ```bash
 sudo apt-get install portaudio19-dev ffmpeg
 ```
 
-**Windows:**
-- Install FFmpeg from [ffmpeg.org](https://ffmpeg.org/download.html)
-- Add FFmpeg to your system PATH
-- PortAudio typically installs automatically with sounddevice on Windows
+**Windows：**
+- 從 [ffmpeg.org](https://ffmpeg.org/download.html) 安裝 FFmpeg
+- 將 FFmpeg 添加到系統 PATH
 
-Then reinstall Python dependencies:
-```bash
-pip install -r requirements.txt
-```
+## 專案創意
 
-### Microphone Permissions
+一旦您熟悉語音助手，以下是一些您可以建構的啟發性專案：
 
-**Symptom:** `OSError: [Errno -9999] Unanticipated host error` or microphone not accessible
+- **會議記錄器** - 即時錄製和轉錄會議，然後使用 Claude 從對話中生成摘要、行動項目和關鍵要點。
 
-**Solution:**
-- **macOS:** Go to System Preferences → Security & Privacy → Privacy → Microphone, and enable Terminal (or your Python IDE)
-- **Windows:** Go to Settings → Privacy → Microphone, and enable microphone access for Python/Terminal
-- **Linux:** Check your user is in the `audio` group: `sudo usermod -a -G audio $USER` (then log out and back in)
+- **語言學習家教** - 以任何語言練習對話並獲得即時回饋。Claude 可以糾正發音、建議更好的措辭，並根據您的技能水平調整難度。
 
-Test your microphone setup:
-```bash
-python -c "import sounddevice as sd; print(sd.query_devices())"
-```
+- **互動式說故事者** - 創建選擇自己冒險的遊戲，Claude 講述故事並回應您的口語選擇，每個角色都有不同的語音。
 
-### WebSocket Connection Failures
+- **免手動編碼助手** - 在保持雙手放在鍵盤上的同時口頭描述程式碼變更、錯誤或功能。非常適合橡皮鴨除錯或獨自結對程式設計。
 
-**Symptom:** Connection errors, timeouts, or stream interruptions
+## 更多關於 ElevenLabs
 
-**Solution:**
-1. Check your internet connection is stable
-2. Verify firewall isn't blocking WebSocket connections (port 443)
-3. Try disabling VPN or proxy temporarily
-4. Ensure you're not exceeding API rate limits (see ElevenLabs dashboard for usage)
+以下是一些有用的資源來加深您的理解：
 
-If you continue to experience issues, check [ElevenLabs Status](https://status.elevenlabs.io/) for service updates.
+- [ElevenLabs 平台](https://elevenlabs.io/) - 官方網站
+- [API 文件](https://elevenlabs.io/docs/overview) - 完整 API 參考
+- [語音庫](https://elevenlabs.io/voice-library) - 探索可用語音
+- [API Playground](https://elevenlabs.io/app/speech-synthesis/text-to-speech) - 互動測試語音
+- [Python SDK](https://github.com/elevenlabs/elevenlabs-python) - 官方 Python SDK
 
-## Project Ideas
+---
 
-Once you're comfortable with the voice assistant, here are some inspiring projects you can build:
+<a name="english-version"></a>
 
-- **Meeting Note-Taker** - Record and transcribe meetings in real-time, then use Claude to generate summaries, action items, and key takeaways from the conversation.
+## English Version
 
-- **Language Learning Tutor** - Practice conversations in any language with real-time feedback. Claude can correct pronunciation, suggest better phrasing, and adapt difficulty to your skill level.
+[ElevenLabs](https://elevenlabs.io/) provides AI-powered speech-to-text and text-to-speech APIs for creating natural-sounding voice applications with advanced features like voice cloning and streaming synthesis.
 
-- **Interactive Storyteller** - Create choose-your-own-adventure games where Claude narrates the story and responds to your spoken choices, with different voice characters for each role.
+This cookbook demonstrates how to build a low-latency voice assistant by combining ElevenLabs' speech processing with Claude's intelligent responses, progressively optimizing for real-time performance.
 
-- **Hands-Free Coding Assistant** - Describe code changes, bugs, or features verbally while keeping your hands on the keyboard. Perfect for rubber duck debugging or pair programming solo.
+### What's Included
 
-- **Voice-Activated Smart Home** - Build natural conversation interfaces for controlling home devices. Ask complex questions like "Is it cold enough to turn on the heater?" instead of simple on/off commands.
+* **[Low Latency Voice Assistant Notebook](./low_latency_stt_claude_tts.ipynb)** - An interactive tutorial that walks you through building a voice assistant step-by-step, demonstrating various optimization techniques to minimize latency through streaming.
 
-- **Personal Voice Journal** - Keep a daily journal by speaking your thoughts. Claude can organize entries by theme, track your mood over time, and surface relevant past entries when you need them.
+* **[WebSocket Streaming Script](./stream_voice_assistant_websocket.py)** - A production-ready conversational voice assistant featuring continuous microphone input, gapless audio playback, and the lowest possible latency using WebSocket streaming.
 
-## More About ElevenLabs
+### How to Use This Cookbook
+
+See the Chinese version above for detailed setup instructions and troubleshooting.
+
+### More About ElevenLabs
 
 Here are some helpful resources to deepen your understanding:
 

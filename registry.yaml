@@ -1,7 +1,12 @@
 # yaml-language-server: $schema=./.github/registry_schema.json
+# 中文翻譯說明：每個條目包含 title_zh 和 description_zh 字段作為中文翻譯版本
+# Chinese Translation Note: Each entry includes title_zh and description_zh fields for Chinese translation
+
 - title: Giving Claude a crop tool for better image analysis
+  title_zh: 給 Claude 裁剪工具以進行更好的圖片分析
   description: Give Claude a crop tool to zoom into image regions for detailed analysis
     of charts, documents, and diagrams.
+  description_zh: 提供 Claude 裁剪工具，可放大圖片區域以詳細分析圖表、文件和圖解。
   path: multimodal/crop_tool.ipynb
   authors:
   - nadine-anthropic
@@ -9,18 +14,24 @@
   categories:
   - Multimodal
   - Tools
+
 - title: Programmatic tool calling (PTC)
+  title_zh: 程式化工具呼叫（PTC）
   description: Reduce latency and token consumption by letting Claude write code that
     calls tools programmatically in the code execution environment.
+  description_zh: 透過讓 Claude 在程式碼執行環境中撰寫程式化呼叫工具的程式碼，來降低延遲和 token 消耗。
   path: tool_use/programmatic_tool_calling_ptc.ipynb
   authors:
   - PedramNavid
   date: '2025-11-24'
   categories:
   - Tools
+
 - title: Tool search with embeddings
+  title_zh: 使用嵌入向量搜尋工具
   description: Scale Claude applications to thousands of tools using semantic embeddings
     for dynamic tool discovery.
+  description_zh: 使用語義嵌入向量進行動態工具發現，將 Claude 應用程式擴展到數千個工具。
   path: tool_use/tool_search_with_embeddings.ipynb
   authors:
   - henrykeetay
@@ -28,9 +39,12 @@
   categories:
   - Tools
   - RAG & Retrieval
+
 - title: Automatic context compaction
+  title_zh: 自動上下文壓縮
   description: Manage context limits in long-running agentic workflows by automatically
     compressing conversation history.
+  description_zh: 透過自動壓縮對話歷史，在長時間執行的代理工作流程中管理上下文限制。
   path: tool_use/automatic-context-compaction.ipynb
   authors:
   - PedramNavid
@@ -38,18 +52,24 @@
   categories:
   - Tools
   - Agent Patterns
+
 - title: Low latency voice assistant with ElevenLabs
+  title_zh: 使用 ElevenLabs 的低延遲語音助手
   description: Build a low-latency voice assistant using ElevenLabs for speech-to-text
     and text-to-speech combined with Claude.
+  description_zh: 使用 ElevenLabs 的語音轉文字和文字轉語音功能，結合 Claude 建構低延遲語音助手。
   path: third_party/ElevenLabs/low_latency_stt_claude_tts.ipynb
   authors:
   - Adriaan-ANT
   date: '2025-11-24'
   categories:
   - Integrations
+
 - title: Prompting for frontend aesthetics
+  title_zh: 前端美學提示詞指南
   description: Guide to prompting Claude for distinctive, polished frontend designs
     avoiding generic aesthetics.
+  description_zh: 引導 Claude 創建獨特、精緻的前端設計，避免通用美學的提示詞指南。
   path: coding/prompting_for_frontend_aesthetics.ipynb
   authors:
   - rgb-prithvi
@@ -57,36 +77,48 @@
   categories:
   - Responses
   - Skills
+
 - title: Classification with Claude
+  title_zh: 使用 Claude 進行分類
   description: Build classification systems with Claude using RAG and chain-of-thought
     for insurance tickets.
+  description_zh: 使用 Claude 搭配 RAG 和思維鏈（chain-of-thought）為保險票據建構分類系統。
   path: capabilities/classification/guide.ipynb
   authors:
   - GarvanD
   date: '2024-05-19'
   categories:
   - RAG & Retrieval
+
 - title: Enhancing RAG with contextual retrieval
+  title_zh: 使用上下文檢索增強 RAG
   description: Improve RAG accuracy by adding context to chunks before embedding with
     prompt caching.
+  description_zh: 透過在嵌入前為文字區塊添加上下文，並使用提示詞快取來提高 RAG 準確度。
   path: capabilities/contextual-embeddings/guide.ipynb
   authors:
   - Anthropic
   date: '2024-09-13'
   categories:
   - RAG & Retrieval
+
 - title: Retrieval augmented generation
+  title_zh: 檢索增強生成（RAG）
   description: Build and optimize RAG systems with Claude using summary indexing and
     reranking techniques.
+  description_zh: 使用摘要索引和重新排序技術，搭配 Claude 建構和優化 RAG 系統。
   path: capabilities/retrieval_augmented_generation/guide.ipynb
   authors:
   - Anthropic
   date: '2024-07-02'
   categories:
   - RAG & Retrieval
+
 - title: Summarization with Claude
+  title_zh: 使用 Claude 進行摘要
   description: Comprehensive guide to summarizing legal documents with evaluation
     and advanced techniques.
+  description_zh: 使用評估和進階技術進行法律文件摘要的完整指南。
   path: capabilities/summarization/guide.ipynb
   authors:
   - Briiick
@@ -94,18 +126,24 @@
   categories:
   - RAG & Retrieval
   - Responses
+
 - title: Text to SQL with Claude
+  title_zh: 使用 Claude 進行自然語言轉 SQL
   description: Convert natural language queries to SQL using RAG, chain-of-thought,
     and self-improvement techniques.
+  description_zh: 使用 RAG、思維鏈和自我改進技術，將自然語言查詢轉換為 SQL。
   path: capabilities/text_to_sql/guide.ipynb
   authors:
   - maheshmurag
   date: '2024-09-23'
   categories:
   - RAG & Retrieval
+
 - title: The one-liner research agent
+  title_zh: 單行程式碼研究代理
   description: Build a research agent using Claude Code SDK with WebSearch for autonomous
     research.
+  description_zh: 使用 Claude Code SDK 搭配 WebSearch 建構自主研究的研究代理。
   path: claude_agent_sdk/00_The_one_liner_research_agent.ipynb
   authors:
   - JiriDeJonghe
@@ -113,9 +151,12 @@
   categories:
   - Claude Agent SDK
   - Agent Patterns
+
 - title: The chief of staff agent
+  title_zh: 首席幕僚代理
   description: Build multi-agent systems with subagents, hooks, output styles, and
     plan mode features.
+  description_zh: 使用子代理、掛鉤、輸出樣式和計畫模式功能建構多代理系統。
   path: claude_agent_sdk/01_The_chief_of_staff_agent.ipynb
   authors:
   - JiriDeJonghe
@@ -123,9 +164,12 @@
   categories:
   - Claude Agent SDK
   - Agent Patterns
+
 - title: The observability agent
+  title_zh: 可觀測性代理
   description: Connect agents to external systems via MCP servers for GitHub monitoring
     and CI workflows.
+  description_zh: 透過 MCP 伺服器將代理連接到外部系統，用於 GitHub 監控和 CI 工作流程。
   path: claude_agent_sdk/02_The_observability_agent.ipynb
   authors:
   - JiriDeJonghe
@@ -133,18 +177,24 @@
   categories:
   - Claude Agent SDK
   - Agent Patterns
+
 - title: Extended thinking
+  title_zh: 延伸思考
   description: Use Claude's extended thinking for transparent step-by-step reasoning
     with budget management.
+  description_zh: 使用 Claude 的延伸思考功能，進行透明的逐步推理並管理預算。
   path: extended_thinking/extended_thinking.ipynb
   authors:
   - alexalbertt
   date: '2025-02-24'
   categories:
   - Thinking
+
 - title: Extended thinking with tool use
+  title_zh: 結合工具使用的延伸思考
   description: Combine extended thinking with tools for transparent reasoning during
     multi-step workflows.
+  description_zh: 在多步驟工作流程中結合延伸思考與工具使用，實現透明的推理過程。
   path: extended_thinking/extended_thinking_with_tool_use.ipynb
   authors:
   - alexalbertt
@@ -152,125 +202,167 @@
   categories:
   - Thinking
   - Tools
+
 - title: Finetuning Claude 3 Haiku on Bedrock
+  title_zh: 在 Bedrock 上微調 Claude 3 Haiku
   description: Step-by-step guide to finetuning Claude 3 Haiku on Amazon Bedrock for
     custom tasks.
+  description_zh: 在 Amazon Bedrock 上為自訂任務微調 Claude 3 Haiku 的逐步指南。
   path: finetuning/finetuning_on_bedrock.ipynb
   authors:
   - davidhershey
   date: '2024-08-19'
   categories:
   - Fine-Tuning
+
 - title: Batch processing with Message Batches API
+  title_zh: 使用 Message Batches API 進行批次處理
   description: Process large volumes of Claude requests asynchronously with 50% cost
     reduction using batches.
+  description_zh: 使用批次異步處理大量 Claude 請求，可節省 50% 成本。
   path: misc/batch_processing.ipynb
   authors:
   - alexalbertt
   date: '2024-10-08'
   categories:
   - Responses
+
 - title: Building evals
+  title_zh: 建構評估系統
   description: Build robust evaluation systems to measure and improve Claude's performance
     on key metrics.
+  description_zh: 建構強健的評估系統，以衡量和改進 Claude 在關鍵指標上的表現。
   path: misc/building_evals.ipynb
   authors:
   - alexalbertt
   date: '2024-03-03'
   categories:
   - Evals
+
 - title: Building a moderation filter with Claude
+  title_zh: 使用 Claude 建構內容審核過濾器
   description: Build customizable content moderation filters by defining rules and
     categories in prompts.
+  description_zh: 透過在提示詞中定義規則和類別，建構可自訂的內容審核過濾器。
   path: misc/building_moderation_filter.ipynb
   authors:
   - alexalbertt
   date: '2024-03-03'
   categories:
   - Responses
+
 - title: Generate synthetic test data for your prompt template
+  title_zh: 為您的提示詞模板生成合成測試資料
   description: Generate synthetic test cases to evaluate and improve your Claude prompt
     templates effectively.
+  description_zh: 生成合成測試案例，有效評估和改進您的 Claude 提示詞模板。
   path: misc/generate_test_cases.ipynb
   authors:
   - Anthropic
   date: '2024-08-16'
   categories:
   - Evals
+
 - title: Prompting Claude for "JSON mode"
+  title_zh: 提示 Claude 使用「JSON 模式」
   description: Get reliable JSON output from Claude using effective prompting techniques
     without constrained sampling.
+  description_zh: 使用有效的提示詞技術從 Claude 獲得可靠的 JSON 輸出，無需約束採樣。
   path: misc/how_to_enable_json_mode.ipynb
   authors:
   - alexalbertt
   date: '2024-03-03'
   categories:
   - Responses
+
 - title: How to make SQL queries with Claude
+  title_zh: 如何使用 Claude 進行 SQL 查詢
   description: Generate SQL queries from natural language questions using Claude with
     database schema context.
+  description_zh: 使用 Claude 搭配資料庫綱要上下文，從自然語言問題生成 SQL 查詢。
   path: misc/how_to_make_sql_queries.ipynb
   authors:
   - alexalbertt
   date: '2024-03-03'
   categories:
   - RAG & Retrieval
+
 - title: Metaprompt
+  title_zh: 元提示詞（Metaprompt）
   description: Prompt engineering tool that generates starting prompts for your tasks
     to solve blank-page problem.
+  description_zh: 提示詞工程工具，為您的任務生成起始提示詞，解決空白頁問題。
   path: misc/metaprompt.ipynb
   authors:
   - Anthropic
   date: '2024-03-18'
   categories:
   - Responses
+
 - title: '"Uploading" PDFs to Claude via the API'
+  title_zh: 透過 API「上傳」PDF 到 Claude
   description: Process and summarize PDF documents using Claude API with text extraction
     and encoding.
+  description_zh: 使用 Claude API 搭配文字提取和編碼功能，處理和摘要 PDF 文件。
   path: misc/pdf_upload_summarization.ipynb
   authors:
   - Anthropic
   date: '2023-08-15'
   categories:
   - RAG & Retrieval
+
 - title: Prompt caching through the Claude API
+  title_zh: 透過 Claude API 進行提示詞快取
   description: Cache and reuse prompt context for cost savings and faster responses
     with detailed instructions.
+  description_zh: 快取和重複使用提示詞上下文，透過詳細指引來節省成本並加快回應速度。
   path: misc/prompt_caching.ipynb
   authors:
   - alexalbertt
   date: '2024-08-14'
   categories:
   - Responses
+
 - title: Summarizing web page content with Claude 3 Haiku
+  title_zh: 使用 Claude 3 Haiku 摘要網頁內容
   description: Fetch and summarize web page content using Claude 3 Haiku via URL extraction.
+  description_zh: 透過 URL 提取使用 Claude 3 Haiku 獲取和摘要網頁內容。
   path: misc/read_web_pages_with_haiku.ipynb
   authors:
   - alexalbertt
   date: '2024-03-13'
   categories:
   - RAG & Retrieval
+
 - title: Sampling responses from Claude beyond the max tokens limit
+  title_zh: 超過最大 token 限制取樣 Claude 回應
   description: Generate longer responses beyond max_tokens limit using prefill technique
     with message continuation.
+  description_zh: 使用預填技術和訊息延續功能，生成超過 max_tokens 限制的較長回應。
   path: misc/sampling_past_max_tokens.ipynb
   authors:
   - Anthropic
   date: '2024-05-08'
   categories:
   - Responses
+
 - title: Speculative prompt caching
+  title_zh: 推測性提示詞快取
   description: Reduce time-to-first-token by warming cache speculatively while users
     formulate their queries.
+  description_zh: 在使用者構思查詢時推測性預熱快取，減少首個 token 的回應時間。
   path: misc/speculative_prompt_caching.ipynb
   authors:
   - Anthropic
   date: '2025-05-15'
   categories:
   - Responses
+
 - title: Citations
+  title_zh: 引用功能
   description: Enable Claude to provide detailed source citations when answering document-based
     questions for verification.
+  description_zh: 啟用 Claude 在回答基於文件的問題時提供詳細來源引用，以便驗證。
   path: misc/using_citations.ipynb
   authors:
   - Anthropic
@@ -278,71 +370,95 @@
   categories:
   - Responses
   - RAG & Retrieval
+
 - title: Best practices for using vision with Claude
+  title_zh: 使用 Claude 視覺功能的最佳實踐
   description: Tips and techniques for optimal image processing performance with Claude's
     vision capabilities.
+  description_zh: 使用 Claude 視覺功能進行最佳圖片處理效能的技巧和技術。
   path: multimodal/best_practices_for_vision.ipynb
   authors:
   - alexalbertt
   date: '2024-05-08'
   categories:
   - Multimodal
+
 - title: Getting started - how to pass images into Claude
+  title_zh: 入門指南 - 如何將圖片傳入 Claude
   description: Tutorial on passing images to Claude 3 API for vision-based text analysis.
+  description_zh: 將圖片傳入 Claude 3 API 進行基於視覺的文字分析的教學。
   path: multimodal/getting_started_with_vision.ipynb
   authors:
   - alexalbertt
   date: '2024-03-03'
   categories:
   - Multimodal
+
 - title: How to transcribe documents with Claude
+  title_zh: 如何使用 Claude 轉錄文件
   description: Extract and structure unstructured text from images and PDFs using
     Claude 3's vision.
+  description_zh: 使用 Claude 3 的視覺功能從圖片和 PDF 中提取和結構化非結構化文字。
   path: multimodal/how_to_transcribe_text.ipynb
   authors:
   - alexalbertt
   date: '2024-03-03'
   categories:
   - Multimodal
+
 - title: Working with charts, graphs, and slide decks
+  title_zh: 處理圖表和簡報投影片
   description: Extract insights from charts, graphs, and presentations using Claude's
     vision analysis capabilities.
+  description_zh: 使用 Claude 的視覺分析功能從圖表和簡報中提取洞察。
   path: multimodal/reading_charts_graphs_powerpoints.ipynb
   authors:
   - alexalbertt
   date: '2024-03-03'
   categories:
   - Multimodal
+
 - title: Using Haiku as a sub-agent
+  title_zh: 使用 Haiku 作為子代理
   description: Analyze financial reports using Haiku sub-agents for extraction and
     Opus for synthesis.
+  description_zh: 使用 Haiku 子代理進行提取，Opus 進行綜合，來分析財務報告。
   path: multimodal/using_sub_agents.ipynb
   authors:
   - alexalbertt
   date: '2024-03-13'
   categories:
   - Agent Patterns
+
 - title: Usage & cost Admin API cookbook
+  title_zh: 使用量與成本 Admin API 指南
   description: Programmatically access and analyze your Claude API usage and cost
     data via Admin API.
+  description_zh: 透過 Admin API 以程式方式存取和分析您的 Claude API 使用量和成本資料。
   path: observability/usage_cost_api.ipynb
   authors:
   - Anthropic
   date: '2025-08-18'
   categories:
   - Observability
+
 - title: Basic workflows
+  title_zh: 基礎工作流程
   description: Three simple multi-LLM workflow patterns trading cost or latency for
     improved performance.
+  description_zh: 三種簡單的多 LLM 工作流程模式，以成本或延遲換取更好的效能。
   path: patterns/agents/basic_workflows.ipynb
   authors:
   - Anthropic
   date: '2024-12-19'
   categories:
   - Agent Patterns
+
 - title: Evaluator optimizer
+  title_zh: 評估器優化器
   description: Workflow pattern using one LLM for generation and another for evaluation
     feedback loop.
+  description_zh: 使用一個 LLM 進行生成，另一個進行評估回饋迴圈的工作流程模式。
   path: patterns/agents/evaluator_optimizer.ipynb
   authors:
   - Anthropic
@@ -350,46 +466,61 @@
   categories:
   - Agent Patterns
   - Evals
+
 - title: Orchestrator workers
+  title_zh: 協調器工作者
   description: Central LLM dynamically delegates tasks to worker LLMs and synthesizes
     their combined results.
+  description_zh: 中央 LLM 動態將任務委派給工作者 LLM，並綜合它們的結合結果。
   path: patterns/agents/orchestrator_workers.ipynb
   authors:
   - Anthropic
   date: '2024-12-19'
   categories:
   - Agent Patterns
+
 - title: Introduction to Claude Skills
+  title_zh: Claude Skills 簡介
   description: Create documents, analyze data, automate workflows with Claude's Excel,
     PowerPoint, PDF skills.
+  description_zh: 使用 Claude 的 Excel、PowerPoint、PDF 技能創建文件、分析資料、自動化工作流程。
   path: skills/notebooks/01_skills_introduction.ipynb
   authors:
   - zealoushacker
   date: '2025-10-14'
   categories:
   - Skills
+
 - title: Claude Skills for financial applications
+  title_zh: Claude Skills 金融應用
   description: Build financial dashboards and portfolio analytics using Claude's Excel,
     PowerPoint, PDF skills.
+  description_zh: 使用 Claude 的 Excel、PowerPoint、PDF 技能建構財務儀表板和投資組合分析。
   path: skills/notebooks/02_skills_financial_applications.ipynb
   authors:
   - zealoushacker
   date: '2025-10-15'
   categories:
   - Skills
+
 - title: Building custom Skills for Claude
+  title_zh: 為 Claude 建構自訂 Skills
   description: Create, deploy, and manage custom skills extending Claude with specialized
     organizational workflows.
+  description_zh: 創建、部署和管理自訂技能，使用專業的組織工作流程擴展 Claude。
   path: skills/notebooks/03_skills_custom_development.ipynb
   authors:
   - zealoushacker
   date: '2025-10-15'
   categories:
   - Skills
+
 - title: Transcribe an audio file with Deepgram & use Anthropic to prepare interview
     questions!
+  title_zh: 使用 Deepgram 轉錄音檔並使用 Anthropic 準備面試問題！
   description: Transcribe audio with Deepgram and generate interview questions using
     Claude for preparation.
+  description_zh: 使用 Deepgram 轉錄音檔，並使用 Claude 生成面試問題以進行準備。
   path: third_party/Deepgram/prerecorded_audio.ipynb
   authors:
   - jpvajda
@@ -397,9 +528,12 @@
   categories:
   - Integrations
   - Multimodal
+
 - title: RAG pipeline with LlamaIndex
+  title_zh: 使用 LlamaIndex 建構 RAG 管線
   description: Build basic RAG pipeline with LlamaIndex for document retrieval and
     question answering.
+  description_zh: 使用 LlamaIndex 建構基礎 RAG 管線，用於文件檢索和問答。
   path: third_party/LlamaIndex/Basic_RAG_With_LlamaIndex.ipynb
   authors:
   - ravi03071991
@@ -407,9 +541,12 @@
   categories:
   - Integrations
   - RAG & Retrieval
+
 - title: Multi-document agents
+  title_zh: 多文件代理
   description: Build RAG for large document collections using DocumentAgents with
     ReAct Agent pattern.
+  description_zh: 使用 DocumentAgents 搭配 ReAct Agent 模式，為大型文件集合建構 RAG。
   path: third_party/LlamaIndex/Multi_Document_Agents.ipynb
   authors:
   - ravi03071991
@@ -418,9 +555,12 @@
   - Integrations
   - RAG & Retrieval
   - Agent Patterns
+
 - title: Multi-modal
+  title_zh: 多模態
   description: Use LlamaIndex's Anthropic MultiModal LLM abstraction for image understanding
     and reasoning.
+  description_zh: 使用 LlamaIndex 的 Anthropic MultiModal LLM 抽象層進行圖片理解和推理。
   path: third_party/LlamaIndex/Multi_Modal.ipynb
   authors:
   - ravi03071991
@@ -428,9 +568,12 @@
   categories:
   - Integrations
   - Multimodal
+
 - title: ReAct agent
+  title_zh: ReAct 代理
   description: Create ReAct agents with LlamaIndex for tool-based reasoning and action
     workflows.
+  description_zh: 使用 LlamaIndex 創建 ReAct 代理，用於基於工具的推理和行動工作流程。
   path: third_party/LlamaIndex/ReAct_Agent.ipynb
   authors:
   - ravi03071991
@@ -439,9 +582,12 @@
   - Integrations
   - Agent Patterns
   - Tools
+
 - title: RouterQuery engine
+  title_zh: 路由查詢引擎
   description: Route queries to different indices using LlamaIndex RouterQueryEngine
     for multi-document search.
+  description_zh: 使用 LlamaIndex RouterQueryEngine 將查詢路由到不同索引，進行多文件搜尋。
   path: third_party/LlamaIndex/Router_Query_Engine.ipynb
   authors:
   - ravi03071991
@@ -449,9 +595,12 @@
   categories:
   - Integrations
   - RAG & Retrieval
+
 - title: SubQuestionQueryEngine
+  title_zh: 子問題查詢引擎
   description: Decompose complex queries into sub-questions across multiple documents
     using LlamaIndex engine.
+  description_zh: 使用 LlamaIndex 引擎將複雜查詢分解為跨多個文件的子問題。
   path: third_party/LlamaIndex/SubQuestion_Query_Engine.ipynb
   authors:
   - ravi03071991
@@ -459,9 +608,12 @@
   categories:
   - Integrations
   - RAG & Retrieval
+
 - title: How to build a RAG system using Claude 3 and MongoDB
+  title_zh: 如何使用 Claude 3 和 MongoDB 建構 RAG 系統
   description: Build chatbot RAG system with Claude and MongoDB using tech news as
     knowledge base.
+  description_zh: 使用 Claude 和 MongoDB 建構聊天機器人 RAG 系統，以科技新聞作為知識庫。
   path: third_party/MongoDB/rag_using_mongodb.ipynb
   authors:
   - RichmondAlake
@@ -469,9 +621,12 @@
   categories:
   - Integrations
   - RAG & Retrieval
+
 - title: Claude 3 RAG agents with LangChain v1
+  title_zh: 使用 LangChain v1 的 Claude 3 RAG 代理
   description: Build RAG agents with Claude 3 using LangChain v1's updated agent framework
     patterns.
+  description_zh: 使用 LangChain v1 更新的代理框架模式，搭配 Claude 3 建構 RAG 代理。
   path: third_party/Pinecone/claude_3_rag_agent.ipynb
   authors:
   - james-briggs
@@ -480,9 +635,12 @@
   - Integrations
   - RAG & Retrieval
   - Agent Patterns
+
 - title: Retrieval-augmented generation using Pinecone
+  title_zh: 使用 Pinecone 的檢索增強生成
   description: Connect Claude with Pinecone vector database for retrieval-augmented
     generation and semantic search.
+  description_zh: 將 Claude 與 Pinecone 向量資料庫連接，進行檢索增強生成和語義搜尋。
   path: third_party/Pinecone/rag_using_pinecone.ipynb
   authors:
   - alexalbertt
@@ -490,18 +648,24 @@
   categories:
   - Integrations
   - RAG & Retrieval
+
 - title: Iteratively searching Wikipedia with Claude
+  title_zh: 使用 Claude 迭代搜尋維基百科
   description: Legacy notebook showing iterative Wikipedia searches with Claude 2
     for research workflows.
+  description_zh: 展示使用 Claude 2 進行迭代維基百科搜尋的舊版 notebook，用於研究工作流程。
   path: third_party/Wikipedia/wikipedia-search-cookbook.ipynb
   authors:
   - Anthropic
   date: '2023-08-15'
   categories:
   - Integrations
+
 - title: Using the Wolfram Alpha LLM API as a tool with Claude
+  title_zh: 使用 Wolfram Alpha LLM API 作為 Claude 的工具
   description: Integrate Wolfram Alpha LLM API as Claude tool for computational queries
     and answers.
+  description_zh: 將 Wolfram Alpha LLM API 整合為 Claude 工具，用於計算查詢和回答。
   path: third_party/WolframAlpha/using_llm_api.ipynb
   authors:
   - alexalbertt
@@ -509,27 +673,36 @@
   categories:
   - Integrations
   - Tools
+
 - title: Tool evaluation
+  title_zh: 工具評估
   description: Run parallel agent evaluations on tools independently from evaluation
     task files.
+  description_zh: 獨立於評估任務檔案，對工具執行平行代理評估。
   path: tool_evaluation/tool_evaluation.ipynb
   authors:
   - Anthropic
   date: '2025-09-10'
   categories:
   - Evals
+
 - title: Using a calculator tool with Claude
+  title_zh: 使用 Claude 的計算機工具
   description: Provide Claude with calculator tool for arithmetic operations and mathematical
     problem solving.
+  description_zh: 為 Claude 提供計算機工具，用於算術運算和數學問題求解。
   path: tool_use/calculator_tool.ipynb
   authors:
   - alexalbertt
   date: '2024-04-03'
   categories:
   - Tools
+
 - title: Creating a customer service agent with client-side tools
+  title_zh: 使用客戶端工具創建客服代理
   description: Build customer service chatbot with Claude using tools for customer
     lookup and order management.
+  description_zh: 使用 Claude 搭配客戶查詢和訂單管理工具，建構客服聊天機器人。
   path: tool_use/customer_service_agent.ipynb
   authors:
   - alexalbertt
@@ -537,9 +710,12 @@
   categories:
   - Tools
   - Agent Patterns
+
 - title: Extracting structured JSON using Claude and tool use
+  title_zh: 使用 Claude 和工具提取結構化 JSON
   description: Extract structured JSON data from various inputs using Claude's tool
     use capabilities.
+  description_zh: 使用 Claude 的工具使用功能從各種輸入中提取結構化 JSON 資料。
   path: tool_use/extracting_structured_json.ipynb
   authors:
   - alexalbertt
@@ -547,9 +723,12 @@
   categories:
   - Responses
   - Tools
+
 - title: Memory & context management with Claude Sonnet 4.5
+  title_zh: 使用 Claude Sonnet 4.5 進行記憶和上下文管理
   description: Build AI agents with persistent memory using Claude's memory tool and
     context editing.
+  description_zh: 使用 Claude 的記憶工具和上下文編輯功能，建構具有持久記憶的 AI 代理。
   path: tool_use/memory_cookbook.ipynb
   authors:
   - zealoushacker
@@ -557,36 +736,48 @@
   categories:
   - Tools
   - Agent Patterns
+
 - title: Parallel tool calls on Claude 3.7 Sonnet
+  title_zh: 在 Claude 3.7 Sonnet 上進行平行工具呼叫
   description: Enable parallel tool calls on Claude 3.7 Sonnet using batch tool meta-pattern
     workaround.
+  description_zh: 使用批次工具元模式解決方案，在 Claude 3.7 Sonnet 上啟用平行工具呼叫。
   path: tool_use/parallel_tools.ipynb
   authors:
   - Anthropic
   date: '2025-03-05'
   categories:
   - Tools
+
 - title: Tool choice
+  title_zh: 工具選擇
   description: Control how Claude selects tools using tool_choice parameter for forced
     or auto selection.
+  description_zh: 使用 tool_choice 參數控制 Claude 如何選擇工具，支援強制或自動選擇。
   path: tool_use/tool_choice.ipynb
   authors:
   - alexalbertt
   date: '2024-05-15'
   categories:
   - Tools
+
 - title: Note-saving tool with Pydantic and Anthropic tool use
+  title_zh: 使用 Pydantic 和 Anthropic 工具的筆記儲存工具
   description: Create validated tools using Pydantic models for type-safe Claude tool
     use interactions.
+  description_zh: 使用 Pydantic 模型創建經過驗證的工具，實現類型安全的 Claude 工具使用互動。
   path: tool_use/tool_use_with_pydantic.ipynb
   authors:
   - alexalbertt
   date: '2024-04-12'
   categories:
   - Tools
+
 - title: Using vision with tools
+  title_zh: 將視覺功能與工具結合使用
   description: Combine Claude's vision with tools to extract structured data from
     images like nutrition labels.
+  description_zh: 結合 Claude 的視覺功能與工具，從營養標籤等圖片中提取結構化資料。
   path: tool_use/vision_with_tools.ipynb
   authors:
   - alexalbertt
@@ -594,3 +785,15 @@
   categories:
   - Multimodal
   - Tools
+
+- title: Tool search with alternate approaches
+  title_zh: 工具搜尋的替代方法
+  description: Use alternate approaches to search for tools when you have many tools available.
+  description_zh: 當有許多工具可用時，使用替代方法搜尋工具。
+  path: tool_use/tool_search_alternate_approaches.ipynb
+  authors:
+  - henrykeetay
+  date: '2025-11-24'
+  categories:
+  - Tools
+  - RAG & Retrieval
