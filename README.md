@@ -6,6 +6,14 @@ Claude Cookbooks 提供專為幫助開發者使用 Claude 建構應用程式所�
 
 > **[English version below](#english-version) | 英文版本請見下方**
 
+## 新手入門
+
+如果您是第一次接觸這個專案，建議先閱讀以下指南：
+
+- **[新手入門指南](docs/getting-started.md)** - 從零開始設置環境和執行 notebook
+- **[Jupyter Notebook 基礎教學](docs/jupyter-basics.md)** - 了解如何操作 .ipynb 檔案
+- **[專案結構說明](docs/project-structure.md)** - 快速找到您需要的資源
+
 ## 先決條件
 
 要充分運用本指南中的範例，您需要一個 Claude API 金鑰（可在[此處](https://www.anthropic.com)免費註冊）。
@@ -78,6 +86,14 @@ Claude Cookbooks 靠開發者社群的貢獻而蓬勃發展。我們重視您的
 ## English Version
 
 The Claude Cookbooks provide code and guides designed to help developers build with Claude, offering copy-able code snippets that you can easily integrate into your own projects.
+
+### Getting Started
+
+If you're new to this project, we recommend reading the following guides:
+
+- **[Getting Started Guide](docs/getting-started.md)** - Set up your environment and run notebooks from scratch
+- **[Jupyter Notebook Basics](docs/jupyter-basics.md)** - Learn how to work with .ipynb files
+- **[Project Structure Guide](docs/project-structure.md)** - Quickly find the resources you need
 
 ### Prerequisites
 
