@@ -1,11 +1,13 @@
 import { FlowContext, FlowLawResult, FlowLawViolation, FlowParticleSnapshot } from '../types';
 
+const MAX_DRAFT_PARTICLES = 10;
+
 export class FlowLaw {
   evaluate(particles: FlowParticleSnapshot[], context?: FlowContext): FlowLawResult {
     const violations: FlowLawViolation[] = [];
 
     const uncollapsed = particles.filter((particle) => particle.latest.status === 'draft');
-    if (uncollapsed.length > 10) {
+    if (uncollapsed.length > MAX_DRAFT_PARTICLES) {
       violations.push({
         code: 'PARTICLE_OVERFLOW',
         message: 'Too many draft particles without collapse',
