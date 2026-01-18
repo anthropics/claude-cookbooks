@@ -16,7 +16,7 @@ import { randomId, now } from './utils';
 export class FlowOS {
   readonly storage: MemoryStorage;
   readonly particles: ParticleEngine;
-  readonly particleStore: ParticleStore;
+  private readonly particleStore: ParticleStore;
   readonly chain: MerkleChain;
   readonly seeds: SeedRegistry;
   readonly personas: PersonaRegistry;
