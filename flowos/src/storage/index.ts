@@ -76,9 +76,8 @@ export class MemoryStorage {
   }
 
   upsertMemory(memory: MemoryEntry): MemoryEntry {
-    const item = memory.id ? memory : { ...memory, id: randomId(), createdAt: now() };
-    this.memories.set(item.id, item);
-    return item;
+    this.memories.set(memory.id, memory);
+    return memory;
   }
 
   listMemories(scope?: MemoryEntry['scope']): MemoryEntry[] {
