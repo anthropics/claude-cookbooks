@@ -17,7 +17,7 @@ export class ArtifactVault {
   }
 
   addVersion(artifactId: string, version: string, metadata?: Record<string, unknown>): ArtifactRecord {
-    const existing = this.storage.listArtifacts().find((artifact) => artifact.id === artifactId);
+    const existing = this.storage.getArtifact(artifactId);
     if (!existing) {
       throw new Error(`Artifact ${artifactId} not found`);
     }
