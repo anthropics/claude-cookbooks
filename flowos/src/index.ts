@@ -67,6 +67,8 @@ export class FlowOS {
       particles: this.particles.listParticles(),
       seeds: this.seeds.listSeeds(),
       personas: this.personas.listPersonas(),
+      seeds: this.seeds.listSeeds(),
+      personas: this.personas.listPersonas(),
     };
   }
 }
