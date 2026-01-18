@@ -3,10 +3,17 @@ import { FlowContext, FlowLawResult, FlowLawViolation, FlowParticleSnapshot } fr
 const MAX_DRAFT_PARTICLES = 10;
 
 export class FlowLaw {
+  private readonly maxDraftParticles: number;
+
+  constructor(maxDraftParticles: number = 10) {
+    this.maxDraftParticles = maxDraftParticles;
+  }
+
   evaluate(particles: FlowParticleSnapshot[], context?: FlowContext): FlowLawResult {
     const violations: FlowLawViolation[] = [];
 
     const uncollapsed = particles.filter((particle) => particle.latest.status === 'draft');
+    if (uncollapsed.length > this.maxDraftParticles) {
     if (uncollapsed.length > MAX_DRAFT_PARTICLES) {
       violations.push({
         code: 'PARTICLE_OVERFLOW',

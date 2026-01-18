@@ -1,4 +1,3 @@
-import crypto from 'crypto';
 import { FlowEvent, FlowContext, MerkleLink } from '../../types';
 import { hashPayload } from '../../utils';
 
@@ -9,6 +8,7 @@ export class MerkleChain {
 
   private computeHash(event: FlowEvent, context: FlowContext, parent?: string): string {
     const payload = { event, context, parent };
+    return hashPayload(payload);
     return crypto.createHash('sha256').update(JSON.stringify(payload)).digest('hex');
   }
 
