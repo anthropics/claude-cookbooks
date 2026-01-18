@@ -65,6 +65,8 @@ export class FlowOS {
     return {
       ...snapshot,
       particles: this.particles.listParticles(),
+      seeds: this.seeds.listSeeds(),
+      personas: this.personas.listPersonas(),
     };
   }
 }
