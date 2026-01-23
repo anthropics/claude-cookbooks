@@ -69,7 +69,7 @@ index 0000000..0e107aa
 +  "types": "dist/index.d.ts",
 +  "scripts": {
 +    "build": "tsc -p tsconfig.json",
-+    "test": "node --experimental-modules --no-warnings dist/test.js",
++    "test": "node --no-warnings dist/test.js",
 +    "typecheck": "tsc -p tsconfig.json --noEmit"
 +  }
 +}
