@@ -89,7 +89,7 @@ These commands use the exact same validation logic as our CI pipeline, helping y
    uv run python scripts/validate_notebooks.py
    ```
 
-3. **Test notebook execution** (optional, requires API key):
+2. **Test notebook execution** (optional, requires API key):
    ```bash
    uv run jupyter nbconvert --to notebook \
      --execute skills/classification/guide.ipynb \

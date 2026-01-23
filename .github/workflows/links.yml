@@ -15,7 +15,7 @@ jobs:
   check-links:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -42,7 +42,7 @@ jobs:
 
       - name: Setup Python
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || steps.changed-files.outputs.has_changes == 'true'
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.11'
 
@@ -149,7 +149,7 @@ jobs:
       
       - name: Upload link check results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: link-check-results
           path: |
