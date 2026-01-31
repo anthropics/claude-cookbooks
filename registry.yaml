@@ -242,6 +242,16 @@
   date: '2024-08-14'
   categories:
   - Responses
+- title: Session memory compaction
+  description: Manage long-running Claude conversations with instant session memory
+    compaction using background threading and prompt caching.
+  path: misc/session_memory_compaction.ipynb
+  authors:
+  - jsham042
+  date: '2025-01-16'
+  categories:
+  - Agent Patterns
+  - Responses
 - title: Summarizing web page content with Claude 3 Haiku
   description: Fetch and summarize web page content using Claude 3 Haiku via URL extraction.
   path: misc/read_web_pages_with_haiku.ipynb
