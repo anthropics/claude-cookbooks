@@ -165,15 +165,15 @@ Edit the model in `src/index.ts`:
 
 ```typescript
 const response = await anthropic.messages.create({
-  model: 'claude-opus-4-20250514', // or claude-haiku-4-20250514
+  model: 'claude-opus-4-5-20251101', // or claude-haiku-4-5-20251001
   // ...
 });
 ```
 
 Available models:
-- `claude-sonnet-4-20250514` (default, balanced)
-- `claude-opus-4-20250514` (most capable)
-- `claude-haiku-4-20250514` (fastest, most affordable)
+- `claude-sonnet-4-5-20250929` (default, balanced)
+- `claude-opus-4-5-20251101` (most capable)
+- `claude-haiku-4-5-20251001` (fastest, most affordable)
 
 ### Adjust Token Limits
 

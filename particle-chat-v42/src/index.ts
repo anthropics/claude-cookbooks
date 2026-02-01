@@ -56,7 +56,7 @@ export default {
         });
 
         const response = await anthropic.messages.create({
-          model: chatRequest.model || 'claude-sonnet-4-20250514',
+          model: chatRequest.model || 'claude-sonnet-4-5-20250929',
           max_tokens: chatRequest.max_tokens || 1024,
           messages: chatRequest.messages,
         });
