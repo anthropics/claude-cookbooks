@@ -1,0 +1,28 @@
+{
+  "name": "particle-chat-v42",
+  "version": "1.0.0",
+  "description": "Claude-powered chat application on Cloudflare Workers",
+  "main": "src/index.ts",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "start": "wrangler dev"
+  },
+  "keywords": [
+    "claude",
+    "anthropic",
+    "chat",
+    "cloudflare-workers",
+    "ai"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250124.0",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.60.0"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.1"
+  }
+}
