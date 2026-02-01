@@ -205,6 +205,20 @@ Our GitHub Actions workflows will automatically:
 - Test notebook execution (for maintainers)
 - Check links
 - Claude reviews code and model usage
+- Build and attest package artifacts (with provenance)
+
+#### Build Attestation
+
+The repository uses [GitHub Actions build provenance attestation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations/using-artifact-attestations-to-establish-provenance-for-builds) to provide cryptographic verification of build artifacts. This ensures:
+
+- **Authenticity**: Artifacts are built from verified source code
+- **Integrity**: Build process hasn't been tampered with
+- **Traceability**: Clear link between source code and built artifacts
+
+The attestations are automatically generated for:
+- Pull requests (test builds)
+- Main branch merges
+- Version tags (`v*`)
 
 External contributors will have limited API testing to conserve resources.
 
