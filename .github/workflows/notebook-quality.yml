@@ -1,0 +1,127 @@
+name: Notebook Quality Check
+
+on:
+  pull_request:
+    paths:
+      - '**/*.ipynb'
+      - 'pyproject.toml'
+      - 'uv.lock'
+  push:
+    branches: [main]
+    paths:
+      - '**/*.ipynb'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  validate-notebooks:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+      
+      - name: Set up Python 3.11
+        run: uv python install 3.11
+      
+      - name: Install dependencies
+        run: |
+          uv sync --frozen --all-extras
+      
+      - name: Lint notebooks with Ruff
+        run: |
+          uv run ruff check **/*.ipynb --show-fixes || true
+          uv run ruff format **/*.ipynb --check || true
+      
+      - name: Validate notebook structure
+        id: validate
+        run: |
+          uv run python scripts/validate_notebooks.py | tee validation_output.txt
+          # Check if validation found issues
+          if grep -q "❌" validation_output.txt; then
+            echo "has_issues=true" >> $GITHUB_OUTPUT
+            exit 1
+          else
+            echo "has_issues=false" >> $GITHUB_OUTPUT
+          fi
+        continue-on-error: true
+
+      - name: Summarize validation issues with Claude
+        if: github.event_name == 'pull_request' && steps.validate.outputs.has_issues == 'true'
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          prompt: |
+            The notebook validation found these issues:
+
+            ```
+            $(cat validation_output.txt)
+            ```
+
+            Create a helpful PR comment that:
+            - Summarizes the validation issues found
+            - Groups similar issues together (e.g., "7 notebooks have empty cells")
+            - Explains why empty cells are problematic and how to fix them (delete them or add content)
+            - If there are error outputs, explain they should be cleared before committing
+            - Uses friendly, constructive language
+            - Includes specific notebook names and cell numbers for reference
+
+            Format as a nice GitHub comment with markdown. Use emoji sparingly for clarity.
+            Post using: gh pr comment $PR_NUMBER --body "your comment"
+          claude_args: |
+            --allowedTools "Bash(gh pr comment:*),Bash(cat:*),Read"
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+
+      # Only run API tests on main branch or for maintainers (costs money)
+      - name: Execute notebooks (API Testing)
+        if: |
+          github.event_name == 'push' || 
+          github.event.pull_request.author_association == 'MEMBER' ||
+          github.event.pull_request.author_association == 'OWNER'
+        env:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          mkdir -p test_outputs
+          for notebook in $(find . -name "*.ipynb" -not -path "*/.*" -not -path "*/test_outputs/*"); do
+            echo "📓 Testing: $notebook"
+            output_name=$(echo "$notebook" | sed 's|/|_|g' | sed 's|\.|_|g')
+            # Use nbconvert to execute notebooks and save outputs
+            uv run jupyter nbconvert --to notebook \
+              --execute "$notebook" \
+              --ExecutePreprocessor.kernel_name=python3 \
+              --ExecutePreprocessor.timeout=120 \
+              --output "test_outputs/${output_name}_executed.ipynb" \
+              --output-dir=. \
+              || echo "⚠️  Failed: $notebook"
+          done
+      
+      # Mock testing for external contributors
+      - name: Execute notebooks (Mock Testing)
+        if: |
+          github.event_name == 'pull_request' && 
+          github.event.pull_request.author_association != 'MEMBER' &&
+          github.event.pull_request.author_association != 'OWNER'
+        run: |
+          echo "🔒 Running in mock mode for external contributor"
+
+          for notebook in $(find . -name "*.ipynb" -not -path "*/.*"); do
+            echo "📓 Validating structure: $notebook"
+            uv run python -m nbformat.validator "$notebook"
+          done
+      
+      - name: Upload test outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: notebook-test-outputs
+          path: test_outputs/
+          retention-days: 7
