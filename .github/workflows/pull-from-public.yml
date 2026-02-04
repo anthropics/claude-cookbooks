@@ -94,6 +94,36 @@ jobs:
             exit 1
           fi
 
+      - name: Create PR from public to main
+        if: steps.merge.outputs.success == 'true'
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+        run: |
+          # Check if public branch has commits not in main
+          if git merge-base --is-ancestor origin/public origin/main; then
+            echo "✓ main already has all changes from public branch"
+            exit 0
+          fi
+
+          # Check if a PR already exists
+          EXISTING_PR=$(gh pr list --head public --base main --state open --json number --jq '.[0].number')
+          if [ -n "$EXISTING_PR" ]; then
+            echo "✓ PR #${EXISTING_PR} already exists for public → main"
+            exit 0
+          fi
+
+          # Create a new PR
+          gh pr create \
+            --head public \
+            --base main \
+            --title "Sync: merge changes from public repository" \
+            --body "Automated PR to merge changes from the public repository into the private main branch.
+
+          This PR was automatically created by the pull-from-public workflow.
+
+          **Workflow Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          echo "✓ Created PR for public → main"
+
       - name: Create issue on merge conflict
         if: failure() && steps.merge.outputs.success == 'false'
         env:
