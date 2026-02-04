@@ -1,0 +1,56 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: registry-garbage-collect
+  namespace: default  # Adjust namespace as needed
+  labels:
+    app: docker-registry
+    component: garbage-collect
+spec:
+  schedule: "0 2 * * 0"  # Weekly on Sunday at 2 AM
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: docker-registry
+            job: garbage-collect
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: garbage-collect
+            image: registry:2
+            command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Starting garbage collection..."
+              echo "Config file check:"
+              ls -la /etc/docker/registry/
+              cat /etc/docker/registry/config.yml
+              echo "Running garbage collection..."
+              /bin/registry garbage-collect /etc/docker/registry/config.yml
+              echo "Garbage collection completed successfully"
+            volumeMounts:
+            - name: registry-config
+              mountPath: /etc/docker/registry
+              readOnly: true
+            - name: registry-data
+              mountPath: /var/lib/registry
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                cpu: 500m
+                memory: 512Mi
+          volumes:
+          - name: registry-config
+            configMap:
+              name: registry-config
+          - name: registry-data
+            persistentVolumeClaim:
+              claimName: registry-pvc  # Adjust PVC name as needed

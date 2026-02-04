@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: registry-config
+  namespace: default  # Adjust namespace as needed
+data:
+  config.yml: |
+    version: 0.1
+    log:
+      fields:
+        service: registry
+      level: info
+    storage:
+      cache:
+        blobdescriptor: inmemory
+      filesystem:
+        rootdirectory: /var/lib/registry
+      delete:
+        enabled: true  # Required for garbage collection
+    http:
+      addr: :5000
+      headers:
+        X-Content-Type-Options: [nosniff]
+    health:
+      storagedriver:
+        enabled: true
+        interval: 10s
+        threshold: 3
