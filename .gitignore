@@ -147,6 +147,9 @@ test_outputs/
 lychee-report.md
 .lycheecache
 
+# Skill validation temp directories
+.claude/skills/*/tmp/
+
 # Notebook validation
 .notebook_validation_state.json
 .notebook_validation_checkpoint.json  

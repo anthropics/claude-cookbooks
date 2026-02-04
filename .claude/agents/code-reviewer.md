@@ -29,7 +29,7 @@ Unless otherwise specified, run `git diff` to see what has changed and focus on 
 - **Prerequisites & Setup**:
   - Uses `%%capture` or `pip -q` for pip install commands to suppress noisy output
   - Groups related packages in single pip install command (e.g., `%pip install -U anthropic scikit-learn voyageai`)
-  - Uses `dotenv.load_dotenv()` NOT `os.environ` for API keys
+  - Uses `dotenv.load_dotenv()` then accesses keys via `os.environ` or `os.getenv()`
   - Defines MODEL constant at top for easy version changes
   - Lists required knowledge (Python fundamentals, API basics, etc.)
   - Specifies Python version requirements (>=3.11,<3.13)
