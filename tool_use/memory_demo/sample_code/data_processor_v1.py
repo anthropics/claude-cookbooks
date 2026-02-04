@@ -7,7 +7,7 @@ import json
 import threading
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import Any
 
 
 class DataProcessor:
@@ -20,10 +20,10 @@ class DataProcessor:
         self.errors = {}  # BUG: Shared dict without locking
         self.lock = threading.Lock()  # Available but not used!
 
-    def process_file(self, file_path: str) -> Dict[str, Any]:
+    def process_file(self, file_path: str) -> dict[str, Any]:
         """Process a single file."""
         try:
-            with open(file_path, "r") as f:
+            with open(file_path) as f:
                 data = json.load(f)
 
             # Simulate some processing
@@ -38,7 +38,7 @@ class DataProcessor:
         except Exception as e:
             return {"file": file_path, "error": str(e)}
 
-    def process_batch(self, file_paths: List[str]) -> List[Dict[str, Any]]:
+    def process_batch(self, file_paths: list[str]) -> list[dict[str, Any]]:
         """
         Process multiple files concurrently.
 
@@ -66,7 +66,7 @@ class DataProcessor:
 
         return self.results
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """
         Get processing statistics.
 
@@ -121,7 +121,7 @@ class SharedCache:
         """Set in cache - RACE CONDITION on dict modification."""
         self.cache[key] = value  # BUG: Dict access not synchronized!
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get cache statistics - may be inconsistent."""
         total = self.hit_count + self.miss_count
         return {

@@ -52,20 +52,21 @@ load_dotenv()
 ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 
-assert ELEVENLABS_API_KEY is not None, "ERROR: ELEVENLABS_API_KEY not found. Please copy .env.example to .env and add your API keys."
-assert ANTHROPIC_API_KEY is not None, "ERROR: ANTHROPIC_API_KEY not found. Please copy .env.example to .env and add your API keys."
+assert ELEVENLABS_API_KEY is not None, (
+    "ERROR: ELEVENLABS_API_KEY not found. Please copy .env.example to .env and add your API keys."
+)
+assert ANTHROPIC_API_KEY is not None, (
+    "ERROR: ANTHROPIC_API_KEY not found. Please copy .env.example to .env and add your API keys."
+)
 
 SAMPLE_RATE = 44100  # Audio sample rate for recording
 CHANNELS = 1  # Mono audio
 
 elevenlabs_client = elevenlabs.ElevenLabs(
-    api_key=ELEVENLABS_API_KEY,
-    base_url="https://api.elevenlabs.io"
+    api_key=ELEVENLABS_API_KEY, base_url="https://api.elevenlabs.io"
 )
 
-anthropic_client = anthropic.Anthropic(
-    api_key=ANTHROPIC_API_KEY
-)
+anthropic_client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
 # Fetch available voices and select the first one
 voices = elevenlabs_client.voices.search().voices
@@ -86,8 +87,11 @@ class AudioQueue:
     - Stream callback reads from buffer in real-time
     - Pre-buffering prevents crackling from buffer underruns
     """
+
     # Audio buffer configuration constants
-    PRE_BUFFER_SIZE = 8192  # Minimum buffer size before playback starts (prevents initial crackling)
+    PRE_BUFFER_SIZE = (
+        8192  # Minimum buffer size before playback starts (prevents initial crackling)
+    )
     BUFFER_CLEANUP_THRESHOLD = 100000  # Bytes before buffer cleanup to prevent memory growth
     REMAINING_BYTES_THRESHOLD = 1000  # Bytes to consider playback effectively done
 
@@ -133,7 +137,7 @@ class AudioQueue:
             # Start playback after pre-buffering
             if not self.playing and len(self.buffer) >= self.PRE_BUFFER_SIZE:
                 self.start_playback()
-        except:
+        except Exception:  # noqa: S110
             # Silently skip invalid MP3 chunks that fail to decode
             # This is common when streaming MP3 data in real-time, as chunks may contain
             # incomplete frames. Skipping these prevents console errors but may cause
@@ -158,14 +162,16 @@ class AudioQueue:
                 bytes_to_read = min(bytes_needed, bytes_available)
 
                 if bytes_to_read > 0:
-                    data = bytes(self.buffer[self.read_position:self.read_position + bytes_to_read])
+                    data = bytes(
+                        self.buffer[self.read_position : self.read_position + bytes_to_read]
+                    )
                     self.read_position += bytes_to_read
 
                     if self.read_position > self.BUFFER_CLEANUP_THRESHOLD:
-                        self.buffer = self.buffer[self.read_position:]
+                        self.buffer = self.buffer[self.read_position :]
                         self.read_position = 0
                 else:
-                    data = b''
+                    data = b""
 
             if len(data) > 0:
                 audio_array = np.frombuffer(data, dtype=np.float32)
@@ -184,10 +190,9 @@ class AudioQueue:
             channels=self.channels,
             callback=callback,
             dtype=np.float32,
-            blocksize=2048
+            blocksize=2048,
         )
         self.stream.start()
-
 
     def wait_until_done(self):
         """Block until all buffered audio finishes playing."""
@@ -222,10 +227,7 @@ def record_audio():
 
     # Create audio input stream
     stream = sd.InputStream(
-        samplerate=SAMPLE_RATE,
-        channels=CHANNELS,
-        callback=callback,
-        dtype=np.float32
+        samplerate=SAMPLE_RATE, channels=CHANNELS, callback=callback, dtype=np.float32
     )
 
     stream.start()
@@ -258,8 +260,7 @@ def transcribe_audio(audio_buffer):
 
     # Use ElevenLabs Scribe model for speech-to-text
     transcription = elevenlabs_client.speech_to_text.convert(
-        file=audio_buffer,
-        model_id="scribe_v1"
+        file=audio_buffer, model_id="scribe_v1"
     )
 
     print(f"Transcription: {transcription.text}")
@@ -314,20 +315,13 @@ def stream_claude_and_synthesize_ws(messages, audio_queue):
 
         initial_message = {
             "text": " ",
-            "voice_settings": {
-                "stability": 0.5,
-                "similarity_boost": 0.8
-            },
-            "xi_api_key": ELEVENLABS_API_KEY
+            "voice_settings": {"stability": 0.5, "similarity_boost": 0.8},
+            "xi_api_key": ELEVENLABS_API_KEY,
         }
         ws.send(json.dumps(initial_message))
 
     ws = websocket.WebSocketApp(
-        ws_url,
-        on_message=on_message,
-        on_error=on_error,
-        on_close=on_close,
-        on_open=on_open
+        ws_url, on_message=on_message, on_error=on_error, on_close=on_close, on_open=on_open
     )
 
     ws_thread = threading.Thread(target=ws.run_forever)
@@ -346,15 +340,12 @@ def stream_claude_and_synthesize_ws(messages, audio_queue):
         temperature=0,
         system="""You are a helpful voice assistant. Your responses will be converted to speech using ElevenLabs.
 Do not write in markdown, as it cannot be read aloud properly.""",
-        messages=messages
+        messages=messages,
     ) as stream:
         for text in stream.text_stream:
             print(text, end="", flush=True)
             response_text += text
-            ws.send(json.dumps({
-                "text": text,
-                "try_trigger_generation": True
-            }))
+            ws.send(json.dumps({"text": text, "try_trigger_generation": True}))
 
     ws.send(json.dumps({"text": ""}))
 

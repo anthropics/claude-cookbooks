@@ -1,4 +1,5 @@
 # Byte-compiled / optimized / DLL files
+tmp/
 __pycache__/
 *.py[cod]
 *$py.class
@@ -145,6 +146,9 @@ test_outputs/
 .ruff_cache/
 lychee-report.md
 .lycheecache
+
+# Skill validation temp directories
+.claude/skills/*/tmp/
 
 # Notebook validation
 .notebook_validation_state.json

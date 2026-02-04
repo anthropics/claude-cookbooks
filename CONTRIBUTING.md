@@ -89,7 +89,7 @@ These commands use the exact same validation logic as our CI pipeline, helping y
    uv run python scripts/validate_notebooks.py
    ```
 
-3. **Test notebook execution** (optional, requires API key):
+2. **Test notebook execution** (optional, requires API key):
    ```bash
    uv run jupyter nbconvert --to notebook \
      --execute skills/classification/guide.ipynb \
@@ -117,7 +117,8 @@ If a hook fails, fix the issues and try committing again.
    ```
 
 2. **Use current Claude models**:
-   - Use model aliases (e.g., `claude-3-5-haiku-latest`) for better maintainability
+   - Use model aliases for better maintainability when available
+   - Latest Haiku model: `claude-haiku-4-5-20251001` (Haiku 4.5)
    - Check current models at: https://docs.claude.com/en/docs/about-claude/models/overview
    - Claude will automatically validate model usage in PR reviews
 

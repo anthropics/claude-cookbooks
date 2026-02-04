@@ -1,21 +1,20 @@
 def basic_summarize(text):
-
     prompt = f"""
     You are a legal analyst known for highly accurate and detailed summaries of legal documents.
     Summarize the following text in bullet points. Focus on the main ideas and key details:
-    
+
     {text}
-    
+
     Here is the summary of the legal document: <summary>
     """
 
     return prompt
 
-def guided_legal_summary(text):
 
+def guided_legal_summary(text):
     prompt = f"""
     You are a legal analyst known for highly accurate and detailed summaries of legal documents.
-    
+
     Summarize the following legal document. Focus on these key aspects:
 
     1. Parties involved
@@ -30,14 +29,13 @@ def guided_legal_summary(text):
     {text}
 
     Here is the summary of the sublease agreement: <summary>
-    
+
     """
-  
+
     return prompt
-  
+
 
 def summarize_long_document(text):
-
     prompt = f"""
     You are a legal analyst specializing in real estate law, known for highly accurate and detailed summaries of sublease agreements.
 
@@ -56,13 +54,13 @@ def summarize_long_document(text):
     - Sublessor: [Name]
     // Add more details as needed
     </parties involved>
-    
+
     If any information is not explicitly stated in the document, note it as "Not specified".
 
     Sublease agreement text:
     {text}
-    
+
     Here is the summary of the sublease agreement: <summary>
     """
-      
+
     return prompt

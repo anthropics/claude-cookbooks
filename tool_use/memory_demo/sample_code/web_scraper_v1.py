@@ -3,9 +3,8 @@ Concurrent web scraper with a race condition bug.
 Multiple threads modify shared state without synchronization.
 """
 
-import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import List, Dict, Any
+from typing import Any
 
 import requests
 
@@ -18,7 +17,7 @@ class WebScraper:
         self.results = []  # BUG: Shared mutable state accessed by multiple threads!
         self.failed_urls = []  # BUG: Another race condition!
 
-    def fetch_url(self, url: str) -> Dict[str, Any]:
+    def fetch_url(self, url: str) -> dict[str, Any]:
         """Fetch a single URL and return the result."""
         try:
             response = requests.get(url, timeout=5)
@@ -31,7 +30,7 @@ class WebScraper:
         except requests.exceptions.RequestException as e:
             return {"url": url, "error": str(e)}
 
-    def scrape_urls(self, urls: List[str]) -> List[Dict[str, Any]]:
+    def scrape_urls(self, urls: list[str]) -> list[dict[str, Any]]:
         """
         Scrape multiple URLs concurrently.
 
@@ -52,7 +51,7 @@ class WebScraper:
 
         return self.results
 
-    def get_stats(self) -> Dict[str, int]:
+    def get_stats(self) -> dict[str, int]:
         """Get scraping statistics."""
         return {
             "total_results": len(self.results),
@@ -78,7 +77,7 @@ if __name__ == "__main__":
     scraper = WebScraper(max_workers=10)
     results = scraper.scrape_urls(urls)
 
-    print(f"Expected: 50 results")
+    print("Expected: 50 results")
     print(f"Got: {len(results)} results")
     print(f"Stats: {scraper.get_stats()}")
     print("\nNote: Results count may be less than expected due to race condition!")

@@ -1,8 +1,8 @@
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.12.12
+    rev: v0.14.6
     hooks:
-      - id: ruff
+      - id: ruff-check
         types_or: [python, pyi, jupyter]
         args: ['--fix']
       - id: ruff-format
@@ -12,7 +12,14 @@ repos:
     hooks:
       - id: validate-notebooks
         name: Validate notebook structure
-        entry: python scripts/validate_notebooks.py
-        language: python
+        entry: uv run python scripts/validate_notebooks.py
+        language: system
         files: '\.ipynb$'
+        pass_filenames: true
+
+      - id: validate-authors-sorted
+        name: Validate and sort authors.yaml
+        entry: uv run python scripts/validate_authors_sorted.py --fix
+        language: system
+        files: 'authors\.yaml$'
         pass_filenames: false
