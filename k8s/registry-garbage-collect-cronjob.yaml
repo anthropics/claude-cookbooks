@@ -51,7 +51,7 @@ spec:
           volumes:
             - name: registry-config
               configMap:
-                name: registry-config
+                name: ${CONFIGMAP_NAME}
             - name: registry-data
               persistentVolumeClaim:
-                claimName: registry-pvc  # Adjust PVC name as needed
+                claimName: ${PVC_NAME}  # Adjust PVC name as needed

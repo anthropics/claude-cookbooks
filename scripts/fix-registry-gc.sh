@@ -74,16 +74,16 @@ if kubectl get cronjob "$CRONJOB_NAME" -n "$NAMESPACE" &> /dev/null; then
     echo -e "${GREEN}✓${NC} CronJob '$CRONJOB_NAME' exists"
     
     # Check if ConfigMap is mounted
-    if kubectl get cronjob "$CRONJOB_NAME" -n "$NAMESPACE" -o yaml | grep -q "name: registry-config"; then
+    if kubectl get cronjob "$CRONJOB_NAME" -n "$NAMESPACE" -o yaml | grep -q "name: $CONFIGMAP_NAME"; then
         echo -e "${GREEN}✓${NC} ConfigMap is already mounted"
     else
-        echo -e "${YELLOW}! ConfigMap is NOT mounted. Updating CronJob...${NC}"
-        kubectl apply -f k8s/registry-garbage-collect-cronjob.yaml -n "$NAMESPACE"
+        echo -e "${YELLOW}! ConfigMap is NOT mounted or using different name. Updating CronJob...${NC}"
+        envsubst < k8s/registry-garbage-collect-cronjob.yaml | kubectl apply -f - -n "$NAMESPACE"
         echo -e "${GREEN}✓${NC} CronJob updated with ConfigMap mount"
     fi
 else
     echo -e "${YELLOW}! CronJob not found. Creating...${NC}"
-    kubectl apply -f k8s/registry-garbage-collect-cronjob.yaml -n "$NAMESPACE"
+    envsubst < k8s/registry-garbage-collect-cronjob.yaml | kubectl apply -f - -n "$NAMESPACE"
     echo -e "${GREEN}✓${NC} CronJob created"
 fi
 
