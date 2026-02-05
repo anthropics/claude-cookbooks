@@ -1,6 +1,7 @@
 import json
 import os
 import pickle
+from itertools import chain
 
 import numpy as np
 import voyageai
@@ -37,7 +38,7 @@ class VectorDB:
             self.client.embed(texts[i : i + batch_size], model="voyage-2").embeddings
             for i in range(0, len(texts), batch_size)
         ]
-        self.embeddings = [embedding for batch in result for embedding in batch]
+        self.embeddings = list(chain.from_iterable(result))
         self.metadata = data
 
     def search(self, query, k=3, similarity_threshold=0.75):
@@ -64,7 +65,6 @@ class VectorDB:
 
                 if len(top_examples) >= k:
                     break
-        self.save_db()
         return top_examples
 
     def save_db(self):
@@ -122,7 +122,7 @@ class SummaryIndexedVectorDB:
             self.client.embed(texts[i : i + batch_size], model="voyage-2").embeddings
             for i in range(0, len(texts), batch_size)
         ]
-        self.embeddings = [embedding for batch in result for embedding in batch]
+        self.embeddings = list(chain.from_iterable(result))
         self.metadata = data
 
     def search(self, query, k=5, similarity_threshold=0.75):
@@ -149,7 +149,6 @@ class SummaryIndexedVectorDB:
 
                 if len(top_examples) >= k:
                     break
-        self.save_db()
         return top_examples
 
     def save_db(self):
