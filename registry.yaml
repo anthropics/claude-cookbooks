@@ -28,6 +28,15 @@
   categories:
   - Tools
   - RAG & Retrieval
+- title: Tool search alternate approaches
+  description: Alternative methods for tool discovery using describe_tool pattern
+    and dynamic tool loading.
+  path: tool_use/tool_search_alternate_approaches.ipynb
+  authors:
+  - henrykeetay
+  date: '2025-11-24'
+  categories:
+  - Tools
 - title: Automatic context compaction
   description: Manage context limits in long-running agentic workflows by automatically
     compressing conversation history.
