@@ -44,7 +44,9 @@ def test_brand_colors_flatten():
 
     # New way: list comprehension
     new_approved = [
-        color["hex"].upper() for category in colors.values() for color in category.values()
+        color["hex"].upper()
+        for category in colors.values()
+        for color in category.values()
     ]
 
     assert old_approved == new_approved, "Results should be identical"
