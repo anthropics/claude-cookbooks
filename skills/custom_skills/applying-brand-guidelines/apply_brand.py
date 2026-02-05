@@ -283,10 +283,10 @@ class BrandFormatter:
         """
         results = {"valid": True, "corrections": [], "warnings": []}
 
-        approved_colors = []
-        for category in self.colors.values():
-            for color in category.values():
-                approved_colors.append(color["hex"].upper())
+        # Flatten all approved colors using list comprehension
+        approved_colors = [
+            color["hex"].upper() for category in self.colors.values() for color in category.values()
+        ]
 
         for color in colors_used:
             color_upper = color.upper()
