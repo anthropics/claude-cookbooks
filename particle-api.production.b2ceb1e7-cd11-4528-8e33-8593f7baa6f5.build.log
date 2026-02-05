@@ -1,0 +1,55 @@
+2026-01-26T16:25:57.117Z	Initializing build environment...
+2026-01-26T16:25:57.117Z	Initializing build environment...
+2026-01-26T16:25:59.797Z	Success: Finished initializing build environment
+2026-01-26T16:26:00.187Z	Cloning repository...
+2026-01-26T16:26:02.403Z	Detected the following tools from environment: bun@1.2.15, nodejs@22.16.0
+2026-01-26T16:26:02.405Z	Installing project dependencies: bun install
+2026-01-26T16:26:02.601Z	bun install v1.2.15 (df017990)
+2026-01-26T16:26:02.634Z	Resolving dependencies
+2026-01-26T16:26:05.188Z	Resolved, downloaded and extracted [268]
+2026-01-26T16:26:05.760Z	Saved lockfile
+2026-01-26T16:26:05.761Z	
+2026-01-26T16:26:05.761Z	+ @cloudflare/workers-types@4.20260124.0
+2026-01-26T16:26:05.761Z	+ typescript@5.9.3
+2026-01-26T16:26:05.761Z	+ wrangler@4.60.0
+2026-01-26T16:26:05.761Z	
+2026-01-26T16:26:05.761Z	40 packages installed [3.20s]
+2026-01-26T16:26:05.964Z	Executing user deploy command: npx wrangler versions upload
+2026-01-26T16:26:09.928Z	
+2026-01-26T16:26:09.928Z	 ⛅️ wrangler 4.60.0
+2026-01-26T16:26:09.928Z	───────────────────
+2026-01-26T16:26:09.946Z	
+2026-01-26T16:26:10.005Z	✘ [ERROR] Missing entry-point to Worker script or to assets directory
+2026-01-26T16:26:10.006Z	
+2026-01-26T16:26:10.006Z	  
+2026-01-26T16:26:10.006Z	  If there is code to deploy, you can either:
+2026-01-26T16:26:10.006Z	  - Specify an entry-point to your Worker script via the command line (ex: `npx wrangler versions upload src/index.ts`)
+2026-01-26T16:26:10.006Z	  - Or create a "wrangler.jsonc" file containing:
+2026-01-26T16:26:10.006Z	  
+2026-01-26T16:26:10.006Z	  ```
+2026-01-26T16:26:10.006Z	  {
+2026-01-26T16:26:10.007Z	    "name": "worker-name",
+2026-01-26T16:26:10.007Z	    "compatibility_date": "2026-01-26",
+2026-01-26T16:26:10.007Z	    "main": "src/index.ts"
+2026-01-26T16:26:10.007Z	  }
+2026-01-26T16:26:10.007Z	  ```
+2026-01-26T16:26:10.007Z	  
+2026-01-26T16:26:10.007Z	  
+2026-01-26T16:26:10.007Z	  If are uploading a directory of assets, you can either:
+2026-01-26T16:26:10.007Z	  - Specify the path to the directory of assets via the command line: (ex: `npx wrangler versions upload --assets=./dist`)
+2026-01-26T16:26:10.007Z	  - Or create a "wrangler.jsonc" file containing:
+2026-01-26T16:26:10.008Z	  
+2026-01-26T16:26:10.008Z	  ```
+2026-01-26T16:26:10.008Z	  {
+2026-01-26T16:26:10.008Z	    "name": "worker-name",
+2026-01-26T16:26:10.008Z	    "compatibility_date": "2026-01-26",
+2026-01-26T16:26:10.008Z	    "assets": {
+2026-01-26T16:26:10.008Z	      "directory": "./dist"
+2026-01-26T16:26:10.009Z	    }
+2026-01-26T16:26:10.009Z	  }
+2026-01-26T16:26:10.009Z	  ```
+2026-01-26T16:26:10.009Z	  
+2026-01-26T16:26:10.009Z	
+2026-01-26T16:26:10.009Z	
+2026-01-26T16:26:10.044Z	🪵  Logs were written to "/opt/buildhome/.config/.wrangler/logs/wrangler-2026-01-26_16-26-08_893.log"
+2026-01-26T16:26:10.216Z	Failed: error occurred while running deploy command
