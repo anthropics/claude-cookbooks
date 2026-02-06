@@ -25,17 +25,16 @@ After=docker.service network.target
 Requires=docker.service
 
 [Service]
-Type=notify
+Type=oneshot
+RemainAfterExit=yes
 # Run as a non-root user with docker group membership; change 'flowagent' if needed.
 User=root
 # If you don't want root, create 'flowagent' user and set User=flowagent
 Environment=FLOW_DIR=/srv/flowagent
-Environment=COMPOSE_FILE=%h/docker-compose.yml
 # Keep restart behavior conservative to avoid crash loop
 Restart=on-failure
 RestartSec=5
 TimeoutStartSec=120
-ExecStartPre=/bin/mkdir -p /srv/flowagent/seed /srv/flowagent/memory /srv/flowagent/runtime /srv/flowagent/persona /srv/flowagent/reflex /srv/flowagent/logs
 ExecStart=/usr/bin/docker compose -f /srv/flowagent/docker-compose.yml up -d
 ExecStop=/usr/bin/docker compose -f /srv/flowagent/docker-compose.yml down
 # Optional: collect logs on stop
