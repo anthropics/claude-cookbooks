@@ -3,6 +3,10 @@
 # This file maps author GitHub usernames (used in registry.yaml) to their full details
 # for display on the website.
 
+KeepALifeUS:
+  name: KeepALife
+  website: https://github.com/KeepALifeUS
+  avatar: https://avatars.githubusercontent.com/u/202161591?v=4
 Adriaan-ANT:
   name: Adriaan Engelbrecht
   avatar: https://avatars.githubusercontent.com/u/222316629?v=4

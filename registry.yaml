@@ -1,4 +1,14 @@
 # yaml-language-server: $schema=./.github/registry_schema.json
+- title: Stigmergy coordination for multi-agent systems
+  description: Reduce token usage by 70-80% in multi-agent workflows using indirect
+    coordination through shared state instead of message passing.
+  path: patterns/agents/stigmergy_coordination.ipynb
+  authors:
+  - KeepALifeUS
+  date: '2026-02-12'
+  categories:
+  - Agent Patterns
+  - Tools
 - title: Giving Claude a crop tool for better image analysis
   description: Give Claude a crop tool to zoom into image regions for detailed analysis
     of charts, documents, and diagrams.
