@@ -87,12 +87,25 @@ Expand beyond local capabilities by connecting agents to external systems throug
 - **Intelligent Incident Response:** Automated root cause analysis
 - **Production Workflow Automation:** From monitoring to actionable insights
 
+### [Notebook 03: The Site Reliability Agent](03_The_site_reliability_agent.ipynb)
+
+Move from read-only observation to read-write remediation. Build an SRE incident response agent that can investigate production incidents, diagnose root causes, apply fixes, and document the results — all autonomously.
+
+**Key Capabilities:**
+- **MCP Tool Server:** 12+ tools for metrics, infrastructure, diagnostics, and documentation via JSON-RPC subprocess
+- **Prometheus Integration:** PromQL queries for error rates, latency, and DB connection monitoring
+- **Read-Write Remediation:** Edit configuration files, restart Docker services, and verify fixes
+- **Safety Hooks:** PreToolUse hooks that validate write operations (pool size ranges, config sanity checks)
+- **End-to-End Incident Lifecycle:** From detection through remediation to post-mortem documentation
+- **Production Extensions:** Optional PagerDuty and Confluence integrations via conditional MCP tool registration
+
 ## Complete Agent Implementations
 
 Each notebook includes an agent implementation in its respective directory:
 - **`research_agent/`** - Autonomous research agent with web search and multimodal analysis
 - **`chief_of_staff_agent/`** - Multi-agent executive assistant with financial modeling and compliance
 - **`observability_agent/`** - DevOps monitoring agent with GitHub integration
+- **`site_reliability_agent/`** - SRE incident response agent with Prometheus, Docker, and MCP tool server
 
 **Running standalone agents:** To import agent modules outside of notebooks, either run from the `claude_agent_sdk/` directory or install the package in editable mode:
 ```bash
