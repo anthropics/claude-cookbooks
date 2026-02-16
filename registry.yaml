@@ -407,6 +407,16 @@
   categories:
   - Integrations
   - Multimodal
+- title: Steipete AI-native tooling landscape
+  description: Skills-first ingestion cookbook for turning steipete's AI-native CLI,
+    MCP, and automation project catalog into lazy-load Codex skills.
+  path: third_party/steipete/steipete_projects_landscape.ipynb
+  authors:
+  - steipete
+  date: '2026-02-16'
+  categories:
+  - Integrations
+  - Tools
 - title: RAG pipeline with LlamaIndex
   description: Build basic RAG pipeline with LlamaIndex for document retrieval and
     question answering.

@@ -1,0 +1,331 @@
+metadata:
+  source_profile: https://github.com/steipete
+  source_type: user-provided profile snapshot
+  captured_on: "2026-02-16"
+  notes: |
+    Curated project index for skill generation and lazy-load discovery.
+
+projects:
+  - name: OpenClaw
+    slug: openclaw
+    status: current
+    summary: AI agent system focused on real task execution.
+    tags: [agents, automation]
+
+  - name: VibeTunnel
+    slug: vibetunnel
+    status: current
+    summary: Control agents through a browser-to-terminal tunnel.
+    tags: [terminal, remote, automation]
+
+  - name: CodexBar
+    slug: codexbar
+    status: current
+    summary: Token and usage visibility for coding agents.
+    tags: [codex, telemetry, macos]
+
+  - name: Peekaboo
+    slug: peekaboo
+    status: current
+    summary: macOS screenshots and GUI automation via CLI and MCP.
+    tags: [macos, screenshots, mcp, automation]
+
+  - name: summarize
+    slug: summarize
+    status: current
+    summary: Summarize URLs or files quickly.
+    tags: [summarization, cli]
+
+  - name: RepoBar
+    slug: repobar
+    status: current
+    summary: At-a-glance CI, PR, and release status.
+    tags: [github, ci, dashboards]
+
+  - name: go-cli
+    slug: go-cli
+    status: current
+    summary: Google services CLI toolkit.
+    tags: [google, cli, productivity]
+
+  - name: Poltergeist
+    slug: poltergeist
+    status: current
+    summary: Universal hot reload and file watching.
+    tags: [watcher, build, devtools]
+
+  - name: wacli
+    slug: wacli
+    status: current
+    summary: WhatsApp synchronization and messaging CLI.
+    tags: [messaging, cli]
+
+  - name: sag
+    slug: sag
+    status: current
+    summary: ElevenLabs speech synthesis command-line tool.
+    tags: [audio, speech, elevenlabs]
+
+  - name: Brabble
+    slug: brabble
+    status: current
+    summary: Wake-word voice daemon with local transcription and hooks.
+    tags: [voice, hooks, macos]
+
+  - name: sonoscli
+    slug: sonoscli
+    status: current
+    summary: Sonos control and automation from the terminal.
+    tags: [audio, sonos, cli]
+
+  - name: ElevenLabsKit
+    slug: elevenlabskit
+    status: current
+    summary: Streaming-first ElevenLabs client for Swift.
+    tags: [swift, audio, sdk]
+
+  - name: goplaces
+    slug: goplaces
+    status: current
+    summary: Google Places API client and CLI.
+    tags: [google, places, cli]
+
+  - name: gifgrep
+    slug: gifgrep
+    status: current
+    summary: GIF search for terminals and TUIs.
+    tags: [tui, media, cli]
+
+  - name: camsnap
+    slug: camsnap
+    status: current
+    summary: RTSP snapshots and motion clips via CLI.
+    tags: [video, rtsp, automation]
+
+  - name: spogo
+    slug: spogo
+    status: current
+    summary: Spotify automation and control from terminal.
+    tags: [spotify, cli, audio]
+
+  - name: ordercli
+    slug: ordercli
+    status: current
+    summary: Terminal timeline for food delivery workflows.
+    tags: [cli, automation]
+
+  - name: blucli
+    slug: blucli
+    status: current
+    summary: BluOS playback, grouping, and automation CLI.
+    tags: [audio, cli]
+
+  - name: macOS Automator MCP
+    slug: macos-automator-mcp
+    status: current
+    summary: MCP server for scripted macOS automation.
+    tags: [mcp, macos, automation]
+
+  - name: Claude Code MCP
+    slug: claude-code-mcp
+    status: current
+    summary: MCP server that wraps Claude Code workflows.
+    tags: [mcp, claude-code, agents]
+
+  - name: AXorcist
+    slug: axorcist
+    status: current
+    summary: Swift accessibility automation and UI control toolkit.
+    tags: [swift, accessibility, automation]
+
+  - name: Tachikoma
+    slug: tachikoma
+    status: current
+    summary: Modern Swift SDK for AI development.
+    tags: [swift, ai, sdk]
+
+  - name: tokentally
+    slug: tokentally
+    status: current
+    summary: LLM token and cost math utilities.
+    tags: [llm, cost, utilities]
+
+  - name: osc-progress
+    slug: osc-progress
+    status: current
+    summary: Tiny library for OSC 9;4 terminal progress.
+    tags: [terminal, library]
+
+  - name: Trimmy
+    slug: trimmy
+    status: current
+    summary: Flatten multi-line shell snippets for reliable execution.
+    tags: [shell, cli, productivity]
+
+  - name: TauTUI
+    slug: tautui
+    status: current
+    summary: Swift-native terminal UI framework.
+    tags: [swift, tui, framework]
+
+  - name: Commander
+    slug: commander
+    status: current
+    summary: Swift-first command parser and CLI toolkit.
+    tags: [swift, cli, parser]
+
+  - name: remindctl
+    slug: remindctl
+    status: current
+    summary: Apple Reminders automation from terminal.
+    tags: [apple, reminders, cli]
+
+  - name: mcporter
+    slug: mcporter
+    status: current
+    summary: Call MCP servers from TypeScript or package them as CLIs.
+    tags: [mcp, typescript, cli]
+
+  - name: Sweet Cookie
+    slug: sweet-cookie
+    status: current
+    summary: Browser cookie extraction utility.
+    tags: [cookies, browser, extraction]
+
+  - name: SweetCookieKit
+    slug: sweetcookiekit
+    status: current
+    summary: Native cookie extraction for Safari, Chromium, and Firefox.
+    tags: [cookies, browser, macos]
+
+  - name: sweetlink
+    slug: sweetlink
+    status: current
+    summary: Browser tab automation loop for agent workflows.
+    tags: [browser, automation, playwright]
+
+  - name: bird
+    slug: bird
+    status: current
+    summary: Fast X CLI for posting, replies, and reading.
+    tags: [social, cli]
+
+  - name: oracle
+    slug: oracle
+    status: current
+    summary: Context-aware GPT-5 Pro helper for hard problems.
+    tags: [llm, productivity, cli]
+
+  - name: tmuxwatch
+    slug: tmuxwatch
+    status: current
+    summary: Lightweight TUI for observing tmux sessions.
+    tags: [tmux, tui, terminal]
+
+  - name: agent-rules
+    slug: agent-rules
+    status: current
+    summary: Shared rules and operational patterns for coding agents.
+    tags: [agents, rules, workflow]
+
+  - name: Markdansi
+    slug: markdansi
+    status: current
+    summary: Lightweight markdown formatting and rendering helpers.
+    tags: [markdown, tooling]
+
+  - name: llm.codes
+    slug: llm-codes
+    status: current
+    summary: Transform developer docs into AI-agent-friendly formats.
+    tags: [docs, agents, llm]
+
+  - name: Stats Store
+    slug: stats-store
+    status: current
+    summary: Privacy-first analytics backend for Sparkle ecosystem.
+    tags: [analytics, privacy]
+
+  - name: Demark
+    slug: demark
+    status: current
+    summary: HTML to Markdown conversion utility.
+    tags: [markdown, conversion]
+
+  - name: eightctl
+    slug: eightctl
+    status: current
+    summary: Terminal controls for sleep workflow automation.
+    tags: [health, cli, automation]
+
+  - name: imsg
+    slug: imsg
+    status: current
+    summary: Send and read iMessage/SMS from terminal.
+    tags: [messaging, cli, apple]
+
+  - name: homebrew-tap
+    slug: homebrew-tap
+    status: current
+    summary: Homebrew tap for distributing CLI tools.
+    tags: [homebrew, distribution]
+
+  - name: speaking
+    slug: speaking
+    status: pinned
+    summary: Public speaking engagements and talk materials.
+    tags: [talks, content]
+
+  - name: CodeLooper
+    slug: codelooper
+    status: legacy
+    summary: Cursor workflow monitoring and menubar automation.
+    tags: [cursor, automation, macos]
+
+  - name: InterposeKit
+    slug: interposekit
+    status: legacy
+    summary: Modern Swift method swizzling library.
+    tags: [swift, runtime]
+
+  - name: Aspects
+    slug: aspects
+    status: legacy
+    summary: Aspect-oriented programming library for Objective-C.
+    tags: [objective-c, aop]
+
+  - name: PSPDFKit
+    slug: pspdfkit
+    status: legacy
+    summary: Industry PDF SDK company founded by steipete.
+    tags: [pdf, sdk, company]
+
+  - name: Terminator MCP
+    slug: terminator-mcp
+    status: legacy
+    summary: Terminal output MCP concept.
+    tags: [mcp, terminal]
+
+  - name: Conduit MCP
+    slug: conduit-mcp
+    status: legacy
+    summary: MCP server concept for file, web, and data operations.
+    tags: [mcp, data, automation]
+
+  - name: XC Sentinel
+    slug: xc-sentinel
+    status: legacy
+    summary: Xcode automation with incremental build intelligence.
+    tags: [xcode, automation, ci]
+
+  - name: Matcha
+    slug: matcha
+    status: legacy
+    summary: Swift port inspired by Bubble Tea terminal UI patterns.
+    tags: [swift, tui]
+
+  - name: VibeMeter
+    slug: vibemeter
+    status: legacy
+    summary: Archived AI cost tracker for coding assistants.
+    tags: [llm, cost, archived]
