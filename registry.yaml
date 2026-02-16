@@ -133,6 +133,17 @@
   categories:
   - Claude Agent SDK
   - Agent Patterns
+- title: The site reliability agent
+  description: Build an incident response agent with read-write MCP tools for autonomous
+    diagnosis, remediation, and post-mortem documentation.
+  path: claude_agent_sdk/03_The_site_reliability_agent.ipynb
+  authors:
+  - benlehrburger-ant
+  - isabella-anthropic
+  date: '2026-02-16'
+  categories:
+  - Claude Agent SDK
+  - Agent Patterns
 - title: Extended thinking
   description: Use Claude's extended thinking for transparent step-by-step reasoning
     with budget management.
