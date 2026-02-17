@@ -35,7 +35,7 @@ def evaluate_end_to_end(query, generated_answer, correct_answer):
     client = Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
     try:
         response = client.messages.create(
-            model="claude-sonnet-4-5",
+            model="claude-sonnet-4-6",
             max_tokens=1500,
             messages=[
                 {"role": "user", "content": prompt},

@@ -172,7 +172,7 @@ client = Anthropic(api_key="your-api-key")
 
 # Step 1: Use a skill to create a file
 response = client.messages.create(
-    model="claude-sonnet-4-5-20250929",
+    model="claude-sonnet-4-6",
     max_tokens=4096,
     container={
         "skills": [

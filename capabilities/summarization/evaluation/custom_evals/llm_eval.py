@@ -55,7 +55,7 @@ def llm_eval(summary, input):
     Evaluation (JSON format):"""
 
     response = client.messages.create(
-        model="claude-sonnet-4-5",
+        model="claude-sonnet-4-6",
         max_tokens=1000,
         temperature=0,
         messages=[{"role": "user", "content": prompt}, {"role": "assistant", "content": "<json>"}],

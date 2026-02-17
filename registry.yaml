@@ -557,7 +557,7 @@
   categories:
   - Responses
   - Tools
-- title: Memory & context management with Claude Sonnet 4.5
+- title: Memory & context management with Claude Sonnet 4.6
   description: Build AI agents with persistent memory using Claude's memory tool and
     context editing.
   path: tool_use/memory_cookbook.ipynb

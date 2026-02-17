@@ -13,6 +13,7 @@ Features:
 import argparse
 import json
 import os
+import re
 import subprocess
 from datetime import datetime
 from pathlib import Path
@@ -109,21 +110,39 @@ class NotebookValidator:
 
         # Check for deprecated models
         deprecated_models = {
-            "claude-3-5-sonnet-20240620": "claude-sonnet-4-5",
-            "claude-3-5-sonnet-20241022": "claude-sonnet-4-5",
-            "claude-3-5-sonnet-latest": "claude-sonnet-4-5",
+            "claude-3-5-sonnet-20240620": "claude-sonnet-4-6",
+            "claude-3-5-sonnet-20241022": "claude-sonnet-4-6",
+            "claude-3-5-sonnet-latest": "claude-sonnet-4-6",
             "claude-3-haiku-20240307": "claude-haiku-4-5",
             "claude-3-5-haiku-20241022": "claude-haiku-4-5",
-            "claude-3-opus-20240229": "claude-opus-4-5",
-            "claude-3-opus-latest": "claude-opus-4-5",
-            "claude-sonnet-4-20250514": "claude-sonnet-4-5",
-            "claude-opus-4-20250514": "claude-opus-4-5",
-            "claude-opus-4-1": "claude-opus-4-5",
+            "claude-3-opus-20240229": "claude-opus-4-6",
+            "claude-3-opus-latest": "claude-opus-4-6",
+            "claude-sonnet-4-20250514": "claude-sonnet-4-6",
+            "claude-opus-4-20250514": "claude-opus-4-6",
+            "claude-opus-4-1": "claude-opus-4-6",
+            "claude-sonnet-4-5-20250929": "claude-sonnet-4-6",
+            "claude-sonnet-4-5": "claude-sonnet-4-6",
+            "claude-opus-4-5-20251101": "claude-opus-4-6",
+            "claude-opus-4-5": "claude-opus-4-6",
         }
 
         for i, cell in enumerate(nb.get("cells", [])):
             if cell.get("cell_type") == "code":
                 source = "".join(cell.get("source", []))
+
+                # Check for dated API model IDs (exclude Bedrock IDs which require dates)
+                dated_pattern = r"(?<!anthropic\.)claude-\w+-[\d.]+-\d{8}"
+                dated_matches = re.findall(dated_pattern, source)
+                for dated_model in dated_matches:
+                    result["status"] = "warning" if result["status"] == "pass" else result["status"]
+                    result["issues"].append(
+                        {
+                            "type": "dated_model_id",
+                            "severity": "warning",
+                            "cell": i,
+                            "details": f"Dated model ID '{dated_model}' found. Use non-dated alias instead.",
+                        }
+                    )
 
                 # Check for deprecated models
                 for old_model, new_model in deprecated_models.items():
@@ -639,16 +658,20 @@ Overall: {passing}/{total} notebooks passing ({percentage:.1f}%)
                 nb = json.load(f)
 
             replacements = {
-                "claude-3-5-sonnet-20240620": "claude-sonnet-4-5",
-                "claude-3-5-sonnet-20241022": "claude-sonnet-4-5",
-                "claude-3-5-sonnet-latest": "claude-sonnet-4-5",
+                "claude-3-5-sonnet-20240620": "claude-sonnet-4-6",
+                "claude-3-5-sonnet-20241022": "claude-sonnet-4-6",
+                "claude-3-5-sonnet-latest": "claude-sonnet-4-6",
                 "claude-3-haiku-20240307": "claude-haiku-4-5",
                 "claude-3-5-haiku-20241022": "claude-haiku-4-5",
-                "claude-3-opus-20240229": "claude-opus-4-5",
-                "claude-3-opus-latest": "claude-opus-4-5",
-                "claude-sonnet-4-20250514": "claude-sonnet-4-5",
-                "claude-opus-4-20250514": "claude-opus-4-5",
-                "claude-opus-4-1": "claude-opus-4-5",
+                "claude-3-opus-20240229": "claude-opus-4-6",
+                "claude-3-opus-latest": "claude-opus-4-6",
+                "claude-sonnet-4-20250514": "claude-sonnet-4-6",
+                "claude-opus-4-20250514": "claude-opus-4-6",
+                "claude-opus-4-1": "claude-opus-4-6",
+                "claude-sonnet-4-5-20250929": "claude-sonnet-4-6",
+                "claude-sonnet-4-5": "claude-sonnet-4-6",
+                "claude-opus-4-5-20251101": "claude-opus-4-6",
+                "claude-opus-4-5": "claude-opus-4-6",
             }
 
             modified = False

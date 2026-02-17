@@ -142,7 +142,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-MODEL = "claude-sonnet-4-5"
+MODEL = "claude-sonnet-4-6"
 
 client = anthropic.Anthropic()
 ~~~

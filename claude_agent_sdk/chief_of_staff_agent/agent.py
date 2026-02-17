@@ -83,7 +83,7 @@ async def send_query(
         settings = json.dumps({"outputStyle": output_style})
 
     options = ClaudeAgentOptions(
-        model="claude-opus-4-5",
+        model="claude-opus-4-6",
         allowed_tools=[
             "Task",  # enables subagent delegation
             "Read",

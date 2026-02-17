@@ -321,20 +321,20 @@ class NotebookValidator:
             if has_model_refs:
                 self.warnings.append(
                     "Model name should be defined as a constant at the top of the notebook "
-                    "(e.g., MODEL = 'claude-sonnet-4-5') to make future updates easier"
+                    "(e.g., MODEL = 'claude-sonnet-4-6') to make future updates easier"
                 )
 
     def check_deprecated_patterns(self):
         """Check for deprecated API patterns and invalid models."""
         # Valid models
-        valid_models = ["claude-sonnet-4-5", "claude-haiku-4-5", "claude-opus-4-5"]
+        valid_models = ["claude-sonnet-4-6", "claude-haiku-4-5", "claude-opus-4-6"]
 
         # Pattern to match model strings
         model_pattern = r'["\']claude-([a-z0-9\.-]+)["\']'
 
         # Deprecated models that should be migrated
         deprecated_models = {
-            "claude-opus-4-1": "claude-opus-4-5",
+            "claude-opus-4-1": "claude-opus-4-6",
         }
 
         deprecated_patterns = {
@@ -346,6 +346,17 @@ class NotebookValidator:
                 continue
 
             source = self.get_cell_source(cell)
+
+            # Check for dated API model IDs (exclude Bedrock IDs which require dates)
+            dated_pattern = r'["\']claude-\w+-[\d.]+-\d{8}["\']'
+            dated_matches = re.findall(dated_pattern, source)
+            for match in dated_matches:
+                # Skip Bedrock model IDs (anthropic.claude-*) which require dates
+                if f"anthropic.{match.strip(chr(34)).strip(chr(39))}" not in source:
+                    self.issues.append(
+                        f"Cell {i}: Dated model ID {match} found. "
+                        "Use non-dated aliases instead (e.g., claude-sonnet-4-6)"
+                    )
 
             # Check for invalid or deprecated models
             model_matches = re.findall(model_pattern, source)
