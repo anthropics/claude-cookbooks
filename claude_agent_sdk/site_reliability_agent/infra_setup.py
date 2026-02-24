@@ -919,6 +919,76 @@ if __name__ == "__main__":
         logger.info("Traffic generator stopped")
 ''')
 
+# =============================================================================
+# SAFETY HOOKS
+# =============================================================================
+# Shell scripts that validate agent write operations before they execute.
+# The Claude Agent SDK runs these as PreToolUse hooks — if a hook exits
+# with a non-zero status, the tool call is blocked.
+#
+#   validate_pool_size.sh:
+#     Ensures DB_POOL_SIZE changes stay within 5–100 (safe operating range).
+#     Triggered before edit_config_file calls.
+#
+#   validate_config_before_deploy.sh:
+#     Checks that config values are sane before allowing a deploy command.
+#     Triggered before run_shell_command calls that redeploy the api-server.
+
+Path('hooks/validate_pool_size.sh').write_text('''\
+#!/bin/bash
+# Validates that DB_POOL_SIZE changes stay within safe operating range.
+INPUT=$(cat)
+
+NEW_VALUE=$(echo "$INPUT" | python3 -c "
+import sys, json
+data = json.load(sys.stdin)
+inp = data.get('input', {})
+replace_val = inp.get('replace', '')
+for part in replace_val.split('\\n'):
+    if 'DB_POOL_SIZE' in part:
+        val = part.split('=')[1].strip()
+        print(val)
+        break
+" 2>/dev/null)
+
+if [ -n "$NEW_VALUE" ]; then
+    if [ "$NEW_VALUE" -lt 5 ] 2>/dev/null || [ "$NEW_VALUE" -gt 100 ] 2>/dev/null; then
+        echo "BLOCKED: DB_POOL_SIZE=$NEW_VALUE is outside safe range (5-100)"
+        exit 1
+    fi
+fi
+exit 0
+''')
+
+Path('hooks/validate_config_before_deploy.sh').write_text('''\
+#!/bin/bash
+# Validates that config values are sane before allowing a deploy command.
+INPUT=$(cat)
+
+COMMAND=$(echo "$INPUT" | python3 -c "
+import sys, json
+data = json.load(sys.stdin)
+print(data.get('input', {}).get('command', ''))
+" 2>/dev/null)
+
+if echo "$COMMAND" | grep -q "up.*api-server"; then
+    CONFIG_FILE="config/api-server.env"
+    if [ -f "$CONFIG_FILE" ]; then
+        POOL_SIZE=$(grep DB_POOL_SIZE "$CONFIG_FILE" | cut -d= -f2)
+        if [ -n "$POOL_SIZE" ] && { [ "$POOL_SIZE" -lt 5 ] 2>/dev/null || [ "$POOL_SIZE" -gt 100 ] 2>/dev/null; }; then
+            echo "BLOCKED: Cannot deploy with DB_POOL_SIZE=$POOL_SIZE (safe range: 5-100)"
+            exit 1
+        fi
+    fi
+fi
+exit 0
+''')
+
+import stat
+for hook_file in ['hooks/validate_pool_size.sh', 'hooks/validate_config_before_deploy.sh']:
+    p = Path(hook_file)
+    p.chmod(p.stat().st_mode | stat.S_IEXEC)
+
 print("Infrastructure files generated successfully.")
 print()
 print("  Created directories: config/, services/, scripts/, hooks/, postmortems/")
@@ -926,3 +996,4 @@ print("  Docker Compose:      config/docker-compose.yml")
 print("  Prometheus config:   config/prometheus.yml")
 print("  API server:          services/api_server.py")
 print("  Traffic generator:   scripts/traffic_generator.py")
+print("  Safety hooks:        hooks/validate_pool_size.sh, hooks/validate_config_before_deploy.sh")
