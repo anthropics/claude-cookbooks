@@ -21,6 +21,7 @@ import httpx
 import random
 import time
 import base64
+import html
 import os
 import pathlib
 import shlex
@@ -825,7 +826,7 @@ async def get_logs(service: str, level: str = "all", lines: int = 20) -> dict[st
 
 
 async def get_alerts() -> dict[str, Any]:
-    """Get currently firing alerts (simulated)."""
+    """Get currently firing alerts. Simulated — no AlertManager running in demo."""
     elapsed = time.time() - START_TIME
     incident_active = elapsed > 15
 
@@ -920,7 +921,7 @@ async def get_alerts() -> dict[str, Any]:
 
 
 async def get_recent_deployments(service: str = None) -> dict[str, Any]:
-    """Get recent deployments (simulated)."""
+    """Get recent deployments. Simulated — no deployment tracker running in demo."""
     elapsed = time.time() - START_TIME
 
     # Generate fake deployment times relative to now
@@ -1633,21 +1634,22 @@ def generate_postmortem_content(
     impact: str,
     remediation_steps: list[str],
     action_items: list[dict],
-    pagerduty_incident_id: str = None
+    pagerduty_incident_id: str | None = None
 ) -> str:
     """Generate Confluence Storage Format (XHTML) for post-mortem."""
+    esc = html.escape
 
     # Build timeline section
     timeline_html = ""
     if timeline:
-        timeline_html = "<ul>" + "".join(f"<li>{item}</li>" for item in timeline) + "</ul>"
+        timeline_html = "<ul>" + "".join(f"<li>{esc(item)}</li>" for item in timeline) + "</ul>"
     else:
         timeline_html = "<p><em>Timeline to be added</em></p>"
 
     # Build remediation section
     remediation_html = ""
     if remediation_steps:
-        remediation_html = "<ul>" + "".join(f"<li>{step}</li>" for step in remediation_steps) + "</ul>"
+        remediation_html = "<ul>" + "".join(f"<li>{esc(step)}</li>" for step in remediation_steps) + "</ul>"
     else:
         remediation_html = "<p><em>Remediation steps to be added</em></p>"
 
@@ -1661,9 +1663,9 @@ def generate_postmortem_content(
         for item in action_items:
             action_items_html += f"""
             <tr>
-                <td>{item.get('task', 'TBD')}</td>
-                <td>{item.get('owner', 'TBD')}</td>
-                <td>{item.get('due_date', 'TBD')}</td>
+                <td>{esc(item.get('task', 'TBD'))}</td>
+                <td>{esc(item.get('owner', 'TBD'))}</td>
+                <td>{esc(item.get('due_date', 'TBD'))}</td>
                 <td>Open</td>
             </tr>
             """
@@ -1674,21 +1676,21 @@ def generate_postmortem_content(
     # PagerDuty link if provided
     pd_link = ""
     if pagerduty_incident_id:
-        pd_link = f'<p><strong>PagerDuty Incident:</strong> {pagerduty_incident_id}</p>'
+        pd_link = f'<p><strong>PagerDuty Incident:</strong> {esc(pagerduty_incident_id)}</p>'
 
     return f"""
     <h1>Incident Summary</h1>
     {pd_link}
-    <p>{incident_summary}</p>
+    <p>{esc(incident_summary)}</p>
 
     <h1>Timeline</h1>
     {timeline_html}
 
     <h1>Root Cause</h1>
-    <p>{root_cause}</p>
+    <p>{esc(root_cause)}</p>
 
     <h1>Impact</h1>
-    <p>{impact or '<em>Impact assessment to be added</em>'}</p>
+    <p>{esc(impact) if impact else '<em>Impact assessment to be added</em>'}</p>
 
     <h1>Remediation Steps</h1>
     {remediation_html}
@@ -2010,8 +2012,8 @@ async def run_shell_command(command: str) -> dict[str, Any]:
         # "docker-compose" is a single binary; "docker compose/ps/logs" are
         # subcommands of the "docker" binary.
         allowed_commands = {
-            "docker-compose": None,           # any docker-compose subcommand
-            "docker": {"compose", "ps", "logs"},  # only these docker subcommands
+            "docker-compose": {"up", "down", "ps", "logs", "restart", "build"},
+            "docker": {"compose", "ps", "logs"},
         }
 
         executable = args[0]
@@ -2129,7 +2131,7 @@ async def write_postmortem(
 ) -> dict[str, Any]:
     """Write a post-mortem report to the postmortems/ directory."""
 
-    postmortems_dir = os.path.join(os.getcwd(), "postmortems")
+    postmortems_dir = os.path.join(PROJECT_ROOT, "postmortems")
     os.makedirs(postmortems_dir, exist_ok=True)
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")

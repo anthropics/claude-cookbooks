@@ -36,8 +36,7 @@ MCP_SERVER_PATH = Path(__file__).parent.parent / "sre_mcp_server.py"
 # Load environment variables from .env file FIRST
 try:
     from dotenv import load_dotenv
-    env_path = Path(__file__).parent / ".env"
-    load_dotenv(env_path)
+    load_dotenv()
 except ImportError:
     print("⚠️  python-dotenv not installed, using environment variables only")
     print("   Run: pip install python-dotenv")
@@ -115,7 +114,12 @@ pending_postmortem_url: str = ""
 # ============================================================================
 
 async def handle_pagerduty_webhook(request: web.Request) -> web.Response:
-    """Handle incoming PagerDuty webhook events (V3 format)."""
+    """Handle incoming PagerDuty webhook events (V3 format).
+
+    NOTE: Production deployments should verify the X-PagerDuty-Signature header
+    to authenticate that requests originate from PagerDuty. See:
+    https://developer.pagerduty.com/docs/db0fa8c8984fc-verifying-signatures
+    """
     try:
         payload = await request.json()
     except json.JSONDecodeError:
@@ -411,6 +415,7 @@ async def process_investigation(incident_text: str, channel: str, thread_ts: str
             "mcp__sre__get_container_logs",
         ],
         permission_mode="acceptEdits",
+        model="claude-sonnet-4-6",
     )
 
     # Stream responses to Slack as they arrive

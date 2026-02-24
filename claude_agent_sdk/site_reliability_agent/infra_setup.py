@@ -32,8 +32,6 @@ for d in ['config', 'services', 'scripts', 'hooks', 'postmortems']:
 #   - grafana:            Optional dashboard UI (accessible at localhost:3000)
 
 Path('config/docker-compose.yml').write_text('''\
-version: '3.8'
-
 services:
   # PostgreSQL Database
   postgres:
@@ -108,6 +106,8 @@ services:
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     extra_hosts:
+      # Allows Prometheus to scrape the API server running on the host.
+      # Requires Docker Desktop (macOS/Windows) or --add-host on Linux.
       - "host.docker.internal:host-gateway"
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
