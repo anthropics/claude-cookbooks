@@ -17,7 +17,7 @@ import os
 import stat
 from pathlib import Path
 
-for d in ['config', 'services', 'scripts', 'hooks', 'postmortems']:
+for d in ["config", "services", "scripts", "hooks", "postmortems"]:
     os.makedirs(d, exist_ok=True)
 
 # =============================================================================
@@ -26,12 +26,13 @@ for d in ['config', 'services', 'scripts', 'hooks', 'postmortems']:
 # Defines the full service stack:
 #   - postgres:           PostgreSQL 15 database with health checks
 #   - api-server:         FastAPI app that queries the DB and exposes Prometheus metrics
-#   - healthy-services:   Simulates healthy payment-svc and auth-svc (for baseline metrics)
+#   - healthy-services:   Simulates healthy payment-svc
+#                         and auth-svc (for baseline metrics)
 #   - traffic-generator:  Sends ~50 req/s to the API server to generate continuous load
 #   - prometheus:         Scrapes metrics from api-server every 5 seconds
 #   - grafana:            Optional dashboard UI (accessible at localhost:3000)
 
-Path('config/docker-compose.yml').write_text('''\
+Path("config/docker-compose.yml").write_text("""\
 services:
   # PostgreSQL Database
   postgres:
@@ -122,7 +123,8 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=demo  # Demo only — change for any non-local deployment
+      # Demo only — change for any non-local deployment
+      - GF_SECURITY_ADMIN_PASSWORD=demo
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
     volumes:
@@ -132,7 +134,7 @@ services:
 
 volumes:
   postgres_data:
-''')
+""")
 
 # =============================================================================
 # API SERVER CONFIGURATION
@@ -142,7 +144,7 @@ volumes:
 #   - Healthy value: 20 (handles concurrent requests comfortably)
 #   - Broken value:  1  (causes connection pool exhaustion under load)
 
-Path('config/api-server.env').write_text('''\
+Path("config/api-server.env").write_text("""\
 # API Server Configuration
 # This file is read by the api-server container
 
@@ -160,10 +162,10 @@ DB_PASSWORD=demo
 
 # Service identification
 SERVICE_NAME=api-server
-''')
+""")
 
 # Known-good backup of the config (the agent can reference this during investigation)
-Path('config/api-server.env.backup').write_text('''\
+Path("config/api-server.env.backup").write_text("""\
 # API Server Configuration - KNOWN GOOD VALUES
 # Use this as a reference for the correct configuration
 
@@ -180,7 +182,7 @@ DB_PASSWORD=demo
 
 # Service identification
 SERVICE_NAME=api-server
-''')
+""")
 
 # =============================================================================
 # PROMETHEUS CONFIGURATION
@@ -189,7 +191,7 @@ SERVICE_NAME=api-server
 # The agent queries Prometheus via its HTTP API (localhost:9090) to check
 # error rates, latency percentiles, and DB connection pool utilization.
 
-Path('config/prometheus.yml').write_text('''\
+Path("config/prometheus.yml").write_text("""\
 global:
   scrape_interval: 5s
   evaluation_interval: 5s
@@ -203,7 +205,7 @@ scrape_configs:
     static_configs:
       - targets: ['api-server:8080']
     metrics_path: /metrics
-''')
+""")
 
 # =============================================================================
 # DATABASE INITIALIZATION
@@ -211,7 +213,7 @@ scrape_configs:
 # Creates the schema used by the API server. PostgreSQL runs this automatically
 # on first startup via the docker-entrypoint-initdb.d volume mount.
 
-Path('config/init.sql').write_text('''\
+Path("config/init.sql").write_text("""\
 -- Database initialization script for SRE Demo
 -- Creates tables and sample data
 
@@ -263,10 +265,10 @@ INSERT INTO orders (user_id, total, status) VALUES
     (2, 230.00, 'completed'),
     (3, 95.00, 'pending'),
     (4, 180.00, 'completed');
-''')
+""")
 
 # Grafana datasource provisioning (points Grafana at the local Prometheus)
-Path('config/grafana-datasources.yml').write_text('''\
+Path("config/grafana-datasources.yml").write_text("""\
 apiVersion: 1
 
 datasources:
@@ -276,7 +278,7 @@ datasources:
     url: http://prometheus:9090
     isDefault: true
     editable: true
-''')
+""")
 
 # =============================================================================
 # API SERVER (FastAPI Application)
@@ -295,7 +297,7 @@ datasources:
 # The agent will observe these symptoms via Prometheus and container logs,
 # trace them back to the config, and fix the pool size.
 
-Path('services/api_server.py').write_text('''\
+Path("services/api_server.py").write_text('''\
 """
 API Server for SRE Bot Demo
 
@@ -314,14 +316,20 @@ from typing import Optional
 
 from fastapi import FastAPI, HTTPException, Response
 from fastapi.responses import PlainTextResponse
-from prometheus_client import Counter, Histogram, Gauge, generate_latest, CONTENT_TYPE_LATEST
+from prometheus_client import (
+    Counter, Histogram, Gauge,
+    generate_latest, CONTENT_TYPE_LATEST,
+)
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import QueuePool
 from sqlalchemy.exc import OperationalError, TimeoutError as SQLAlchemyTimeoutError
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+)
 logger = logging.getLogger(__name__)
 
 # Configuration from environment
@@ -380,7 +388,11 @@ def init_database():
     """Initialize database connection with configured pool size."""
     global engine, SessionLocal
 
-    logger.info(f"Initializing database connection pool with size={DB_POOL_SIZE}, timeout={DB_POOL_TIMEOUT}s")
+    logger.info(
+        f"Initializing database connection pool"
+        f" with size={DB_POOL_SIZE},"
+        f" timeout={DB_POOL_TIMEOUT}s"
+    )
 
     engine = create_engine(
         DATABASE_URL,
@@ -428,7 +440,10 @@ async def lifespan(app: FastAPI):
                 logger.warning(f"Database not ready, retrying in 1s... ({e})")
                 await asyncio.sleep(1)
             else:
-                logger.error(f"Could not connect to database after {max_retries} retries")
+                logger.error(
+                    f"Could not connect to database"
+                    f" after {max_retries} retries"
+                )
                 raise
 
     yield
@@ -457,7 +472,11 @@ async def health_check():
     try:
         with engine.connect() as conn:
             conn.execute(text("SELECT 1"))
-        return {"status": "healthy", "service": SERVICE_NAME, "db_pool_size": DB_POOL_SIZE}
+        return {
+            "status": "healthy",
+            "service": SERVICE_NAME,
+            "db_pool_size": DB_POOL_SIZE,
+        }
     except Exception as e:
         logger.error(f"Health check failed: {e}")
         raise HTTPException(status_code=503, detail=f"Database unhealthy: {str(e)}")
@@ -507,7 +526,13 @@ async def list_users():
             logger.error(f"Connection pool exhausted: {error_msg}")
             raise HTTPException(
                 status_code=500,
-                detail=f"Database connection pool exhausted. QueuePool limit of size {DB_POOL_SIZE} reached, connection timed out."
+                detail=(
+                    "Database connection pool"
+                    " exhausted. QueuePool limit"
+                    f" of size {DB_POOL_SIZE}"
+                    " reached, connection"
+                    " timed out."
+                )
             )
         else:
             logger.error(f"Database error: {error_msg}")
@@ -520,8 +545,14 @@ async def list_users():
 
     finally:
         duration_ms = (time.time() - start_time) * 1000
-        REQUEST_COUNT.labels(service="user-svc", method="GET", endpoint="/api/users", status=status).inc()
-        REQUEST_LATENCY.labels(service="user-svc", method="GET", endpoint="/api/users").observe(duration_ms)
+        REQUEST_COUNT.labels(
+            service="user-svc", method="GET",
+            endpoint="/api/users", status=status,
+        ).inc()
+        REQUEST_LATENCY.labels(
+            service="user-svc", method="GET",
+            endpoint="/api/users",
+        ).observe(duration_ms)
 
 
 @app.get("/api/orders")
@@ -538,7 +569,12 @@ async def list_orders():
 
         # Return mock/cached data - doesn't use database connection pool
         orders = [
-            {"id": i, "user_id": i % 10 + 1, "total": round(random.uniform(10, 500), 2), "status": "completed", "user_name": f"User {i % 10 + 1}"}
+            {
+                "id": i, "user_id": i % 10 + 1,
+                "total": round(random.uniform(10, 500), 2),
+                "status": "completed",
+                "user_name": f"User {i % 10 + 1}",
+            }
             for i in range(1, 11)
         ]
 
@@ -554,8 +590,14 @@ async def list_orders():
 
     finally:
         duration_ms = (time.time() - start_time) * 1000
-        REQUEST_COUNT.labels(service="payment-svc", method="GET", endpoint="/api/orders", status=status).inc()
-        REQUEST_LATENCY.labels(service="payment-svc", method="GET", endpoint="/api/orders").observe(duration_ms)
+        REQUEST_COUNT.labels(
+            service="payment-svc", method="GET",
+            endpoint="/api/orders", status=status,
+        ).inc()
+        REQUEST_LATENCY.labels(
+            service="payment-svc", method="GET",
+            endpoint="/api/orders",
+        ).observe(duration_ms)
 
 
 @app.get("/api/stats")
@@ -592,8 +634,14 @@ async def get_stats():
 
     finally:
         duration_ms = (time.time() - start_time) * 1000
-        REQUEST_COUNT.labels(service="auth-svc", method="GET", endpoint="/api/stats", status=status).inc()
-        REQUEST_LATENCY.labels(service="auth-svc", method="GET", endpoint="/api/stats").observe(duration_ms)
+        REQUEST_COUNT.labels(
+            service="auth-svc", method="GET",
+            endpoint="/api/stats", status=status,
+        ).inc()
+        REQUEST_LATENCY.labels(
+            service="auth-svc", method="GET",
+            endpoint="/api/stats",
+        ).observe(duration_ms)
 
 
 @app.get("/")
@@ -620,7 +668,7 @@ if __name__ == "__main__":
 # Builds the api-server container. Uses a single Uvicorn worker to make
 # pool exhaustion more pronounced (multiple workers would mask the issue).
 
-Path('services/Dockerfile').write_text('''\
+Path("services/Dockerfile").write_text("""\
 FROM python:3.11-slim
 
 WORKDIR /app
@@ -640,16 +688,16 @@ EXPOSE 8080
 
 # Run the application - single worker to demonstrate pool exhaustion
 CMD ["uvicorn", "api_server:app", "--host", "0.0.0.0", "--port", "8080"]
-''')
+""")
 
 # Python dependencies for the API server
-Path('services/requirements.txt').write_text('''\
+Path("services/requirements.txt").write_text("""\
 fastapi==0.109.0
 uvicorn==0.27.0
 sqlalchemy==2.0.25
 psycopg2-binary==2.9.9
 prometheus-client==0.19.0
-''')
+""")
 
 # =============================================================================
 # HEALTHY SERVICES SIMULATOR
@@ -658,13 +706,15 @@ prometheus-client==0.19.0
 # These always report healthy values, providing a contrast when the
 # api-server starts failing during the incident.
 
-Path('scripts/healthy_services.py').write_text('''\
+Path("scripts/healthy_services.py").write_text('''\
 #!/usr/bin/env python3
 """
 Healthy Services Metrics Server
 
-Exposes Prometheus-format metrics for simulated healthy services (payment-svc, auth-svc).
-These provide visual contrast against the real api-server which can have actual incidents.
+Exposes Prometheus-format metrics for simulated
+healthy services (payment-svc, auth-svc).
+These provide visual contrast against the real
+api-server which can have actual incidents.
 """
 
 from http.server import HTTPServer, BaseHTTPRequestHandler
@@ -694,9 +744,15 @@ class MetricsHandler(BaseHTTPRequestHandler):
         if elapsed > 0.5:  # Update every 0.5 seconds
             # Always healthy traffic
             request_counts["payment-svc"]["200"] += int(elapsed * random.randint(8, 12))
-            request_counts["payment-svc"]["500"] += random.randint(0, 1) if random.random() > 0.9 else 0
+            request_counts["payment-svc"]["500"] += (
+                random.randint(0, 1)
+                if random.random() > 0.9 else 0
+            )
             request_counts["auth-svc"]["200"] += int(elapsed * random.randint(15, 20))
-            request_counts["auth-svc"]["500"] += random.randint(0, 1) if random.random() > 0.95 else 0
+            request_counts["auth-svc"]["500"] += (
+                random.randint(0, 1)
+                if random.random() > 0.95 else 0
+            )
             last_update = time.time()
 
         # Healthy latency values
@@ -707,29 +763,51 @@ class MetricsHandler(BaseHTTPRequestHandler):
 
         metrics = f"""# HELP http_requests_total Total number of HTTP requests
 # TYPE http_requests_total counter
-http_requests_total{{service="payment-svc",status="200"}} {request_counts["payment-svc"]["200"]}
-http_requests_total{{service="payment-svc",status="500"}} {request_counts["payment-svc"]["500"]}
-http_requests_total{{service="auth-svc",status="200"}} {request_counts["auth-svc"]["200"]}
-http_requests_total{{service="auth-svc",status="500"}} {request_counts["auth-svc"]["500"]}
+http_requests_total\
+{{service="payment-svc",status="200"}} \
+{request_counts["payment-svc"]["200"]}
+http_requests_total\
+{{service="payment-svc",status="500"}} \
+{request_counts["payment-svc"]["500"]}
+http_requests_total\
+{{service="auth-svc",status="200"}} \
+{request_counts["auth-svc"]["200"]}
+http_requests_total\
+{{service="auth-svc",status="500"}} \
+{request_counts["auth-svc"]["500"]}
 
 # HELP http_request_duration_milliseconds HTTP request latency
 # TYPE http_request_duration_milliseconds_bucket gauge
-http_request_duration_milliseconds_bucket{{service="payment-svc",le="100"}} {int(elapsed * 8)}
-http_request_duration_milliseconds_bucket{{service="payment-svc",le="250"}} {int(elapsed * 10)}
-http_request_duration_milliseconds_bucket{{service="payment-svc",le="+Inf"}} {int(elapsed * 10)}
-http_request_duration_milliseconds_bucket{{service="auth-svc",le="100"}} {int(elapsed * 17)}
-http_request_duration_milliseconds_bucket{{service="auth-svc",le="250"}} {int(elapsed * 18)}
-http_request_duration_milliseconds_bucket{{service="auth-svc",le="+Inf"}} {int(elapsed * 18)}
+http_request_duration_milliseconds_bucket\
+{{service="payment-svc",le="100"}} {int(elapsed * 8)}
+http_request_duration_milliseconds_bucket\
+{{service="payment-svc",le="250"}} {int(elapsed * 10)}
+http_request_duration_milliseconds_bucket\
+{{service="payment-svc",le="+Inf"}} {int(elapsed * 10)}
+http_request_duration_milliseconds_bucket\
+{{service="auth-svc",le="100"}} {int(elapsed * 17)}
+http_request_duration_milliseconds_bucket\
+{{service="auth-svc",le="250"}} {int(elapsed * 18)}
+http_request_duration_milliseconds_bucket\
+{{service="auth-svc",le="+Inf"}} {int(elapsed * 18)}
 
 # HELP container_cpu_usage_ratio CPU usage ratio by container
 # TYPE container_cpu_usage_ratio gauge
-container_cpu_usage_ratio{{container="payment-svc",namespace="production"}} {0.3 + random.uniform(0, 0.1):.3f}
-container_cpu_usage_ratio{{container="auth-svc",namespace="production"}} {0.2 + random.uniform(0, 0.1):.3f}
+container_cpu_usage_ratio\
+{{container="payment-svc",namespace="production"}} \
+{0.3 + random.uniform(0, 0.1):.3f}
+container_cpu_usage_ratio\
+{{container="auth-svc",namespace="production"}} \
+{0.2 + random.uniform(0, 0.1):.3f}
 
 # HELP container_memory_usage_ratio Memory usage ratio by container
 # TYPE container_memory_usage_ratio gauge
-container_memory_usage_ratio{{container="payment-svc",namespace="production"}} {0.4 + random.uniform(0, 0.1):.3f}
-container_memory_usage_ratio{{container="auth-svc",namespace="production"}} {0.35 + random.uniform(0, 0.1):.3f}
+container_memory_usage_ratio\
+{{container="payment-svc",namespace="production"}} \
+{0.4 + random.uniform(0, 0.1):.3f}
+container_memory_usage_ratio\
+{{container="auth-svc",namespace="production"}} \
+{0.35 + random.uniform(0, 0.1):.3f}
 
 # HELP up Service health status
 # TYPE up gauge
@@ -765,7 +843,7 @@ if __name__ == "__main__":
 # When the DB pool is exhausted, the traffic generator's requests start
 # failing, which shows up as elevated error rates in Prometheus.
 
-Path('scripts/traffic_generator.py').write_text('''\
+Path("scripts/traffic_generator.py").write_text('''\
 #!/usr/bin/env python3
 """
 Traffic Generator for SRE Demo
@@ -825,7 +903,9 @@ async def make_request(session: aiohttp.ClientSession, endpoint: str):
     stats["total_requests"] += 1
 
     try:
-        async with session.get(url, timeout=aiohttp.ClientTimeout(total=30)) as response:
+        async with session.get(
+            url, timeout=aiohttp.ClientTimeout(total=30),
+        ) as response:
             if response.status == 200:
                 stats["successful"] += 1
             else:
@@ -851,7 +931,12 @@ async def print_stats():
         if stats["start_time"]:
             elapsed = (datetime.now() - stats["start_time"]).total_seconds()
             rps = stats["total_requests"] / elapsed if elapsed > 0 else 0
-            success_rate = (stats["successful"] / stats["total_requests"] * 100) if stats["total_requests"] > 0 else 0
+            success_rate = (
+                (stats["successful"]
+                 / stats["total_requests"] * 100)
+                if stats["total_requests"] > 0
+                else 0
+            )
 
             logger.info(
                 f"Stats: {stats['total_requests']} total, "
@@ -867,7 +952,10 @@ async def wait_for_api():
     async with aiohttp.ClientSession() as session:
         for i in range(60):  # Wait up to 60 seconds
             try:
-                async with session.get(f"{BASE_URL}/health", timeout=aiohttp.ClientTimeout(total=5)) as response:
+                async with session.get(
+                    f"{BASE_URL}/health",
+                    timeout=aiohttp.ClientTimeout(total=5),
+                ) as response:
                     if response.status == 200:
                         logger.info("API server is ready!")
                         return True
@@ -937,7 +1025,7 @@ if __name__ == "__main__":
 #     Checks that config values are sane before allowing a deploy command.
 #     Triggered before run_shell_command calls that redeploy the api-server.
 
-Path('hooks/validate_pool_size.sh').write_text('''\
+Path("hooks/validate_pool_size.sh").write_text("""\
 #!/bin/bash
 # Validates that DB_POOL_SIZE changes stay within safe operating range.
 INPUT=$(cat)
@@ -946,7 +1034,7 @@ NEW_VALUE=$(echo "$INPUT" | python3 -c "
 import sys, json
 data = json.load(sys.stdin)
 inp = data.get('input', {})
-replace_val = inp.get('replace', '')
+replace_val = inp.get('new_value', '') or inp.get('replace', '')
 for part in replace_val.split('\\n'):
     if 'DB_POOL_SIZE' in part:
         val = part.split('=')[1].strip()
@@ -961,9 +1049,9 @@ if [ -n "$NEW_VALUE" ]; then
     fi
 fi
 exit 0
-''')
+""")
 
-Path('hooks/validate_config_before_deploy.sh').write_text('''\
+Path("hooks/validate_config_before_deploy.sh").write_text("""\
 #!/bin/bash
 # Validates that config values are sane before allowing a deploy command.
 INPUT=$(cat)
@@ -978,16 +1066,22 @@ if echo "$COMMAND" | grep -q "up.*api-server"; then
     CONFIG_FILE="config/api-server.env"
     if [ -f "$CONFIG_FILE" ]; then
         POOL_SIZE=$(grep DB_POOL_SIZE "$CONFIG_FILE" | cut -d= -f2)
-        if [ -n "$POOL_SIZE" ] && { [ "$POOL_SIZE" -lt 5 ] 2>/dev/null || [ "$POOL_SIZE" -gt 100 ] 2>/dev/null; }; then
-            echo "BLOCKED: Cannot deploy with DB_POOL_SIZE=$POOL_SIZE (safe range: 5-100)"
+        if [ -n "$POOL_SIZE" ] && \
+           { [ "$POOL_SIZE" -lt 5 ] 2>/dev/null || \
+             [ "$POOL_SIZE" -gt 100 ] 2>/dev/null; }; then
+            echo "BLOCKED: Cannot deploy with \
+DB_POOL_SIZE=$POOL_SIZE (safe range: 5-100)"
             exit 1
         fi
     fi
 fi
 exit 0
-''')
+""")
 
-for hook_file in ['hooks/validate_pool_size.sh', 'hooks/validate_config_before_deploy.sh']:
+for hook_file in [
+    "hooks/validate_pool_size.sh",
+    "hooks/validate_config_before_deploy.sh",
+]:
     p = Path(hook_file)
     p.chmod(p.stat().st_mode | stat.S_IEXEC)
 
@@ -998,4 +1092,7 @@ print("  Docker Compose:      config/docker-compose.yml")
 print("  Prometheus config:   config/prometheus.yml")
 print("  API server:          services/api_server.py")
 print("  Traffic generator:   scripts/traffic_generator.py")
-print("  Safety hooks:        hooks/validate_pool_size.sh, hooks/validate_config_before_deploy.sh")
+print(
+    "  Safety hooks:        hooks/validate_pool_size.sh,"
+    " hooks/validate_config_before_deploy.sh"
+)

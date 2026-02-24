@@ -14,23 +14,24 @@ The server implements:
 - get_service_health: Get a comprehensive health summary
 """
 
-import json
-import sys
 import asyncio
-import httpx
-import random
-import time
 import base64
 import html
+import json
 import os
-import pathlib
 import shlex
+import sys
+import time
 from datetime import datetime
+from pathlib import Path
 from typing import Any
+
+import httpx
 
 # Load environment variables
 try:
     from dotenv import load_dotenv
+
     load_dotenv()
 except ImportError:
     pass
@@ -63,9 +64,12 @@ Use this to investigate incidents by checking error rates, latency, and resource
 
 Common investigation queries:
 - Error rate by service: rate(http_requests_total{status="500"}[1m])
-- Error ratio: sum(rate(http_requests_total{status="500"}[1m])) by (service) / sum(rate(http_requests_total[1m])) by (service)
+- Error ratio:
+  sum(rate(http_requests_total{status="500"}[1m])) by (service)
+  / sum(rate(http_requests_total[1m])) by (service)
 - DB connections: db_connections_active or db_connections_waiting
-- Latency P99: histogram_quantile(0.99, rate(http_request_duration_milliseconds_bucket[1m]))
+- Latency P99: histogram_quantile(0.99,
+  rate(http_request_duration_milliseconds_bucket[1m]))
 - CPU usage: container_cpu_usage_ratio
 - Memory usage: container_memory_usage_ratio
 
@@ -79,11 +83,11 @@ Investigation workflow:
             "properties": {
                 "promql": {
                     "type": "string",
-                    "description": "The PromQL query to execute"
+                    "description": "The PromQL query to execute",
                 }
             },
-            "required": ["promql"]
-        }
+            "required": ["promql"],
+        },
     },
     {
         "name": "list_metrics",
@@ -91,11 +95,7 @@ Investigation workflow:
 
 Use this first if you're unsure what metrics exist.
 Returns metric names grouped by category for easier discovery.""",
-        "inputSchema": {
-            "type": "object",
-            "properties": {},
-            "required": []
-        }
+        "inputSchema": {"type": "object", "properties": {}, "required": []},
     },
     {
         "name": "get_service_health",
@@ -109,11 +109,7 @@ Returns a summary of:
 
 Use this as a starting point for incident investigation to quickly
 identify which services are affected.""",
-        "inputSchema": {
-            "type": "object",
-            "properties": {},
-            "required": []
-        }
+        "inputSchema": {"type": "object", "properties": {}, "required": []},
     },
     {
         "name": "get_logs",
@@ -128,20 +124,31 @@ Available services: api-server, payment-svc, auth-svc, postgres""",
             "properties": {
                 "service": {
                     "type": "string",
-                    "description": "The service to fetch logs from (api-server, payment-svc, auth-svc, postgres)"
+                    "description": (
+                        "The service to fetch logs from"
+                        " (api-server, payment-svc,"
+                        " auth-svc, postgres)"
+                    ),
                 },
                 "level": {
                     "type": "string",
-                    "description": "Filter by log level: all, error, warn, info (default: all)",
-                    "enum": ["all", "error", "warn", "info"]
+                    "description": (
+                        "Filter by log level: all,"
+                        " error, warn, info"
+                        " (default: all)"
+                    ),
+                    "enum": ["all", "error", "warn", "info"],
                 },
                 "lines": {
                     "type": "integer",
-                    "description": "Number of log lines to return (default: 20, max: 100)"
-                }
+                    "description": (
+                        "Number of log lines to return"
+                        " (default: 20, max: 100)"
+                    ),
+                },
             },
-            "required": ["service"]
-        }
+            "required": ["service"],
+        },
     },
     {
         "name": "get_alerts",
@@ -149,11 +156,7 @@ Available services: api-server, payment-svc, auth-svc, postgres""",
 
 Returns all active alerts with their severity, duration, and details.
 Use this to understand what automated monitoring has already detected.""",
-        "inputSchema": {
-            "type": "object",
-            "properties": {},
-            "required": []
-        }
+        "inputSchema": {"type": "object", "properties": {}, "required": []},
     },
     {
         "name": "get_recent_deployments",
@@ -166,17 +169,18 @@ Useful for correlating incidents with recent changes.""",
             "properties": {
                 "service": {
                     "type": "string",
-                    "description": "Filter to a specific service (optional)"
+                    "description": "Filter to a specific service (optional)",
                 }
             },
-            "required": []
-        }
+            "required": [],
+        },
     },
     {
         "name": "execute_runbook",
         "description": """Execute a documented runbook for a known issue type.
 
-Runbooks provide structured investigation and remediation procedures for common incidents.
+Runbooks provide structured investigation and
+remediation procedures for common incidents.
 Use this when you've identified a specific type of issue and want to follow the standard
 operating procedure.
 
@@ -195,17 +199,25 @@ Always run the investigate phase first to confirm the issue before remediation."
             "properties": {
                 "runbook": {
                     "type": "string",
-                    "enum": ["database_connection_exhaustion", "high_latency_cascade", "elevated_error_rates"],
-                    "description": "Which runbook to execute"
+                    "enum": [
+                        "database_connection_exhaustion",
+                        "high_latency_cascade",
+                        "elevated_error_rates",
+                    ],
+                    "description": "Which runbook to execute",
                 },
                 "phase": {
                     "type": "string",
                     "enum": ["investigate", "remediate"],
-                    "description": "Phase to execute: 'investigate' for diagnosis, 'remediate' for fixes"
-                }
+                    "description": (
+                        "Phase to execute:"
+                        " 'investigate' for diagnosis,"
+                        " 'remediate' for fixes"
+                    ),
+                },
             },
-            "required": ["runbook", "phase"]
-        }
+            "required": ["runbook", "phase"],
+        },
     },
     {
         "name": "read_config_file",
@@ -222,11 +234,15 @@ Common files:
             "properties": {
                 "path": {
                     "type": "string",
-                    "description": "Path to the config file relative to project root (e.g., 'config/api-server.env')"
+                    "description": (
+                        "Path to the config file"
+                        " relative to project root"
+                        " (e.g., 'config/api-server.env')"
+                    ),
                 }
             },
-            "required": ["path"]
-        }
+            "required": ["path"],
+        },
     },
     {
         "name": "edit_config_file",
@@ -244,19 +260,19 @@ Example: To fix DB_POOL_SIZE from 1 to 20:
             "properties": {
                 "path": {
                     "type": "string",
-                    "description": "Path to the config file relative to project root"
+                    "description": "Path to the config file relative to project root",
                 },
                 "old_value": {
                     "type": "string",
-                    "description": "The exact text to find and replace"
+                    "description": "The exact text to find and replace",
                 },
                 "new_value": {
                     "type": "string",
-                    "description": "The new text to replace it with"
-                }
+                    "description": "The new text to replace it with",
+                },
             },
-            "required": ["path", "old_value", "new_value"]
-        }
+            "required": ["path", "old_value", "new_value"],
+        },
     },
     {
         "name": "run_shell_command",
@@ -265,22 +281,26 @@ Example: To fix DB_POOL_SIZE from 1 to 20:
 Use this to execute commands like restarting services, checking container status, etc.
 
 Common commands:
-- docker-compose -f config/docker-compose.yml up -d api-server  (REQUIRED after config changes - recreates container with new env)
+- docker-compose -f config/docker-compose.yml up -d api-server
+  (REQUIRED after config changes — recreates container)
 - docker-compose -f config/docker-compose.yml ps
-- docker-compose -f config/docker-compose.yml logs api-server --tail=50
+- docker-compose -f config/docker-compose.yml logs \
+  api-server --tail=50
 
-IMPORTANT: After editing config files, you MUST use 'up -d' (not 'restart') to apply changes.
-'restart' does NOT reload env files - only 'up -d' recreates the container with new config.""",
+IMPORTANT: After editing config files, you MUST
+use 'up -d' (not 'restart') to apply changes.
+'restart' does NOT reload env files — only 'up -d'
+recreates the container with new config.""",
         "inputSchema": {
             "type": "object",
             "properties": {
                 "command": {
                     "type": "string",
-                    "description": "The shell command to execute"
+                    "description": "The shell command to execute",
                 }
             },
-            "required": ["command"]
-        }
+            "required": ["command"],
+        },
     },
     {
         "name": "get_container_logs",
@@ -295,19 +315,26 @@ Available containers: api-server, postgres, traffic-generator""",
             "properties": {
                 "container": {
                     "type": "string",
-                    "description": "Container name (api-server, postgres, traffic-generator)"
+                    "description": (
+                        "Container name (api-server,"
+                        " postgres, traffic-generator)"
+                    ),
                 },
                 "lines": {
                     "type": "integer",
-                    "description": "Number of log lines to return (default: 50, max: 200)"
-                }
+                    "description": (
+                        "Number of log lines to return"
+                        " (default: 50, max: 200)"
+                    ),
+                },
             },
-            "required": ["container"]
-        }
+            "required": ["container"],
+        },
     },
     {
         "name": "write_postmortem",
-        "description": """Write an incident post-mortem report to the postmortems/ directory.
+        "description": """Write an incident post-mortem report to
+the postmortems/ directory.
 
 Use this after resolving an incident to document what happened, the root cause,
 the remediation steps taken, and follow-up action items.
@@ -318,141 +345,164 @@ The report is saved as a markdown file with a timestamp-based filename.""",
             "properties": {
                 "title": {
                     "type": "string",
-                    "description": "Incident title (e.g., 'DB Connection Pool Exhaustion')"
+                    "description": (
+                        "Incident title "
+                        "(e.g., 'DB Connection Pool Exhaustion')"
+                    ),
                 },
                 "summary": {
                     "type": "string",
-                    "description": "Brief summary of the incident"
+                    "description": "Brief summary of the incident",
                 },
-                "root_cause": {
-                    "type": "string",
-                    "description": "Root cause analysis"
-                },
-                "timeline": {
-                    "type": "string",
-                    "description": "Timeline of events"
-                },
+                "root_cause": {"type": "string", "description": "Root cause analysis"},
+                "timeline": {"type": "string", "description": "Timeline of events"},
                 "remediation": {
                     "type": "string",
-                    "description": "Steps taken to fix the issue"
+                    "description": "Steps taken to fix the issue",
                 },
                 "action_items": {
                     "type": "string",
-                    "description": "Follow-up action items to prevent recurrence"
-                }
+                    "description": "Follow-up action items to prevent recurrence",
+                },
             },
-            "required": ["title", "summary", "root_cause"]
-        }
-    }
+            "required": ["title", "summary", "root_cause"],
+        },
+    },
 ]
 
 # PagerDuty tools — only registered when PAGERDUTY_API_KEY is set
 if PAGERDUTY_API_KEY:
-    TOOLS.extend([
-        {
-            "name": "pagerduty_create_incident",
-            "description": """Create a new PagerDuty incident.
-    Use this when an investigation reveals a critical issue requiring immediate oncall attention.
+    TOOLS.extend(
+        [
+            {
+                "name": "pagerduty_create_incident",
+                "description": """Create a new PagerDuty incident.
+    Use this when an investigation reveals a critical
+    issue requiring immediate oncall attention.
     The incident will page the oncall for the specified service.
     Returns the incident ID and URL for tracking.""",
-            "inputSchema": {
-                "type": "object",
-                "properties": {
-                    "title": {
-                        "type": "string",
-                        "description": "Brief incident title (e.g., 'API Server - DB Connection Exhaustion')"
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "title": {
+                            "type": "string",
+                            "description": (
+                                "Brief incident title"
+                                " (e.g., 'API Server -"
+                                " DB Connection Pool Exhaustion')"
+                            ),
+                        },
+                        "description": {
+                            "type": "string",
+                            "description": (
+                                "Detailed description of the incident"
+                                " including symptoms and initial findings"
+                            ),
+                        },
+                        "urgency": {
+                            "type": "string",
+                            "enum": ["high", "low"],
+                            "description": (
+                                "Incident urgency:"
+                                " 'high' for immediate page," 
+                                " 'low' for non-urgent"
+                            ),
+                        },
+                        "service_id": {
+                            "type": "string",
+                            "description": (
+                                "PagerDuty service ID"
+                                " (optional, uses default if not specified)"
+                            ),
+                        },
                     },
-                    "description": {
-                        "type": "string",
-                        "description": "Detailed description of the incident including symptoms and initial findings"
-                    },
-                    "urgency": {
-                        "type": "string",
-                        "enum": ["high", "low"],
-                        "description": "Incident urgency: 'high' for immediate page, 'low' for non-urgent"
-                    },
-                    "service_id": {
-                        "type": "string",
-                        "description": "PagerDuty service ID (optional, uses default if not specified)"
-                    }
+                    "required": ["title", "description"],
                 },
-                "required": ["title", "description"]
-            }
-        },
-        {
-            "name": "pagerduty_update_incident",
-            "description": """Update a PagerDuty incident status.
+            },
+            {
+                "name": "pagerduty_update_incident",
+                "description": """Update a PagerDuty incident status.
     Use to acknowledge or resolve incidents during remediation.
     Can also add notes to document investigation progress.""",
-            "inputSchema": {
-                "type": "object",
-                "properties": {
-                    "incident_id": {
-                        "type": "string",
-                        "description": "The PagerDuty incident ID to update"
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "incident_id": {
+                            "type": "string",
+                            "description": "The PagerDuty incident ID to update",
+                        },
+                        "status": {
+                            "type": "string",
+                            "enum": ["acknowledged", "resolved"],
+                            "description": "New status for the incident",
+                        },
+                        "resolution_note": {
+                            "type": "string",
+                            "description": (
+                                "Note explaining the resolution"
+                                " (required for 'resolved' status)"
+                            ),
+                        },
                     },
-                    "status": {
-                        "type": "string",
-                        "enum": ["acknowledged", "resolved"],
-                        "description": "New status for the incident"
-                    },
-                    "resolution_note": {
-                        "type": "string",
-                        "description": "Note explaining the resolution (required for 'resolved' status)"
-                    }
+                    "required": ["incident_id", "status"],
                 },
-                "required": ["incident_id", "status"]
-            }
-        },
-        {
-            "name": "pagerduty_get_incident",
-            "description": """Get details of a specific PagerDuty incident.
+            },
+            {
+                "name": "pagerduty_get_incident",
+                "description": """Get details of a specific PagerDuty incident.
     Returns incident status, assignments, timeline, and notes.
     Use to check current state before taking action.""",
-            "inputSchema": {
-                "type": "object",
-                "properties": {
-                    "incident_id": {
-                        "type": "string",
-                        "description": "The PagerDuty incident ID"
-                    }
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "incident_id": {
+                            "type": "string",
+                            "description": "The PagerDuty incident ID",
+                        }
+                    },
+                    "required": ["incident_id"],
                 },
-                "required": ["incident_id"]
-            }
-        },
-        {
-            "name": "pagerduty_list_incidents",
-            "description": """List current PagerDuty incidents.
+            },
+            {
+                "name": "pagerduty_list_incidents",
+                "description": """List current PagerDuty incidents.
     Returns triggered and acknowledged incidents across all services.
     Use at start of investigation to see if incident already exists.""",
-            "inputSchema": {
-                "type": "object",
-                "properties": {
-                    "status": {
-                        "type": "string",
-                        "enum": ["triggered", "acknowledged", "resolved", "all"],
-                        "description": "Filter by status (default: 'all' for triggered + acknowledged)"
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "status": {
+                            "type": "string",
+                            "enum": ["triggered", "acknowledged", "resolved", "all"],
+                            "description": (
+                                "Filter by status (default: 'all'"
+                                " for triggered + acknowledged)"
+                            ),
+                        },
+                        "service_id": {
+                            "type": "string",
+                            "description": "Filter to a specific service (optional)",
+                        },
                     },
-                    "service_id": {
-                        "type": "string",
-                        "description": "Filter to a specific service (optional)"
-                    }
+                    "required": [],
                 },
-                "required": []
-            }
-        },
-    ])
+            },
+        ]
+    )
 
-# Confluence tools — only registered when CONFLUENCE_BASE_URL and CONFLUENCE_API_TOKEN are set
+# Confluence tools — only registered when
+# CONFLUENCE_BASE_URL and CONFLUENCE_API_TOKEN are set
 if CONFLUENCE_BASE_URL and CONFLUENCE_API_TOKEN:
-    TOOLS.extend([
-        {
-            "name": "confluence_create_postmortem",
-            "description": """Create a post-mortem page in Confluence.
+    TOOLS.extend(
+        [
+            {
+                "name": "confluence_create_postmortem",
+                "description": """Create a post-mortem page in Confluence.
     IMPORTANT: Only call this AFTER the user confirms they want to publish.
     The bot should OFFER to create a post-mortem and wait for user confirmation.
     Workflow:
-    1. Bot offers: "I can create a post-mortem page in Confluence. Reply 'yes' to proceed."
+    1. Bot offers: "I can create a post-mortem page"
+       " in Confluence. Reply 'yes' to proceed."
     2. User replies: "yes"
     3. Bot calls this tool with incident details
     The page is created from a template with sections for:
@@ -462,98 +512,118 @@ if CONFLUENCE_BASE_URL and CONFLUENCE_API_TOKEN:
     - Impact
     - Remediation Steps
     - Action Items""",
-            "inputSchema": {
-                "type": "object",
-                "properties": {
-                    "title": {
-                        "type": "string",
-                        "description": "Page title (e.g., 'Post-Mortem: 2025-01-15 API Server Outage')"
-                    },
-                    "incident_summary": {
-                        "type": "string",
-                        "description": "Brief summary of what happened"
-                    },
-                    "timeline": {
-                        "type": "array",
-                        "items": {"type": "string"},
-                        "description": "List of timestamped events (e.g., ['14:23 - Alert fired', '14:25 - Investigation started'])"
-                    },
-                    "root_cause": {
-                        "type": "string",
-                        "description": "Technical explanation of the root cause"
-                    },
-                    "impact": {
-                        "type": "string",
-                        "description": "Description of user/business impact"
-                    },
-                    "remediation_steps": {
-                        "type": "array",
-                        "items": {"type": "string"},
-                        "description": "List of actions taken to resolve"
-                    },
-                    "action_items": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "task": {"type": "string"},
-                                "owner": {"type": "string"},
-                                "due_date": {"type": "string"}
-                            }
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "title": {
+                            "type": "string",
+                            "description": (
+                                "Page title (e.g., 'Post-Mortem:"
+                                " 2025-01-15 API Server Outage')"
+                            ),
                         },
-                        "description": "Follow-up action items with owners"
+                        "incident_summary": {
+                            "type": "string",
+                            "description": "Brief summary of what happened",
+                        },
+                        "timeline": {
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": (
+                                "List of timestamped events"
+                                " (e.g., ['14:23 - Alert fired'"
+                                ", '14:25 - Investigation"
+                                " started'])"
+                            ),
+                        },
+                        "root_cause": {
+                            "type": "string",
+                            "description": "Technical explanation of the root cause",
+                        },
+                        "impact": {
+                            "type": "string",
+                            "description": "Description of user/business impact",
+                        },
+                        "remediation_steps": {
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "List of actions taken to resolve",
+                        },
+                        "action_items": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "task": {"type": "string"},
+                                    "owner": {"type": "string"},
+                                    "due_date": {"type": "string"},
+                                },
+                            },
+                            "description": "Follow-up action items with owners",
+                        },
+                        "pagerduty_incident_id": {
+                            "type": "string",
+                            "description": (
+                                "Associated PagerDuty incident"
+                                " ID (optional, for linking)"
+                            ),
+                        },
                     },
-                    "pagerduty_incident_id": {
-                        "type": "string",
-                        "description": "Associated PagerDuty incident ID (optional, for linking)"
-                    }
+                    "required": ["title", "incident_summary", "root_cause"],
                 },
-                "required": ["title", "incident_summary", "root_cause"]
-            }
-        },
-        {
-            "name": "confluence_get_page",
-            "description": """Get a Confluence page by ID or title.
-    Use to retrieve existing post-mortems or check if one already exists for an incident.""",
-            "inputSchema": {
-                "type": "object",
-                "properties": {
-                    "page_id": {
-                        "type": "string",
-                        "description": "Confluence page ID"
+            },
+            {
+                "name": "confluence_get_page",
+                "description": """Get a Confluence page by ID or title.
+    Use to retrieve existing post-mortems or check if
+    one already exists for an incident.""",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "page_id": {
+                            "type": "string",
+                            "description": "Confluence page ID",
+                        },
+                        "title": {
+                            "type": "string",
+                            "description": (
+                                "Search by page title"
+                                " (alternative to page_id)"
+                            ),
+                        },
                     },
-                    "title": {
-                        "type": "string",
-                        "description": "Search by page title (alternative to page_id)"
-                    }
+                    "required": [],
                 },
-                "required": []
-            }
-        },
-        {
-            "name": "confluence_list_postmortems",
-            "description": """List recent post-mortem pages in the SRE space.
+            },
+            {
+                "name": "confluence_list_postmortems",
+                "description": """List recent post-mortem pages in the SRE space.
     Returns post-mortems from the last N days for reference during investigation.
     Useful to check for similar past incidents.""",
-            "inputSchema": {
-                "type": "object",
-                "properties": {
-                    "days": {
-                        "type": "integer",
-                        "description": "Look back N days (default: 30)"
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "days": {
+                            "type": "integer",
+                            "description": "Look back N days (default: 30)",
+                        },
+                        "search_term": {
+                            "type": "string",
+                            "description": (
+                                "Search post-mortems containing"
+                                " this term (e.g., 'database'"
+                                ", 'api-server')"
+                            ),
+                        },
                     },
-                    "search_term": {
-                        "type": "string",
-                        "description": "Search post-mortems containing this term (e.g., 'database', 'api-server')"
-                    }
+                    "required": [],
                 },
-                "required": []
-            }
-        },
-    ])
+            },
+        ]
+    )
 
 # Project root directory (for config file operations)
-PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = Path(__file__).resolve().parent
 
 
 async def query_metrics(promql: str) -> dict[str, Any]:
@@ -570,21 +640,32 @@ async def query_metrics(promql: str) -> dict[str, Any]:
 
         if data["status"] != "success":
             return {
-                "content": [{
-                    "type": "text",
-                    "text": f"Query failed: {data.get('error', 'Unknown error')}\nQuery: {promql}"
-                }],
-                "isError": True
+                "content": [
+                    {
+                        "type": "text",
+                        "text": (
+                            f"Query failed: {data.get('error', 'Unknown error')}"
+                            f"\nQuery: {promql}"
+                        ),
+                    }
+                ],
+                "isError": True,
             }
 
         results = data["data"]["result"]
 
         if not results:
             return {
-                "content": [{
-                    "type": "text",
-                    "text": f"No data returned for query: {promql}\nCheck if metric name is correct or try a broader time range."
-                }]
+                "content": [
+                    {
+                        "type": "text",
+                        "text": (
+                            f"No data returned for query: {promql}\n"
+                            "Check if metric name is correct"
+                            " or try a broader time range."
+                        ),
+                    }
+                ]
             }
 
         # Format results for readability
@@ -594,35 +675,44 @@ async def query_metrics(promql: str) -> dict[str, Any]:
             labels = r.get("metric", {})
             if "value" in r:
                 timestamp, value = r["value"]
-                label_str = ", ".join(f"{k}={v}" for k, v in labels.items() if k != "__name__")
+                label_str = ", ".join(
+                    f"{k}={v}" for k, v in labels.items() if k != "__name__"
+                )
                 formatted_lines.append(f"  {label_str or 'value'}: {value}")
             elif "values" in r:
-                label_str = ", ".join(f"{k}={v}" for k, v in labels.items() if k != "__name__")
+                label_str = ", ".join(
+                    f"{k}={v}" for k, v in labels.items() if k != "__name__"
+                )
                 latest_value = r["values"][-1][1] if r["values"] else "N/A"
-                formatted_lines.append(f"  {label_str or 'value'}: {latest_value} (latest)")
+                formatted_lines.append(
+                    f"  {label_str or 'value'}: {latest_value} (latest)"
+                )
 
-        return {
-            "content": [{
-                "type": "text",
-                "text": "\n".join(formatted_lines)
-            }]
-        }
+        return {"content": [{"type": "text", "text": "\n".join(formatted_lines)}]}
 
     except httpx.ConnectError:
         return {
-            "content": [{
-                "type": "text",
-                "text": "Cannot connect to Prometheus at localhost:9090.\nMake sure to run: docker-compose up"
-            }],
-            "isError": True
+            "content": [
+                {
+                    "type": "text",
+                    "text": (
+                        "Cannot connect to Prometheus"
+                        " at localhost:9090.\n"
+                        "Make sure to run: docker-compose up"
+                    ),
+                }
+            ],
+            "isError": True,
         }
     except Exception as e:
         return {
-            "content": [{
-                "type": "text",
-                "text": f"Error executing query: {str(e)}\nQuery: {promql}"
-            }],
-            "isError": True
+            "content": [
+                {
+                    "type": "text",
+                    "text": f"Error executing query: {str(e)}\nQuery: {promql}",
+                }
+            ],
+            "isError": True,
         }
 
 
@@ -631,8 +721,7 @@ async def list_metrics() -> dict[str, Any]:
     try:
         async with httpx.AsyncClient() as client:
             response = await client.get(
-                f"{PROMETHEUS_URL}/api/v1/label/__name__/values",
-                timeout=10.0
+                f"{PROMETHEUS_URL}/api/v1/label/__name__/values", timeout=10.0
             )
             response.raise_for_status()
             data = response.json()
@@ -645,8 +734,12 @@ async def list_metrics() -> dict[str, Any]:
             "db": [m for m in metrics if m.startswith("db_")],
             "container": [m for m in metrics if m.startswith("container_")],
             "other": [
-                m for m in metrics
-                if not any(m.startswith(p) for p in ["http_", "db_", "container_", "go_", "promhttp_", "up"])
+                m
+                for m in metrics
+                if not any(
+                    m.startswith(p)
+                    for p in ["http_", "db_", "container_", "go_", "promhttp_", "up"]
+                )
             ],
         }
 
@@ -660,28 +753,19 @@ async def list_metrics() -> dict[str, Any]:
 
         lines.append("Use query_metrics() with these metric names to get values.")
 
-        return {
-            "content": [{
-                "type": "text",
-                "text": "\n".join(lines)
-            }]
-        }
+        return {"content": [{"type": "text", "text": "\n".join(lines)}]}
 
     except httpx.ConnectError:
         return {
-            "content": [{
-                "type": "text",
-                "text": "Cannot connect to Prometheus. Is it running?"
-            }],
-            "isError": True
+            "content": [
+                {"type": "text", "text": "Cannot connect to Prometheus. Is it running?"}
+            ],
+            "isError": True,
         }
     except Exception as e:
         return {
-            "content": [{
-                "type": "text",
-                "text": f"Error listing metrics: {str(e)}"
-            }],
-            "isError": True
+            "content": [{"type": "text", "text": f"Error listing metrics: {str(e)}"}],
+            "isError": True,
         }
 
 
@@ -695,7 +779,13 @@ async def get_service_health() -> dict[str, Any]:
         try:
             response = await client.get(
                 f"{PROMETHEUS_URL}/api/v1/query",
-                params={"query": 'sum(rate(http_requests_total{status="500"}[1m])) by (service)'},
+                params={
+                    "query": (
+                        'sum(rate(http_requests_total'
+                        '{status="500"}[1m]))'
+                        ' by (service)'
+                    )
+                },
                 timeout=10.0,
             )
             if response.status_code == 200:
@@ -705,10 +795,18 @@ async def get_service_health() -> dict[str, Any]:
                     for r in data["data"]["result"]:
                         service = r["metric"].get("service", "unknown")
                         rate = float(r["value"][1])
-                        status = "[CRITICAL]" if rate > 5 else "[WARNING]" if rate > 1 else "[OK]"
+                        status = (
+                            "[CRITICAL]"
+                            if rate > 5
+                            else "[WARNING]"
+                            if rate > 1
+                            else "[OK]"
+                        )
                         health_lines.append(f"  {status} {service}: {rate:.2f}/sec")
                         if rate > 5:
-                            issues.append(f"High error rate on {service}: {rate:.1f}/sec")
+                            issues.append(
+                                f"High error rate on {service}: {rate:.1f}/sec"
+                            )
                     health_lines.append("")
         except Exception as e:
             health_lines.append(f"ERROR RATES: unable to query ({e})")
@@ -718,7 +816,13 @@ async def get_service_health() -> dict[str, Any]:
         try:
             response = await client.get(
                 f"{PROMETHEUS_URL}/api/v1/query",
-                params={"query": 'histogram_quantile(0.99, rate(http_request_duration_milliseconds_bucket[1m]))'},
+                params={
+                    "query": (
+                        "histogram_quantile(0.99,"
+                        " rate(http_request_duration"
+                        "_milliseconds_bucket[1m]))"
+                    )
+                },
                 timeout=10.0,
             )
             if response.status_code == 200:
@@ -728,7 +832,13 @@ async def get_service_health() -> dict[str, Any]:
                     for r in data["data"]["result"]:
                         service = r["metric"].get("service", "unknown")
                         latency = float(r["value"][1])
-                        status = "[CRITICAL]" if latency > 1000 else "[WARNING]" if latency > 500 else "[OK]"
+                        status = (
+                            "[CRITICAL]"
+                            if latency > 1000
+                            else "[WARNING]"
+                            if latency > 500
+                            else "[OK]"
+                        )
                         health_lines.append(f"  {status} {service}: {latency:.0f}ms")
                         if latency > 1000:
                             issues.append(f"High latency on {service}: {latency:.0f}ms")
@@ -748,11 +858,19 @@ async def get_service_health() -> dict[str, Any]:
                 data = response.json()
                 if data["status"] == "success" and data["data"]["result"]:
                     active = float(data["data"]["result"][0]["value"][1])
-                    status = "[CRITICAL]" if active > 90 else "[WARNING]" if active > 70 else "[OK]"
+                    status = (
+                        "[CRITICAL]"
+                        if active > 90
+                        else "[WARNING]"
+                        if active > 70
+                        else "[OK]"
+                    )
                     health_lines.append("DATABASE CONNECTIONS:")
                     health_lines.append(f"  {status}: {active:.0f}/100 active")
                     if active > 90:
-                        issues.append(f"DB connection pool near exhaustion: {active:.0f}/100")
+                        issues.append(
+                            f"DB connection pool near exhaustion: {active:.0f}/100"
+                        )
                     health_lines.append("")
         except Exception as e:
             health_lines.append(f"DATABASE CONNECTIONS: unable to query ({e})")
@@ -770,7 +888,9 @@ async def get_service_health() -> dict[str, Any]:
                 if data["status"] == "success" and data["data"]["result"]:
                     health_lines.append("SERVICE STATUS:")
                     for r in data["data"]["result"]:
-                        service = r["metric"].get("service", r["metric"].get("job", "unknown"))
+                        service = r["metric"].get(
+                            "service", r["metric"].get("job", "unknown")
+                        )
                         is_up = int(float(r["value"][1])) == 1
                         status = "[UP]" if is_up else "[DOWN]"
                         health_lines.append(f"  {status}: {service}")
@@ -790,12 +910,7 @@ async def get_service_health() -> dict[str, Any]:
     else:
         health_lines.append("All systems healthy")
 
-    return {
-        "content": [{
-            "type": "text",
-            "text": "\n".join(health_lines)
-        }]
-    }
+    return {"content": [{"type": "text", "text": "\n".join(health_lines)}]}
 
 
 async def get_logs(service: str, level: str = "all", lines: int = 20) -> dict[str, Any]:
@@ -814,11 +929,17 @@ async def get_logs(service: str, level: str = "all", lines: int = 20) -> dict[st
     container = service_to_container.get(service)
     if not container:
         return {
-            "content": [{
-                "type": "text",
-                "text": f"Unknown service: {service}\nValid services: {', '.join(service_to_container.keys())}"
-            }],
-            "isError": True
+            "content": [
+                {
+                    "type": "text",
+                    "text": (
+                        f"Unknown service: {service}\n"
+                        "Valid services: "
+                        f"{', '.join(service_to_container.keys())}"
+                    ),
+                }
+            ],
+            "isError": True,
         }
 
     # Use get_container_logs to fetch real logs
@@ -840,7 +961,7 @@ async def get_alerts() -> dict[str, Any]:
                 "severity": "critical",
                 "name": "HighErrorRate",
                 "service": "api-server",
-                "description": f"Error rate is 23.4% (threshold: 5%)",
+                "description": "Error rate is 23.4% (threshold: 5%)",
                 "duration": f"{incident_duration}s",
             },
             {
@@ -848,7 +969,7 @@ async def get_alerts() -> dict[str, Any]:
                 "severity": "critical",
                 "name": "DBConnectionPoolExhausted",
                 "service": "postgres",
-                "description": f"Connection pool at 98/100 (threshold: 90%)",
+                "description": "Connection pool at 98/100 (threshold: 90%)",
                 "duration": f"{incident_duration}s",
             },
             {
@@ -856,7 +977,7 @@ async def get_alerts() -> dict[str, Any]:
                 "severity": "warning",
                 "name": "HighLatencyP99",
                 "service": "api-server",
-                "description": f"P99 latency is 2847ms (threshold: 500ms)",
+                "description": "P99 latency is 2847ms (threshold: 500ms)",
                 "duration": f"{incident_duration - 5}s",
             },
             {
@@ -864,7 +985,7 @@ async def get_alerts() -> dict[str, Any]:
                 "severity": "warning",
                 "name": "HighCPUUsage",
                 "service": "api-server",
-                "description": f"CPU usage is 87% (threshold: 80%)",
+                "description": "CPU usage is 87% (threshold: 80%)",
                 "duration": "pending for 45s",
             },
         ]
@@ -890,7 +1011,9 @@ async def get_alerts() -> dict[str, Any]:
     if firing:
         lines.append("🔴 FIRING:")
         for alert in firing:
-            lines.append(f"  [{alert['severity'].upper()}] {alert['name']} ({alert['service']})")
+            lines.append(
+                f"  [{alert['severity'].upper()}] {alert['name']} ({alert['service']})"
+            )
             lines.append(f"      {alert['description']}")
             lines.append(f"      Duration: {alert['duration']}")
             lines.append("")
@@ -898,7 +1021,9 @@ async def get_alerts() -> dict[str, Any]:
     if pending:
         lines.append("🟡 PENDING:")
         for alert in pending:
-            lines.append(f"  [{alert['severity'].upper()}] {alert['name']} ({alert['service']})")
+            lines.append(
+                f"  [{alert['severity'].upper()}] {alert['name']} ({alert['service']})"
+            )
             lines.append(f"      {alert['description']}")
             lines.append(f"      {alert['duration']}")
             lines.append("")
@@ -906,18 +1031,15 @@ async def get_alerts() -> dict[str, Any]:
     if resolved and not firing:
         lines.append("✅ RECENTLY RESOLVED:")
         for alert in resolved:
-            lines.append(f"  {alert['name']} ({alert['service']}) - {alert['duration']}")
+            lines.append(
+                f"  {alert['name']} ({alert['service']}) - {alert['duration']}"
+            )
             lines.append("")
 
     if not firing and not pending:
         lines.append("✅ No active alerts")
 
-    return {
-        "content": [{
-            "type": "text",
-            "text": "\n".join(lines)
-        }]
-    }
+    return {"content": [{"type": "text", "text": "\n".join(lines)}]}
 
 
 async def get_recent_deployments(service: str | None = None) -> dict[str, Any]:
@@ -932,7 +1054,9 @@ async def get_recent_deployments(service: str | None = None) -> dict[str, Any]:
     deployments = [
         {
             "service": "api-server",
-            "timestamp": now - elapsed - 2,  # ~2 seconds before server started (so ~62s before incident)
+            "timestamp": now
+            - elapsed
+            - 2,  # ~2 seconds before server started (so ~62s before incident)
             "commit": "a7f3d2e",
             "author": "alice",
             "message": "Reduce DB connection pool size for staging parity",
@@ -977,10 +1101,12 @@ async def get_recent_deployments(service: str | None = None) -> dict[str, Any]:
         deployments = [d for d in deployments if d["service"] == service]
         if not deployments:
             return {
-                "content": [{
-                    "type": "text",
-                    "text": f"No recent deployments found for service: {service}"
-                }]
+                "content": [
+                    {
+                        "type": "text",
+                        "text": f"No recent deployments found for service: {service}",
+                    }
+                ]
             }
 
     lines = ["=== Recent Deployments ===", ""]
@@ -997,7 +1123,9 @@ async def get_recent_deployments(service: str | None = None) -> dict[str, Any]:
         else:
             age_str = f"{int(age_seconds / 86400)}d ago"
 
-        time_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(deploy["timestamp"]))
+        time_str = time.strftime(
+            "%Y-%m-%d %H:%M:%S", time.localtime(deploy["timestamp"])
+        )
 
         lines.append(f"📦 {deploy['service']} - {age_str}")
         lines.append(f"   Commit: {deploy['commit']} ({deploy['pr']})")
@@ -1006,12 +1134,7 @@ async def get_recent_deployments(service: str | None = None) -> dict[str, Any]:
         lines.append(f"   Time: {time_str}")
         lines.append("")
 
-    return {
-        "content": [{
-            "type": "text",
-            "text": "\n".join(lines)
-        }]
-    }
+    return {"content": [{"type": "text", "text": "\n".join(lines)}]}
 
 
 # Runbook definitions based on CLAUDE.md
@@ -1020,7 +1143,7 @@ RUNBOOKS = {
         "name": "Database Connection Exhaustion",
         "symptoms": [
             "api-server in CrashLoopBackOff or high error rate",
-            "\"Connection refused\" or \"too many connections\" in logs",
+            '"Connection refused" or "too many connections" in logs',
             "db_connections_active near max (100)",
         ],
         "investigate": {
@@ -1064,14 +1187,22 @@ RUNBOOKS = {
                 {
                     "priority": 1,
                     "action": "Restart affected service pods",
-                    "command": "kubectl rollout restart deployment/api-server -n production",
+                    "command": (
+                        "kubectl rollout restart"
+                        " deployment/api-server"
+                        " -n production"
+                    ),
                     "effect": "Releases held connections, temporary fix",
                     "risk": "Brief service interruption during restart",
                 },
                 {
                     "priority": 2,
                     "action": "Scale down affected service to release connections",
-                    "command": "kubectl scale deployment/api-server --replicas=1 -n production",
+                    "command": (
+                        "kubectl scale"
+                        " deployment/api-server"
+                        " --replicas=1 -n production"
+                    ),
                     "effect": "Reduces connection pressure immediately",
                     "risk": "Reduced capacity during incident",
                 },
@@ -1110,13 +1241,16 @@ RUNBOOKS = {
                 {
                     "step": 1,
                     "action": "Check P99 latency across all services",
-                    "query": "http_request_duration_milliseconds{quantile=\"0.99\"}",
+                    "query": 'http_request_duration_milliseconds{quantile="0.99"}',
                     "threshold": "> 500ms warning, > 2000ms critical",
                 },
                 {
                     "step": 2,
                     "action": "Identify where latency originates",
-                    "query": "topk(5, http_request_duration_milliseconds{quantile=\"0.99\"})",
+                    "query": (
+                        'topk(5, http_request_duration'
+                        '_milliseconds{quantile="0.99"})'
+                    ),
                     "note": "Service with highest latency is likely the source",
                 },
                 {
@@ -1132,7 +1266,10 @@ RUNBOOKS = {
                         "container_cpu_usage_ratio",
                         "container_memory_usage_ratio",
                     ],
-                    "threshold": "CPU > 80% or Memory > 90% indicates resource pressure",
+                    "threshold": (
+                        "CPU > 80% or Memory > 90%"
+                        " indicates resource pressure"
+                    ),
                 },
                 {
                     "step": 5,
@@ -1148,19 +1285,32 @@ RUNBOOKS = {
                 {
                     "priority": 1,
                     "action": "If DB-related: Check for long-running queries",
-                    "command": "SELECT * FROM pg_stat_activity WHERE state = 'active' AND query_start < now() - interval '30 seconds'",
+                    "command": (
+                        "SELECT * FROM pg_stat_activity"
+                        " WHERE state = 'active'"
+                        " AND query_start < now()"
+                        " - interval '30 seconds'"
+                    ),
                     "effect": "Identifies blocking queries",
                 },
                 {
                     "priority": 2,
                     "action": "If CPU-bound: Scale horizontally",
-                    "command": "kubectl scale deployment/api-server --replicas=5 -n production",
+                    "command": (
+                        "kubectl scale"
+                        " deployment/api-server"
+                        " --replicas=5 -n production"
+                    ),
                     "effect": "Distributes load across more pods",
                 },
                 {
                     "priority": 3,
                     "action": "If memory-bound: Restart to clear potential leaks",
-                    "command": "kubectl rollout restart deployment/api-server -n production",
+                    "command": (
+                        "kubectl rollout restart"
+                        " deployment/api-server"
+                        " -n production"
+                    ),
                     "effect": "Clears memory, resets connections",
                 },
             ],
@@ -1181,14 +1331,18 @@ RUNBOOKS = {
             "escalation": {
                 "team": "Platform team",
                 "channel": "#platform-oncall",
-                "when": "If latency doesn't improve after scaling, or if root cause unclear",
+                "when": (
+                    "If latency doesn't improve"
+                    " after scaling, or if root"
+                    " cause unclear"
+                ),
             },
         },
     },
     "elevated_error_rates": {
         "name": "Elevated Error Rates",
         "symptoms": [
-            "http_requests_total{status=\"500\"} increasing",
+            'http_requests_total{status="500"} increasing',
             "Alerts from monitoring",
             "User complaints",
         ],
@@ -1198,19 +1352,29 @@ RUNBOOKS = {
                 {
                     "step": 1,
                     "action": "Identify which service has errors",
-                    "query": "sum(rate(http_requests_total{status=\"500\"}[1m])) by (service)",
+                    "query": (
+                        'sum(rate(http_requests_total'
+                        '{status="500"}[1m]))'
+                        ' by (service)'
+                    ),
                     "threshold": "> 1% warning, > 5% critical",
                 },
                 {
                     "step": 2,
                     "action": "Calculate error ratio percentage",
-                    "query": "sum(rate(http_requests_total{status=\"500\"}[1m])) by (service) / sum(rate(http_requests_total[1m])) by (service)",
+                    "query": (
+                        'sum(rate(http_requests_total'
+                        '{status="500"}[1m]))'
+                        ' by (service) / '
+                        'sum(rate(http_requests_total'
+                        '[1m])) by (service)'
+                    ),
                     "note": "Shows error percentage per service",
                 },
                 {
                     "step": 3,
                     "action": "Check if correlated with latency",
-                    "query": "http_request_duration_milliseconds{quantile=\"0.99\"}",
+                    "query": 'http_request_duration_milliseconds{quantile="0.99"}',
                     "note": "High latency + errors often indicates timeouts",
                 },
                 {
@@ -1250,7 +1414,11 @@ RUNBOOKS = {
                 {
                     "condition": "If caused by recent deployment",
                     "action": "Rollback the deployment",
-                    "command": "kubectl rollout undo deployment/api-server -n production",
+                    "command": (
+                        "kubectl rollout undo"
+                        " deployment/api-server"
+                        " -n production"
+                    ),
                 },
                 {
                     "condition": "If caused by external dependency failure",
@@ -1261,7 +1429,11 @@ RUNBOOKS = {
                 {
                     "priority": 1,
                     "action": "If recent deployment suspected, rollback immediately",
-                    "command": "kubectl rollout undo deployment/<service> -n production",
+                    "command": (
+                        "kubectl rollout undo"
+                        " deployment/<service>"
+                        " -n production"
+                    ),
                     "effect": "Reverts to last known good state",
                 },
             ],
@@ -1272,7 +1444,11 @@ RUNBOOKS = {
                     "payment-svc": "#payments-oncall",
                     "auth-svc": "#identity-oncall",
                 },
-                "when": "If root cause cannot be identified or errors persist after remediation",
+                "when": (
+                    "If root cause cannot be"
+                    " identified or errors persist"
+                    " after remediation"
+                ),
             },
         },
     },
@@ -1283,11 +1459,17 @@ async def execute_runbook(runbook: str, phase: str) -> dict[str, Any]:
     """Execute a documented runbook for incident response."""
     if runbook not in RUNBOOKS:
         return {
-            "content": [{
-                "type": "text",
-                "text": f"Unknown runbook: {runbook}\nAvailable runbooks: {', '.join(RUNBOOKS.keys())}"
-            }],
-            "isError": True
+            "content": [
+                {
+                    "type": "text",
+                    "text": (
+                        f"Unknown runbook: {runbook}\n"
+                        "Available runbooks: "
+                        f"{', '.join(RUNBOOKS.keys())}"
+                    ),
+                }
+            ],
+            "isError": True,
         }
 
     rb = RUNBOOKS[runbook]
@@ -1316,7 +1498,9 @@ async def execute_runbook(runbook: str, phase: str) -> dict[str, Any]:
             if "tool" in step:
                 lines.append(f"  → Use tool: {step['tool']}")
                 if "params" in step:
-                    params_str = ", ".join(f"{k}={v}" for k, v in step["params"].items())
+                    params_str = ", ".join(
+                        f"{k}={v}" for k, v in step["params"].items()
+                    )
                     lines.append(f"     with params: {params_str}")
             if "threshold" in step:
                 lines.append(f"  → Threshold: {step['threshold']}")
@@ -1324,7 +1508,10 @@ async def execute_runbook(runbook: str, phase: str) -> dict[str, Any]:
                 lines.append(f"  → Note: {step['note']}")
             lines.append("")
 
-        lines.append("After completing investigation, run this runbook again with phase='remediate'")
+        lines.append(
+            "After completing investigation, run this"
+            " runbook again with phase='remediate'"
+        )
 
     elif phase == "remediate":
         rem = rb["remediate"]
@@ -1376,36 +1563,43 @@ async def execute_runbook(runbook: str, phase: str) -> dict[str, Any]:
             if "when" in esc:
                 lines.append(f"  When: {esc['when']}")
 
-    return {
-        "content": [{
-            "type": "text",
-            "text": "\n".join(lines)
-        }]
-    }
+    return {"content": [{"type": "text", "text": "\n".join(lines)}]}
 
 
 # ============================================================================
 # PagerDuty Integration Handlers
 # ============================================================================
 
+
 async def pagerduty_create_incident(
-    title: str,
-    description: str,
-    urgency: str = "high",
-    service_id: str | None = None
+    title: str, description: str, urgency: str = "high", service_id: str | None = None
 ) -> dict[str, Any]:
     """Create a PagerDuty incident."""
     if not PAGERDUTY_API_KEY:
         return {
-            "content": [{"type": "text", "text": "PagerDuty not configured. Set PAGERDUTY_API_KEY in .env"}],
-            "isError": True
+            "content": [
+                {
+                    "type": "text",
+                    "text": "PagerDuty not configured. Set PAGERDUTY_API_KEY in .env",
+                }
+            ],
+            "isError": True,
         }
 
     service = service_id or PAGERDUTY_SERVICE_ID
     if not service:
         return {
-            "content": [{"type": "text", "text": "No service ID provided and PAGERDUTY_SERVICE_ID not set in .env"}],
-            "isError": True
+            "content": [
+                {
+                    "type": "text",
+                    "text": (
+                        "No service ID provided and"
+                        " PAGERDUTY_SERVICE_ID not"
+                        " set in .env"
+                    ),
+                }
+            ],
+            "isError": True,
         }
 
     try:
@@ -1415,7 +1609,7 @@ async def pagerduty_create_incident(
                 headers={
                     "Authorization": f"Token token={PAGERDUTY_API_KEY}",
                     "Content-Type": "application/json",
-                    "From": PAGERDUTY_FROM_EMAIL or "sre-bot@example.com"
+                    "From": PAGERDUTY_FROM_EMAIL or "sre-bot@example.com",
                 },
                 json={
                     "incident": {
@@ -1423,53 +1617,62 @@ async def pagerduty_create_incident(
                         "title": title,
                         "service": {"id": service, "type": "service_reference"},
                         "urgency": urgency,
-                        "body": {"type": "incident_body", "details": description}
+                        "body": {"type": "incident_body", "details": description},
                     }
                 },
-                timeout=10.0
+                timeout=10.0,
             )
             response.raise_for_status()
             incident = response.json()["incident"]
 
             return {
-                "content": [{
-                    "type": "text",
-                    "text": f"Created PagerDuty incident:\n"
-                            f"  ID: {incident['id']}\n"
-                            f"  URL: {incident['html_url']}\n"
-                            f"  Status: {incident['status']}\n"
-                            f"  Urgency: {incident['urgency']}"
-                }]
+                "content": [
+                    {
+                        "type": "text",
+                        "text": f"Created PagerDuty incident:\n"
+                        f"  ID: {incident['id']}\n"
+                        f"  URL: {incident['html_url']}\n"
+                        f"  Status: {incident['status']}\n"
+                        f"  Urgency: {incident['urgency']}",
+                    }
+                ]
             }
     except httpx.HTTPStatusError as e:
         return {
-            "content": [{"type": "text", "text": f"PagerDuty API error: {e.response.status_code} - {e.response.text}"}],
-            "isError": True
+            "content": [
+                {
+                    "type": "text",
+                    "text": (
+                        "PagerDuty API error: "
+                        f"{e.response.status_code}"
+                        f" - {e.response.text}"
+                    ),
+                }
+            ],
+            "isError": True,
         }
     except Exception as e:
         return {
             "content": [{"type": "text", "text": f"Error creating incident: {str(e)}"}],
-            "isError": True
+            "isError": True,
         }
 
 
 async def pagerduty_update_incident(
-    incident_id: str,
-    status: str,
-    resolution_note: str | None = None
+    incident_id: str, status: str, resolution_note: str | None = None
 ) -> dict[str, Any]:
     """Update a PagerDuty incident status."""
     if not PAGERDUTY_API_KEY:
         return {
             "content": [{"type": "text", "text": "PagerDuty not configured"}],
-            "isError": True
+            "isError": True,
         }
 
     try:
         headers = {
             "Authorization": f"Token token={PAGERDUTY_API_KEY}",
             "Content-Type": "application/json",
-            "From": PAGERDUTY_FROM_EMAIL or "sre-bot@example.com"
+            "From": PAGERDUTY_FROM_EMAIL or "sre-bot@example.com",
         }
 
         async with httpx.AsyncClient() as client:
@@ -1480,10 +1683,10 @@ async def pagerduty_update_incident(
                     "incident": {
                         "id": incident_id,
                         "type": "incident_reference",
-                        "status": status
+                        "status": status,
                     }
                 },
-                timeout=10.0
+                timeout=10.0,
             )
             response.raise_for_status()
             incident = response.json()["incident"]
@@ -1494,26 +1697,37 @@ async def pagerduty_update_incident(
                     f"{PAGERDUTY_BASE_URL}/incidents/{incident_id}/notes",
                     headers=headers,
                     json={"note": {"content": f"Resolution: {resolution_note}"}},
-                    timeout=10.0
+                    timeout=10.0,
                 )
 
             return {
-                "content": [{
-                    "type": "text",
-                    "text": f"Updated incident {incident_id}:\n"
-                            f"  Status: {incident['status']}\n"
-                            f"  URL: {incident['html_url']}"
-                }]
+                "content": [
+                    {
+                        "type": "text",
+                        "text": f"Updated incident {incident_id}:\n"
+                        f"  Status: {incident['status']}\n"
+                        f"  URL: {incident['html_url']}",
+                    }
+                ]
             }
     except httpx.HTTPStatusError as e:
         return {
-            "content": [{"type": "text", "text": f"PagerDuty API error: {e.response.status_code} - {e.response.text}"}],
-            "isError": True
+            "content": [
+                {
+                    "type": "text",
+                    "text": (
+                        "PagerDuty API error: "
+                        f"{e.response.status_code}"
+                        f" - {e.response.text}"
+                    ),
+                }
+            ],
+            "isError": True,
         }
     except Exception as e:
         return {
             "content": [{"type": "text", "text": f"Error updating incident: {str(e)}"}],
-            "isError": True
+            "isError": True,
         }
 
 
@@ -1522,7 +1736,7 @@ async def pagerduty_get_incident(incident_id: str) -> dict[str, Any]:
     if not PAGERDUTY_API_KEY:
         return {
             "content": [{"type": "text", "text": "PagerDuty not configured"}],
-            "isError": True
+            "isError": True,
         }
 
     try:
@@ -1530,7 +1744,7 @@ async def pagerduty_get_incident(incident_id: str) -> dict[str, Any]:
             response = await client.get(
                 f"{PAGERDUTY_BASE_URL}/incidents/{incident_id}",
                 headers={"Authorization": f"Token token={PAGERDUTY_API_KEY}"},
-                timeout=10.0
+                timeout=10.0,
             )
             response.raise_for_status()
             incident = response.json()["incident"]
@@ -1552,25 +1766,33 @@ async def pagerduty_get_incident(incident_id: str) -> dict[str, Any]:
             return {"content": [{"type": "text", "text": "\n".join(lines)}]}
     except httpx.HTTPStatusError as e:
         return {
-            "content": [{"type": "text", "text": f"PagerDuty API error: {e.response.status_code} - {e.response.text}"}],
-            "isError": True
+            "content": [
+                {
+                    "type": "text",
+                    "text": (
+                        "PagerDuty API error: "
+                        f"{e.response.status_code}"
+                        f" - {e.response.text}"
+                    ),
+                }
+            ],
+            "isError": True,
         }
     except Exception as e:
         return {
             "content": [{"type": "text", "text": f"Error fetching incident: {str(e)}"}],
-            "isError": True
+            "isError": True,
         }
 
 
 async def pagerduty_list_incidents(
-    status: str = "all",
-    service_id: str | None = None
+    status: str = "all", service_id: str | None = None
 ) -> dict[str, Any]:
     """List PagerDuty incidents."""
     if not PAGERDUTY_API_KEY:
         return {
             "content": [{"type": "text", "text": "PagerDuty not configured"}],
-            "isError": True
+            "isError": True,
         }
 
     try:
@@ -1587,38 +1809,56 @@ async def pagerduty_list_incidents(
                 f"{PAGERDUTY_BASE_URL}/incidents",
                 headers={"Authorization": f"Token token={PAGERDUTY_API_KEY}"},
                 params=params,
-                timeout=10.0
+                timeout=10.0,
             )
             response.raise_for_status()
             incidents = response.json()["incidents"]
 
             if not incidents:
-                return {"content": [{"type": "text", "text": "No active incidents found."}]}
+                return {
+                    "content": [{"type": "text", "text": "No active incidents found."}]
+                }
 
             lines = [f"=== Active PagerDuty Incidents ({len(incidents)}) ===", ""]
             for inc in incidents:
-                status_emoji = {"triggered": "[TRIG]", "acknowledged": "[ACK]", "resolved": "[DONE]"}
+                status_emoji = {
+                    "triggered": "[TRIG]",
+                    "acknowledged": "[ACK]",
+                    "resolved": "[DONE]",
+                }
                 lines.append(f"{status_emoji.get(inc['status'], '[?]')} {inc['title']}")
-                lines.append(f"    ID: {inc['id']} | Service: {inc['service']['summary']}")
+                lines.append(
+                    f"    ID: {inc['id']} | Service: {inc['service']['summary']}"
+                )
                 lines.append(f"    Created: {inc['created_at']}")
                 lines.append("")
 
             return {"content": [{"type": "text", "text": "\n".join(lines)}]}
     except httpx.HTTPStatusError as e:
         return {
-            "content": [{"type": "text", "text": f"PagerDuty API error: {e.response.status_code} - {e.response.text}"}],
-            "isError": True
+            "content": [
+                {
+                    "type": "text",
+                    "text": (
+                        "PagerDuty API error: "
+                        f"{e.response.status_code}"
+                        f" - {e.response.text}"
+                    ),
+                }
+            ],
+            "isError": True,
         }
     except Exception as e:
         return {
             "content": [{"type": "text", "text": f"Error listing incidents: {str(e)}"}],
-            "isError": True
+            "isError": True,
         }
 
 
 # ============================================================================
 # Confluence Integration Handlers
 # ============================================================================
+
 
 def get_confluence_auth_header() -> str:
     """Generate Basic auth header for Confluence API."""
@@ -1634,7 +1874,7 @@ def generate_postmortem_content(
     impact: str,
     remediation_steps: list[str],
     action_items: list[dict],
-    pagerduty_incident_id: str | None = None
+    pagerduty_incident_id: str | None = None,
 ) -> str:
     """Generate Confluence Storage Format (XHTML) for post-mortem."""
     esc = html.escape
@@ -1642,41 +1882,52 @@ def generate_postmortem_content(
     # Build timeline section
     timeline_html = ""
     if timeline:
-        timeline_html = "<ul>" + "".join(f"<li>{esc(item)}</li>" for item in timeline) + "</ul>"
+        timeline_html = (
+            "<ul>" + "".join(f"<li>{esc(item)}</li>" for item in timeline) + "</ul>"
+        )
     else:
         timeline_html = "<p><em>Timeline to be added</em></p>"
 
     # Build remediation section
     remediation_html = ""
     if remediation_steps:
-        remediation_html = "<ul>" + "".join(f"<li>{esc(step)}</li>" for step in remediation_steps) + "</ul>"
+        remediation_html = (
+            "<ul>"
+            + "".join(f"<li>{esc(step)}</li>" for step in remediation_steps)
+            + "</ul>"
+        )
     else:
         remediation_html = "<p><em>Remediation steps to be added</em></p>"
 
     # Build action items table
     action_items_html = """
     <table>
-        <thead><tr><th>Task</th><th>Owner</th><th>Due Date</th><th>Status</th></tr></thead>
+        <thead><tr><th>Task</th><th>Owner</th>
+        <th>Due Date</th><th>Status</th></tr></thead>
         <tbody>
     """
     if action_items:
         for item in action_items:
             action_items_html += f"""
             <tr>
-                <td>{esc(item.get('task', 'TBD'))}</td>
-                <td>{esc(item.get('owner', 'TBD'))}</td>
-                <td>{esc(item.get('due_date', 'TBD'))}</td>
+                <td>{esc(item.get("task", "TBD"))}</td>
+                <td>{esc(item.get("owner", "TBD"))}</td>
+                <td>{esc(item.get("due_date", "TBD"))}</td>
                 <td>Open</td>
             </tr>
             """
     else:
-        action_items_html += "<tr><td colspan='4'><em>Action items to be added</em></td></tr>"
+        action_items_html += (
+            "<tr><td colspan='4'><em>Action items to be added</em></td></tr>"
+        )
     action_items_html += "</tbody></table>"
 
     # PagerDuty link if provided
     pd_link = ""
     if pagerduty_incident_id:
-        pd_link = f'<p><strong>PagerDuty Incident:</strong> {esc(pagerduty_incident_id)}</p>'
+        pd_link = (
+            f"<p><strong>PagerDuty Incident:</strong> {esc(pagerduty_incident_id)}</p>"
+        )
 
     return f"""
     <h1>Incident Summary</h1>
@@ -1690,7 +1941,7 @@ def generate_postmortem_content(
     <p>{esc(root_cause)}</p>
 
     <h1>Impact</h1>
-    <p>{esc(impact) if impact else '<em>Impact assessment to be added</em>'}</p>
+    <p>{esc(impact) if impact else "<em>Impact assessment to be added</em>"}</p>
 
     <h1>Remediation Steps</h1>
     {remediation_html}
@@ -1699,7 +1950,8 @@ def generate_postmortem_content(
     {action_items_html}
 
     <hr/>
-    <p><em>Generated by SRE Bot on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</em></p>
+    <p><em>Generated by SRE Bot on
+    {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}</em></p>
     """
 
 
@@ -1711,13 +1963,22 @@ async def confluence_create_postmortem(
     impact: str | None = None,
     remediation_steps: list[str] | None = None,
     action_items: list[dict] | None = None,
-    pagerduty_incident_id: str | None = None
+    pagerduty_incident_id: str | None = None,
 ) -> dict[str, Any]:
     """Create a post-mortem page in Confluence."""
     if not CONFLUENCE_API_TOKEN or not CONFLUENCE_BASE_URL:
         return {
-            "content": [{"type": "text", "text": "Confluence not configured. Set CONFLUENCE_* variables in .env"}],
-            "isError": True
+            "content": [
+                {
+                    "type": "text",
+                    "text": (
+                        "Confluence not configured."
+                        " Set CONFLUENCE_* variables"
+                        " in .env"
+                    ),
+                }
+            ],
+            "isError": True,
         }
 
     content = generate_postmortem_content(
@@ -1727,19 +1988,14 @@ async def confluence_create_postmortem(
         impact=impact or "",
         remediation_steps=remediation_steps or [],
         action_items=action_items or [],
-        pagerduty_incident_id=pagerduty_incident_id
+        pagerduty_incident_id=pagerduty_incident_id,
     )
 
     page_data = {
         "type": "page",
         "title": title,
         "space": {"key": CONFLUENCE_SPACE_KEY},
-        "body": {
-            "storage": {
-                "value": content,
-                "representation": "storage"
-            }
-        }
+        "body": {"storage": {"value": content, "representation": "storage"}},
     }
 
     if CONFLUENCE_PARENT_PAGE_ID:
@@ -1751,10 +2007,10 @@ async def confluence_create_postmortem(
                 f"{CONFLUENCE_BASE_URL}/rest/api/content",
                 headers={
                     "Authorization": get_confluence_auth_header(),
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
                 },
                 json=page_data,
-                timeout=15.0
+                timeout=15.0,
             )
             response.raise_for_status()
             page = response.json()
@@ -1762,41 +2018,53 @@ async def confluence_create_postmortem(
             page_url = f"{CONFLUENCE_BASE_URL}{page['_links']['webui']}"
 
             return {
-                "content": [{
-                    "type": "text",
-                    "text": f"Created post-mortem page:\n"
-                            f"  Title: {page['title']}\n"
-                            f"  ID: {page['id']}\n"
-                            f"  URL: {page_url}"
-                }]
+                "content": [
+                    {
+                        "type": "text",
+                        "text": f"Created post-mortem page:\n"
+                        f"  Title: {page['title']}\n"
+                        f"  ID: {page['id']}\n"
+                        f"  URL: {page_url}",
+                    }
+                ]
             }
     except httpx.HTTPStatusError as e:
         return {
-            "content": [{"type": "text", "text": f"Confluence API error: {e.response.status_code} - {e.response.text}"}],
-            "isError": True
+            "content": [
+                {
+                    "type": "text",
+                    "text": (
+                        "Confluence API error: "
+                        f"{e.response.status_code}"
+                        f" - {e.response.text}"
+                    ),
+                }
+            ],
+            "isError": True,
         }
     except Exception as e:
         return {
-            "content": [{"type": "text", "text": f"Error creating post-mortem: {str(e)}"}],
-            "isError": True
+            "content": [
+                {"type": "text", "text": f"Error creating post-mortem: {str(e)}"}
+            ],
+            "isError": True,
         }
 
 
 async def confluence_get_page(
-    page_id: str | None = None,
-    title: str | None = None
+    page_id: str | None = None, title: str | None = None
 ) -> dict[str, Any]:
     """Get a Confluence page by ID or title."""
     if not CONFLUENCE_API_TOKEN:
         return {
             "content": [{"type": "text", "text": "Confluence not configured"}],
-            "isError": True
+            "isError": True,
         }
 
     if not page_id and not title:
         return {
             "content": [{"type": "text", "text": "Provide either page_id or title"}],
-            "isError": True
+            "isError": True,
         }
 
     try:
@@ -1806,7 +2074,7 @@ async def confluence_get_page(
                     f"{CONFLUENCE_BASE_URL}/rest/api/content/{page_id}",
                     headers={"Authorization": get_confluence_auth_header()},
                     params={"expand": "body.storage,version"},
-                    timeout=10.0
+                    timeout=10.0,
                 )
             else:
                 response = await client.get(
@@ -1815,9 +2083,9 @@ async def confluence_get_page(
                     params={
                         "title": title,
                         "spaceKey": CONFLUENCE_SPACE_KEY,
-                        "expand": "body.storage,version"
+                        "expand": "body.storage,version",
                     },
-                    timeout=10.0
+                    timeout=10.0,
                 )
 
             response.raise_for_status()
@@ -1825,7 +2093,14 @@ async def confluence_get_page(
 
             if "results" in data:
                 if not data["results"]:
-                    return {"content": [{"type": "text", "text": f"No page found with title: {title}"}]}
+                    return {
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": f"No page found with title: {title}",
+                            }
+                        ]
+                    }
                 page = data["results"][0]
             else:
                 page = data
@@ -1833,115 +2108,144 @@ async def confluence_get_page(
             page_url = f"{CONFLUENCE_BASE_URL}{page['_links']['webui']}"
 
             return {
-                "content": [{
-                    "type": "text",
-                    "text": f"=== Confluence Page ===\n"
-                            f"Title: {page['title']}\n"
-                            f"ID: {page['id']}\n"
-                            f"Version: {page['version']['number']}\n"
-                            f"URL: {page_url}"
-                }]
+                "content": [
+                    {
+                        "type": "text",
+                        "text": f"=== Confluence Page ===\n"
+                        f"Title: {page['title']}\n"
+                        f"ID: {page['id']}\n"
+                        f"Version: {page['version']['number']}\n"
+                        f"URL: {page_url}",
+                    }
+                ]
             }
     except httpx.HTTPStatusError as e:
         return {
-            "content": [{"type": "text", "text": f"Confluence API error: {e.response.status_code} - {e.response.text}"}],
-            "isError": True
+            "content": [
+                {
+                    "type": "text",
+                    "text": (
+                        "Confluence API error: "
+                        f"{e.response.status_code}"
+                        f" - {e.response.text}"
+                    ),
+                }
+            ],
+            "isError": True,
         }
     except Exception as e:
         return {
             "content": [{"type": "text", "text": f"Error fetching page: {str(e)}"}],
-            "isError": True
+            "isError": True,
         }
 
 
 async def confluence_list_postmortems(
-    days: int = 30,
-    search_term: str | None = None
+    days: int = 30, search_term: str | None = None
 ) -> dict[str, Any]:
     """List recent post-mortem pages."""
     if not CONFLUENCE_API_TOKEN:
         return {
             "content": [{"type": "text", "text": "Confluence not configured"}],
-            "isError": True
+            "isError": True,
         }
 
     try:
         # Use CQL (Confluence Query Language) to search
         cql = f'space = "{CONFLUENCE_SPACE_KEY}" AND title ~ "Post-Mortem"'
+        cql += f' AND created >= now("-{days}d")'
         if search_term:
-            cql += f' AND text ~ "{search_term}"'
+            sanitized = search_term.replace('"', '\\"').replace("'", "\\'")
+            cql += f' AND text ~ "{sanitized}"'
 
         async with httpx.AsyncClient() as client:
             response = await client.get(
                 f"{CONFLUENCE_BASE_URL}/rest/api/content/search",
                 headers={"Authorization": get_confluence_auth_header()},
-                params={
-                    "cql": cql,
-                    "limit": 20,
-                    "expand": "version"
-                },
-                timeout=10.0
+                params={"cql": cql, "limit": 20, "expand": "version"},
+                timeout=10.0,
             )
             response.raise_for_status()
             results = response.json().get("results", [])
 
             if not results:
-                return {"content": [{"type": "text", "text": "No post-mortem pages found."}]}
+                return {
+                    "content": [{"type": "text", "text": "No post-mortem pages found."}]
+                }
 
             lines = [f"=== Recent Post-Mortems ({len(results)}) ===", ""]
             for page in results:
                 page_url = f"{CONFLUENCE_BASE_URL}{page['_links']['webui']}"
                 lines.append(f"- {page['title']}")
-                lines.append(f"  ID: {page['id']} | Last modified: {page['version']['when'][:10]}")
+                lines.append(
+                    f"  ID: {page['id']}"
+                    f" | Last modified: {page['version']['when'][:10]}"
+                )
                 lines.append(f"  URL: {page_url}")
                 lines.append("")
 
             return {"content": [{"type": "text", "text": "\n".join(lines)}]}
     except httpx.HTTPStatusError as e:
         return {
-            "content": [{"type": "text", "text": f"Confluence API error: {e.response.status_code} - {e.response.text}"}],
-            "isError": True
+            "content": [
+                {
+                    "type": "text",
+                    "text": (
+                        "Confluence API error: "
+                        f"{e.response.status_code}"
+                        f" - {e.response.text}"
+                    ),
+                }
+            ],
+            "isError": True,
         }
     except Exception as e:
         return {
-            "content": [{"type": "text", "text": f"Error listing post-mortems: {str(e)}"}],
-            "isError": True
+            "content": [
+                {"type": "text", "text": f"Error listing post-mortems: {str(e)}"}
+            ],
+            "isError": True,
         }
 
 
 # ========== Config File Tools ==========
 
+
 async def read_config_file(path: str) -> dict[str, Any]:
     """Read a configuration file from the project directory."""
     try:
         # Security: Only allow reading from config directory
-        full_path = pathlib.Path(os.path.join(PROJECT_ROOT, path)).resolve()
-        allowed_root = pathlib.Path(PROJECT_ROOT, "config").resolve()
+        full_path = (PROJECT_ROOT / path).resolve()
+        allowed_root = (PROJECT_ROOT / "config").resolve()
         if not full_path.is_relative_to(allowed_root):
             return {
-                "content": [{"type": "text", "text": f"Error: Can only read files from config/ directory. Got: {path}"}],
-                "isError": True
+                "content": [
+                    {
+                        "type": "text",
+                        "text": (
+                            "Error: Can only read files"
+                            " from config/ directory."
+                            f" Got: {path}"
+                        ),
+                    }
+                ],
+                "isError": True,
             }
 
-        if not os.path.exists(full_path):
+        if not full_path.exists():
             return {
                 "content": [{"type": "text", "text": f"File not found: {path}"}],
-                "isError": True
+                "isError": True,
             }
 
-        with open(full_path, 'r') as f:
+        with open(full_path, "r") as f:
             content = f.read()
 
-        return {
-            "content": [{
-                "type": "text",
-                "text": f"=== {path} ===\n\n{content}"
-            }]
-        }
+        return {"content": [{"type": "text", "text": f"=== {path} ===\n\n{content}"}]}
     except Exception as e:
         return {
             "content": [{"type": "text", "text": f"Error reading file: {str(e)}"}],
-            "isError": True
+            "isError": True,
         }
 
 
@@ -1949,44 +2253,68 @@ async def edit_config_file(path: str, old_value: str, new_value: str) -> dict[st
     """Edit a configuration file by replacing a value."""
     try:
         # Security: Only allow editing config directory
-        full_path = pathlib.Path(os.path.join(PROJECT_ROOT, path)).resolve()
-        allowed_root = pathlib.Path(PROJECT_ROOT, "config").resolve()
+        full_path = (PROJECT_ROOT / path).resolve()
+        allowed_root = (PROJECT_ROOT / "config").resolve()
         if not full_path.is_relative_to(allowed_root):
             return {
-                "content": [{"type": "text", "text": f"Error: Can only edit files in config/ directory. Got: {path}"}],
-                "isError": True
+                "content": [
+                    {
+                        "type": "text",
+                        "text": (
+                            "Error: Can only edit files"
+                            " in config/ directory."
+                            f" Got: {path}"
+                        ),
+                    }
+                ],
+                "isError": True,
             }
 
-        if not os.path.exists(full_path):
+        if not full_path.exists():
             return {
                 "content": [{"type": "text", "text": f"File not found: {path}"}],
-                "isError": True
+                "isError": True,
             }
 
-        with open(full_path, 'r') as f:
+        with open(full_path, "r") as f:
             content = f.read()
 
         if old_value not in content:
             return {
-                "content": [{"type": "text", "text": f"Error: Could not find '{old_value}' in {path}.\n\nCurrent content:\n{content}"}],
-                "isError": True
+                "content": [
+                    {
+                        "type": "text",
+                        "text": (
+                            f"Error: Could not find"
+                            f" '{old_value}' in {path}."
+                            f"\n\nCurrent content:\n{content}"
+                        ),
+                    }
+                ],
+                "isError": True,
             }
 
         new_content = content.replace(old_value, new_value)
 
-        with open(full_path, 'w') as f:
+        with open(full_path, "w") as f:
             f.write(new_content)
 
         return {
-            "content": [{
-                "type": "text",
-                "text": f"Successfully updated {path}:\n- Changed: {old_value}\n- To: {new_value}"
-            }]
+            "content": [
+                {
+                    "type": "text",
+                    "text": (
+                        f"Successfully updated {path}:\n"
+                        f"- Changed: {old_value}\n"
+                        f"- To: {new_value}"
+                    ),
+                }
+            ]
         }
     except Exception as e:
         return {
             "content": [{"type": "text", "text": f"Error editing file: {str(e)}"}],
-            "isError": True
+            "isError": True,
         }
 
 
@@ -1998,14 +2326,16 @@ async def run_shell_command(command: str) -> dict[str, Any]:
             args = shlex.split(command)
         except ValueError as e:
             return {
-                "content": [{"type": "text", "text": f"Error: Invalid command syntax: {e}"}],
-                "isError": True
+                "content": [
+                    {"type": "text", "text": f"Error: Invalid command syntax: {e}"}
+                ],
+                "isError": True,
             }
 
         if not args:
             return {
                 "content": [{"type": "text", "text": "Error: Empty command"}],
-                "isError": True
+                "isError": True,
             }
 
         # Security: Validate the executable and subcommand against an allowlist.
@@ -2019,8 +2349,17 @@ async def run_shell_command(command: str) -> dict[str, Any]:
         executable = args[0]
         if executable not in allowed_commands:
             return {
-                "content": [{"type": "text", "text": f"Error: Only docker/docker-compose commands are allowed. Got: {executable}"}],
-                "isError": True
+                "content": [
+                    {
+                        "type": "text",
+                        "text": (
+                            "Error: Only docker/docker-compose"
+                            " commands are allowed."
+                            f" Got: {executable}"
+                        ),
+                    }
+                ],
+                "isError": True,
             }
 
         allowed_subs = allowed_commands[executable]
@@ -2028,8 +2367,18 @@ async def run_shell_command(command: str) -> dict[str, Any]:
             subcommand = args[1] if len(args) > 1 else ""
             if subcommand not in allowed_subs:
                 return {
-                    "content": [{"type": "text", "text": f"Error: '{executable} {subcommand}' is not allowed. Allowed: {', '.join(sorted(allowed_subs))}"}],
-                    "isError": True
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": (
+                                f"Error: '{executable}"
+                                f" {subcommand}' is not"
+                                " allowed. Allowed: "
+                                f"{', '.join(sorted(allowed_subs))}"
+                            ),
+                        }
+                    ],
+                    "isError": True,
                 }
 
         # Run using exec (no shell) to prevent injection via metacharacters
@@ -2037,13 +2386,13 @@ async def run_shell_command(command: str) -> dict[str, Any]:
             *args,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
-            cwd=PROJECT_ROOT
+            cwd=PROJECT_ROOT,
         )
 
         stdout, stderr = await asyncio.wait_for(process.communicate(), timeout=60.0)
 
-        output = stdout.decode('utf-8', errors='replace')
-        error = stderr.decode('utf-8', errors='replace')
+        output = stdout.decode("utf-8", errors="replace")
+        error = stderr.decode("utf-8", errors="replace")
 
         result_text = f"$ {command}\n\n"
         if output:
@@ -2054,17 +2403,22 @@ async def run_shell_command(command: str) -> dict[str, Any]:
 
         return {
             "content": [{"type": "text", "text": result_text}],
-            "isError": process.returncode != 0
+            "isError": process.returncode != 0,
         }
     except asyncio.TimeoutError:
         return {
-            "content": [{"type": "text", "text": f"Command timed out after 60 seconds: {command}"}],
-            "isError": True
+            "content": [
+                {
+                    "type": "text",
+                    "text": f"Command timed out after 60 seconds: {command}",
+                }
+            ],
+            "isError": True,
         }
     except Exception as e:
         return {
             "content": [{"type": "text", "text": f"Error running command: {str(e)}"}],
-            "isError": True
+            "isError": True,
         }
 
 
@@ -2072,52 +2426,84 @@ async def get_container_logs(container: str, lines: int = 50) -> dict[str, Any]:
     """Get logs from a Docker container."""
     try:
         # Validate container name
-        valid_containers = ["api-server", "postgres", "traffic-generator", "prometheus", "grafana"]
+        valid_containers = [
+            "api-server",
+            "postgres",
+            "traffic-generator",
+            "prometheus",
+            "grafana",
+        ]
         if container not in valid_containers:
             return {
-                "content": [{"type": "text", "text": f"Invalid container: {container}. Valid options: {', '.join(valid_containers)}"}],
-                "isError": True
+                "content": [
+                    {
+                        "type": "text",
+                        "text": (
+                            f"Invalid container: {container}."
+                            " Valid options: "
+                            f"{', '.join(valid_containers)}"
+                        ),
+                    }
+                ],
+                "isError": True,
             }
 
         # Limit lines
         lines = min(max(1, lines), 200)
 
         # Get logs using docker-compose
-        args = ["docker-compose", "-f", "config/docker-compose.yml", "logs", container, f"--tail={lines}"]
+        args = [
+            "docker-compose",
+            "-f",
+            "config/docker-compose.yml",
+            "logs",
+            container,
+            f"--tail={lines}",
+        ]
 
         process = await asyncio.create_subprocess_exec(
             *args,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
-            cwd=PROJECT_ROOT
+            cwd=PROJECT_ROOT,
         )
 
         stdout, stderr = await asyncio.wait_for(process.communicate(), timeout=30.0)
 
-        output = stdout.decode('utf-8', errors='replace')
-        error = stderr.decode('utf-8', errors='replace')
+        output = stdout.decode("utf-8", errors="replace")
+        error = stderr.decode("utf-8", errors="replace")
 
         if process.returncode != 0:
             return {
                 "content": [{"type": "text", "text": f"Error getting logs: {error}"}],
-                "isError": True
+                "isError": True,
             }
 
         return {
-            "content": [{
-                "type": "text",
-                "text": f"=== Logs from {container} (last {lines} lines) ===\n\n{output}"
-            }]
+            "content": [
+                {
+                    "type": "text",
+                    "text": (
+                        f"=== Logs from {container}"
+                        f" (last {lines} lines)"
+                        f" ===\n\n{output}"
+                    ),
+                }
+            ]
         }
     except asyncio.TimeoutError:
         return {
-            "content": [{"type": "text", "text": f"Timeout getting logs from {container}"}],
-            "isError": True
+            "content": [
+                {"type": "text", "text": f"Timeout getting logs from {container}"}
+            ],
+            "isError": True,
         }
     except Exception as e:
         return {
-            "content": [{"type": "text", "text": f"Error getting container logs: {str(e)}"}],
-            "isError": True
+            "content": [
+                {"type": "text", "text": f"Error getting container logs: {str(e)}"}
+            ],
+            "isError": True,
         }
 
 
@@ -2131,12 +2517,12 @@ async def write_postmortem(
 ) -> dict[str, Any]:
     """Write a post-mortem report to the postmortems/ directory."""
 
-    postmortems_dir = os.path.join(PROJECT_ROOT, "postmortems")
-    os.makedirs(postmortems_dir, exist_ok=True)
+    postmortems_dir = PROJECT_ROOT / "postmortems"
+    postmortems_dir.mkdir(exist_ok=True)
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = f"postmortem_{timestamp}.md"
-    filepath = os.path.join(postmortems_dir, filename)
+    filepath = postmortems_dir / filename
 
     content = f"# Post-Mortem: {title}\n\n"
     content += f"**Date**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
@@ -2154,7 +2540,7 @@ async def write_postmortem(
 
     return {
         "content": [{"type": "text", "text": f"Post-mortem written to {filename}"}],
-        "isError": False
+        "isError": False,
     }
 
 
@@ -2170,18 +2556,16 @@ async def handle_tool_call(name: str, arguments: dict[str, Any]) -> dict[str, An
         return await get_logs(
             service=arguments.get("service", ""),
             level=arguments.get("level", "all"),
-            lines=arguments.get("lines", 20)
+            lines=arguments.get("lines", 20),
         )
     elif name == "get_alerts":
         return await get_alerts()
     elif name == "get_recent_deployments":
-        return await get_recent_deployments(
-            service=arguments.get("service")
-        )
+        return await get_recent_deployments(service=arguments.get("service"))
     elif name == "execute_runbook":
         return await execute_runbook(
             runbook=arguments.get("runbook", ""),
-            phase=arguments.get("phase", "investigate")
+            phase=arguments.get("phase", "investigate"),
         )
     elif name == "write_postmortem":
         return await write_postmortem(
@@ -2198,13 +2582,13 @@ async def handle_tool_call(name: str, arguments: dict[str, Any]) -> dict[str, An
             title=arguments.get("title", ""),
             description=arguments.get("description", ""),
             urgency=arguments.get("urgency", "high"),
-            service_id=arguments.get("service_id")
+            service_id=arguments.get("service_id"),
         )
     elif name == "pagerduty_update_incident":
         return await pagerduty_update_incident(
             incident_id=arguments.get("incident_id", ""),
             status=arguments.get("status", ""),
-            resolution_note=arguments.get("resolution_note")
+            resolution_note=arguments.get("resolution_note"),
         )
     elif name == "pagerduty_get_incident":
         return await pagerduty_get_incident(
@@ -2213,7 +2597,7 @@ async def handle_tool_call(name: str, arguments: dict[str, Any]) -> dict[str, An
     elif name == "pagerduty_list_incidents":
         return await pagerduty_list_incidents(
             status=arguments.get("status", "all"),
-            service_id=arguments.get("service_id")
+            service_id=arguments.get("service_id"),
         )
     # Confluence tools
     elif name == "confluence_create_postmortem":
@@ -2225,45 +2609,35 @@ async def handle_tool_call(name: str, arguments: dict[str, Any]) -> dict[str, An
             impact=arguments.get("impact"),
             remediation_steps=arguments.get("remediation_steps"),
             action_items=arguments.get("action_items"),
-            pagerduty_incident_id=arguments.get("pagerduty_incident_id")
+            pagerduty_incident_id=arguments.get("pagerduty_incident_id"),
         )
     elif name == "confluence_get_page":
         return await confluence_get_page(
-            page_id=arguments.get("page_id"),
-            title=arguments.get("title")
+            page_id=arguments.get("page_id"), title=arguments.get("title")
         )
     elif name == "confluence_list_postmortems":
         return await confluence_list_postmortems(
-            days=arguments.get("days", 30),
-            search_term=arguments.get("search_term")
+            days=arguments.get("days", 30), search_term=arguments.get("search_term")
         )
     # Config and infrastructure tools
     elif name == "read_config_file":
-        return await read_config_file(
-            path=arguments.get("path", "")
-        )
+        return await read_config_file(path=arguments.get("path", ""))
     elif name == "edit_config_file":
         return await edit_config_file(
             path=arguments.get("path", ""),
             old_value=arguments.get("old_value", ""),
-            new_value=arguments.get("new_value", "")
+            new_value=arguments.get("new_value", ""),
         )
     elif name == "run_shell_command":
-        return await run_shell_command(
-            command=arguments.get("command", "")
-        )
+        return await run_shell_command(command=arguments.get("command", ""))
     elif name == "get_container_logs":
         return await get_container_logs(
-            container=arguments.get("container", ""),
-            lines=arguments.get("lines", 50)
+            container=arguments.get("container", ""), lines=arguments.get("lines", 50)
         )
     else:
         return {
-            "content": [{
-                "type": "text",
-                "text": f"Unknown tool: {name}"
-            }],
-            "isError": True
+            "content": [{"type": "text", "text": f"Unknown tool: {name}"}],
+            "isError": True,
         }
 
 
@@ -2276,14 +2650,9 @@ def send_response(response: dict[str, Any]) -> None:
 
 def send_error(id: Any, code: int, message: str) -> None:
     """Send a JSON-RPC error response."""
-    send_response({
-        "jsonrpc": "2.0",
-        "id": id,
-        "error": {
-            "code": code,
-            "message": message
-        }
-    })
+    send_response(
+        {"jsonrpc": "2.0", "id": id, "error": {"code": code, "message": message}}
+    )
 
 
 async def handle_request(request: dict[str, Any]) -> None:
@@ -2294,40 +2663,27 @@ async def handle_request(request: dict[str, Any]) -> None:
 
     if method == "initialize":
         # MCP initialization
-        send_response({
-            "jsonrpc": "2.0",
-            "id": req_id,
-            "result": {
-                "protocolVersion": "2024-11-05",
-                "capabilities": {
-                    "tools": {}
+        send_response(
+            {
+                "jsonrpc": "2.0",
+                "id": req_id,
+                "result": {
+                    "protocolVersion": "2024-11-05",
+                    "capabilities": {"tools": {}},
+                    "serverInfo": {"name": "sre-tools", "version": "1.0.0"},
                 },
-                "serverInfo": {
-                    "name": "sre-tools",
-                    "version": "1.0.0"
-                }
             }
-        })
+        )
     elif method == "notifications/initialized":
         # No response needed for notifications
         pass
     elif method == "tools/list":
-        send_response({
-            "jsonrpc": "2.0",
-            "id": req_id,
-            "result": {
-                "tools": TOOLS
-            }
-        })
+        send_response({"jsonrpc": "2.0", "id": req_id, "result": {"tools": TOOLS}})
     elif method == "tools/call":
         tool_name = params.get("name", "")
         arguments = params.get("arguments", {})
         result = await handle_tool_call(tool_name, arguments)
-        send_response({
-            "jsonrpc": "2.0",
-            "id": req_id,
-            "result": result
-        })
+        send_response({"jsonrpc": "2.0", "id": req_id, "result": result})
     else:
         send_error(req_id, -32601, f"Method not found: {method}")
 
