@@ -10,5 +10,13 @@ dependencies = [
     "markdown>=3.4",
     "mcp-server-git>=2025.1.14",
     "pandas>=2.2.0",
+    "httpx>=0.27",
     "python-dotenv>=1.1.1",
+]
+
+[project.optional-dependencies]
+slack = [
+    "slack-bolt>=1.18",
+    "slack-sdk>=3.27",
+    "aiohttp>=3.9",
 ]

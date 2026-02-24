@@ -14,6 +14,10 @@ Anthropic:
   name: Anthropic
   website: https://www.anthropic.com
   avatar: https://github.com/anthropics.png
+benlehrburger-ant:
+  name: Ben Lehrburger
+  website: https://www.benlehrburger.me/
+  avatar: https://avatars.githubusercontent.com/u/243656538?v=4
 Briiick:
   name: Alexander Bricken
   website: https://bricken.co
@@ -29,6 +33,10 @@ GarvanD:
 henrykeetay:
   name: Henry Keetay
   avatar: https://avatars.githubusercontent.com/u/227475578?v=4
+isabella-anthropic:
+  name: Isabella He
+  website: https://github.com/isabella-anthropic
+  avatar: https://avatars.githubusercontent.com/u/247469474?v=4
 james-briggs:
   name: james-briggs
   website: https://github.com/James-Briggs
