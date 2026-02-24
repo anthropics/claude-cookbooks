@@ -65,7 +65,7 @@ Common investigation queries:
 - Error rate by service: rate(http_requests_total{status="500"}[1m])
 - Error ratio: sum(rate(http_requests_total{status="500"}[1m])) by (service) / sum(rate(http_requests_total[1m])) by (service)
 - DB connections: db_connections_active or db_connections_waiting
-- Latency P99: http_request_duration_milliseconds{quantile="0.99"}
+- Latency P99: histogram_quantile(0.99, rate(http_request_duration_milliseconds_bucket[1m]))
 - CPU usage: container_cpu_usage_ratio
 - Memory usage: container_memory_usage_ratio
 
@@ -718,7 +718,7 @@ async def get_service_health() -> dict[str, Any]:
         try:
             response = await client.get(
                 f"{PROMETHEUS_URL}/api/v1/query",
-                params={"query": 'http_request_duration_milliseconds{quantile="0.99"}'},
+                params={"query": 'histogram_quantile(0.99, rate(http_request_duration_milliseconds_bucket[1m]))'},
                 timeout=10.0,
             )
             if response.status_code == 200:
@@ -920,7 +920,7 @@ async def get_alerts() -> dict[str, Any]:
     }
 
 
-async def get_recent_deployments(service: str = None) -> dict[str, Any]:
+async def get_recent_deployments(service: str | None = None) -> dict[str, Any]:
     """Get recent deployments. Simulated — no deployment tracker running in demo."""
     elapsed = time.time() - START_TIME
 
@@ -1707,11 +1707,11 @@ async def confluence_create_postmortem(
     title: str,
     incident_summary: str,
     root_cause: str,
-    timeline: list[str] = None,
-    impact: str = None,
-    remediation_steps: list[str] = None,
-    action_items: list[dict] = None,
-    pagerduty_incident_id: str = None
+    timeline: list[str] | None = None,
+    impact: str | None = None,
+    remediation_steps: list[str] | None = None,
+    action_items: list[dict] | None = None,
+    pagerduty_incident_id: str | None = None
 ) -> dict[str, Any]:
     """Create a post-mortem page in Confluence."""
     if not CONFLUENCE_API_TOKEN or not CONFLUENCE_BASE_URL:
@@ -1917,7 +1917,7 @@ async def read_config_file(path: str) -> dict[str, Any]:
         # Security: Only allow reading from config directory
         full_path = pathlib.Path(os.path.join(PROJECT_ROOT, path)).resolve()
         allowed_root = pathlib.Path(PROJECT_ROOT, "config").resolve()
-        if not str(full_path).startswith(str(allowed_root)):
+        if not full_path.is_relative_to(allowed_root):
             return {
                 "content": [{"type": "text", "text": f"Error: Can only read files from config/ directory. Got: {path}"}],
                 "isError": True
@@ -1951,7 +1951,7 @@ async def edit_config_file(path: str, old_value: str, new_value: str) -> dict[st
         # Security: Only allow editing config directory
         full_path = pathlib.Path(os.path.join(PROJECT_ROOT, path)).resolve()
         allowed_root = pathlib.Path(PROJECT_ROOT, "config").resolve()
-        if not str(full_path).startswith(str(allowed_root)):
+        if not full_path.is_relative_to(allowed_root):
             return {
                 "content": [{"type": "text", "text": f"Error: Can only edit files in config/ directory. Got: {path}"}],
                 "isError": True
@@ -2335,7 +2335,7 @@ async def handle_request(request: dict[str, Any]) -> None:
 async def main():
     """Main event loop - read JSON-RPC requests from stdin."""
     # Disable buffering for stdin
-    loop = asyncio.get_event_loop()
+    loop = asyncio.get_running_loop()
     reader = asyncio.StreamReader()
     protocol = asyncio.StreamReaderProtocol(reader)
     await loop.connect_read_pipe(lambda: protocol, sys.stdin)

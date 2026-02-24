@@ -36,7 +36,7 @@ services:
   # PostgreSQL Database
   postgres:
     image: postgres:15-alpine
-    environment:
+    environment:  # Demo only — change for any non-local deployment
       POSTGRES_USER: demo
       POSTGRES_PASSWORD: demo
       POSTGRES_DB: demo
@@ -122,7 +122,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=demo
+      - GF_SECURITY_ADMIN_PASSWORD=demo  # Demo only — change for any non-local deployment
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
     volumes:
@@ -151,7 +151,7 @@ Path('config/api-server.env').write_text('''\
 DB_POOL_SIZE=20
 DB_POOL_TIMEOUT=2
 
-# Database connection
+# Database connection — demo only, change for any non-local deployment
 DB_HOST=postgres
 DB_PORT=5432
 DB_NAME=demo
@@ -171,7 +171,7 @@ Path('config/api-server.env.backup').write_text('''\
 DB_POOL_SIZE=20
 DB_POOL_TIMEOUT=2
 
-# Database connection
+# Database connection — demo only, change for any non-local deployment
 DB_HOST=postgres
 DB_PORT=5432
 DB_NAME=demo
@@ -473,8 +473,8 @@ async def metrics():
 def _sync_list_users():
     """Synchronous database operation for list_users."""
     with SessionLocal() as session:
-        # Simulate slow query - 500ms to cause faster pool exhaustion
-        session.execute(text("SELECT pg_sleep(0.5)"))
+        # Simulate slow query to cause pool exhaustion when DB_POOL_SIZE is too low
+        session.execute(text("SELECT pg_sleep(0.2)"))
         result = session.execute(text("SELECT id, name, email FROM users LIMIT 100"))
         return [{"id": row[0], "name": row[1], "email": row[2]} for row in result]
 
@@ -494,7 +494,7 @@ async def list_users():
         update_connection_metrics()
 
         # Run sync DB code in thread pool to allow concurrent requests
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
         users = await loop.run_in_executor(executor, _sync_list_users)
 
         return {"users": users, "count": len(users)}
@@ -713,11 +713,13 @@ http_requests_total{{service="auth-svc",status="200"}} {request_counts["auth-svc
 http_requests_total{{service="auth-svc",status="500"}} {request_counts["auth-svc"]["500"]}
 
 # HELP http_request_duration_milliseconds HTTP request latency
-# TYPE http_request_duration_milliseconds gauge
-http_request_duration_milliseconds{{service="payment-svc",quantile="0.99"}} {payment_latency_p99}
-http_request_duration_milliseconds{{service="payment-svc",quantile="0.50"}} {payment_latency_p50}
-http_request_duration_milliseconds{{service="auth-svc",quantile="0.99"}} {auth_latency_p99}
-http_request_duration_milliseconds{{service="auth-svc",quantile="0.50"}} {auth_latency_p50}
+# TYPE http_request_duration_milliseconds_bucket gauge
+http_request_duration_milliseconds_bucket{{service="payment-svc",le="100"}} {int(elapsed * 8)}
+http_request_duration_milliseconds_bucket{{service="payment-svc",le="250"}} {int(elapsed * 10)}
+http_request_duration_milliseconds_bucket{{service="payment-svc",le="+Inf"}} {int(elapsed * 10)}
+http_request_duration_milliseconds_bucket{{service="auth-svc",le="100"}} {int(elapsed * 17)}
+http_request_duration_milliseconds_bucket{{service="auth-svc",le="250"}} {int(elapsed * 18)}
+http_request_duration_milliseconds_bucket{{service="auth-svc",le="+Inf"}} {int(elapsed * 18)}
 
 # HELP container_cpu_usage_ratio CPU usage ratio by container
 # TYPE container_cpu_usage_ratio gauge
