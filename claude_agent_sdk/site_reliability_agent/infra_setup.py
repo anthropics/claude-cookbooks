@@ -14,6 +14,7 @@ Usage:
 """
 
 import os
+import stat
 from pathlib import Path
 
 for d in ['config', 'services', 'scripts', 'hooks', 'postmortems']:
@@ -984,7 +985,6 @@ fi
 exit 0
 ''')
 
-import stat
 for hook_file in ['hooks/validate_pool_size.sh', 'hooks/validate_config_before_deploy.sh']:
     p = Path(hook_file)
     p.chmod(p.stat().st_mode | stat.S_IEXEC)

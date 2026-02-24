@@ -102,6 +102,7 @@ slack_client = None
 
 # Track threads where the bot has been mentioned (for auto-responding to follow-ups)
 # Key: thread_ts, Value: channel_id
+MAX_ACTIVE_THREADS = 1000
 active_threads: dict[str, str] = {}
 
 # Store the most recent post-mortem URL (created before resolving incident)
@@ -470,7 +471,11 @@ async def handle_mention(event, say, client):
     thread_ts = event.get("thread_ts", event["ts"])
     incident_text = event["text"]
 
-    # Track this thread so we respond to follow-ups without needing @mention
+    # Track this thread so we respond to follow-ups without needing @mention.
+    # Evict oldest entries to prevent unbounded growth in long-running bots.
+    if len(active_threads) >= MAX_ACTIVE_THREADS:
+        for old_key in list(active_threads)[:len(active_threads) // 2]:
+            del active_threads[old_key]
     active_threads[thread_ts] = channel
 
     # Remove the bot mention from the text

@@ -22,6 +22,7 @@ import random
 import time
 import base64
 import os
+import pathlib
 import shlex
 from datetime import datetime
 from typing import Any
@@ -708,8 +709,9 @@ async def get_service_health() -> dict[str, Any]:
                         if rate > 5:
                             issues.append(f"High error rate on {service}: {rate:.1f}/sec")
                     health_lines.append("")
-        except Exception:
-            pass
+        except Exception as e:
+            health_lines.append(f"ERROR RATES: unable to query ({e})")
+            health_lines.append("")
 
         # Check latency
         try:
@@ -730,8 +732,9 @@ async def get_service_health() -> dict[str, Any]:
                         if latency > 1000:
                             issues.append(f"High latency on {service}: {latency:.0f}ms")
                     health_lines.append("")
-        except Exception:
-            pass
+        except Exception as e:
+            health_lines.append(f"LATENCY P99: unable to query ({e})")
+            health_lines.append("")
 
         # Check DB connections
         try:
@@ -750,8 +753,9 @@ async def get_service_health() -> dict[str, Any]:
                     if active > 90:
                         issues.append(f"DB connection pool near exhaustion: {active:.0f}/100")
                     health_lines.append("")
-        except Exception:
-            pass
+        except Exception as e:
+            health_lines.append(f"DATABASE CONNECTIONS: unable to query ({e})")
+            health_lines.append("")
 
         # Check service up status
         try:
@@ -772,8 +776,9 @@ async def get_service_health() -> dict[str, Any]:
                         if not is_up:
                             issues.append(f"Service down: {service}")
                     health_lines.append("")
-        except Exception:
-            pass
+        except Exception as e:
+            health_lines.append(f"SERVICE STATUS: unable to query ({e})")
+            health_lines.append("")
 
     # Add summary
     health_lines.append("=== SUMMARY ===")
@@ -927,7 +932,7 @@ async def get_recent_deployments(service: str = None) -> dict[str, Any]:
         {
             "service": "api-server",
             "timestamp": now - elapsed - 2,  # ~2 seconds before server started (so ~62s before incident)
-            "commit": "a]7f3d2e",
+            "commit": "a7f3d2e",
             "author": "alice",
             "message": "Reduce DB connection pool size for staging parity",
             "pr": "#1847",
@@ -1386,7 +1391,7 @@ async def pagerduty_create_incident(
     title: str,
     description: str,
     urgency: str = "high",
-    service_id: str = None
+    service_id: str | None = None
 ) -> dict[str, Any]:
     """Create a PagerDuty incident."""
     if not PAGERDUTY_API_KEY:
@@ -1450,7 +1455,7 @@ async def pagerduty_create_incident(
 async def pagerduty_update_incident(
     incident_id: str,
     status: str,
-    resolution_note: str = None
+    resolution_note: str | None = None
 ) -> dict[str, Any]:
     """Update a PagerDuty incident status."""
     if not PAGERDUTY_API_KEY:
@@ -1558,7 +1563,7 @@ async def pagerduty_get_incident(incident_id: str) -> dict[str, Any]:
 
 async def pagerduty_list_incidents(
     status: str = "all",
-    service_id: str = None
+    service_id: str | None = None
 ) -> dict[str, Any]:
     """List PagerDuty incidents."""
     if not PAGERDUTY_API_KEY:
@@ -1776,8 +1781,8 @@ async def confluence_create_postmortem(
 
 
 async def confluence_get_page(
-    page_id: str = None,
-    title: str = None
+    page_id: str | None = None,
+    title: str | None = None
 ) -> dict[str, Any]:
     """Get a Confluence page by ID or title."""
     if not CONFLUENCE_API_TOKEN:
@@ -1849,7 +1854,7 @@ async def confluence_get_page(
 
 async def confluence_list_postmortems(
     days: int = 30,
-    search_term: str = None
+    search_term: str | None = None
 ) -> dict[str, Any]:
     """List recent post-mortem pages."""
     if not CONFLUENCE_API_TOKEN:
@@ -1908,13 +1913,13 @@ async def read_config_file(path: str) -> dict[str, Any]:
     """Read a configuration file from the project directory."""
     try:
         # Security: Only allow reading from config directory
-        if not path.startswith("config/"):
+        full_path = pathlib.Path(os.path.join(PROJECT_ROOT, path)).resolve()
+        allowed_root = pathlib.Path(PROJECT_ROOT, "config").resolve()
+        if not str(full_path).startswith(str(allowed_root)):
             return {
                 "content": [{"type": "text", "text": f"Error: Can only read files from config/ directory. Got: {path}"}],
                 "isError": True
             }
-
-        full_path = os.path.join(PROJECT_ROOT, path)
 
         if not os.path.exists(full_path):
             return {
@@ -1942,13 +1947,13 @@ async def edit_config_file(path: str, old_value: str, new_value: str) -> dict[st
     """Edit a configuration file by replacing a value."""
     try:
         # Security: Only allow editing config directory
-        if not path.startswith("config/"):
+        full_path = pathlib.Path(os.path.join(PROJECT_ROOT, path)).resolve()
+        allowed_root = pathlib.Path(PROJECT_ROOT, "config").resolve()
+        if not str(full_path).startswith(str(allowed_root)):
             return {
                 "content": [{"type": "text", "text": f"Error: Can only edit files in config/ directory. Got: {path}"}],
                 "isError": True
             }
-
-        full_path = os.path.join(PROJECT_ROOT, path)
 
         if not os.path.exists(full_path):
             return {
@@ -2076,10 +2081,10 @@ async def get_container_logs(container: str, lines: int = 50) -> dict[str, Any]:
         lines = min(max(1, lines), 200)
 
         # Get logs using docker-compose
-        command = f"docker-compose -f config/docker-compose.yml logs {container} --tail={lines}"
+        args = ["docker-compose", "-f", "config/docker-compose.yml", "logs", container, f"--tail={lines}"]
 
-        process = await asyncio.create_subprocess_shell(
-            command,
+        process = await asyncio.create_subprocess_exec(
+            *args,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
             cwd=PROJECT_ROOT
@@ -2123,7 +2128,6 @@ async def write_postmortem(
     action_items: str = "",
 ) -> dict[str, Any]:
     """Write a post-mortem report to the postmortems/ directory."""
-    from datetime import datetime
 
     postmortems_dir = os.path.join(os.getcwd(), "postmortems")
     os.makedirs(postmortems_dir, exist_ok=True)
