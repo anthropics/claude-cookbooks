@@ -456,7 +456,7 @@ async def process_investigation(
             "mcp__sre__get_container_logs",
         ],
         permission_mode="acceptEdits",
-        model="claude-sonnet-4-6",
+        model="claude-opus-4-6",
     )
 
     # Stream responses to Slack as they arrive

@@ -2294,7 +2294,7 @@ async def edit_config_file(path: str, old_value: str, new_value: str) -> dict[st
                 "isError": True,
             }
 
-        new_content = content.replace(old_value, new_value)
+        new_content = content.replace(old_value, new_value, 1)
 
         with open(full_path, "w") as f:
             f.write(new_content)
