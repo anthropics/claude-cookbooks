@@ -618,3 +618,14 @@
   categories:
   - Multimodal
   - Tools
+- title: 'Agent governance: policy enforcement, threat detection, and audit trails'
+  description: Governance controls for AI agent systems including tool policy enforcement,
+    Claude-based threat detection, trust scoring for multi-agent delegation, and hash-chained
+    audit trails.
+  path: misc/agent_governance.ipynb
+  authors:
+  - carlosinfantes
+  date: '2026-03-03'
+  categories:
+  - Agent Patterns
+  - Tools
