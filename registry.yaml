@@ -108,6 +108,7 @@
     research.
   path: claude_agent_sdk/00_The_one_liner_research_agent.ipynb
   authors:
+  - rodrigo-olivares
   - JiriDeJonghe
   date: '2025-09-12'
   categories:
@@ -118,6 +119,7 @@
     plan mode features.
   path: claude_agent_sdk/01_The_chief_of_staff_agent.ipynb
   authors:
+  - rodrigo-olivares
   - JiriDeJonghe
   date: '2025-09-12'
   categories:
@@ -128,6 +130,7 @@
     and CI workflows.
   path: claude_agent_sdk/02_The_observability_agent.ipynb
   authors:
+  - rodrigo-olivares
   - JiriDeJonghe
   date: '2025-09-12'
   categories:
