@@ -1,0 +1,2 @@
+sentinel-ai @ git+https://github.com/MaxwellCalkin/sentinel-ai.git
+anthropic>=0.30.0

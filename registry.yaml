@@ -1,4 +1,16 @@
 # yaml-language-server: $schema=./.github/registry_schema.json
+- title: Safety guardrails for Claude with Sentinel AI
+  description: Add real-time safety scanning to Claude API calls with sub-millisecond
+    latency. Covers prompt injection, PII redaction, multilingual detection (12 languages),
+    tool-use safety, and adversarial red-teaming.
+  path: third_party/SentinelAI/safety_guardrails_for_claude.ipynb
+  authors:
+  - MaxwellCalkin
+  date: '2026-03-08'
+  categories:
+  - Integrations
+  - Safety
+  - Tools
 - title: Giving Claude a crop tool for better image analysis
   description: Give Claude a crop tool to zoom into image regions for detailed analysis
     of charts, documents, and diagrams.
