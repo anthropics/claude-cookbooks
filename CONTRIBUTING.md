@@ -210,8 +210,7 @@ External contributors will have limited API testing to conserve resources.
 
 ## Getting Help
 
-- **Issues**: [GitHub Issues](https://github.com/anthropics/anthropic-cookbook/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/anthropics/anthropic-cookbook/discussions)
+- **Issues**: [GitHub Issues](https://github.com/anthropics/claude-cookbooks/issues)
 - **Discord**: [Anthropic Discord](https://www.anthropic.com/discord)
 
 ## Security
