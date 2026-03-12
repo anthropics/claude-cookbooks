@@ -71,7 +71,7 @@ Create or edit `.claude/settings.json` in your project root:
 
 ### Without block-no-verify
 
-```python
+```bash
 # Claude Code might run:
 git commit --no-verify -m "Add new feature"
 # Result: Hooks bypassed, untested code committed ❌
@@ -79,7 +79,7 @@ git commit --no-verify -m "Add new feature"
 
 ### With block-no-verify
 
-```python
+```bash
 # Claude Code tries to run:
 git commit --no-verify -m "Add new feature"
 # Result: Command blocked, must run without --no-verify ✅
