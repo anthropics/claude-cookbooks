@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Documento A4</title>
+    <style>
+      /* ─── RESET ────────────────────────────────────────────── */
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      /* ─── FUNDO (visualização em tela) ─────────────────────── */
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 10pt;
+        color: #222;
+        background: #777;
+        padding: 10mm 0;
+      }
+      /* ─── PÁGINA ────────────────────────────────────────────── */
+      .page {
+        position: relative;
+        width: 210mm;
+        height: 297mm;
+        background: #fff;
+        margin: 0 auto 10mm;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      }
+      /* ─── FAIXA LATERAL DIREITA ─────────────────────────────── */
+      .stripe {
+        position: absolute;
+        top: 0;
+        right: 6mm;
+        width: 10mm;
+        height: 100%;
+        background: #af9340 !important;
+        z-index: 30;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .stripe-text {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%) rotate(-90deg);
+        white-space: nowrap;
+        font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+        font-size: 12pt;
+        font-weight: bold;
+        color: #000;
+        letter-spacing: 0.5pt;
+      }
+      /* ─── CABEÇALHO ─────────────────────────────────────────── */
+      .header {
+        position: absolute;
+        top: 13mm;
+        left: 0;
+        right: 0;
+        height: 30mm;
+        padding: 6mm 20mm 6mm 30mm;
+        display: flex;
+        align-items: center;
+        gap: 6mm;
+        z-index: 10;
+      }
+      /* ─── RODAPÉ ────────────────────────────────────────────── */
+      .footer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 18mm;
+        padding: 0 20mm 0 12mm;
+        display: flex;
+        align-items: center;
+        z-index: 10;
+      }
+      .footer .page-num {
+        margin-left: auto;
+        font-size: 9pt;
+        color: #555;
+      }
+      /* ─── RODAPÉ ESTENDIDO (páginas de conteúdo) ────────────── */
+      /*
+        Além da citação e contato da capa, inclui:
+        · identificador do documento (esquerda)
+        · numeração de página (direita)
+      */
+      .footer-extended {
+        height: 22mm;
+        padding: 2mm 20mm 2mm 12mm;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: center;
+        gap: 1mm;
+      }
+      .footer-extended .footer-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+      }
+      .footer-extended .footer-center {
+        text-align: center;
+      }
+      /* ─── ÁREA DE CONTEÚDO ──────────────────────────────────── */
+      .page-body {
+        position: absolute;
+        top: 43mm;
+        bottom: 18mm;
+        left: 0;
+        right: 16mm;
+        padding: 8mm 8mm 8mm 15mm;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      /* Ajusta bottom para páginas com footer estendido */
+      .page-extended .page-body {
+        bottom: 22mm;
+      }
+      /* ─── CAPA ──────────────────────────────────────────────── */
+      .cover .page-body {
+        justify-content: center;
+      }
+      /* ─── CAMPOS VARIÁVEIS ──────────────────────────────────── */
+      .field {
+        color: #555;
+      }
+      /* ─── SEÇÕES ────────────────────────────────────────────── */
+      .section-title {
+        font-size: 11pt;
+        font-weight: bold;
+        color: #000;
+        margin-top: 5mm;
+        margin-bottom: 4mm;
+      }
+      /* ─── NOTA DE RODAPÉ ────────────────────────────────────── */
+      .footnotes {
+        border-top: 0.5pt solid #999;
+        padding-top: 2mm;
+        font-size: 7pt;
+        line-height: 1.5;
+        color: #333;
+        margin-top: 4mm;
+      }
+      .footnotes p {
+        margin-bottom: 1mm;
+      }
+      /* ─── IMPRESSÃO ─────────────────────────────────────────── */
+      @media print {
+        body {
+          background: none;
+          padding: 0;
+          margin: 0;
+        }
+        .page {
+          margin: 0;
+          box-shadow: none;
+          page-break-after: always;
+          break-after: page;
+        }
+        .page:last-child {
+          page-break-after: avoid;
+          break-after: avoid;
+        }
+        @page {
+          size: A4 portrait;
+          margin: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         CAPA  —  Página física 0, sem numeração
+    ════════════════════════════════════════════════════════════ -->
+    <div class="page cover">
+      <div class="stripe">
+        <span class="stripe-text">POLÍCIA CIVIL DO DISTRITO FEDERAL</span>
+      </div>
+
+      <div class="header">
+        <img
+          src="LOGO--PCDF.png"
+          alt="Logo PCDF"
+          style="flex-shrink: 0; width: 27mm; height: 27mm; object-fit: contain"
+        />
+        <div>
+          <div style="font-size: 10pt; font-weight: bold; text-align: center; color: black;">
+            GOVERNO DO DISTRITO FEDERAL<br />
+            POLÍCIA CIVIL DO DISTRITO FEDERAL<br />
+            DEPARTAMENTO DE POLÍCIA TÉCNICA<br />
+            INSTITUTO DE IDENTIFICAÇÃO<br />
+            LABORATÓRIO DE EXAMES NECROPAPILOSCÓPICOS<br />
+            EM CADÁVERES ESPECIAIS
+          </div>
+        </div>
+        <img
+          src="brasao-do-distrito-federal.png"
+          alt="Brasão do Distrito Federal"
+          style="flex-shrink: 0; width: 27mm; height: 27mm; object-fit: contain; margin-left: auto;"
+        />
+        <div style="position: absolute; bottom: 0; left: 30mm; right: 20mm; border-bottom: 0.5pt solid #ccc;"></div>
+      </div>
+
+      <div class="page-body">
+        <div
+          style="
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            transform: translateY(-50%);
+            padding-left: 30mm;
+            padding-right: 10mm;
+          "
+        >
+          <h1 style="font-size: 13pt; color: black; line-height: 1.25; margin-bottom: 5mm;">
+            LAUDO PERICIAL DO INSTITUTO DE IDENTIFICAÇÃO Nº <span class="field">{{xxx/2026-II}}</span><br />
+          </h1>
+          <div style="border-bottom: 0.5pt solid #333; margin-bottom: 4mm;"></div>
+          <p style="font-size: 13pt; color: #555; text-align: right;">
+            Exame Pericial Necropapiloscópico
+          </p>
+        </div>
+        <div style="margin-top: auto; text-align: left; font-size: 11pt; color: black; font-weight: normal;">
+          <div>Ocorrência Policial <span class="field">{{XXXX/2026 - XXªDP}}</span></div>
+          <div style="margin-top: 2mm;">Protocolo PCDF <span class="field">{{X.XXX.XXX/2026}}</span></div>
+          <div style="margin-top: 2mm;">Guia de Remoção de Cadáver <span class="field">{{XXX/2026 - XXªDP}}</span></div>
+          <div style="margin-top: 2mm;">Laudo de Exame Cadavérico <span class="field">{{XX.XXX/2026 - IML}}</span></div>
+        </div>
+      </div>
+
+      <div class="footer" style="justify-content: center; flex-direction: column; text-align: center; gap: 1mm;">
+        <div style="position: absolute; top: 0; left: 30mm; right: 20mm; border-top: 0.5pt solid #ccc;"></div>
+        <span style="font-size: 8pt; font-style: italic; color: #222;">"Brasília, Patrimônio Cultural da Humanidade"</span>
+        <span style="font-size: 8pt; color: #222;">Contato: (61) 3207-4309 &nbsp;|&nbsp; e-mail: ii-lence@pcdf.df.gov.br</span>
+      </div>
+    </div>
+    <!-- /capa -->
+
+
+    <!-- ═══════════════════════════════════════════════════════════
+         PÁGINA 1 DE CONTEÚDO
+    ════════════════════════════════════════════════════════════ -->
+    <div class="page page-extended">
+      <div class="stripe">
+        <span class="stripe-text">POLÍCIA CIVIL DO DISTRITO FEDERAL</span>
+      </div>
+
+      <!-- Cabeçalho (idêntico ao da capa) -->
+      <div class="header">
+        <img
+          src="LOGO--PCDF.png"
+          alt="Logo PCDF"
+          style="flex-shrink: 0; width: 27mm; height: 27mm; object-fit: contain"
+        />
+        <div>
+          <div style="font-size: 10pt; font-weight: bold; text-align: center; color: black;">
+            GOVERNO DO DISTRITO FEDERAL<br />
+            POLÍCIA CIVIL DO DISTRITO FEDERAL<br />
+            DEPARTAMENTO DE POLÍCIA TÉCNICA<br />
+            INSTITUTO DE IDENTIFICAÇÃO<br />
+            LABORATÓRIO DE EXAMES NECROPAPILOSCÓPICOS<br />
+            EM CADÁVERES ESPECIAIS
+          </div>
+        </div>
+        <img
+          src="brasao-do-distrito-federal.png"
+          alt="Brasão do Distrito Federal"
+          style="flex-shrink: 0; width: 27mm; height: 27mm; object-fit: contain; margin-left: auto;"
+        />
+        <div style="position: absolute; bottom: 0; left: 30mm; right: 20mm; border-bottom: 0.5pt solid #ccc;"></div>
+      </div>
+
+      <!-- Corpo da página -->
+      <div class="page-body">
+
+        <!-- Título do laudo -->
+        <div style="margin-bottom: 5mm;">
+          <div style="font-size: 11pt; font-weight: bold;">
+            LAUDO PERICIAL DO INSTITUTO DE IDENTIFICAÇÃO Nº <span class="field">{{XXX/2026-II}}</span>
+          </div>
+        </div>
+
+        <!-- Referências -->
+        <div style="margin-bottom: 6mm; font-size: 10pt;">
+          <div style="font-weight: bold; text-decoration: underline; margin-bottom: 2mm;">REFERÊNCIAS:</div>
+          <div>Ocorrência Policial <span class="field">{{XXXX/2026 - XXªDP}}</span></div>
+          <div>Protocolo PCDF <span class="field">{{X.XXX.XXX/2026}}</span></div>
+          <div>Guia de Remoção de Cadáver <span class="field">{{XXX/2026 - XXªDP}}</span></div>
+          <div>Laudo de Exame Cadavérico <span class="field">{{XX.XXX/2026 - IML}}</span></div>
+        </div>
+
+        <!-- Conteúdo principal (cresce para ocupar o espaço disponível) -->
+        <div style="flex: 1;">
+
+          <!-- 1. Preâmbulo -->
+          <div class="section-title">1. PREÂMBULO</div>
+          <p style="text-indent: 12.7mm; line-height: 1.5; text-align: justify; margin-bottom: 6mm; font-size: 10pt;">
+            <span class="field">{{Dia}}</span> do mês de <span class="field">{{Mês}}</span>
+            do ano de dois mil e vinte e seis, nesta cidade de Brasília-DF,
+            <span class="field">{{Papiloscopista 1}}</span>,
+            <span class="field">{{Papiloscopista 2}}</span> e
+            <span class="field">{{Papiloscopista 3}}</span>,
+            Papiloscopistas Policiais, em conformidade com as disposições normativas que regem
+            a oficialidade de sua atuação técnico-científica e independência
+            funcional<sup>1,2</sup>, para proceder à elaboração técnica do Laudo resultante de
+            exame pericial necropapiloscópico realizado a partir da perícia cadavérica,
+            resguardando a cadeia de custódia e assegurando a imparcialidade no exame ora
+            reportado.
+          </p>
+
+          <!-- 2. Objetivo Pericial -->
+          <div class="section-title">2. OBJETIVO PERICIAL</div>
+          <p style="text-indent: 12.7mm; line-height: 1.5; text-align: justify; font-size: 10pt;">
+            O presente exame pericial tem por objetivo realizar perícias em cadáveres
+            envolvidos em distintas circunstâncias de morte, ou que se encontrem em variados
+            estados de transformação cadavérica, tendo em vista a sua identificação por meio
+            de análise multibiométrica.
+          </p>
+
+        </div>
+        <!-- /conteúdo principal -->
+
+        <!-- Notas de rodapé -->
+        <div class="footnotes">
+          <p>
+            <sup>1</sup> Polícia Civil do Distrito Federal.
+            <em>Resolução nº 01, de 07 de março de 2023. Aprova o Regimento Interno da Polícia Civil do Distrito Federal.</em>
+            DCDF, 07/03/2023.
+          </p>
+          <p>
+            <sup>2</sup> Polícia Civil do Distrito Federal.
+            <em>Portaria nº 167, de 13 de maio de 2022. Dispõe sobre condutas na preservação de local de crime.</em>
+            Boletim de Serviço, 13/05/2022; DCDF, 20/05/2022.
+          </p>
+        </div>
+
+      </div>
+      <!-- /page-body -->
+
+      <!-- Rodapé estendido -->
+      <div class="footer footer-extended">
+        <div style="position: absolute; top: 0; left: 30mm; right: 20mm; border-top: 0.5pt solid #ccc;"></div>
+        <div class="footer-row">
+          <span style="font-size: 8pt; color: #222;">
+            Laudo Pericial do Instituto de Identificação n.º <span class="field">{{XXX/2026}}</span>
+          </span>
+          <span style="font-size: 8pt; color: #222;">Página 1 de 5</span>
+        </div>
+        <div class="footer-center">
+          <span style="font-size: 8pt; font-style: italic; color: #222;">"Brasília, Patrimônio Cultural da Humanidade"</span>
+        </div>
+        <div class="footer-center">
+          <span style="font-size: 8pt; color: #222;">Contato: (61) 3207-4309 &nbsp;|&nbsp; e-mail: ii-lence@pcdf.df.gov.br</span>
+        </div>
+      </div>
+
+    </div>
+    <!-- /página 1 -->
+
+
+    <!-- ═══════════════════════════════════════════════════════════
+         PÁGINA 2 DE CONTEÚDO
+    ════════════════════════════════════════════════════════════ -->
+    <div class="page page-extended">
+      <div class="stripe">
+        <span class="stripe-text">POLÍCIA CIVIL DO DISTRITO FEDERAL</span>
+      </div>
+
+      <div class="header">
+        <img
+          src="LOGO--PCDF.png"
+          alt="Logo PCDF"
+          style="flex-shrink: 0; width: 27mm; height: 27mm; object-fit: contain"
+        />
+        <div>
+          <div style="font-size: 10pt; font-weight: bold; text-align: center; color: black;">
+            GOVERNO DO DISTRITO FEDERAL<br />
+            POLÍCIA CIVIL DO DISTRITO FEDERAL<br />
+            DEPARTAMENTO DE POLÍCIA TÉCNICA<br />
+            INSTITUTO DE IDENTIFICAÇÃO<br />
+            LABORATÓRIO DE EXAMES NECROPAPILOSCÓPICOS<br />
+            EM CADÁVERES ESPECIAIS
+          </div>
+        </div>
+        <img
+          src="brasao-do-distrito-federal.png"
+          alt="Brasão do Distrito Federal"
+          style="flex-shrink: 0; width: 27mm; height: 27mm; object-fit: contain; margin-left: auto;"
+        />
+        <div style="position: absolute; bottom: 0; left: 30mm; right: 20mm; border-bottom: 0.5pt solid #ccc;"></div>
+      </div>
+
+      <div class="page-body">
+        <h2 style="font-size: 14pt; color: #1b3a6b; margin-bottom: 5mm; padding-bottom: 2mm; border-bottom: 0.5pt solid #ddd;">
+          2. Desenvolvimento
+        </h2>
+        <p style="line-height: 1.7; margin-bottom: 4mm;">
+          At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium
+          voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint
+          occaecati cupiditate non provident.
+        </p>
+        <p style="line-height: 1.7; margin-bottom: 4mm;">
+          Similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum
+          fuga. Et harum quidem rerum facilis est et expedita distinctio.
+        </p>
+        <h3 style="font-size: 11pt; color: #1b3a6b; margin-bottom: 3mm;">2.1 Subseção</h3>
+        <p style="line-height: 1.7;">
+          Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus
+          id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor
+          repellendus.
+        </p>
+      </div>
+
+      <div class="footer footer-extended">
+        <div style="position: absolute; top: 0; left: 30mm; right: 20mm; border-top: 0.5pt solid #ccc;"></div>
+        <div class="footer-row">
+          <span style="font-size: 8pt; color: #222;">
+            Laudo Pericial do Instituto de Identificação n.º <span class="field">{{XXX/2026}}</span>
+          </span>
+          <span style="font-size: 8pt; color: #222;">Página 2 de 5</span>
+        </div>
+        <div class="footer-center">
+          <span style="font-size: 8pt; font-style: italic; color: #222;">"Brasília, Patrimônio Cultural da Humanidade"</span>
+        </div>
+        <div class="footer-center">
+          <span style="font-size: 8pt; color: #222;">Contato: (61) 3207-4309 &nbsp;|&nbsp; e-mail: ii-lence@pcdf.df.gov.br</span>
+        </div>
+      </div>
+
+    </div>
+    <!-- /página 2 -->
+
+  </body>
+</html>
