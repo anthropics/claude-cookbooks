@@ -1,0 +1,10 @@
+
+# Copy this file to .env and update the values before running the notebook.
+
+# Anthropic API key used for Claude generation
+ANTHROPIC_API_KEY=
+
+# Local Oracle AI Database Free example credentials
+ORACLE_USER=PDBADMIN
+ORACLE_PASSWORD=YourPassword
+ORACLE_DSN=localhost:1521/FREEPDB1

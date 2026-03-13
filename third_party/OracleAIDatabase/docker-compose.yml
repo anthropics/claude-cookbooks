@@ -1,0 +1,17 @@
+services:
+  oracle-free:
+    image: container-registry.oracle.com/database/free:latest
+    container_name: oracle-anthropic
+    ports:
+      - "1521:1521" # Oracle listener
+      - "5500:5500" # Oracle EM Express
+    environment:
+      ORACLE_PWD: YourPassword  # Change this to a strong password
+    volumes:
+      - oracle-free-data:/opt/oracle/oradata  # Persist database files
+    restart: unless-stopped
+    shm_size: 1g  # Required for Oracle AI Database stability
+
+volumes:
+  oracle-free-data:
+    
