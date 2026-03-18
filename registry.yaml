@@ -147,6 +147,17 @@
   categories:
   - Claude Agent SDK
   - Agent Patterns
+- title: Migrating from the OpenAI Agents SDK
+  description: Port an OpenAI Agents SDK app to the Claude Agent SDK, mapping each
+    primitive (tools, guardrails, sessions, handoffs) through a single expense-approval
+    agent example.
+  path: claude_agent_sdk/04_migrating_from_openai_agents_sdk.ipynb
+  authors:
+  - preston-tuggle
+  date: '2026-03-09'
+  categories:
+  - Claude Agent SDK
+  - Agent Patterns
 - title: Extended thinking
   description: Use Claude's extended thinking for transparent step-by-step reasoning
     with budget management.
