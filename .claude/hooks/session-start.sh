@@ -8,8 +8,12 @@ fi
 
 cd "$CLAUDE_PROJECT_DIR"
 
-# Install all dependencies including dev extras
+# Install all dependencies including dev extras (playwright included)
 uv sync --all-extras
 
 # Install pre-commit hooks
 uv run pre-commit install
+
+# Install Chromium via system Playwright (avoids CDN download restrictions)
+# Python playwright will use the executable_path detected at runtime
+playwright install chromium

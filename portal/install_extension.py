@@ -12,6 +12,15 @@ from playwright.async_api import async_playwright
 EXTENSION_PATH = str(Path(__file__).parent / "extension")
 
 
+def _find_chromium() -> str | None:
+    """Знаходить бінарний файл Chromium встановлений будь-якою версією Playwright."""
+    cache = Path.home() / ".cache" / "ms-playwright"
+    if not cache.exists():
+        return None
+    candidates = sorted(cache.glob("chromium-*/chrome-linux*/chrome"), reverse=True)
+    return str(candidates[0]) if candidates else None
+
+
 async def main():
     async with async_playwright() as pw:
         with tempfile.TemporaryDirectory(prefix="ruki-chrome-") as user_data_dir:
@@ -20,11 +29,15 @@ async def main():
             ) as screenshot_file:
                 screenshot_path = screenshot_file.name
 
+            chromium_path = _find_chromium()
+            if not chromium_path:
+                raise RuntimeError("Chromium не знайдено. Запусти: playwright install chromium")
+
             # Chrome з завантаженим unpacked extension
             context = await pw.chromium.launch_persistent_context(
                 user_data_dir=user_data_dir,
                 headless=True,
-                executable_path="/root/.cache/ms-playwright/chromium-1194/chrome-linux/chrome",
+                executable_path=chromium_path,
                 args=[
                     f"--disable-extensions-except={EXTENSION_PATH}",
                     f"--load-extension={EXTENSION_PATH}",
