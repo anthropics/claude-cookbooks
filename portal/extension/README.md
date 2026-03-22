@@ -106,7 +106,7 @@ extension/
     service_worker.js        — command bus + WS bridge
     action_log.js            — chrome.storage action log
   content/
-    hands.js                 — runner + selectors + actions
+    RUKI.js                  — runner + selectors + actions
   popup/
     popup.html / .css / .js  — UI панель
   icons/
