@@ -82,6 +82,7 @@ addopts = [
 ]
 markers = [
     "slow: marks tests as slow (requires notebook execution)",
+    "integration: marks tests that require a real browser (Chromium must be installed)",
 ]
 filterwarnings = [
     "ignore::DeprecationWarning",
