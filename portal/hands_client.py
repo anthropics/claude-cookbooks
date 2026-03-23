@@ -1,11 +1,14 @@
 """
-Browser Hands — Python Client v3
+Browser Hands — Python Client v4
 ──────────────────────────────────
 Accessibility-first API. This client IS hands, eyes, and ears for people with disabilities.
+Розширено 20 маркетинговими режимами та супер-функціями.
 
-  🤲 Motor  — click, drag, key combos, checkboxes, context menu
-  👁  Vision — page text, headings, links, images, forms, tables, ARIA
-  👂 Hearing — media control, caption extraction, volume
+  🤲 Motor    — click, drag, key combos, checkboxes, context menu
+  👁  Vision  — page text, headings, links, images, forms, tables, ARIA
+  👂 Hearing  — media control, caption extraction, volume
+  📊 Marketing — 20 режимів аналізу: SEO, competitor, ad copy, leads, prices…
+  ⚡ Super    — bulk scrape, watch page, smart fill, pipeline
 
 Usage:
     import asyncio
@@ -15,21 +18,14 @@ Usage:
         c = HandsClient()
         await c.navigate("https://example.com")
 
-        # 👁 READ the page
-        page = await c.get_page_text()
-        headings = await c.get_headings()
-        forms = await c.get_forms()
+        # 📊 MARKETING MODES
+        seo   = await c.seo_audit()
+        ctas  = await c.cta_analysis()
+        leads = await c.lead_form_scan()
 
-        # 🤲 INTERACT
-        await c.type("testid=email", "user@example.com")
-        await c.key_combo("Tab")                    # navigate by keyboard
-        await c.check("name=terms")                 # tick checkbox
-        await c.key_combo("Enter")                  # submit
-
-        # 👂 HEAR the video
-        media = await c.get_media()
-        captions = await c.get_captions()
-        print(captions["transcript"])
+        # ⚡ SUPER FUNCTIONS
+        report = await c.extract_all("https://competitor.com")
+        data   = await c.bulk_scrape(["https://a.com", "https://b.com"], mode="price_monitor")
 
     asyncio.run(main())
 """
