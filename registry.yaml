@@ -1,4 +1,15 @@
 # yaml-language-server: $schema=./.github/registry_schema.json
+- title: Give Claude a wallet with Azeth
+  description: Turn Claude into an economic agent that discovers services, makes x402
+    payments, and builds on-chain reputation using Azeth trust infrastructure.
+  path: third_party/Azeth/agent_commerce_with_azeth.ipynb
+  authors:
+  - 0xtus
+  date: '2026-03-06'
+  categories:
+  - Integrations
+  - Tools
+  - Agent Patterns
 - title: Giving Claude a crop tool for better image analysis
   description: Give Claude a crop tool to zoom into image regions for detailed analysis
     of charts, documents, and diagrams.
