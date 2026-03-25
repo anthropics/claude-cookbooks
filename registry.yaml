@@ -736,3 +736,22 @@
   categories:
   - Multimodal
   - Tools
+- title: Building a Claude-powered API with Cloudflare Workers
+  description: Deploy Claude as a global edge API endpoint using Cloudflare Workers
+    with streaming, session state via KV, and production patterns.
+  path: third_party/Cloudflare/claude_on_cloudflare_workers.ipynb
+  authors:
+  - martingarramon
+  date: '2026-03-25'
+  categories:
+  - Integrations
+- title: Building your own MCP server
+  description: Build a compliant MCP server in Python from scratch, test it standalone,
+    and connect it to the Claude Agent SDK.
+  path: claude_agent_sdk/05_Building_your_own_MCP_server.ipynb
+  authors:
+  - martingarramon
+  date: '2026-03-25'
+  categories:
+  - Agent Patterns
+  - Tools
