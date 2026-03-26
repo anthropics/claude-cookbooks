@@ -394,6 +394,16 @@
   date: '2024-12-19'
   categories:
   - Agent Patterns
+- title: Self-improving agents with structured reflection
+  description: Agents that evaluate their own performance across a batch of tasks
+    and automatically revise their prompts to improve.
+  path: patterns/agents/self_improving_agents.ipynb
+  authors:
+  - hughes7370
+  date: '2026-03-25'
+  categories:
+  - Agent Patterns
+  - Evals
 - title: Introduction to Claude Skills
   description: Create documents, analyze data, automate workflows with Claude's Excel,
     PowerPoint, PDF skills.
