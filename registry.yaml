@@ -525,6 +525,16 @@
   categories:
   - Integrations
   - RAG & Retrieval
+- title: Building 3D & AR experiences with the SceneView MCP server
+  description: Give Claude expert knowledge of the SceneView 3D/AR SDK via MCP tools
+    for code generation, validation, and interactive 3D artifacts.
+  path: third_party/SceneView/sceneview_3d_mcp.ipynb
+  authors:
+  - ThomasGorisse
+  date: '2026-03-26'
+  categories:
+  - Integrations
+  - Tools
 - title: Iteratively searching Wikipedia with Claude
   description: Legacy notebook showing iterative Wikipedia searches with Claude 2
     for research workflows.
