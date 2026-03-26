@@ -592,8 +592,8 @@
   categories:
   - Tools
   - Agent Patterns
-- title: Parallel tool calls on Claude 3.7 Sonnet
-  description: Enable parallel tool calls on Claude 3.7 Sonnet using batch tool meta-pattern
+- title: Parallel tool calls with Claude
+  description: Enable parallel tool calls with Claude using batch tool meta-pattern
     workaround.
   path: tool_use/parallel_tools.ipynb
   authors:
