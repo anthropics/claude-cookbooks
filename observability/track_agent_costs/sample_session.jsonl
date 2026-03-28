@@ -1,0 +1,5 @@
+{"type":"assistant","message":{"id":"msg_01abc123","type":"message","role":"assistant","model":"claude-sonnet-4-6","usage":{"input_tokens":1250,"output_tokens":340,"cache_read_input_tokens":8500,"cache_creation_input_tokens":1250}}}
+{"type":"assistant","message":{"id":"msg_02def456","type":"message","role":"assistant","model":"claude-sonnet-4-6","usage":{"input_tokens":980,"output_tokens":1520,"cache_read_input_tokens":9200,"cache_creation_input_tokens":0}}}
+{"type":"assistant","message":{"id":"msg_03ghi789","type":"message","role":"assistant","model":"claude-sonnet-4-6","usage":{"input_tokens":450,"output_tokens":280,"cache_read_input_tokens":10100,"cache_creation_input_tokens":0}}}
+{"type":"assistant","message":{"id":"msg_04jkl012","type":"message","role":"assistant","model":"claude-sonnet-4-6","usage":{"input_tokens":2100,"output_tokens":4200,"cache_read_input_tokens":10100,"cache_creation_input_tokens":3500}}}
+{"type":"assistant","message":{"id":"msg_05mno345","type":"message","role":"assistant","model":"claude-sonnet-4-6","usage":{"input_tokens":680,"output_tokens":190,"cache_read_input_tokens":11500,"cache_creation_input_tokens":0}}}
