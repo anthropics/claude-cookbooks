@@ -48,6 +48,16 @@
   categories:
   - Tools
   - Agent Patterns
+- title: 'Context engineering: memory, compaction, and tool clearing'
+  description: Compare context engineering strategies for long-running agents and
+    learn when each applies, what it costs, and how they compose.
+  path: tool_use/context_engineering/context_engineering_tools.ipynb
+  authors:
+  - isabella-anthropic
+  date: '2026-03-20'
+  categories:
+  - Tools
+  - Agent Patterns
 - title: Low latency voice assistant with ElevenLabs
   description: Build a low-latency voice assistant using ElevenLabs for speech-to-text
     and text-to-speech combined with Claude.
