@@ -58,7 +58,10 @@ ignore = [
     "S101",   # assert used (ok in tests)
     "S301",   # pickle usage ok for local data in cookbooks
     "S311",   # pseudo-random generators ok for non-crypto
+    "S603",   # subprocess with list args is the safe pattern (not untrusted input)
+    "S607",   # partial executable paths ok for known commands (docker-compose, etc.)
     "S608",   # SQL string construction ok for demo/educational code
+    "S104",   # binding to all interfaces ok for demo webhook servers
     "N806",   # variable in function should be lowercase (allow for API responses)
 ]
 

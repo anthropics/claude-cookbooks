@@ -1092,7 +1092,4 @@ print("  Docker Compose:      config/docker-compose.yml")
 print("  Prometheus config:   config/prometheus.yml")
 print("  API server:          services/api_server.py")
 print("  Traffic generator:   scripts/traffic_generator.py")
-print(
-    "  Safety hooks:        hooks/validate_pool_size.sh,"
-    " hooks/validate_config_before_deploy.sh"
-)
+print("  Safety hooks:        hooks/validate_pool_size.sh, hooks/validate_config_before_deploy.sh")
