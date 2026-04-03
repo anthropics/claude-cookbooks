@@ -208,7 +208,6 @@
   - dominicva
   date: '2026-04-03'
   categories:
-  - RAG & Retrieval
   - Tools
 - title: The one-liner research agent
   description: Build a research agent using Claude Code SDK with WebSearch for autonomous
