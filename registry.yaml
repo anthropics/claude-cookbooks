@@ -209,6 +209,7 @@
   date: '2026-04-03'
   categories:
   - Tools
+  - Agent Patterns
 - title: The one-liner research agent
   description: Build a research agent using Claude Code SDK with WebSearch for autonomous
     research.
