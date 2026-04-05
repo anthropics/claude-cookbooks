@@ -659,3 +659,14 @@
   categories:
   - Multimodal
   - Tools
+- title: Real-Time Web Search with Claude Using free-web-search-ultimate
+  description: Give Claude real-time web search capabilities using the free-web-search-ultimate
+    package — completely free, no API keys required. Uses DuckDuckGo and privacy-respecting
+    search engines.
+  path: third_party/FreeWebSearch/free_web_search_with_claude.ipynb
+  authors:
+  - wd041216-bit
+  date: '2026-03-18'
+  categories:
+  - Tools
+  - Third Party
