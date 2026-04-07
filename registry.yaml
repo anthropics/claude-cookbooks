@@ -67,6 +67,17 @@
   date: '2025-11-24'
   categories:
   - Integrations
+- title: Vocabulary tutor with Claude and Kelly Intelligence
+  description: Give Claude a lookup_word tool backed by the Kelly Intelligence public
+    vocabulary API (162K words, 47 languages) and build a personalized tutor that
+    defines, translates, and quizzes the learner.
+  path: third_party/KellyIntelligence/vocabulary_tutor_with_claude.ipynb
+  authors:
+  - nicoletterankin
+  date: '2026-04-06'
+  categories:
+  - Integrations
+  - Tools
 - title: Prompting for frontend aesthetics
   description: Guide to prompting Claude for distinctive, polished frontend designs
     avoiding generic aesthetics.
