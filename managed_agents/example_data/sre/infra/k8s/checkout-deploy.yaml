@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: checkout-svc
+  namespace: shop
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: checkout-svc
+  template:
+    metadata:
+      labels:
+        app: checkout-svc
+    spec:
+      containers:
+        - name: checkout-svc
+          image: registry.internal/shop/checkout-svc:2026.04.06-r3
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: 250m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 128Mi
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 5

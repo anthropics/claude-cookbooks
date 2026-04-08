@@ -21,10 +21,17 @@ benlehrburger-ant:
 Briiick:
   name: Alexander Bricken
   avatar: https://avatars.githubusercontent.com/u/44481408?v=4
+charmaine:
+  name: Charmaine Lee
+  website: https://github.com/charmaine
+  avatar: https://avatars.githubusercontent.com/u/16736130?v=4
 davidhershey:
   name: David Hershey
   website: https://github.com/davidhershey
   avatar: https://avatars.githubusercontent.com/u/11651858?v=4
+gaganb-ant:
+  name: Gagan Bhat
+  avatar: https://avatars.githubusercontent.com/u/235440171?v=4
 GarvanD:
   name: Garvan Doyle
   website: https://garvandoyle.com
@@ -55,13 +62,25 @@ jsham042:
   name: Joe Shamon
   website: https://github.com/jsham042
   avatar: https://github.com/jsham042.png
+jyan-anthropic:
+  name: Jess Yan
+  website: https://github.com/jyan-anthropic
+  avatar: https://avatars.githubusercontent.com/u/235391680?v=4
 maheshmurag:
   name: Mahesh Murag
   website: https://github.com/maheshmurag
   avatar: https://avatars.githubusercontent.com/u/5667029?v=4
+markn-ant:
+  name: Mark Nowicki
+  website: https://github.com/markn-ant
+  avatar: https://avatars.githubusercontent.com/markn-ant
 nadine-anthropic:
   name: Nadine Yasser
   avatar: https://avatars.githubusercontent.com/u/238355370?v=4
+pauly-ant:
+  name: Paul Yang
+  website: https://github.com/pauly-ant
+  avatar: https://avatars.githubusercontent.com/u/269031447?v=4
 PedramNavid:
   name: Pedram Navid
   website: http://x.com/pdrmnvd

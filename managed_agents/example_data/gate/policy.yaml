@@ -1,0 +1,5 @@
+---
+auto_approve_under: 50
+manager_approve_under: 500
+always_escalate_categories: [travel, legal]
+require_receipt_over: 25

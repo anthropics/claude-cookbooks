@@ -1,4 +1,70 @@
 # yaml-language-server: $schema=./.github/registry_schema.json
+- title: Build a data analyst agent with Claude Managed Agents
+  description: Build an analyst that turns a CSV into a narrative HTML report with
+    interactive charts, using a sandboxed environment and file mounting.
+  path: managed_agents/data_analyst_agent.ipynb
+  authors:
+  - charmaine
+  - jyan-anthropic
+  date: '2026-04-08'
+  categories:
+  - Agent Patterns
+  - Tools
+- title: Build a Slack data analyst bot with Claude Managed Agents
+  description: Mention the bot with a CSV to get an analysis report in-thread, with
+    multi-turn follow-ups on the same session.
+  path: managed_agents/slack_data_bot.ipynb
+  authors:
+  - charmaine
+  date: '2026-04-08'
+  categories:
+  - Agent Patterns
+  - Integrations
+- title: 'Managed Agents tutorial: iterate on a failing test suite'
+  description: Entry-point tutorial for the Claude Managed Agents API. Walks through
+    agent / environment / session creation, file mounts, and the streaming event
+    loop by getting an agent to fix three planted bugs in a calc.py package.
+  path: managed_agents/CMA_iterate_fix_failing_tests.ipynb
+  authors:
+  - pauly-ant
+  date: '2026-04-08'
+  categories:
+  - Agent Patterns
+  - Tools
+- title: 'Managed Agents tutorial: production setup'
+  description: End-to-end production story for Managed Agents — vault-backed MCP
+    credentials, the session.status_idled webhook pattern for human-in-the-loop
+    without long-lived connections, and the resource lifecycle CRUD verbs.
+  path: managed_agents/CMA_operate_in_production.ipynb
+  authors:
+  - pauly-ant
+  date: '2026-04-08'
+  categories:
+  - Agent Patterns
+  - Integrations
+- title: Build an SRE incident response agent with Claude Managed Agents
+  description: A webhook-triggered responder that investigates logs and runbooks
+    with a custom Skill, fixes infrastructure code, and gates the PR behind a
+    human-approval custom tool — with the full audit trail in the Console.
+  path: managed_agents/sre_incident_responder.ipynb
+  authors:
+  - gaganb-ant
+  date: '2026-04-07'
+  categories:
+  - Agent Patterns
+  - Observability
+- title: 'Managed Agents tutorial: prompt versioning and rollback'
+  description: Server-side prompt versioning — create v1, evaluate against a labelled
+    test set, ship v2, detect a regression, roll back by pinning sessions to version
+    1. Covers agents.update, version pinning on sessions.create, and where the review
+    gate moves when prompts are not code.
+  path: managed_agents/CMA_prompt_versioning_and_rollback.ipynb
+  authors:
+  - markn-ant
+  date: '2026-04-07'
+  categories:
+  - Agent Patterns
+  - Evaluation
 - title: Threat intelligence enrichment agent
   description: Build an agent that autonomously investigates IOCs by querying multiple
     threat intel sources, cross-referencing findings, mapping to MITRE ATT&CK, and

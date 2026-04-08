@@ -1,0 +1,4 @@
+report.html
+__pycache__/
+*.pyc
+.env

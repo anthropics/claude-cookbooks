@@ -1,0 +1,15 @@
+# Example data
+
+This directory holds the small, self-contained inputs that the cookbook notebooks read from. Everything in here is checked in so you can run the cookbook end-to-end without standing up a database, signing up for an API, or wiring credentials beyond your `ANTHROPIC_API_KEY`. Each subdirectory is paired with one notebook and only that notebook touches it.
+
+The fixtures are deliberately small. They're sized to be read by a human in a couple of minutes, small enough that you can open the files yourself and follow what the agent is reasoning about, but large enough that there's something genuine to figure out. Each one has at least one little trap or wrinkle planted in it: a dependency between two bugs, a stale documentation file that disagrees with the code, a receipt that sits right on the edge of an approval threshold. The goal is to give the agent something to actually grapple with rather than a toy that always succeeds on the first try.
+
+| Directory | Used by | Notebook focus | What's inside | Approx. runtime |
+|-----------|---------|----------------|---------------|-----------------|
+| `iterate/` | `CMA_iterate_fix_failing_tests.py` | Do → observe → fix loop on a failing test suite | A tiny `calc.py` package with three planted bugs and the matching test file. One of the failures is downstream of another, so a careful agent fixes the root cause and watches the second test pass on its own. | ~2 min |
+| `orchestrate/` | `CMA_orchestrate_issue_to_pr.py` | Driving an issue all the way to a merged PR through a mock `gh` CLI | A mock `gh` script that persists state in `.gh-state/`, an `issue_42.json` describing a vague Unicode bug, and a small `src/` + `tests/` repo with the bug planted. The chain forces the agent to recover from a CI failure mid-flight and to address a docstring nit from the review bot before it can merge. | ~5 min |
+| `gate/` | `CMA_gate_human_in_the_loop.py` | Human-in-the-loop approval lanes with custom tools | A `policy.yaml` describing approval rules and twelve receipts that exercise every branch of the policy, clean approves, clean rejects, and a couple of genuinely ambiguous cases the agent should escalate rather than guess about. | ~3 min |
+
+A fourth notebook, `CMA_explore_unfamiliar_codebase.py`, also runs against fixture data, but its repository fixture is small enough that it gets generated in memory by `utilities.make_unfamiliar_repo_zip()` rather than checked in. The helper is shorter and easier to read than a directory of stub files would be, and it keeps the trap (a stale `ARCHITECTURE.md` describing an old monolithic layout that no longer matches the real microservices code) in one obvious place.
+
+Everything in this directory runs offline. The mock CLIs read and write local JSON instead of making network calls, the test runners are just `python3 -c` invocations, and nothing here phones home.

@@ -1,0 +1,19 @@
+[project]
+name = "managed-agents-cookbook"
+version = "0.1.0"
+description = "Runnable examples for the Claude Managed Agents API"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+    "anthropic>=0.91.0",
+    "python-dotenv",
+]
+
+[project.optional-dependencies]
+slack = [
+    "slack_bolt",
+    "requests",
+    "markdown-to-mrkdwn",
+]
+dev = [
+    "jupytext",
+]
