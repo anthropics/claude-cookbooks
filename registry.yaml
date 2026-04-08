@@ -64,7 +64,7 @@
   date: '2026-04-07'
   categories:
   - Agent Patterns
-  - Evaluation
+  - Evals
 - title: Threat intelligence enrichment agent
   description: Build an agent that autonomously investigates IOCs by querying multiple
     threat intel sources, cross-referencing findings, mapping to MITRE ATT&CK, and
