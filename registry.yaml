@@ -200,6 +200,16 @@
   date: '2024-09-23'
   categories:
   - RAG & Retrieval
+- title: Securing Text-to-SQL with Claude
+  description: Build a defense-in-depth security layer for text-to-SQL pipelines
+    with query validation, tenant scoping, output sanitization, and operational guardrails.
+  path: capabilities/text_to_sql/securing_text_to_sql.ipynb
+  authors:
+  - dominicva
+  date: '2026-04-03'
+  categories:
+  - Tools
+  - Agent Patterns
 - title: The one-liner research agent
   description: Build a research agent using Claude Code SDK with WebSearch for autonomous
     research.
