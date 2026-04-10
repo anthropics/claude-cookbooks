@@ -1,0 +1,19 @@
+2026-04-07T03:12:01.334Z INFO  checkout-svc started (pid=1, version=2026.04.06-r3)
+2026-04-07T03:12:01.812Z INFO  connecting to postgres://db-prod-us-east:5432/shop
+2026-04-07T03:12:02.105Z INFO  database connection pool ready (size=10)
+2026-04-07T03:12:02.108Z INFO  warming pricing cache...
+2026-04-07T03:12:04.917Z INFO  pricing cache warmed: 14092 entries, heap=101MB
+2026-04-07T03:12:05.002Z INFO  listening on 0.0.0.0:8080
+2026-04-07T03:12:05.210Z INFO  readiness probe /healthz returning 200
+2026-04-07T03:12:38.441Z INFO  POST /api/checkout latency=42ms status=200
+2026-04-07T03:12:51.009Z INFO  POST /api/checkout latency=55ms status=200
+2026-04-07T03:13:14.233Z WARN  GC pause 412ms (heap=118MB, limit=128MB)
+2026-04-07T03:13:14.650Z INFO  POST /api/checkout latency=487ms status=200
+2026-04-07T03:13:30.871Z WARN  heap pressure: 121MB / 128MB (94.5%)
+2026-04-07T03:13:31.002Z INFO  pricing.recompute scheduled (interval=60s)
+2026-04-07T03:13:31.118Z ERROR pricing.recompute failed to allocate 8MB: OutOfMemoryError
+2026-04-07T03:13:31.119Z ERROR java.lang.OutOfMemoryError: Java heap space
+    at com.shop.pricing.PricingCache.recompute(PricingCache.java:142)
+    at com.shop.pricing.PricingScheduler.run(PricingScheduler.java:38)
+    at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:304)
+2026-04-07T03:13:31.120Z FATAL checkout-svc shutting down: unrecoverable OOM
