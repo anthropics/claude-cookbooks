@@ -659,3 +659,12 @@
   categories:
   - Multimodal
   - Tools
+- title: Business operations agent using HiveAgent MCP
+  description: Build a business operations agent that processes payments, manages wallets, and routes transactions across multiple payment rails using HiveAgent's MCP server.
+  path: third_party/hiveagent_business_ops.ipynb
+  authors:
+  - srotzin
+  date: '2026-04-10'
+  categories:
+  - Tools
+  - Third Party
