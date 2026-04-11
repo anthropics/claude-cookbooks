@@ -43,13 +43,13 @@
   - Agent Patterns
   - Integrations
 - title: Build an SRE incident response agent with Claude Managed Agents
-  description: 'Wire Claude into your on-call flow: when an alert fires, the agent
-    reads logs and runbooks, pinpoints the root cause, opens a fix PR, and waits
-    for your approval before merging.'
+  description: A webhook-triggered responder that investigates logs and runbooks
+    with a custom Skill, fixes infrastructure code, and gates the PR behind a
+    human-approval custom tool — with the full audit trail in the Console.
   path: managed_agents/sre_incident_responder.ipynb
   authors:
   - gaganb-ant
-  date: '2026-04-10'
+  date: '2026-04-08'
   categories:
   - Agent Patterns
   - Observability
@@ -736,3 +736,13 @@
   categories:
   - Multimodal
   - Tools
+- title: Model Context Protocol (MCP) with FastMCP
+  description: Learn advanced FastMCP features like resources, prompts, and context for
+    building powerful MCP servers to use with Claude.
+  path: tool_use/fastmcp/claude_with_fastmcp.ipynb
+  authors:
+  - cubaseuser123
+  date: '2026-04-09'
+  categories:
+  - Tools
+  - Integrations
