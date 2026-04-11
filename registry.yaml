@@ -736,3 +736,13 @@
   categories:
   - Multimodal
   - Tools
+- title: Native Python MCP client with Claude
+  description: Connect Claude to any MCP server using the official Python SDK with
+    StdioServerParameters and ClientSession — no third-party abstractions.
+  path: tool_use/mcp_native_client/claude_with_mcp.ipynb
+  authors:
+  - cubaseuser123
+  date: '2026-04-05'
+  categories:
+  - Tools
+  - Integrations
