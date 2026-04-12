@@ -736,3 +736,14 @@
   categories:
   - Multimodal
   - Tools
+- title: Prompt injection defense for RAG and tool use
+  description: Defense-in-depth techniques to protect against prompt injection attacks
+    including input validation, secure prompt structure, RAG filtering, and output validation.
+  path: misc/prompt_injection_defense.ipynb
+  authors:
+  - nihanbayrak
+  date: '2026-03-19'
+  categories:
+  - RAG & Retrieval
+  - Tools
+  - Agent Patterns
