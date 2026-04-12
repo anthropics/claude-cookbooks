@@ -736,3 +736,13 @@
   categories:
   - Multimodal
   - Tools
+- title: Multi-turn conversation management
+  description: Strategies for managing conversation history including sliding windows,
+    summarization, and hybrid approaches to stay within context limits.
+  path: misc/multi_turn_conversation_management.ipynb
+  authors:
+  - nihanbayrak
+  date: '2026-03-18'
+  categories:
+  - Responses
+  - Agent Patterns
