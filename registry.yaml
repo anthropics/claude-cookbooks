@@ -736,3 +736,14 @@
   categories:
   - Multimodal
   - Tools
+- title: Production Document Q&A with Dewey's Managed RAG Backend
+  description: Build a production RAG pipeline using Dewey's managed document backend
+    -- upload PDFs, run hybrid search, stream agentic research powered by Claude, and
+    integrate with the Anthropic SDK.
+  path: third_party/Dewey/dewey_rag_pipeline.ipynb
+  authors:
+  - lambdabaa
+  date: '2026-04-05'
+  categories:
+  - Integrations
+  - RAG & Retrieval
