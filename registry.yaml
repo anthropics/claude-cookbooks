@@ -736,3 +736,14 @@
   categories:
   - Multimodal
   - Tools
+- title: Scheduling agent work with the CueAPI MCP server
+  description: Use the ai.cueapi/mcp server to have Claude schedule recurring work,
+    inspect execution history, and post verified outcomes with external IDs and result
+    URLs — so agents can't lie about whether a job actually ran.
+  path: third_party/CueAPI/scheduling_agent_work_with_mcp.ipynb
+  authors:
+  - govindkavaturi-art
+  date: '2026-04-15'
+  categories:
+  - Integrations
+  - Tools

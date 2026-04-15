@@ -45,6 +45,7 @@ If you have ideas for new examples or guides, share them on the [issues page](ht
   - [Wikipedia](https://github.com/anthropics/anthropic-cookbook/blob/main/third_party/Wikipedia/wikipedia-search-cookbook.ipynb/)
   - [Web pages](https://github.com/anthropics/anthropic-cookbook/blob/main/misc/read_web_pages_with_haiku.ipynb)
 - [Embeddings with Voyage AI](https://github.com/anthropics/anthropic-cookbook/blob/main/third_party/VoyageAI/how_to_create_embeddings.md)
+- [Scheduling agent work with CueAPI MCP](https://github.com/anthropics/claude-cookbooks/blob/main/third_party/CueAPI/scheduling_agent_work_with_mcp.ipynb): Use the `ai.cueapi/mcp` server to schedule recurring agent work and post verified outcomes (external IDs + result URLs) so agents can't lie about whether a job actually ran.
 
 ### Multimodal Capabilities
 - [Vision with Claude](https://github.com/anthropics/anthropic-cookbook/tree/main/multimodal): 
