@@ -736,3 +736,15 @@
   categories:
   - Multimodal
   - Tools
+- title: Building a Payment-Aware AI Agent with x402 and Claude
+  description: Discover 250+ x402-payable APIs, verify service trust with EdDSA
+    attestations, and build payment-aware Claude agents using a remote MCP server.
+    No API key, no blockchain setup — just a URL.
+  path: third_party/x402-Discovery/x402_payment_discovery.ipynb
+  authors:
+  - rplryan
+  date: '2025-03-02'
+  categories:
+  - MCP
+  - Payments
+  - Third Party Integrations
