@@ -632,6 +632,16 @@
   categories:
   - Integrations
   - RAG & Retrieval
+- title: Securing MCP servers with Pipelock
+  description: Wrap any MCP server with Pipelock to scan tool calls and responses for
+    prompt injection, DLP leaks, and tool poisoning, with signed action receipts.
+  path: third_party/Pipelock/securing-mcp-with-pipelock.ipynb
+  authors:
+  - luckyPipewrench
+  date: '2026-04-19'
+  categories:
+  - Tools
+  - Integrations
 - title: Iteratively searching Wikipedia with Claude
   description: Legacy notebook showing iterative Wikipedia searches with Claude 2
     for research workflows.
