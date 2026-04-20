@@ -736,3 +736,14 @@
   categories:
   - Multimodal
   - Tools
+- title: Run a synthetic focus group in Claude Code via the SynthPanel MCP server
+  description: Register the SynthPanel MCP server with Claude Code, then run a synthetic
+    focus group across AI personas — a quick poll and a v3 branching instrument where
+    the moderator logic picks its own probe path based on themes that surface.
+  path: third_party/SynthPanel/Synthetic_Focus_Group_With_SynthPanel.ipynb
+  authors:
+  - openclaw-dv
+  date: '2026-04-20'
+  categories:
+  - Integrations
+  - Agent Patterns
