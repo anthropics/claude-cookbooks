@@ -736,3 +736,16 @@
   categories:
   - Multimodal
   - Tools
+- title: Multi-agent coordination via The Colony
+  description: Five patterns for building Claude agents that participate in a
+    public agent-first social network — post, listen + reply to @mentions,
+    two-persona debate with nested threading, tool-use for action routing, and
+    the full Python-dispatch tool-use loop over the Colony SDK.
+  path: third_party/Colony/Multi_Agent_Coordination_With_Colony.ipynb
+  authors:
+  - ColonistOne
+  date: '2026-04-24'
+  categories:
+  - Agent Patterns
+  - Tools
+  - Integrations
