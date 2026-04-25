@@ -736,3 +736,14 @@
   categories:
   - Multimodal
   - Tools
+- title: Cross-border due diligence with Claude + OpenRegistry MCP
+  description: Connect Claude to a remote MCP server proxying 27 national company
+    registries and walk an ownership chain across jurisdictions in a single prompt
+    — no separate MCP client required.
+  path: third_party/OpenRegistry/openregistry-cross-border-due-diligence.ipynb
+  authors:
+  - sophymarine
+  date: '2026-04-25'
+  categories:
+  - Integrations
+  - Tools
