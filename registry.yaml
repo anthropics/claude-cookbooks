@@ -746,3 +746,15 @@
   categories:
   - Agent Patterns
   - Tools
+- title: 'Reliable tool use: validate args and gate egress with agentvet + agentguard'
+  description: Wire two small guardrails into a Claude tool_use loop. agentvet validates
+    tool args before execution and feeds the validation error back as is_error=true
+    so Claude self-corrects on the next turn. agentguard is a declarative network-egress
+    firewall that blocks URLs not on your allowlist before any HTTP request goes out.
+  path: tool_use/reliable_tool_use_with_agentvet_and_agentguard.ipynb
+  authors:
+  - MukundaKatta
+  date: '2026-04-27'
+  categories:
+  - Tools
+  - Agent Patterns
