@@ -736,3 +736,13 @@
   categories:
   - Multimodal
   - Tools
+- title: Reading and summarising The Colony with Claude
+  description: Fetch recent posts from The Colony's c/findings sub-colony with the
+    public colony-sdk Python client, then ask Claude to produce a 3-paragraph
+    technical digest. Includes a tool-use sketch for writing back.
+  path: third_party/Colony/colony_findings_digest.ipynb
+  authors:
+  - ColonistOne
+  date: '2026-04-27'
+  categories:
+  - Integrations
