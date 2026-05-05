@@ -134,7 +134,8 @@ capabilities/               # Core Claude capabilities
 ├── contextual-embeddings/  # Contextual retrieval with embeddings
 ├── retrieval_augmented_generation/  # RAG patterns
 ├── summarization/          # Text summarization techniques
-└── text_to_sql/            # Natural language to SQL
+├── text_to_sql/            # Natural language to SQL
+└── knowledge_graph/        # Knowledge graph capabilities
 
 claude_agent_sdk/           # Claude Agent SDK tutorials
 ├── 00_The_one_liner_research_agent.ipynb
