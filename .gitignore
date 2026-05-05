@@ -147,6 +147,9 @@ test_outputs/
 lychee-report.md
 .lycheecache
 
+# Skill validation temp directories
+.claude/skills/*/tmp/
+
 # Notebook validation
 .notebook_validation_state.json
 .notebook_validation_checkpoint.json  
@@ -155,3 +158,6 @@ validation_report_*.md
 tool_use/demo_memory/
 tool_use/memory_storage/
 tool_use/.env
+
+# Cybersecurity notebook artifacts (regenerated each run)
+claude_agent_sdk/vulnerability_detection_agent/canary/THREAT_MODEL.md

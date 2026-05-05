@@ -26,6 +26,7 @@ Add a new entry to `registry.yaml` for the notebook specified in the prompt abov
 - **categories**: Select 1-2 appropriate categories from this list:
   - Agent Patterns
   - Claude Agent SDK
+  - Cybersecurity
   - Evals
   - Fine-Tuning
   - Multimodal

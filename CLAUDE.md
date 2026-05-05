@@ -68,6 +68,7 @@ ci: CI/CD changes
    - Never commit `.env` files
    - Use `dotenv.load_dotenv()` instead of `os.environ` directly
    - Define API key access pattern: `os.environ.get("ANTHROPIC_API_KEY")`
+1. **API Keys:** Never commit `.env` files. Use `dotenv.load_dotenv()` then access keys via `os.environ` or `os.getenv()`
 
 2. **Dependencies:**
    - Use `uv add <package>` or `uv add --dev <package>`
@@ -78,6 +79,16 @@ ci: CI/CD changes
    - Haiku: `claude-haiku-4-5-20251001`
    - Opus: `claude-opus-4-5-20251101`
    - Define model as a `MODEL` constant at the top of notebooks
+   - Sonnet: `claude-sonnet-4-6`
+   - Haiku: `claude-haiku-4-5`
+   - Opus: `claude-opus-4-6`
+   - **Never use dated model IDs** (e.g., `claude-sonnet-4-6-20250514`). Always use the non-dated alias.
+   - **Bedrock model IDs** follow a different format. Use the base Bedrock model ID from the docs:
+     - Opus 4.6: `anthropic.claude-opus-4-6-v1`
+     - Sonnet 4.5: `anthropic.claude-sonnet-4-5-20250929-v1:0`
+     - Haiku 4.5: `anthropic.claude-haiku-4-5-20251001-v1:0`
+     - Prepend `global.` for global endpoints (recommended): `global.anthropic.claude-opus-4-6-v1`
+     - Note: Bedrock models before Opus 4.6 require dated IDs in their Bedrock model ID.
 
 4. **Notebooks:**
    - Keep outputs in notebooks (intentional for demonstration)

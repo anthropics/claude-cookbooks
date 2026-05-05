@@ -1,0 +1,40 @@
+2026-04-07T03:08:11Z INFO  checkout-svc starting build=2026.04.06-r3 pod=checkout-svc-7d9f6b8c4-xk2pq
+2026-04-07T03:08:11Z INFO  config loaded env=prod region=us-east
+2026-04-07T03:08:12Z INFO  http listening on :8080
+2026-04-07T03:08:12Z INFO  connected to redis cart-cache:6379
+2026-04-07T03:08:13Z INFO  connected to postgres orders-db:5432 pool=20
+2026-04-07T03:08:14Z INFO  GET /healthz 200 1ms
+2026-04-07T03:08:31Z INFO  POST /v1/checkout 200 84ms order_id=ord_88121
+2026-04-07T03:08:33Z INFO  POST /v1/checkout 200 91ms order_id=ord_88122
+2026-04-07T03:08:47Z INFO  pricing cache warmed entries=14092
+2026-04-07T03:09:02Z INFO  POST /v1/checkout 200 77ms order_id=ord_88123
+2026-04-07T03:09:18Z WARN  heap 101MiB / 128MiB (79%)
+2026-04-07T03:09:41Z INFO  POST /v1/checkout 200 112ms order_id=ord_88124
+2026-04-07T03:09:55Z WARN  heap 118MiB / 128MiB (92%)
+2026-04-07T03:10:03Z WARN  gc pause 412ms
+2026-04-07T03:10:09Z ERROR allocation failed: cannot allocate 8MiB (heap exhausted)
+2026-04-07T03:10:09Z FATAL OutOfMemoryError in pricing.recompute
+2026-04-07T03:10:10Z INFO  k8s: container checkout-svc OOMKilled (exit 137)
+2026-04-07T03:10:10Z INFO  k8s: restarting container checkout-svc (restartCount=1)
+2026-04-07T03:10:14Z INFO  checkout-svc starting build=2026.04.06-r3 pod=checkout-svc-7d9f6b8c4-xk2pq
+2026-04-07T03:10:14Z INFO  http listening on :8080
+2026-04-07T03:10:15Z INFO  connected to redis cart-cache:6379
+2026-04-07T03:10:16Z INFO  connected to postgres orders-db:5432 pool=20
+2026-04-07T03:10:44Z INFO  pricing cache warmed entries=14092
+2026-04-07T03:11:01Z WARN  heap 104MiB / 128MiB (81%)
+2026-04-07T03:11:29Z WARN  heap 121MiB / 128MiB (94%)
+2026-04-07T03:11:36Z ERROR allocation failed: cannot allocate 8MiB (heap exhausted)
+2026-04-07T03:11:36Z FATAL OutOfMemoryError in pricing.recompute
+2026-04-07T03:11:37Z INFO  k8s: container checkout-svc OOMKilled (exit 137)
+2026-04-07T03:11:37Z INFO  k8s: restarting container checkout-svc (restartCount=2)
+2026-04-07T03:11:41Z INFO  checkout-svc starting build=2026.04.06-r3 pod=checkout-svc-7d9f6b8c4-xk2pq
+2026-04-07T03:11:41Z INFO  http listening on :8080
+2026-04-07T03:12:08Z INFO  pricing cache warmed entries=14092
+2026-04-07T03:12:39Z WARN  heap 119MiB / 128MiB (93%)
+2026-04-07T03:12:51Z FATAL OutOfMemoryError in pricing.recompute
+2026-04-07T03:12:52Z INFO  k8s: container checkout-svc OOMKilled (exit 137)
+2026-04-07T03:12:52Z INFO  k8s: restarting container checkout-svc (restartCount=3)
+2026-04-07T03:12:52Z WARN  k8s: back-off restarting failed container (CrashLoopBackOff)
+2026-04-07T03:13:22Z INFO  k8s: restarting container checkout-svc (restartCount=4)
+2026-04-07T03:14:01Z INFO  k8s: container checkout-svc OOMKilled (exit 137)
+2026-04-07T03:14:01Z WARN  k8s: back-off restarting failed container (CrashLoopBackOff)

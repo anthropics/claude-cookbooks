@@ -69,7 +69,7 @@ def _rerank_results(query: str, results: list[dict], k: int = 3) -> list[dict]:
     client = Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
     try:
         response = client.messages.create(
-            model="claude-sonnet-4-5",
+            model="claude-sonnet-4-6",
             max_tokens=50,
             messages=[
                 {"role": "user", "content": prompt},
