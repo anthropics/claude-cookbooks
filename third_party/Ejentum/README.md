@@ -1,6 +1,6 @@
 # Ejentum <> Claude Cookbooks
 
-[Ejentum](https://ejentum.com) is a Reasoning Harness for agentic AI. Its API exposes four cognitive harness modes (`reasoning`, `code`, `anti-deception`, `memory`). Each call returns a structured cognitive scaffold the model ingests before generating: a named failure pattern, an executable procedure, suppression vectors that block the obvious shortcut, and an integrity check for self-verification.
+[Ejentum](https://ejentum.com) is a Reasoning Harness for agentic AI: a library of 679 cognitive operations engineered in natural language, organized across four harnesses (`reasoning`, `code`, `anti-deception`, `memory`). Each harness call retrieves a task-matched scaffold rather than serving a fixed template: a named failure pattern, an executable procedure, suppression vectors that block the obvious shortcut, and an integrity check for self-verification. The model ingests the scaffold and writes from it.
 
 * The [Anti-Deception Harness Notebook](./anti_deception_harness.ipynb) shows how to inject a sunk-cost-resistance scaffold into Claude's system prompt and observe the behavioral diff against an unaugmented baseline.
 
