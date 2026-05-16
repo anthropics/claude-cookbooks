@@ -502,6 +502,17 @@
   date: '2024-12-19'
   categories:
   - Agent Patterns
+- title: Commit-reveal multi-agent evaluation
+  description: Cryptographically enforce evaluator independence — each agent seals
+    a verdict hash before any reveal, making anchoring bias and result-gaming structurally
+    impossible.
+  path: patterns/agents/commit_reveal_evaluation.ipynb
+  authors:
+  - topeuph-ai
+  date: '2026-04-18'
+  categories:
+  - Agent Patterns
+  - Evals
 - title: Introduction to Claude Skills
   description: Create documents, analyze data, automate workflows with Claude's Excel,
     PowerPoint, PDF skills.
