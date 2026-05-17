@@ -69,4 +69,4 @@ If you have ideas for new examples or guides, share them on the [issues page](ht
 
 ## Authors
 
-- David Cohen
+- DC
