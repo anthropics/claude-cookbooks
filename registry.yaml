@@ -796,3 +796,13 @@
   categories:
   - Security
   - Multimodal
+- title: 'Securing LLM outputs: detecting credential leaks and dangerous code'
+  description: Build regex-based output security scanners that detect leaked credentials,
+    XSS, SQL injection, shell commands, and path traversal in Claude responses.
+    Covers OWASP LLM02 with a composable guardrail pipeline.
+  path: misc/llm_output_security_scanner.ipynb
+  authors:
+  - francose
+  date: '2026-05-17'
+  categories:
+  - Security
