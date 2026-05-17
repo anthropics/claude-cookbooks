@@ -794,7 +794,7 @@
   - francose
   date: '2026-05-13'
   categories:
-  - Security
+  - Cybersecurity
   - Multimodal
 - title: 'Securing LLM outputs: detecting credential leaks and dangerous code'
   description: Build regex-based output security scanners that detect leaked credentials,
@@ -805,4 +805,4 @@
   - francose
   date: '2026-05-17'
   categories:
-  - Security
+  - Cybersecurity
