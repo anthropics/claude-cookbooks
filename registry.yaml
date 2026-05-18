@@ -502,6 +502,17 @@
   date: '2024-12-19'
   categories:
   - Agent Patterns
+- title: Defending tool-using agents against prompt injection
+  description: Defense-in-depth patterns for agents processing untrusted content.
+    Content boundary markers, tool output sanitization, argument validation,
+    canary token detection, and an adversarial testing harness.
+  path: patterns/agents/defending_against_prompt_injection.ipynb
+  authors:
+  - kartikganesh
+  date: '2026-05-17'
+  categories:
+  - Agent Patterns
+  - Cybersecurity
 - title: Introduction to Claude Skills
   description: Create documents, analyze data, automate workflows with Claude's Excel,
     PowerPoint, PDF skills.
