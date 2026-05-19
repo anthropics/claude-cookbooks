@@ -24,7 +24,7 @@ The Claude Cookbooks thrive on the contributions of the developer community. We 
 
 To avoid duplication of efforts, please review the existing issues and pull requests before contributing.
 
-If you have ideas for new examples or guides, share them on the [issues page](https://github.com/anthropics/anthropic-cookbook/issues).
+If you have ideas for new examples or guides, share them on the [issues page](https://github.com/anthropics/claude-cookbooks/issues).
 
 ## Table of recipes
 
