@@ -502,6 +502,17 @@
   date: '2024-12-19'
   categories:
   - Agent Patterns
+- title: Human-in-the-loop approval patterns
+  description: Architecturally-enforced approval gates for regulated environments.
+    Tool-gated drafts, schema-validated handoffs, and immutable approval records as
+    compliance artifacts.
+  path: patterns/agents/human_in_the_loop_approvals.ipynb
+  authors:
+  - kartikganesh
+  date: '2026-05-17'
+  categories:
+  - Agent Patterns
+  - Tools
 - title: Introduction to Claude Skills
   description: Create documents, analyze data, automate workflows with Claude's Excel,
     PowerPoint, PDF skills.
