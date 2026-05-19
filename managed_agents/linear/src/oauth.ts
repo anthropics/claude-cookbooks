@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from "fs";
+import { chmodSync, readFileSync, writeFileSync } from "fs";
 import { join } from "path";
 
 const LINEAR_CLIENT_ID = process.env.LINEAR_CLIENT_ID!;
@@ -17,7 +17,17 @@ function load(): Map<string, TokenEntry> {
   }
 }
 function save(m: Map<string, TokenEntry>) {
-  writeFileSync(TOKEN_FILE, JSON.stringify(Object.fromEntries(m), null, 2));
+  // Token file holds Linear OAuth access + refresh tokens per workspace.
+  // Restrict to owner-only on POSIX so a co-tenant on the same host can't
+  // recover them. The `mode` option applies on initial create; chmod after
+  // handles the pre-existing-file (overwrite) case. Try/catch wraps chmod
+  // because Windows does not support POSIX modes.
+  writeFileSync(TOKEN_FILE, JSON.stringify(Object.fromEntries(m), null, 2), { mode: 0o600 });
+  try {
+    chmodSync(TOKEN_FILE, 0o600);
+  } catch {
+    // Windows fallback.
+  }
 }
 const tokens = load();
 
