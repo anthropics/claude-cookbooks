@@ -19,6 +19,7 @@ per-session calls.
 | Variant | Compute | Runner |
 |---|---|---|
 | [`docker/`](docker/) | Plain Docker on a host you control | `ant beta:worker run` in a per-session container |
+| [`boxlite/`](boxlite/) | Self-hosted [BoxLite](https://github.com/boxlite-ai/boxlite) microVMs (`boxlite serve` on a host you control) | Same `sandbox_runner.py` running in a BoxLite microVM via REST |
 | [`cf/`](cf/) | Cloudflare Containers | `ant beta:worker run` in a per-session Cloudflare Container |
 | [`cf-worker/`](cf-worker/) | Cloudflare Workers (no container) | TS `SessionToolRunner` in a Durable Object with an in-isolate fake filesystem |
 | [`modal/`](modal/) | [Modal](https://modal.com) | Python `sandbox_runner.py` in a Modal Sandbox with a per-session Volume |
