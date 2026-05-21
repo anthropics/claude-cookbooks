@@ -1,4 +1,17 @@
 # yaml-language-server: $schema=./.github/registry_schema.json
+- title: Tracing the Anthropic SDK with Future AGI
+  description: Quick-start showing how to wire Future AGI tracing into the Anthropic
+    Python SDK via the traceAI-anthropic package. After two lines of setup, every
+    client.messages.create call is captured as a span with the prompt, tool calls,
+    token usage, and latency.
+  path: third_party/FutureAGI/future_agi_observability.ipynb
+  authors:
+  - future-agi
+  date: '2026-05-21'
+  categories:
+  - Integrations
+  - Observability
+  - Tools
 - title: Build a data analyst agent with Claude Managed Agents
   description: Build an analyst that turns a CSV into a narrative HTML report with
     interactive charts, using a sandboxed environment and file mounting.
