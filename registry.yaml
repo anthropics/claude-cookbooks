@@ -1,4 +1,16 @@
 # yaml-language-server: $schema=./.github/registry_schema.json
+- title: How AI Agents Are Replacing the Slowest Part of Paid Media
+  description: Create a complete multi-platform ad campaign (Google Search + Meta
+    Ads with 8 creative variants) in a single Claude conversation using the Adspirer
+    MCP server.
+  path: third_party/adspirer_campaign_launch.ipynb
+  authors:
+  - amekala
+  date: '2026-04-02'
+  categories:
+  - Tools
+  - Integrations
+  - Agent Patterns
 - title: Build a data analyst agent with Claude Managed Agents
   description: Build an analyst that turns a CSV into a narrative HTML report with
     interactive charts, using a sandboxed environment and file mounting.
