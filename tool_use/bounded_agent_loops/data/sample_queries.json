@@ -1,0 +1,42 @@
+[
+  {
+    "query": "Which Nordic country has Icelandic as its official language?",
+    "gold_contains": ["Iceland"],
+    "notes": "Single-hop baseline. One country_info call resolves it. Expect ~1 iteration on both configs; shows the cost of guards on simple workloads."
+  },
+  {
+    "query": "What is the official currency of the country whose capital is Helsinki?",
+    "gold_contains": ["Euro"],
+    "notes": "Single-hop. Haiku knows Helsinki=Finland; one country_info call returns the currency."
+  },
+  {
+    "query": "Among the G7 countries (United States, United Kingdom, Canada, France, Germany, Italy, Japan), which has the largest population?",
+    "gold_contains": ["United States"],
+    "notes": "Forces ~7 country_info calls. Planner bundles in groups of 1-3 per iteration; unguarded loop takes multiple iterations."
+  },
+  {
+    "query": "Compare the populations of the capital cities of Germany, France, and the United Kingdom. Which capital has the largest population?",
+    "gold_contains": ["London"],
+    "notes": "Capital populations are not in country_info; forces multiple wikipedia_summary calls plus a comparison step. Several iterations expected."
+  },
+  {
+    "query": "Among the five most populous countries in Europe (Russia, Germany, United Kingdom, France, Italy), which has the smallest land area?",
+    "gold_contains": ["United Kingdom"],
+    "notes": "Five country_info calls plus area lookups via wikipedia. Longer parallel batch + comparison; the cap may bind here."
+  },
+  {
+    "query": "List the official currencies of all G7 countries (United States, United Kingdom, Canada, France, Germany, Italy, Japan). Which currency is shared by the most countries?",
+    "gold_contains": ["Euro"],
+    "notes": "Seven country_info calls; gold answer mentions Euro (shared by France, Germany, Italy). Stresses parallel batching."
+  },
+  {
+    "query": "Compare the total areas of all G7 countries (United States, United Kingdom, Canada, France, Germany, Italy, Japan) using Wikipedia. Which has the largest total area?",
+    "gold_contains": ["Canada"],
+    "notes": "Hard. Total area is not in country_info, so each G7 country needs a wikipedia_summary call. ~7 Wikipedia calls, ~3+ iterations. Designed to bind the cap=3 guard. Phrased as 'total area' rather than 'land area' because Canada (9,984,670 km^2 total) clearly beats the US (9,833,520 km^2 total), whereas by land-area-excluding-water the US (9.15M km^2) edges Canada (9.09M km^2)."
+  },
+  {
+    "query": "Among the G7 countries (United States, United Kingdom, Canada, France, Germany, Italy, Japan), which has the most UNESCO World Heritage Sites?",
+    "gold_contains": ["Italy"],
+    "notes": "Hard. UNESCO Heritage Site count is not in country_info, so each G7 country needs a wikipedia_summary call. ~7 Wikipedia calls, ~3+ iterations. Designed to bind the cap=3 guard. Italy (61 sites as of 2025) clearly beats the next G7 contenders (Germany ~55, France ~52)."
+  }
+]

@@ -785,3 +785,18 @@
   categories:
   - Claude Managed Agents
   - Evals
+- title: Bounded agent loops with Claude
+  description: Make termination of a multi-step agent loop an explicit, auditable
+    decision rather than implicit in the planner's behaviour. Walks through a hard
+    iteration cap, a per-request token budget, and a structured reflector that
+    commits to should_continue via a Pydantic schema. Built on a four-node loop
+    (planner / executor / reflector / recommender) over two free public APIs with
+    an evaluation harness illustrating the cost-vs-accuracy trade-off.
+  path: tool_use/bounded_agent_loops/guide.ipynb
+  authors:
+  - ikuzuki
+  date: '2026-05-22'
+  categories:
+  - Agent Patterns
+  - Tools
+  - Evals
