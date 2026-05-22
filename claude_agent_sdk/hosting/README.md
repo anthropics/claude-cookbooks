@@ -66,7 +66,7 @@ hosting/
   .env.example         ← ANTHROPIC_API_KEY, MODEL
   docker/              ← Tier 1: local Docker / docker-compose
   modal/               ← Tier 2: Modal Sandbox
-  kubernetes/          ← Tier 3: self-hosted k8s (separate contributor)
+  kubernetes/          ← Tier 3: pod-per-session on your own k8s cluster
 ```
 
 ## Build
