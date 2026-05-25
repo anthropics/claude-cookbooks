@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=./.github/registry_schema.json
-- title: Secure Claude Code routines: avoiding credential leakage
+- title: "Secure Claude Code routines: avoiding credential leakage"
   description: How to write Claude Code routine files safely — using environment
     variable placeholders instead of hardcoded secrets, with a Python credential
     scanner and pre-commit hook you can drop into any project.
