@@ -785,3 +785,19 @@
   categories:
   - Claude Managed Agents
   - Evals
+- title: Enforcing Tool-Use Contracts in Agentic Loops
+  description: A deterministic validation layer that sits between agentic loop rounds
+    to catch contract violations -- trimmed results, dropped mandatory items, skipped
+    render calls -- before they reach the user.
+  path: tool_use/render_contract_enforcement.ipynb
+  authors:
+  - CharlesKahn
+  date: '2026-05-25'
+  categories:
+  - Tools
+  - Agent Patterns
+  tags:
+  - tool-use
+  - agents
+  - reliability
+  - patterns
