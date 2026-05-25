@@ -785,3 +785,13 @@
   categories:
   - Claude Managed Agents
   - Evals
+- title: Persistent project context for Claude
+  description: Stop re-explaining your project every session — capture its essentials
+    in one small structured file and pass it in the system prompt, so Claude is grounded
+    from the first message. A runnable before/after with the Anthropic SDK.
+  path: capabilities/persistent_project_context/guide.ipynb
+  authors:
+  - Wolfe-Jam
+  date: '2026-05-25'
+  categories:
+  - Agent Patterns

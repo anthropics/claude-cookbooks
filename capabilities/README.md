@@ -16,6 +16,8 @@ Welcome to the Capabilities section of the Claude Cookbooks! This directory cont
 
 - **[Knowledge Graph Construction with Claude](./knowledge_graph/guide.ipynb)**: Build a knowledge graph from unstructured text end-to-end — named entity recognition, relation extraction, entity resolution, and multi-hop querying — using structured outputs for schema-validated extraction and Claude-driven deduplication in place of string-similarity heuristics.
 
+- **[Persistent Project Context for Claude](./persistent_project_context/guide.ipynb)**: Stop re-explaining your project every session. Capture a project's essentials — stack, goals, and how to run and test it — in one small structured file, commit it to the repo, and pass it in the system prompt so Claude is grounded from the first message. A runnable before/after with the Anthropic SDK.
+
 ## Getting Started
 
 To get started with these guides, simply navigate to the desired guide's directory and follow the instructions provided in the `guide.ipynb` file. Each guide is self-contained and includes all the necessary code, data, and evaluation scripts to reproduce the examples and experiments.
