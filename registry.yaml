@@ -540,6 +540,17 @@
   date: '2025-10-15'
   categories:
   - Skills
+- title: Building a world-aware agent with prediction market data
+  description: Give Claude real-time world awareness by injecting calibrated prediction
+    market data into the system prompt, with tool use for deeper market search.
+  path: third_party/SimpleFunctions/world_aware_agent.ipynb
+  authors:
+  - patrickliu0077
+  date: '2026-04-05'
+  categories:
+  - Integrations
+  - Agent Patterns
+  - Tools
 - title: Transcribe an audio file with Deepgram & use Anthropic to prepare interview
     questions!
   description: Transcribe audio with Deepgram and generate interview questions using
