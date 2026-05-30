@@ -796,3 +796,14 @@
   categories:
   - Claude Managed Agents
   - Evals
+- title: Grounding Claude with Dynamic Context via UserPromptSubmit Hooks
+  description: Inject real-time state (current date, git branch, env tier, feature
+    flags) into every Claude turn using the Anthropic SDK and Claude Code CLI
+    UserPromptSubmit hooks, so the model never reasons from stale assumptions.
+  path: capabilities/claude_code_hooks/guide.ipynb
+  authors:
+  - daveCode-dot
+  date: '2026-05-27'
+  categories:
+  - Agent Patterns
+  - Skills
