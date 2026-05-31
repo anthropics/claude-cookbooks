@@ -796,3 +796,24 @@
   categories:
   - Claude Managed Agents
   - Evals
+- title: Defending against multimodal prompt injection
+  description: Detect and defend against prompt injection payloads hidden in images
+    and PDFs that target Claude's vision capabilities, with layered scanning and
+    system prompt hardening.
+  path: misc/multimodal_prompt_injection.ipynb
+  authors:
+  - francose
+  date: '2026-05-13'
+  categories:
+  - Cybersecurity
+  - Multimodal
+- title: 'Securing LLM outputs: detecting credential leaks and dangerous code'
+  description: Build regex-based output security scanners that detect leaked credentials,
+    XSS, SQL injection, shell commands, and path traversal in Claude responses.
+    Covers OWASP LLM02 with a composable guardrail pipeline.
+  path: misc/llm_output_security_scanner.ipynb
+  authors:
+  - francose
+  date: '2026-05-17'
+  categories:
+  - Cybersecurity
