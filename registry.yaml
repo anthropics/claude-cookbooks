@@ -796,3 +796,14 @@
   categories:
   - Claude Managed Agents
   - Evals
+- title: Defending against multimodal prompt injection
+  description: Detect and defend against prompt injection payloads hidden in images
+    and PDFs that target Claude's vision capabilities, with layered scanning and
+    system prompt hardening.
+  path: misc/multimodal_prompt_injection.ipynb
+  authors:
+  - francose
+  date: '2026-05-13'
+  categories:
+  - Cybersecurity
+  - Multimodal
