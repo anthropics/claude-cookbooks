@@ -796,3 +796,13 @@
   categories:
   - Claude Managed Agents
   - Evals
+- title: Twitter / X research agent with GetXAPI
+  description: Build a Claude agent that researches a topic on Twitter / X using GetXAPI's
+    tweet-search and user-info endpoints. Demonstrates wrapping a third-party REST
+    API as Claude tools and the tool-use loop pattern.
+  path: third_party/GetXAPI/twitter_research_agent.ipynb
+  authors:
+  - bozad
+  date: '2026-05-31'
+  categories:
+  - Integrations
