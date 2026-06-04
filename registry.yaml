@@ -796,3 +796,14 @@
   categories:
   - Claude Managed Agents
   - Evals
+- title: Build a minimal tool-use agent loop from scratch
+  description: Implement the core agent loop by hand with the Anthropic SDK — call
+    the model, run the tools it requests (including several in one turn), feed the
+    results back, and repeat until it stops.
+  path: tool_use/minimal_agent_loop.ipynb
+  authors:
+  - mnifzied-create
+  date: '2026-06-04'
+  categories:
+  - Tools
+  - Agent Patterns
