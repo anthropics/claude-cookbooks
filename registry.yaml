@@ -796,3 +796,13 @@
   categories:
   - Claude Managed Agents
   - Evals
+- title: Social Media Intelligence with XPOZ MCP
+  description: Use XPOZ MCP server to fetch cross-platform social data (Twitter,
+    Reddit, Instagram) and analyze sentiment with Claude
+  path: misc/xpoz_social_intelligence/xpoz_social_intelligence.ipynb
+  authors:
+  - oferw-xpz
+  date: '2026-04-13'
+  categories:
+  - Tools
+  - Integrations
