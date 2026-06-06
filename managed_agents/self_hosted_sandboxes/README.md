@@ -24,6 +24,7 @@ per-session calls.
 | [`modal/`](modal/) | [Modal](https://modal.com) | Python `sandbox_runner.py` in a Modal Sandbox with a per-session Volume |
 | [`daytona/`](daytona/) | [Daytona](https://www.daytona.io/) | Same `sandbox_runner.py` uploaded to a Daytona sandbox |
 | [`vercel/`](vercel/) | Vercel Functions + Sandbox | Node `runner.mjs` in a Vercel Sandbox |
+| [`agentcore/`](agentcore/) | [Amazon Bedrock AgentCore Runtime](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime.html) | `ant beta:worker run` in a per-session microVM, addressed by `runtimeSessionId == ANTHROPIC_SESSION_ID` |
 
 ## Getting started
 
