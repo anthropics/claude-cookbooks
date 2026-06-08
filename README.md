@@ -2,7 +2,14 @@
 
 <p align="center">
   <a href="https://github.com/anthropics/claude-cookbooks/stargazers"><img src="https://img.shields.io/github/stars/anthropics/claude-cookbooks?style=social" alt="Stars"/></a>
-  <a href="https://github.com/anthropics/claude-cookbooks/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License"/></a>
+  <a href="https://github.com/anthropics/claude-cookbooks/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="## Table of Contents
+- [Prerequisites](#prerequisites)
+- [Explore Further](#explore-further)
+- [Contributing](#contributing)
+- [Table of recipes](#table-of-recipes)
+- [Additional Resources](#additional-resources)
+- [License](#license)
+"/></a>
 </p>
 
 The Claude Cookbooks provide code and guides designed to help developers build with Claude, offering copy-able code snippets that you can easily integrate into your own projects.
@@ -12,12 +19,26 @@ The Claude Cookbooks provide code and guides designed to help developers build w
 - [Getting Started](#getting-started)
 - [Usage](#usage)
 - [Contributing](#contributing)
+- [## Table of Contents
+- [Prerequisites](#prerequisites)
+- [Explore Further](#explore-further)
+- [Contributing](#contributing)
+- [Table of recipes](#table-of-recipes)
+- [Additional Resources](#additional-resources)
 - [License](#license)
+](#license)
 ## Prerequisites
 
 <p align="center">
   <a href="https://github.com/anthropics/claude-cookbooks/stargazers"><img src="https://img.shields.io/github/stars/anthropics/claude-cookbooks?style=social" alt="Stars"/></a>
-  <a href="https://github.com/anthropics/claude-cookbooks/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License"/></a>
+  <a href="https://github.com/anthropics/claude-cookbooks/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="## Table of Contents
+- [Prerequisites](#prerequisites)
+- [Explore Further](#explore-further)
+- [Contributing](#contributing)
+- [Table of recipes](#table-of-recipes)
+- [Additional Resources](#additional-resources)
+- [License](#license)
+"/></a>
 </p>
 
 To make the most of the examples in this cookbook, you'll need a Claude API key (sign up for free [here](https://www.anthropic.com)).
@@ -31,12 +52,26 @@ If you're new to working with the Claude API, we recommend starting with our [Cl
 - [Getting Started](#getting-started)
 - [Usage](#usage)
 - [Contributing](#contributing)
+- [## Table of Contents
+- [Prerequisites](#prerequisites)
+- [Explore Further](#explore-further)
+- [Contributing](#contributing)
+- [Table of recipes](#table-of-recipes)
+- [Additional Resources](#additional-resources)
 - [License](#license)
+](#license)
 ## Explore Further
 
 <p align="center">
   <a href="https://github.com/anthropics/claude-cookbooks/stargazers"><img src="https://img.shields.io/github/stars/anthropics/claude-cookbooks?style=social" alt="Stars"/></a>
-  <a href="https://github.com/anthropics/claude-cookbooks/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License"/></a>
+  <a href="https://github.com/anthropics/claude-cookbooks/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="## Table of Contents
+- [Prerequisites](#prerequisites)
+- [Explore Further](#explore-further)
+- [Contributing](#contributing)
+- [Table of recipes](#table-of-recipes)
+- [Additional Resources](#additional-resources)
+- [License](#license)
+"/></a>
 </p>
 
 Looking for more resources to enhance your experience with Claude and AI assistants? Check out these helpful links:
@@ -49,7 +84,14 @@ Looking for more resources to enhance your experience with Claude and AI assista
 
 <p align="center">
   <a href="https://github.com/anthropics/claude-cookbooks/stargazers"><img src="https://img.shields.io/github/stars/anthropics/claude-cookbooks?style=social" alt="Stars"/></a>
-  <a href="https://github.com/anthropics/claude-cookbooks/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License"/></a>
+  <a href="https://github.com/anthropics/claude-cookbooks/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="## Table of Contents
+- [Prerequisites](#prerequisites)
+- [Explore Further](#explore-further)
+- [Contributing](#contributing)
+- [Table of recipes](#table-of-recipes)
+- [Additional Resources](#additional-resources)
+- [License](#license)
+"/></a>
 </p>
 
 The Claude Cookbooks thrives on the contributions of the developer community. We value your input, whether it's submitting an idea, fixing a typo, adding a new guide, or improving an existing one. By contributing, you help make this resource even more valuable for everyone.
@@ -63,19 +105,40 @@ If you have ideas for new examples or guides, share them on the [issues page](ht
 - [Getting Started](#getting-started)
 - [Usage](#usage)
 - [Contributing](#contributing)
+- [## Table of Contents
+- [Prerequisites](#prerequisites)
+- [Explore Further](#explore-further)
+- [Contributing](#contributing)
+- [Table of recipes](#table-of-recipes)
+- [Additional Resources](#additional-resources)
 - [License](#license)
+](#license)
 ## Table of recipes
 
 <p align="center">
   <a href="https://github.com/anthropics/claude-cookbooks/stargazers"><img src="https://img.shields.io/github/stars/anthropics/claude-cookbooks?style=social" alt="Stars"/></a>
-  <a href="https://github.com/anthropics/claude-cookbooks/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License"/></a>
+  <a href="https://github.com/anthropics/claude-cookbooks/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="## Table of Contents
+- [Prerequisites](#prerequisites)
+- [Explore Further](#explore-further)
+- [Contributing](#contributing)
+- [Table of recipes](#table-of-recipes)
+- [Additional Resources](#additional-resources)
+- [License](#license)
+"/></a>
 </p>
 
 ### Capabilities
 
 <p align="center">
   <a href="https://github.com/anthropics/claude-cookbooks/stargazers"><img src="https://img.shields.io/github/stars/anthropics/claude-cookbooks?style=social" alt="Stars"/></a>
-  <a href="https://github.com/anthropics/claude-cookbooks/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License"/></a>
+  <a href="https://github.com/anthropics/claude-cookbooks/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="## Table of Contents
+- [Prerequisites](#prerequisites)
+- [Explore Further](#explore-further)
+- [Contributing](#contributing)
+- [Table of recipes](#table-of-recipes)
+- [Additional Resources](#additional-resources)
+- [License](#license)
+"/></a>
 </p>
 - [Classification](https://github.com/anthropics/anthropic-cookbook/tree/main/capabilities/classification): Explore techniques for text and data classification using Claude.
 - [Retrieval Augmented Generation](https://github.com/anthropics/anthropic-cookbook/tree/main/capabilities/retrieval_augmented_generation): Learn how to enhance Claude's responses with external knowledge.
@@ -86,12 +149,26 @@ If you have ideas for new examples or guides, share them on the [issues page](ht
 - [Getting Started](#getting-started)
 - [Usage](#usage)
 - [Contributing](#contributing)
+- [## Table of Contents
+- [Prerequisites](#prerequisites)
+- [Explore Further](#explore-further)
+- [Contributing](#contributing)
+- [Table of recipes](#table-of-recipes)
+- [Additional Resources](#additional-resources)
 - [License](#license)
+](#license)
 ### Tool Use and Integration
 
 <p align="center">
   <a href="https://github.com/anthropics/claude-cookbooks/stargazers"><img src="https://img.shields.io/github/stars/anthropics/claude-cookbooks?style=social" alt="Stars"/></a>
-  <a href="https://github.com/anthropics/claude-cookbooks/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License"/></a>
+  <a href="https://github.com/anthropics/claude-cookbooks/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="## Table of Contents
+- [Prerequisites](#prerequisites)
+- [Explore Further](#explore-further)
+- [Contributing](#contributing)
+- [Table of recipes](#table-of-recipes)
+- [Additional Resources](#additional-resources)
+- [License](#license)
+"/></a>
 </p>
 - [Tool use](https://github.com/anthropics/anthropic-cookbook/tree/main/tool_use): Learn how to integrate Claude with external tools and functions to extend its capabilities.
   - [Customer service agent](https://github.com/anthropics/anthropic-cookbook/blob/main/tool_use/customer_service_agent.ipynb)
@@ -102,7 +179,14 @@ If you have ideas for new examples or guides, share them on the [issues page](ht
 
 <p align="center">
   <a href="https://github.com/anthropics/claude-cookbooks/stargazers"><img src="https://img.shields.io/github/stars/anthropics/claude-cookbooks?style=social" alt="Stars"/></a>
-  <a href="https://github.com/anthropics/claude-cookbooks/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License"/></a>
+  <a href="https://github.com/anthropics/claude-cookbooks/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="## Table of Contents
+- [Prerequisites](#prerequisites)
+- [Explore Further](#explore-further)
+- [Contributing](#contributing)
+- [Table of recipes](#table-of-recipes)
+- [Additional Resources](#additional-resources)
+- [License](#license)
+"/></a>
 </p>
 - [Retrieval augmented generation](https://github.com/anthropics/anthropic-cookbook/tree/main/third_party): Supplement Claude's knowledge with external data sources.
   - [Vector databases (Pinecone)](https://github.com/anthropics/anthropic-cookbook/blob/main/third_party/Pinecone/rag_using_pinecone.ipynb)
@@ -114,7 +198,14 @@ If you have ideas for new examples or guides, share them on the [issues page](ht
 
 <p align="center">
   <a href="https://github.com/anthropics/claude-cookbooks/stargazers"><img src="https://img.shields.io/github/stars/anthropics/claude-cookbooks?style=social" alt="Stars"/></a>
-  <a href="https://github.com/anthropics/claude-cookbooks/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License"/></a>
+  <a href="https://github.com/anthropics/claude-cookbooks/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="## Table of Contents
+- [Prerequisites](#prerequisites)
+- [Explore Further](#explore-further)
+- [Contributing](#contributing)
+- [Table of recipes](#table-of-recipes)
+- [Additional Resources](#additional-resources)
+- [License](#license)
+"/></a>
 </p>
 - [Vision with Claude](https://github.com/anthropics/anthropic-cookbook/tree/main/multimodal): 
   - [Getting started with images](https://github.com/anthropics/anthropic-cookbook/blob/main/multimodal/getting_started_with_vision.ipynb)
@@ -128,12 +219,26 @@ If you have ideas for new examples or guides, share them on the [issues page](ht
 - [Getting Started](#getting-started)
 - [Usage](#usage)
 - [Contributing](#contributing)
+- [## Table of Contents
+- [Prerequisites](#prerequisites)
+- [Explore Further](#explore-further)
+- [Contributing](#contributing)
+- [Table of recipes](#table-of-recipes)
+- [Additional Resources](#additional-resources)
 - [License](#license)
+](#license)
 ### Advanced Techniques
 
 <p align="center">
   <a href="https://github.com/anthropics/claude-cookbooks/stargazers"><img src="https://img.shields.io/github/stars/anthropics/claude-cookbooks?style=social" alt="Stars"/></a>
-  <a href="https://github.com/anthropics/claude-cookbooks/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License"/></a>
+  <a href="https://github.com/anthropics/claude-cookbooks/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="## Table of Contents
+- [Prerequisites](#prerequisites)
+- [Explore Further](#explore-further)
+- [Contributing](#contributing)
+- [Table of recipes](#table-of-recipes)
+- [Additional Resources](#additional-resources)
+- [License](#license)
+"/></a>
 </p>
 - [Sub-agents](https://github.com/anthropics/anthropic-cookbook/blob/main/multimodal/using_sub_agents.ipynb): Learn how to use Haiku as a sub-agent in combination with Opus.
 - [Upload PDFs to Claude](https://github.com/anthropics/anthropic-cookbook/blob/main/misc/pdf_upload_summarization.ipynb): Parse and pass PDFs as text to Claude.
@@ -147,17 +252,45 @@ If you have ideas for new examples or guides, share them on the [issues page](ht
 - [Getting Started](#getting-started)
 - [Usage](#usage)
 - [Contributing](#contributing)
+- [## Table of Contents
+- [Prerequisites](#prerequisites)
+- [Explore Further](#explore-further)
+- [Contributing](#contributing)
+- [Table of recipes](#table-of-recipes)
+- [Additional Resources](#additional-resources)
 - [License](#license)
+](#license)
 ## Additional Resources
 
 <p align="center">
   <a href="https://github.com/anthropics/claude-cookbooks/stargazers"><img src="https://img.shields.io/github/stars/anthropics/claude-cookbooks?style=social" alt="Stars"/></a>
-  <a href="https://github.com/anthropics/claude-cookbooks/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License"/></a>
+  <a href="https://github.com/anthropics/claude-cookbooks/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="## Table of Contents
+- [Prerequisites](#prerequisites)
+- [Explore Further](#explore-further)
+- [Contributing](#contributing)
+- [Table of recipes](#table-of-recipes)
+- [Additional Resources](#additional-resources)
+- [License](#license)
+"/></a>
 </p>
 
 - [Anthropic on AWS](https://github.com/aws-samples/anthropic-on-aws): Explore examples and solutions for using Claude on AWS infrastructure.
 - [AWS Samples](https://github.com/aws-samples/): A collection of code samples from AWS which can be adapted for use with Claude. Note that some samples may require modification to work optimally with Claude.
 
-## License
+## ## Table of Contents
+- [Prerequisites](#prerequisites)
+- [Explore Further](#explore-further)
+- [Contributing](#contributing)
+- [Table of recipes](#table-of-recipes)
+- [Additional Resources](#additional-resources)
+- [License](#license)
 
-This project is licensed under the [MIT License](LICENSE).
+
+This project is licensed under the [MIT ## Table of Contents
+- [Prerequisites](#prerequisites)
+- [Explore Further](#explore-further)
+- [Contributing](#contributing)
+- [Table of recipes](#table-of-recipes)
+- [Additional Resources](#additional-resources)
+- [License](#license)
+](LICENSE).
