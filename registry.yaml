@@ -513,6 +513,20 @@
   date: '2024-12-19'
   categories:
   - Agent Patterns
+- title: Cross-database CVE verification agent (TensorFeed MCP)
+  description: Build a security-triage agent that composes three independent vulnerability
+    databases (MITRE CVE, CISA KEV, FIRST.org EPSS) via TensorFeed.ai's hosted MCP
+    server. Demonstrates anti-hallucination corroboration patterns for agents that
+    must not act on a single source.
+  path: patterns/agents/tensorfeed_cve_verification.ipynb
+  authors:
+  - Ripper
+  date: '2026-05-09'
+  categories:
+  - Agent Patterns
+  - Tools
+  - Cybersecurity
+  - Integrations
 - title: Introduction to Claude Skills
   description: Create documents, analyze data, automate workflows with Claude's Excel,
     PowerPoint, PDF skills.
