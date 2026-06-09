@@ -820,3 +820,14 @@
   - Responses
   - Safeguards
   - Billing
+- title: Persistent memory for the Claude Agent SDK with Hindsight
+  description: Give a Claude Agent SDK agent long-term memory across sessions with
+    Hindsight — in-process MCP retain/recall/reflect tools plus automatic recall and
+    retain hooks.
+  path: third_party/Hindsight/claude_agent_sdk_memory.ipynb
+  authors:
+  - DK09876
+  date: '2026-06-09'
+  categories:
+  - Integrations
+  - Claude Agent SDK
