@@ -66,3 +66,7 @@ If you have ideas for new examples or guides, share them on the [issues page](ht
 
 - [Anthropic on AWS](https://github.com/aws-samples/anthropic-on-aws): Explore examples and solutions for using Claude on AWS infrastructure.
 - [AWS Samples](https://github.com/aws-samples/): A collection of code samples from AWS which can be adapted for use with Claude. Note that some samples may require modification to work optimally with Claude.
+<p align="center">
+  <a href="https://github.com/anthropics/claude-cookbooks/stargazers"><img src="https://img.shields.io/github/stars/anthropics/claude-cookbooks?style=social" alt="Stars"/></a>
+  <a href="https://github.com/anthropics/claude-cookbooks/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License"/></a>
+</p>
