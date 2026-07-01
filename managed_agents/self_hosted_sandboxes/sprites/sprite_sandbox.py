@@ -3,7 +3,7 @@
 Creates a Sprite ([sprites.dev](https://sprites.dev), Fly.io's stateful
 sandboxes) and starts the provider-agnostic ``sandbox_runner.py`` inside it.
 Sprites has no published SDK, so this talks its REST API directly (create,
-filesystem write, exec, services) — the only dependency is ``httpx``.
+filesystem write, exec, services); the only dependency is ``httpx``.
 
 The runner is launched as a Sprite **service** rather than a detached
 ``nohup ... &``: Sprites reaps an exec's process tree when the request
@@ -107,9 +107,10 @@ def spawn(
 
     # Same env contract as `ant beta:worker poll --on-work`: sandbox_runner.py
     # reads these to build the client and run the worker's handle_item().
-    # ANTHROPIC_ENVIRONMENT_KEY is the runner's single credential — the org API
+    # ANTHROPIC_ENVIRONMENT_KEY is the runner's single credential; the org API
     # key never reaches the Sprite. Written to a file (not service args) so the
-    # key never appears in process listings.
+    # key never appears in process listings, and the service deletes the file
+    # right after sourcing it so the key isn't left on the Sprite's disk.
     env = {
         "ANTHROPIC_BASE_URL": os.environ.get(
             "ANTHROPIC_BASE_URL", "https://api.anthropic.com"
@@ -139,7 +140,7 @@ def spawn(
     # self-stops on exit so the one-shot worker isn't restarted; its
     # stdout/stderr land in /.sprite/logs/services/agent-runner.log.
     runner_cmd = (
-        "set -a; . /root/runner.env; set +a\n"
+        "set -a; . /root/runner.env; set +a; rm -f /root/runner.env\n"
         """sprite-env curl -X POST /v1/tasks -d '{"name": "agent-runner", "expire": "5m"}' >/dev/null 2>&1\n"""
         """( while true; do sprite-env curl -X PUT /v1/tasks/agent-runner -d '{"expire": "5m"}' >/dev/null 2>&1; sleep 60; done ) &\n"""
         "heartbeat=$!\n"
