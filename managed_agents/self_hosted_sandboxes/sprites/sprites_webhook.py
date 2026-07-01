@@ -55,7 +55,10 @@ def _verify_webhook(
 
     try:
         return client.beta.webhooks.unwrap(raw.decode(), headers=headers)
-    except (WebhookVerificationError, KeyError) as e:
+    # ValueError covers malformed header contents (binascii.Error from a
+    # non-base64 signature, int() on a garbage timestamp), which otherwise
+    # escape as a 500 instead of a clean 401.
+    except (WebhookVerificationError, KeyError, ValueError) as e:
         print(f"[webhook] signature reject: {type(e).__name__}: {e}", flush=True)
         raise HTTPException(
             status_code=401, detail="signature verification failed"
