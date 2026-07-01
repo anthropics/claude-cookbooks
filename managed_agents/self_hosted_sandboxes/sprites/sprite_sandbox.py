@@ -24,10 +24,10 @@ from pathlib import Path
 
 import httpx
 
-# Same provider-agnostic sandbox_runner.py the Modal and Daytona demos use.
-RUNNER_SRC = (
-    Path(__file__).resolve().parent.parent / "modal" / "sandbox_runner.py"
-).read_text()
+# Same provider-agnostic runner code the Modal and Daytona demos use; this
+# copy's header documents the Sprites specifics (runner.env, service log) so
+# nothing inside the Sprite claims to be running on another platform.
+RUNNER_SRC = (Path(__file__).resolve().parent / "sandbox_runner.py").read_text()
 
 SPRITES_API_URL = os.environ.get("SPRITES_API_URL", "https://api.sprites.dev")
 WORKDIR = "/workspace"
@@ -136,7 +136,9 @@ def spawn(
     # heartbeat and delete the task when the runner exits. If the runner instead
     # crashes, the task expires on its own and the Sprite is free to pause (the
     # crash-safety net; see keeping-sprites-running). `sprite-env curl` is the
-    # in-Sprite shorthand for the Tasks API on the management socket. The service
+    # in-Sprite shorthand for the Tasks API on the management socket. PUT is an
+    # upsert, and the loop PUTs before it sleeps, so even if the initial POST
+    # races the Sprite's boot the first refresh (re)creates the task. The service
     # self-stops on exit so the one-shot worker isn't restarted; its
     # stdout/stderr land in /.sprite/logs/services/agent-runner.log.
     runner_cmd = (
