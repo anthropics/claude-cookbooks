@@ -9,12 +9,14 @@ Two ways to drive it, both calling the shared `sprite_sandbox.spawn()`:
 
 Sprites has no published SDK, so the demo talks its REST API directly: `POST /v1/sprites` (create), `PUT /v1/sprites/{name}/fs/write` (upload the runner and an env file), `POST /v1/sprites/{name}/exec` (install the SDK), and `PUT /v1/sprites/{name}/services/...` to start the runner. The runner runs as a **service** rather than a detached `nohup` — Sprites reaps an exec's process tree when the request closes, so a service (supervised, outlives the request) is the right primitive; it self-stops on exit so the one-shot worker isn't restarted. The `ANTHROPIC_*` env vars (the same contract `ant beta:worker poll --on-work` sets) are written to a file the service sources, so the environment key never appears in process listings.
 
+A service is supervised but does not hold the Sprite in an active state: once a session is underway the runner only makes outbound calls, so the Sprite would pause after its short idle window and stall the session mid-turn. To keep it active, the service registers a [Task](https://docs.sprites.dev/keeping-sprites-running/) before launching the runner, refreshes it on a heartbeat shorter than its expiry, and deletes it when the runner exits. Task expiry is the crash-safety net: if the runner dies without cleaning up, the task lapses on its own and the Sprite is free to pause.
+
 No org API key reaches the runner: the orchestrator polls with the environment key, and each Sprite authenticates with that same environment key — the single credential for both the control plane and the per-session calls.
 
 ```sh
-# A Sprites API token (org/projectNumber/tokenId/secret). SPRITES_API_URL is
-# optional and defaults to https://api.sprites.dev.
-export SPRITES_API_KEY=...
+# A Sprites API token (org-slug/org-id/token-id/token-value). SPRITES_API_URL
+# is optional and defaults to https://api.sprites.dev.
+export SPRITE_TOKEN=...
 export ANTHROPIC_ENVIRONMENT_ID=env_... ANTHROPIC_ENVIRONMENT_KEY=sk-ant-oat...
 
 # Always-on poller (no public endpoint):

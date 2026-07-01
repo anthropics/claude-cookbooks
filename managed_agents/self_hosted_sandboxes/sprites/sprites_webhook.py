@@ -19,7 +19,7 @@ credential for both the control plane and the per-session calls.
 Env on the orchestrator host:
   ANTHROPIC_WEBHOOK_SECRET, ANTHROPIC_BASE_URL,
   ANTHROPIC_ENVIRONMENT_ID, ANTHROPIC_ENVIRONMENT_KEY,
-  SPRITES_API_KEY, SPRITES_API_URL (optional)
+  SPRITE_TOKEN, SPRITES_API_URL (optional)
 """
 
 import os

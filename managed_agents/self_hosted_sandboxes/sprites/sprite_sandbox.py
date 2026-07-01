@@ -12,7 +12,7 @@ supervised and outlive the request; the runner self-stops its service on exit so
 the one-shot worker is not restarted after the session completes.
 
 Env:
-  SPRITES_API_KEY            - Sprites API token (org/projectNumber/tokenId/secret)
+  SPRITE_TOKEN               - Sprites API token (org-slug/org-id/token-id/token-value)
   SPRITES_API_URL (optional) - defaults to https://api.sprites.dev
 """
 
@@ -38,7 +38,7 @@ RUNNER_PATH = "/root/sandbox_runner.py"
 def _sprites() -> httpx.Client:
     return httpx.Client(
         base_url=SPRITES_API_URL,
-        headers={"authorization": f"Bearer {os.environ['SPRITES_API_KEY']}"},
+        headers={"authorization": f"Bearer {os.environ['SPRITE_TOKEN']}"},
         timeout=httpx.Timeout(300.0),
     )
 
@@ -85,7 +85,7 @@ def spawn(
 ) -> str:
     """Create a Sprite and start sandbox_runner.py inside it as a service."""
     name = sprite_name(session_id)
-    # 201 created, or 409 if a Sprite with this name already exists (reuse it).
+    # Tolerate the Sprite already existing (reuse it).
     created = _sprites().post(
         "/v1/sprites", json={"name": name, "wait_for_capacity": True}
     )
@@ -127,12 +127,25 @@ def spawn(
         headers={"content-type": "application/octet-stream"},
     ).raise_for_status()
 
-    # Service supervises the runner; it self-stops on exit so the one-shot
-    # worker isn't restarted. Service stdout/stderr land in
-    # /.sprite/logs/services/agent-runner.log inside the Sprite.
+    # The service supervises the runner but does not hold the Sprite active:
+    # once the session is underway the runner only makes outbound calls, so the
+    # Sprite would pause after its short (~30s) idle window and stall a long
+    # session mid-turn. A Task holds it open. We register one, refresh it on a
+    # heartbeat comfortably shorter than its expiry (max 1h), then kill the
+    # heartbeat and delete the task when the runner exits. If the runner instead
+    # crashes, the task expires on its own and the Sprite is free to pause (the
+    # crash-safety net; see keeping-sprites-running). `sprite-env curl` is the
+    # in-Sprite shorthand for the Tasks API on the management socket. The service
+    # self-stops on exit so the one-shot worker isn't restarted; its
+    # stdout/stderr land in /.sprite/logs/services/agent-runner.log.
     runner_cmd = (
-        "set -a; . /root/runner.env; set +a; "
-        f"python3 {RUNNER_PATH}; "
+        "set -a; . /root/runner.env; set +a\n"
+        """sprite-env curl -X POST /v1/tasks -d '{"name": "agent-runner", "expire": "5m"}' >/dev/null 2>&1\n"""
+        """( while true; do sprite-env curl -X PUT /v1/tasks/agent-runner -d '{"expire": "5m"}' >/dev/null 2>&1; sleep 60; done ) &\n"""
+        "heartbeat=$!\n"
+        f"python3 {RUNNER_PATH}\n"
+        'kill "$heartbeat" 2>/dev/null || true\n'
+        "sprite-env curl -X DELETE /v1/tasks/agent-runner >/dev/null 2>&1 || true\n"
         "sprite-env services stop agent-runner >/dev/null 2>&1 || true"
     )
     _sprites().put(

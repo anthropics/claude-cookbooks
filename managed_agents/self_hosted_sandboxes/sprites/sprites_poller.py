@@ -19,7 +19,7 @@ per-session calls.
 Env:
   ANTHROPIC_ENVIRONMENT_ID, ANTHROPIC_ENVIRONMENT_KEY,
   ANTHROPIC_BASE_URL (optional),
-  SPRITES_API_KEY, SPRITES_API_URL (optional)
+  SPRITE_TOKEN, SPRITES_API_URL (optional)
 """
 
 import asyncio
