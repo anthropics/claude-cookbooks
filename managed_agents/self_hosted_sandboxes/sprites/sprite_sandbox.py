@@ -94,7 +94,7 @@ def spawn(
 
     _sprites().put(
         f"/v1/sprites/{name}/fs/write",
-        params={"path": RUNNER_PATH},
+        params={"path": RUNNER_PATH, "workingDir": "/"},
         content=RUNNER_SRC.encode(),
         headers={"content-type": "application/octet-stream"},
     ).raise_for_status()
@@ -123,7 +123,7 @@ def spawn(
     env_file = "\n".join(f"{k}={_shquote(v)}" for k, v in env.items()) + "\n"
     _sprites().put(
         f"/v1/sprites/{name}/fs/write",
-        params={"path": "/root/runner.env"},
+        params={"path": "/root/runner.env", "workingDir": "/"},
         content=env_file.encode(),
         headers={"content-type": "application/octet-stream"},
     ).raise_for_status()
