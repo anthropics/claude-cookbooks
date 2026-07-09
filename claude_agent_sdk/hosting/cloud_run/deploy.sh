@@ -37,7 +37,7 @@ gcloud builds submit --project="$PROJECT" \
 #                            not the one-shot run_once runner
 #   --port=8000              the server listens on 8000
 #   --update-secrets         inject the key from Secret Manager at runtime
-#   CLAUDE_CONFIG_DIR=/tmp   Cloud Run's filesystem is read-only except an
+#   CLAUDE_CONFIG_DIR=/tmp/data  Cloud Run's filesystem is read-only except an
 #                            in-memory /tmp; see README "Persistence" for durable
 #                            sessions on a mounted bucket
 #   --no-allow-unauthenticated  Cloud Run IAM is the authenticating gateway the
