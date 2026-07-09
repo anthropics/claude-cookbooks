@@ -26,11 +26,7 @@ from fastapi import FastAPI, HTTPException, Request
 
 SDK_PACKAGE = "anthropic"
 # Same provider-agnostic sandbox_runner.py the Modal demo uses.
-RUNNER_SRC = (
-    Path(__file__).resolve().parent.parent
-    / "modal"
-    / "sandbox_runner.py"
-).read_text()
+RUNNER_SRC = (Path(__file__).resolve().parent.parent / "modal" / "sandbox_runner.py").read_text()
 
 app = FastAPI()
 daytona = Daytona()  # reads DAYTONA_API_KEY / DAYTONA_API_URL from env
@@ -66,14 +62,10 @@ def _verify_webhook(
         # to log. Other exceptions propagate (they indicate a bug, not a bad
         # delivery).
         print(f"[webhook] signature reject: {type(e).__name__}: {e}", flush=True)
-        raise HTTPException(
-            status_code=401, detail="signature verification failed"
-        ) from None
+        raise HTTPException(status_code=401, detail="signature verification failed") from None
 
 
-def _spawn(
-    session_id: str, *, environment_id: str, work_id: str, environment_key: str
-) -> str:
+def _spawn(session_id: str, *, environment_id: str, work_id: str, environment_key: str) -> str:
     """Create a Daytona sandbox and start sandbox_runner.py inside it."""
     sb = daytona.create(
         CreateSandboxParams(
@@ -129,9 +121,7 @@ async def _drain_work(client: anthropic.AsyncAnthropic, environment_id: str) -> 
         auto_stop=False,
     ):
         if work.data.type != "session":
-            print(
-                f"[webhook] skipping work={work.id} type={work.data.type}", flush=True
-            )
+            print(f"[webhook] skipping work={work.id} type={work.data.type}", flush=True)
             continue
         session_id = work.data.id
         try:
@@ -175,9 +165,7 @@ async def _drain_work(client: anthropic.AsyncAnthropic, environment_id: str) -> 
                 f"[webhook] FAILED work={work.id} session={session_id}: {detail}",
                 flush=True,
             )
-            spawned.append(
-                {"session_id": session_id, "work_id": work.id, "error": detail}
-            )
+            spawned.append({"session_id": session_id, "work_id": work.id, "error": detail})
     return spawned
 
 

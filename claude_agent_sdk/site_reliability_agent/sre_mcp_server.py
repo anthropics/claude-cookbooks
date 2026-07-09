@@ -132,19 +132,12 @@ Available services: api-server, payment-svc, auth-svc, postgres""",
                 },
                 "level": {
                     "type": "string",
-                    "description": (
-                        "Filter by log level: all,"
-                        " error, warn, info"
-                        " (default: all)"
-                    ),
+                    "description": ("Filter by log level: all, error, warn, info (default: all)"),
                     "enum": ["all", "error", "warn", "info"],
                 },
                 "lines": {
                     "type": "integer",
-                    "description": (
-                        "Number of log lines to return"
-                        " (default: 20, max: 100)"
-                    ),
+                    "description": ("Number of log lines to return (default: 20, max: 100)"),
                 },
             },
             "required": ["service"],
@@ -210,9 +203,7 @@ Always run the investigate phase first to confirm the issue before remediation."
                     "type": "string",
                     "enum": ["investigate", "remediate"],
                     "description": (
-                        "Phase to execute:"
-                        " 'investigate' for diagnosis,"
-                        " 'remediate' for fixes"
+                        "Phase to execute: 'investigate' for diagnosis, 'remediate' for fixes"
                     ),
                 },
             },
@@ -315,17 +306,11 @@ Available containers: api-server, postgres, traffic-generator""",
             "properties": {
                 "container": {
                     "type": "string",
-                    "description": (
-                        "Container name (api-server,"
-                        " postgres, traffic-generator)"
-                    ),
+                    "description": ("Container name (api-server, postgres, traffic-generator)"),
                 },
                 "lines": {
                     "type": "integer",
-                    "description": (
-                        "Number of log lines to return"
-                        " (default: 50, max: 200)"
-                    ),
+                    "description": ("Number of log lines to return (default: 50, max: 200)"),
                 },
             },
             "required": ["container"],
@@ -345,10 +330,7 @@ The report is saved as a markdown file with a timestamp-based filename.""",
             "properties": {
                 "title": {
                     "type": "string",
-                    "description": (
-                        "Incident title "
-                        "(e.g., 'DB Connection Pool Exhaustion')"
-                    ),
+                    "description": ("Incident title (e.g., 'DB Connection Pool Exhaustion')"),
                 },
                 "summary": {
                     "type": "string",
@@ -403,16 +385,13 @@ if PAGERDUTY_API_KEY:
                             "type": "string",
                             "enum": ["high", "low"],
                             "description": (
-                                "Incident urgency:"
-                                " 'high' for immediate page," 
-                                " 'low' for non-urgent"
+                                "Incident urgency: 'high' for immediate page, 'low' for non-urgent"
                             ),
                         },
                         "service_id": {
                             "type": "string",
                             "description": (
-                                "PagerDuty service ID"
-                                " (optional, uses default if not specified)"
+                                "PagerDuty service ID (optional, uses default if not specified)"
                             ),
                         },
                     },
@@ -439,8 +418,7 @@ if PAGERDUTY_API_KEY:
                         "resolution_note": {
                             "type": "string",
                             "description": (
-                                "Note explaining the resolution"
-                                " (required for 'resolved' status)"
+                                "Note explaining the resolution (required for 'resolved' status)"
                             ),
                         },
                     },
@@ -475,8 +453,7 @@ if PAGERDUTY_API_KEY:
                             "type": "string",
                             "enum": ["triggered", "acknowledged", "resolved", "all"],
                             "description": (
-                                "Filter by status (default: 'all'"
-                                " for triggered + acknowledged)"
+                                "Filter by status (default: 'all' for triggered + acknowledged)"
                             ),
                         },
                         "service_id": {
@@ -518,8 +495,7 @@ if CONFLUENCE_BASE_URL and CONFLUENCE_API_TOKEN:
                         "title": {
                             "type": "string",
                             "description": (
-                                "Page title (e.g., 'Post-Mortem:"
-                                " 2025-01-15 API Server Outage')"
+                                "Page title (e.g., 'Post-Mortem: 2025-01-15 API Server Outage')"
                             ),
                         },
                         "incident_summary": {
@@ -564,8 +540,7 @@ if CONFLUENCE_BASE_URL and CONFLUENCE_API_TOKEN:
                         "pagerduty_incident_id": {
                             "type": "string",
                             "description": (
-                                "Associated PagerDuty incident"
-                                " ID (optional, for linking)"
+                                "Associated PagerDuty incident ID (optional, for linking)"
                             ),
                         },
                     },
@@ -586,10 +561,7 @@ if CONFLUENCE_BASE_URL and CONFLUENCE_API_TOKEN:
                         },
                         "title": {
                             "type": "string",
-                            "description": (
-                                "Search by page title"
-                                " (alternative to page_id)"
-                            ),
+                            "description": ("Search by page title (alternative to page_id)"),
                         },
                     },
                     "required": [],
@@ -644,8 +616,7 @@ async def query_metrics(promql: str) -> dict[str, Any]:
                     {
                         "type": "text",
                         "text": (
-                            f"Query failed: {data.get('error', 'Unknown error')}"
-                            f"\nQuery: {promql}"
+                            f"Query failed: {data.get('error', 'Unknown error')}\nQuery: {promql}"
                         ),
                     }
                 ],
@@ -675,18 +646,12 @@ async def query_metrics(promql: str) -> dict[str, Any]:
             labels = r.get("metric", {})
             if "value" in r:
                 timestamp, value = r["value"]
-                label_str = ", ".join(
-                    f"{k}={v}" for k, v in labels.items() if k != "__name__"
-                )
+                label_str = ", ".join(f"{k}={v}" for k, v in labels.items() if k != "__name__")
                 formatted_lines.append(f"  {label_str or 'value'}: {value}")
             elif "values" in r:
-                label_str = ", ".join(
-                    f"{k}={v}" for k, v in labels.items() if k != "__name__"
-                )
+                label_str = ", ".join(f"{k}={v}" for k, v in labels.items() if k != "__name__")
                 latest_value = r["values"][-1][1] if r["values"] else "N/A"
-                formatted_lines.append(
-                    f"  {label_str or 'value'}: {latest_value} (latest)"
-                )
+                formatted_lines.append(f"  {label_str or 'value'}: {latest_value} (latest)")
 
         return {"content": [{"type": "text", "text": "\n".join(formatted_lines)}]}
 
@@ -757,9 +722,7 @@ async def list_metrics() -> dict[str, Any]:
 
     except httpx.ConnectError:
         return {
-            "content": [
-                {"type": "text", "text": "Cannot connect to Prometheus. Is it running?"}
-            ],
+            "content": [{"type": "text", "text": "Cannot connect to Prometheus. Is it running?"}],
             "isError": True,
         }
     except Exception as e:
@@ -779,13 +742,7 @@ async def get_service_health() -> dict[str, Any]:
         try:
             response = await client.get(
                 f"{PROMETHEUS_URL}/api/v1/query",
-                params={
-                    "query": (
-                        'sum(rate(http_requests_total'
-                        '{status="500"}[1m]))'
-                        ' by (service)'
-                    )
-                },
+                params={"query": ('sum(rate(http_requests_total{status="500"}[1m])) by (service)')},
                 timeout=10.0,
             )
             if response.status_code == 200:
@@ -795,18 +752,10 @@ async def get_service_health() -> dict[str, Any]:
                     for r in data["data"]["result"]:
                         service = r["metric"].get("service", "unknown")
                         rate = float(r["value"][1])
-                        status = (
-                            "[CRITICAL]"
-                            if rate > 5
-                            else "[WARNING]"
-                            if rate > 1
-                            else "[OK]"
-                        )
+                        status = "[CRITICAL]" if rate > 5 else "[WARNING]" if rate > 1 else "[OK]"
                         health_lines.append(f"  {status} {service}: {rate:.2f}/sec")
                         if rate > 5:
-                            issues.append(
-                                f"High error rate on {service}: {rate:.1f}/sec"
-                            )
+                            issues.append(f"High error rate on {service}: {rate:.1f}/sec")
                     health_lines.append("")
         except Exception as e:
             health_lines.append(f"ERROR RATES: unable to query ({e})")
@@ -858,19 +807,11 @@ async def get_service_health() -> dict[str, Any]:
                 data = response.json()
                 if data["status"] == "success" and data["data"]["result"]:
                     active = float(data["data"]["result"][0]["value"][1])
-                    status = (
-                        "[CRITICAL]"
-                        if active > 90
-                        else "[WARNING]"
-                        if active > 70
-                        else "[OK]"
-                    )
+                    status = "[CRITICAL]" if active > 90 else "[WARNING]" if active > 70 else "[OK]"
                     health_lines.append("DATABASE CONNECTIONS:")
                     health_lines.append(f"  {status}: {active:.0f}/100 active")
                     if active > 90:
-                        issues.append(
-                            f"DB connection pool near exhaustion: {active:.0f}/100"
-                        )
+                        issues.append(f"DB connection pool near exhaustion: {active:.0f}/100")
                     health_lines.append("")
         except Exception as e:
             health_lines.append(f"DATABASE CONNECTIONS: unable to query ({e})")
@@ -888,9 +829,7 @@ async def get_service_health() -> dict[str, Any]:
                 if data["status"] == "success" and data["data"]["result"]:
                     health_lines.append("SERVICE STATUS:")
                     for r in data["data"]["result"]:
-                        service = r["metric"].get(
-                            "service", r["metric"].get("job", "unknown")
-                        )
+                        service = r["metric"].get("service", r["metric"].get("job", "unknown"))
                         is_up = int(float(r["value"][1])) == 1
                         status = "[UP]" if is_up else "[DOWN]"
                         health_lines.append(f"  {status}: {service}")
@@ -1011,9 +950,7 @@ async def get_alerts() -> dict[str, Any]:
     if firing:
         lines.append("🔴 FIRING:")
         for alert in firing:
-            lines.append(
-                f"  [{alert['severity'].upper()}] {alert['name']} ({alert['service']})"
-            )
+            lines.append(f"  [{alert['severity'].upper()}] {alert['name']} ({alert['service']})")
             lines.append(f"      {alert['description']}")
             lines.append(f"      Duration: {alert['duration']}")
             lines.append("")
@@ -1021,9 +958,7 @@ async def get_alerts() -> dict[str, Any]:
     if pending:
         lines.append("🟡 PENDING:")
         for alert in pending:
-            lines.append(
-                f"  [{alert['severity'].upper()}] {alert['name']} ({alert['service']})"
-            )
+            lines.append(f"  [{alert['severity'].upper()}] {alert['name']} ({alert['service']})")
             lines.append(f"      {alert['description']}")
             lines.append(f"      {alert['duration']}")
             lines.append("")
@@ -1031,9 +966,7 @@ async def get_alerts() -> dict[str, Any]:
     if resolved and not firing:
         lines.append("✅ RECENTLY RESOLVED:")
         for alert in resolved:
-            lines.append(
-                f"  {alert['name']} ({alert['service']}) - {alert['duration']}"
-            )
+            lines.append(f"  {alert['name']} ({alert['service']}) - {alert['duration']}")
             lines.append("")
 
     if not firing and not pending:
@@ -1123,9 +1056,7 @@ async def get_recent_deployments(service: str | None = None) -> dict[str, Any]:
         else:
             age_str = f"{int(age_seconds / 86400)}d ago"
 
-        time_str = time.strftime(
-            "%Y-%m-%d %H:%M:%S", time.localtime(deploy["timestamp"])
-        )
+        time_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(deploy["timestamp"]))
 
         lines.append(f"📦 {deploy['service']} - {age_str}")
         lines.append(f"   Commit: {deploy['commit']} ({deploy['pr']})")
@@ -1187,22 +1118,14 @@ RUNBOOKS = {
                 {
                     "priority": 1,
                     "action": "Restart affected service pods",
-                    "command": (
-                        "kubectl rollout restart"
-                        " deployment/api-server"
-                        " -n production"
-                    ),
+                    "command": ("kubectl rollout restart deployment/api-server -n production"),
                     "effect": "Releases held connections, temporary fix",
                     "risk": "Brief service interruption during restart",
                 },
                 {
                     "priority": 2,
                     "action": "Scale down affected service to release connections",
-                    "command": (
-                        "kubectl scale"
-                        " deployment/api-server"
-                        " --replicas=1 -n production"
-                    ),
+                    "command": ("kubectl scale deployment/api-server --replicas=1 -n production"),
                     "effect": "Reduces connection pressure immediately",
                     "risk": "Reduced capacity during incident",
                 },
@@ -1247,10 +1170,7 @@ RUNBOOKS = {
                 {
                     "step": 2,
                     "action": "Identify where latency originates",
-                    "query": (
-                        'topk(5, http_request_duration'
-                        '_milliseconds{quantile="0.99"})'
-                    ),
+                    "query": ('topk(5, http_request_duration_milliseconds{quantile="0.99"})'),
                     "note": "Service with highest latency is likely the source",
                 },
                 {
@@ -1266,10 +1186,7 @@ RUNBOOKS = {
                         "container_cpu_usage_ratio",
                         "container_memory_usage_ratio",
                     ],
-                    "threshold": (
-                        "CPU > 80% or Memory > 90%"
-                        " indicates resource pressure"
-                    ),
+                    "threshold": ("CPU > 80% or Memory > 90% indicates resource pressure"),
                 },
                 {
                     "step": 5,
@@ -1296,21 +1213,13 @@ RUNBOOKS = {
                 {
                     "priority": 2,
                     "action": "If CPU-bound: Scale horizontally",
-                    "command": (
-                        "kubectl scale"
-                        " deployment/api-server"
-                        " --replicas=5 -n production"
-                    ),
+                    "command": ("kubectl scale deployment/api-server --replicas=5 -n production"),
                     "effect": "Distributes load across more pods",
                 },
                 {
                     "priority": 3,
                     "action": "If memory-bound: Restart to clear potential leaks",
-                    "command": (
-                        "kubectl rollout restart"
-                        " deployment/api-server"
-                        " -n production"
-                    ),
+                    "command": ("kubectl rollout restart deployment/api-server -n production"),
                     "effect": "Clears memory, resets connections",
                 },
             ],
@@ -1331,11 +1240,7 @@ RUNBOOKS = {
             "escalation": {
                 "team": "Platform team",
                 "channel": "#platform-oncall",
-                "when": (
-                    "If latency doesn't improve"
-                    " after scaling, or if root"
-                    " cause unclear"
-                ),
+                "when": ("If latency doesn't improve after scaling, or if root cause unclear"),
             },
         },
     },
@@ -1352,22 +1257,18 @@ RUNBOOKS = {
                 {
                     "step": 1,
                     "action": "Identify which service has errors",
-                    "query": (
-                        'sum(rate(http_requests_total'
-                        '{status="500"}[1m]))'
-                        ' by (service)'
-                    ),
+                    "query": ('sum(rate(http_requests_total{status="500"}[1m])) by (service)'),
                     "threshold": "> 1% warning, > 5% critical",
                 },
                 {
                     "step": 2,
                     "action": "Calculate error ratio percentage",
                     "query": (
-                        'sum(rate(http_requests_total'
+                        "sum(rate(http_requests_total"
                         '{status="500"}[1m]))'
-                        ' by (service) / '
-                        'sum(rate(http_requests_total'
-                        '[1m])) by (service)'
+                        " by (service) / "
+                        "sum(rate(http_requests_total"
+                        "[1m])) by (service)"
                     ),
                     "note": "Shows error percentage per service",
                 },
@@ -1414,11 +1315,7 @@ RUNBOOKS = {
                 {
                     "condition": "If caused by recent deployment",
                     "action": "Rollback the deployment",
-                    "command": (
-                        "kubectl rollout undo"
-                        " deployment/api-server"
-                        " -n production"
-                    ),
+                    "command": ("kubectl rollout undo deployment/api-server -n production"),
                 },
                 {
                     "condition": "If caused by external dependency failure",
@@ -1429,11 +1326,7 @@ RUNBOOKS = {
                 {
                     "priority": 1,
                     "action": "If recent deployment suspected, rollback immediately",
-                    "command": (
-                        "kubectl rollout undo"
-                        " deployment/<service>"
-                        " -n production"
-                    ),
+                    "command": ("kubectl rollout undo deployment/<service> -n production"),
                     "effect": "Reverts to last known good state",
                 },
             ],
@@ -1444,11 +1337,7 @@ RUNBOOKS = {
                     "payment-svc": "#payments-oncall",
                     "auth-svc": "#identity-oncall",
                 },
-                "when": (
-                    "If root cause cannot be"
-                    " identified or errors persist"
-                    " after remediation"
-                ),
+                "when": ("If root cause cannot be identified or errors persist after remediation"),
             },
         },
     },
@@ -1498,9 +1387,7 @@ async def execute_runbook(runbook: str, phase: str) -> dict[str, Any]:
             if "tool" in step:
                 lines.append(f"  → Use tool: {step['tool']}")
                 if "params" in step:
-                    params_str = ", ".join(
-                        f"{k}={v}" for k, v in step["params"].items()
-                    )
+                    params_str = ", ".join(f"{k}={v}" for k, v in step["params"].items())
                     lines.append(f"     with params: {params_str}")
             if "threshold" in step:
                 lines.append(f"  → Threshold: {step['threshold']}")
@@ -1509,8 +1396,7 @@ async def execute_runbook(runbook: str, phase: str) -> dict[str, Any]:
             lines.append("")
 
         lines.append(
-            "After completing investigation, run this"
-            " runbook again with phase='remediate'"
+            "After completing investigation, run this runbook again with phase='remediate'"
         )
 
     elif phase == "remediate":
@@ -1592,11 +1478,7 @@ async def pagerduty_create_incident(
             "content": [
                 {
                     "type": "text",
-                    "text": (
-                        "No service ID provided and"
-                        " PAGERDUTY_SERVICE_ID not"
-                        " set in .env"
-                    ),
+                    "text": ("No service ID provided and PAGERDUTY_SERVICE_ID not set in .env"),
                 }
             ],
             "isError": True,
@@ -1642,11 +1524,7 @@ async def pagerduty_create_incident(
             "content": [
                 {
                     "type": "text",
-                    "text": (
-                        "PagerDuty API error: "
-                        f"{e.response.status_code}"
-                        f" - {e.response.text}"
-                    ),
+                    "text": (f"PagerDuty API error: {e.response.status_code} - {e.response.text}"),
                 }
             ],
             "isError": True,
@@ -1715,11 +1593,7 @@ async def pagerduty_update_incident(
             "content": [
                 {
                     "type": "text",
-                    "text": (
-                        "PagerDuty API error: "
-                        f"{e.response.status_code}"
-                        f" - {e.response.text}"
-                    ),
+                    "text": (f"PagerDuty API error: {e.response.status_code} - {e.response.text}"),
                 }
             ],
             "isError": True,
@@ -1769,11 +1643,7 @@ async def pagerduty_get_incident(incident_id: str) -> dict[str, Any]:
             "content": [
                 {
                     "type": "text",
-                    "text": (
-                        "PagerDuty API error: "
-                        f"{e.response.status_code}"
-                        f" - {e.response.text}"
-                    ),
+                    "text": (f"PagerDuty API error: {e.response.status_code} - {e.response.text}"),
                 }
             ],
             "isError": True,
@@ -1815,9 +1685,7 @@ async def pagerduty_list_incidents(
             incidents = response.json()["incidents"]
 
             if not incidents:
-                return {
-                    "content": [{"type": "text", "text": "No active incidents found."}]
-                }
+                return {"content": [{"type": "text", "text": "No active incidents found."}]}
 
             lines = [f"=== Active PagerDuty Incidents ({len(incidents)}) ===", ""]
             for inc in incidents:
@@ -1827,9 +1695,7 @@ async def pagerduty_list_incidents(
                     "resolved": "[DONE]",
                 }
                 lines.append(f"{status_emoji.get(inc['status'], '[?]')} {inc['title']}")
-                lines.append(
-                    f"    ID: {inc['id']} | Service: {inc['service']['summary']}"
-                )
+                lines.append(f"    ID: {inc['id']} | Service: {inc['service']['summary']}")
                 lines.append(f"    Created: {inc['created_at']}")
                 lines.append("")
 
@@ -1839,11 +1705,7 @@ async def pagerduty_list_incidents(
             "content": [
                 {
                     "type": "text",
-                    "text": (
-                        "PagerDuty API error: "
-                        f"{e.response.status_code}"
-                        f" - {e.response.text}"
-                    ),
+                    "text": (f"PagerDuty API error: {e.response.status_code} - {e.response.text}"),
                 }
             ],
             "isError": True,
@@ -1882,9 +1744,7 @@ def generate_postmortem_content(
     # Build timeline section
     timeline_html = ""
     if timeline:
-        timeline_html = (
-            "<ul>" + "".join(f"<li>{esc(item)}</li>" for item in timeline) + "</ul>"
-        )
+        timeline_html = "<ul>" + "".join(f"<li>{esc(item)}</li>" for item in timeline) + "</ul>"
     else:
         timeline_html = "<p><em>Timeline to be added</em></p>"
 
@@ -1892,9 +1752,7 @@ def generate_postmortem_content(
     remediation_html = ""
     if remediation_steps:
         remediation_html = (
-            "<ul>"
-            + "".join(f"<li>{esc(step)}</li>" for step in remediation_steps)
-            + "</ul>"
+            "<ul>" + "".join(f"<li>{esc(step)}</li>" for step in remediation_steps) + "</ul>"
         )
     else:
         remediation_html = "<p><em>Remediation steps to be added</em></p>"
@@ -1917,17 +1775,13 @@ def generate_postmortem_content(
             </tr>
             """
     else:
-        action_items_html += (
-            "<tr><td colspan='4'><em>Action items to be added</em></td></tr>"
-        )
+        action_items_html += "<tr><td colspan='4'><em>Action items to be added</em></td></tr>"
     action_items_html += "</tbody></table>"
 
     # PagerDuty link if provided
     pd_link = ""
     if pagerduty_incident_id:
-        pd_link = (
-            f"<p><strong>PagerDuty Incident:</strong> {esc(pagerduty_incident_id)}</p>"
-        )
+        pd_link = f"<p><strong>PagerDuty Incident:</strong> {esc(pagerduty_incident_id)}</p>"
 
     return f"""
     <h1>Incident Summary</h1>
@@ -1971,11 +1825,7 @@ async def confluence_create_postmortem(
             "content": [
                 {
                     "type": "text",
-                    "text": (
-                        "Confluence not configured."
-                        " Set CONFLUENCE_* variables"
-                        " in .env"
-                    ),
+                    "text": ("Confluence not configured. Set CONFLUENCE_* variables in .env"),
                 }
             ],
             "isError": True,
@@ -2033,20 +1883,14 @@ async def confluence_create_postmortem(
             "content": [
                 {
                     "type": "text",
-                    "text": (
-                        "Confluence API error: "
-                        f"{e.response.status_code}"
-                        f" - {e.response.text}"
-                    ),
+                    "text": (f"Confluence API error: {e.response.status_code} - {e.response.text}"),
                 }
             ],
             "isError": True,
         }
     except Exception as e:
         return {
-            "content": [
-                {"type": "text", "text": f"Error creating post-mortem: {str(e)}"}
-            ],
+            "content": [{"type": "text", "text": f"Error creating post-mortem: {str(e)}"}],
             "isError": True,
         }
 
@@ -2124,11 +1968,7 @@ async def confluence_get_page(
             "content": [
                 {
                     "type": "text",
-                    "text": (
-                        "Confluence API error: "
-                        f"{e.response.status_code}"
-                        f" - {e.response.text}"
-                    ),
+                    "text": (f"Confluence API error: {e.response.status_code} - {e.response.text}"),
                 }
             ],
             "isError": True,
@@ -2169,18 +2009,13 @@ async def confluence_list_postmortems(
             results = response.json().get("results", [])
 
             if not results:
-                return {
-                    "content": [{"type": "text", "text": "No post-mortem pages found."}]
-                }
+                return {"content": [{"type": "text", "text": "No post-mortem pages found."}]}
 
             lines = [f"=== Recent Post-Mortems ({len(results)}) ===", ""]
             for page in results:
                 page_url = f"{CONFLUENCE_BASE_URL}{page['_links']['webui']}"
                 lines.append(f"- {page['title']}")
-                lines.append(
-                    f"  ID: {page['id']}"
-                    f" | Last modified: {page['version']['when'][:10]}"
-                )
+                lines.append(f"  ID: {page['id']} | Last modified: {page['version']['when'][:10]}")
                 lines.append(f"  URL: {page_url}")
                 lines.append("")
 
@@ -2190,20 +2025,14 @@ async def confluence_list_postmortems(
             "content": [
                 {
                     "type": "text",
-                    "text": (
-                        "Confluence API error: "
-                        f"{e.response.status_code}"
-                        f" - {e.response.text}"
-                    ),
+                    "text": (f"Confluence API error: {e.response.status_code} - {e.response.text}"),
                 }
             ],
             "isError": True,
         }
     except Exception as e:
         return {
-            "content": [
-                {"type": "text", "text": f"Error listing post-mortems: {str(e)}"}
-            ],
+            "content": [{"type": "text", "text": f"Error listing post-mortems: {str(e)}"}],
             "isError": True,
         }
 
@@ -2222,11 +2051,7 @@ async def read_config_file(path: str) -> dict[str, Any]:
                 "content": [
                     {
                         "type": "text",
-                        "text": (
-                            "Error: Can only read files"
-                            " from config/ directory."
-                            f" Got: {path}"
-                        ),
+                        "text": (f"Error: Can only read files from config/ directory. Got: {path}"),
                     }
                 ],
                 "isError": True,
@@ -2238,7 +2063,7 @@ async def read_config_file(path: str) -> dict[str, Any]:
                 "isError": True,
             }
 
-        with open(full_path, "r") as f:
+        with open(full_path) as f:
             content = f.read()
 
         return {"content": [{"type": "text", "text": f"=== {path} ===\n\n{content}"}]}
@@ -2260,11 +2085,7 @@ async def edit_config_file(path: str, old_value: str, new_value: str) -> dict[st
                 "content": [
                     {
                         "type": "text",
-                        "text": (
-                            "Error: Can only edit files"
-                            " in config/ directory."
-                            f" Got: {path}"
-                        ),
+                        "text": (f"Error: Can only edit files in config/ directory. Got: {path}"),
                     }
                 ],
                 "isError": True,
@@ -2276,7 +2097,7 @@ async def edit_config_file(path: str, old_value: str, new_value: str) -> dict[st
                 "isError": True,
             }
 
-        with open(full_path, "r") as f:
+        with open(full_path) as f:
             content = f.read()
 
         if old_value not in content:
@@ -2304,9 +2125,7 @@ async def edit_config_file(path: str, old_value: str, new_value: str) -> dict[st
                 {
                     "type": "text",
                     "text": (
-                        f"Successfully updated {path}:\n"
-                        f"- Changed: {old_value}\n"
-                        f"- To: {new_value}"
+                        f"Successfully updated {path}:\n- Changed: {old_value}\n- To: {new_value}"
                     ),
                 }
             ]
@@ -2326,9 +2145,7 @@ async def run_shell_command(command: str) -> dict[str, Any]:
             args = shlex.split(command)
         except ValueError as e:
             return {
-                "content": [
-                    {"type": "text", "text": f"Error: Invalid command syntax: {e}"}
-                ],
+                "content": [{"type": "text", "text": f"Error: Invalid command syntax: {e}"}],
                 "isError": True,
             }
 
@@ -2405,7 +2222,7 @@ async def run_shell_command(command: str) -> dict[str, Any]:
             "content": [{"type": "text", "text": result_text}],
             "isError": process.returncode != 0,
         }
-    except asyncio.TimeoutError:
+    except TimeoutError:
         return {
             "content": [
                 {
@@ -2483,26 +2300,18 @@ async def get_container_logs(container: str, lines: int = 50) -> dict[str, Any]:
             "content": [
                 {
                     "type": "text",
-                    "text": (
-                        f"=== Logs from {container}"
-                        f" (last {lines} lines)"
-                        f" ===\n\n{output}"
-                    ),
+                    "text": (f"=== Logs from {container} (last {lines} lines) ===\n\n{output}"),
                 }
             ]
         }
-    except asyncio.TimeoutError:
+    except TimeoutError:
         return {
-            "content": [
-                {"type": "text", "text": f"Timeout getting logs from {container}"}
-            ],
+            "content": [{"type": "text", "text": f"Timeout getting logs from {container}"}],
             "isError": True,
         }
     except Exception as e:
         return {
-            "content": [
-                {"type": "text", "text": f"Error getting container logs: {str(e)}"}
-            ],
+            "content": [{"type": "text", "text": f"Error getting container logs: {str(e)}"}],
             "isError": True,
         }
 
@@ -2591,9 +2400,7 @@ async def handle_tool_call(name: str, arguments: dict[str, Any]) -> dict[str, An
             resolution_note=arguments.get("resolution_note"),
         )
     elif name == "pagerduty_get_incident":
-        return await pagerduty_get_incident(
-            incident_id=arguments.get("incident_id", "")
-        )
+        return await pagerduty_get_incident(incident_id=arguments.get("incident_id", ""))
     elif name == "pagerduty_list_incidents":
         return await pagerduty_list_incidents(
             status=arguments.get("status", "all"),
@@ -2650,9 +2457,7 @@ def send_response(response: dict[str, Any]) -> None:
 
 def send_error(id: Any, code: int, message: str) -> None:
     """Send a JSON-RPC error response."""
-    send_response(
-        {"jsonrpc": "2.0", "id": id, "error": {"code": code, "message": message}}
-    )
+    send_response({"jsonrpc": "2.0", "id": id, "error": {"code": code, "message": message}})
 
 
 async def handle_request(request: dict[str, Any]) -> None:
