@@ -16,6 +16,7 @@ dependencies = [
     "networkx>=3.6.1",
     "matplotlib>=3.10.8",
     "requests>=2.32.5",
+    "fal-client>=1.0.0",
 ]
 
 [build-system]
