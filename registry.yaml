@@ -277,6 +277,17 @@
   date: '2026-05-22'
   categories:
   - Claude Agent SDK
+- title: The compliance-aware agent
+  description: Build a multi-agent compliance system for regulated environments with an
+    FC-A/B/C/D failure budget, confidence-based escalation, a human-in-the-loop checkpoint
+    enforced by can_use_tool, and an append-only audit trail.
+  path: claude_agent_sdk/08_The_compliance_aware_agent.ipynb
+  authors:
+  - priyanka25aug
+  date: '2026-07-15'
+  categories:
+  - Claude Agent SDK
+  - Agent Patterns
 - title: Extended thinking
   description: Use Claude's extended thinking for transparent step-by-step reasoning
     with budget management.
