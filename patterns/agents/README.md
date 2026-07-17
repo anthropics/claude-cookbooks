@@ -20,3 +20,4 @@ See the Jupyter notebooks for detailed examples:
 - [Orchestrator-Workers Workflow](orchestrator_workers.ipynb)
 - [Async Multi-Agent Orchestration](async_multi_agent_orchestration.ipynb)
 - [Multi-Agent Teams Under Latency Pressure and Budgets](latency_multi_agent.ipynb)
+- [Authority Routing (ADVISE / EXECUTE / DEFER / STOP)](authority_routing.ipynb)
