@@ -523,6 +523,16 @@
   date: '2026-06-08'
   categories:
   - Agent Patterns
+- title: Authority routing for tool-using agents (ADVISE / EXECUTE / DEFER / STOP)
+  description: Route every request through an authority posture before any tool runs —
+    a model router plus a deterministic guard that can only tighten, a 16-case posture
+    eval with a severity-weighted scorer, and three annotated boundary-failure walkthroughs.
+  path: patterns/agents/authority_routing.ipynb
+  authors:
+  - anton-dzyatkovsky
+  date: '2026-07-17'
+  categories:
+  - Agent Patterns
 - title: Introduction to Claude Skills
   description: Create documents, analyze data, automate workflows with Claude's Excel,
     PowerPoint, PDF skills.
