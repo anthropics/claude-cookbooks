@@ -523,6 +523,16 @@
   date: '2026-06-08'
   categories:
   - Agent Patterns
+- title: Deterministic guardrails
+  description: Pre/post-action checks that make a tool-call rule non-optional, measured
+    against adversarial and disguised attempts rather than asserted.
+  path: patterns/agents/deterministic_guardrails.ipynb
+  authors:
+  - Nimra3261
+  date: '2026-07-21'
+  categories:
+  - Agent Patterns
+  - Evals
 - title: Introduction to Claude Skills
   description: Create documents, analyze data, automate workflows with Claude's Excel,
     PowerPoint, PDF skills.
