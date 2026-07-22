@@ -124,6 +124,9 @@ class NotebookValidator:
             "claude-sonnet-4-5": "claude-sonnet-4-6",
             "claude-opus-4-5-20251101": "claude-opus-4-6",
             "claude-opus-4-5": "claude-opus-4-6",
+            "claude-2.1": "claude-sonnet-4-6",
+            "claude-2.0": "claude-sonnet-4-6",
+            "claude-2": "claude-sonnet-4-6",
         }
 
         for i, cell in enumerate(nb.get("cells", [])):
@@ -672,6 +675,9 @@ Overall: {passing}/{total} notebooks passing ({percentage:.1f}%)
                 "claude-sonnet-4-5": "claude-sonnet-4-6",
                 "claude-opus-4-5-20251101": "claude-opus-4-6",
                 "claude-opus-4-5": "claude-opus-4-6",
+                "claude-2.1": "claude-sonnet-4-6",
+                "claude-2.0": "claude-sonnet-4-6",
+                "claude-2": "claude-sonnet-4-6",
             }
 
             modified = False
