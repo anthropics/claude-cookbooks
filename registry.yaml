@@ -852,3 +852,12 @@
   categories:
   - Evals
   - Tools
+- title: Consistent image pipeline for narrated video (Claude + Flux)
+  description: Replace an all-in-one AI content subscription with Claude structuring
+    scene prompts and Flux/fal.ai rendering consistent, seeded images.
+  path: third_party/FAL/consistent_image_pipeline_for_narrated_video.ipynb
+  authors:
+  - Bernhard19722
+  date: '2026-07-15'
+  categories:
+  - Integrations
