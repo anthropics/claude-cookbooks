@@ -530,6 +530,7 @@
   path: patterns/agents/authority_routing.ipynb
   authors:
   - anton-dzyatkovsky
+  - Droptops
   date: '2026-07-17'
   categories:
   - Agent Patterns
