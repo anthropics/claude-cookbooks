@@ -867,3 +867,13 @@
   - RAG & Retrieval
   - Integrations
   - Tools
+- title: Structured context compaction for long agent runs
+  description: Compact a long agent scratchpad into a dense keyed record, forget stale
+    facts on a deterministic decay rule, and measure the token reduction offline with a
+    local tokenizer. The core result reproduces with no API key.
+  path: capabilities/context-memory-compaction/guide.ipynb
+  authors:
+  - WGlynn
+  date: '2026-07-03'
+  categories:
+  - Agent Patterns
