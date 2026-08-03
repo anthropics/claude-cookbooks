@@ -278,6 +278,17 @@
   date: '2026-05-22'
   categories:
   - Claude Agent SDK
+- title: Orchestrate subagents at scale with dynamic workflows
+  description: Trigger a dynamic workflow from the Agent SDK to fact-check a report
+    against source documents with parallel verifier and skeptic subagents.
+  path: claude_agent_sdk/08_Dynamic_workflows.ipynb
+  authors:
+  - preston-tuggle
+  - jimmyechan-ant
+  date: '2026-07-22'
+  categories:
+  - Claude Agent SDK
+  - Agent Patterns
 - title: Extended thinking
   description: Use Claude's extended thinking for transparent step-by-step reasoning
     with budget management.
