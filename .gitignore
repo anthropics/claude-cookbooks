@@ -163,3 +163,10 @@ tool_use/.env
 
 # Cybersecurity notebook artifacts (regenerated each run)
 claude_agent_sdk/vulnerability_detection_agent/canary/THREAT_MODEL.md
+
+
+.env
+*.env
+__pycache__/
+.ipynb_checkpoints/
+generate_notebook.py
