@@ -863,6 +863,7 @@
   date: '2026-06-25'
   categories:
   - Evals
+  - Tools
 - title: Fraud Review Agent with MongoDB Atlas and Claude Managed Agents
   description: Bring MongoDB Atlas to a Claude Managed Agent as its retrieval engine, graph
     store, and system of record — three credential-safe ways to connect, the four retrieval
