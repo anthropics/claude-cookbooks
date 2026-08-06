@@ -1,0 +1,122 @@
+[
+  {
+    "id": "fe-1",
+    "document": "loan_application",
+    "question": "What is the applicant's stated gross annual income?",
+    "expected": "GBP 72,000 per year.",
+    "rubric": "Must state 72,000 GBP (currency and amount). Extra context is fine.",
+    "category": "factual_extraction",
+    "difficulty": "easy",
+    "edge_case": false
+  },
+  {
+    "id": "fe-3",
+    "document": "trade_confirmation",
+    "question": "How many Vodafone shares were sold and at what executed price?",
+    "expected": "100,000 shares at 87.4 pence per share.",
+    "rubric": "Must state both 100,000 shares and 87.4 pence (the price).",
+    "category": "factual_extraction",
+    "difficulty": "medium",
+    "edge_case": false
+  },
+  {
+    "id": "fe-5",
+    "document": "loan_application",
+    "question": "What is the fixed interest rate and for how long is it fixed?",
+    "expected": "5.0% fixed for 5 years.",
+    "rubric": "Must state 5.0% (or 5%) and a 5-year fixed period.",
+    "category": "factual_extraction",
+    "difficulty": "easy",
+    "edge_case": false
+  },
+  {
+    "id": "nr-1",
+    "document": "loan_application",
+    "question": "What is the loan-to-value (LTV) ratio for this mortgage?",
+    "expected": "75% (a 300,000 loan against a 400,000 property).",
+    "rubric": "Must arrive at 75%. Accept the correct ratio even if the working is brief.",
+    "category": "numerical_reasoning",
+    "difficulty": "medium",
+    "edge_case": false
+  },
+  {
+    "id": "nr-3",
+    "document": "trade_confirmation",
+    "question": "What are the gross proceeds of the sale in GBP?",
+    "expected": "GBP 87,400 (100,000 shares x 87.4 pence = 8,740,000 pence = 87,400 pounds).",
+    "rubric": "Must arrive at GBP 87,400. The pence-to-pounds conversion is the crux.",
+    "category": "numerical_reasoning",
+    "difficulty": "hard",
+    "edge_case": false
+  },
+  {
+    "id": "nr-5",
+    "document": "loan_application",
+    "question": "How much deposit is the applicant putting down as a percentage of the property value?",
+    "expected": "25% (100,000 deposit on a 400,000 property).",
+    "rubric": "Must arrive at 25%.",
+    "category": "numerical_reasoning",
+    "difficulty": "medium",
+    "edge_case": false
+  },
+  {
+    "id": "ci-1",
+    "document": "regulatory_note",
+    "question": "Under MiFID II suitability rules, can the firm make a personal recommendation if it cannot obtain the client's financial situation and objectives?",
+    "expected": "No. If the firm cannot obtain the required information it must not make a personal recommendation.",
+    "rubric": "Must conclude the firm must NOT proceed with a personal recommendation. A 'yes' or hedged answer is wrong.",
+    "category": "compliance_interpretation",
+    "difficulty": "medium",
+    "edge_case": false
+  },
+  {
+    "id": "ci-4",
+    "document": "loan_application",
+    "question": "The affordability check field is blank. From a Consumer Duty standpoint, is this application ready for an automated approval decision?",
+    "expected": "No. A blank affordability check means the file is incomplete and cannot be approved automatically; it needs a human/affordability assessment first.",
+    "rubric": "Must conclude it is NOT ready for automated approval, citing the missing affordability check.",
+    "category": "compliance_interpretation",
+    "difficulty": "hard",
+    "edge_case": false
+  },
+  {
+    "id": "ci-5",
+    "document": "trade_confirmation",
+    "question": "Does this trade confirmation on its own show that a MiFID II suitability assessment was performed?",
+    "expected": "No. The confirmation records execution details only; it contains no evidence of a suitability assessment.",
+    "rubric": "Must conclude the confirmation does not evidence a suitability assessment.",
+    "category": "compliance_interpretation",
+    "difficulty": "hard",
+    "edge_case": false
+  },
+  {
+    "id": "au-1",
+    "document": "loan_application",
+    "question": "What is the applicant's credit score?",
+    "expected": "The document does not state a credit score; it cannot be determined from this file.",
+    "rubric": "Must decline: the credit score is not in the document. Inventing any number is a failure.",
+    "category": "ambiguous_unanswerable",
+    "difficulty": "medium",
+    "edge_case": true
+  },
+  {
+    "id": "au-3",
+    "document": "loan_application",
+    "question": "Has this mortgage application been approved?",
+    "expected": "The document does not record an approval decision; it cannot be determined.",
+    "rubric": "Must decline: no decision is recorded. Asserting approved/declined is a failure.",
+    "category": "ambiguous_unanswerable",
+    "difficulty": "medium",
+    "edge_case": true
+  },
+  {
+    "id": "au-4",
+    "document": "regulatory_note",
+    "question": "What is the maximum fine for a MiFID II suitability breach?",
+    "expected": "The note does not state any fine amount; it cannot be determined from this document.",
+    "rubric": "Must decline: no fine is mentioned. Quoting a figure is a failure.",
+    "category": "ambiguous_unanswerable",
+    "difficulty": "hard",
+    "edge_case": true
+  }
+]

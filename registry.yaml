@@ -878,3 +878,13 @@
   - RAG & Retrieval
   - Integrations
   - Tools
+- title: Building a model-as-judge evaluation pipeline for production LLM systems
+  description: Build a production eval harness — a held-out golden dataset, a
+    model-as-judge scorer with per-dimension rubrics, CI/CD regression gates, and a
+    shadow-deployment A/B — that blocks a prompt or model change when quality drops.
+  path: evals/model_as_judge/model_as_judge_evaluation.ipynb
+  authors:
+  - priyanka25aug
+  date: '2026-07-17'
+  categories:
+  - Evals

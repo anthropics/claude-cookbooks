@@ -1,0 +1,206 @@
+[
+  {
+    "question_id": "fe-1",
+    "category": "factual_extraction",
+    "scores": {
+      "correctness": 5,
+      "completeness": 5,
+      "hallucination": 5,
+      "tone": 5
+    },
+    "rationales": {
+      "correctness": "The candidate answer states that the applicant's stated gross annual income is \"GBP 72,000,\" which directly matches both the source document and the reference answer. The answer includes both the correct currency (GBP) and the correct amount (72,000), meeting the rubric requirement. The candidate also provides helpful context by referencing the document number, which is extra information that does not detract from the accuracy.",
+      "completeness": "The rubric requires that the answer must state \"72,000 GBP (currency and amount).\" The candidate answer provides exactly this: it states the amount (72,000) and the currency (GBP) in the correct format. The answer also includes helpful extra context by referencing the document reference number and describing it as \"stated gross annual income,\" which adds clarity without detracting from completeness. All required elements are present.",
+      "hallucination": "The candidate answer states that the applicant's stated gross annual income is \"GBP 72,000.\" This claim is directly supported by the source document, which explicitly lists \"Stated gross income: GBP 72,000 / year.\" The answer includes both the currency (GBP) and the amount (72,000) as required by the rubric. No fabricated information, invented figures, or unsupported claims are present.",
+      "tone": "The candidate answer employs a precise, professional register appropriate for a regulated financial setting. It directly states the required information (GBP 72,000) with appropriate currency notation, includes the document reference number for traceability, and uses clear, unambiguous language without hedging or unnecessary elaboration. There are no casual expressions, jargon misuse, or bravado present. The tone is factual and measured, consistent with financial documentation standards."
+    },
+    "overall": 5.0
+  },
+  {
+    "question_id": "fe-3",
+    "category": "factual_extraction",
+    "scores": {
+      "correctness": 5,
+      "completeness": 5,
+      "hallucination": 5,
+      "tone": 5
+    },
+    "rationales": {
+      "correctness": "The candidate answer correctly identifies both required elements from the source document: 100,000 shares were sold and the executed price was 87.4 pence per share. The answer directly matches the reference answer in terms of factual content, presenting the information in a clear, organized format. All facts stated are accurate and complete according to the rubric requirements.",
+      "completeness": "The rubric requires that the answer state both the number of shares (100,000) and the executed price (87.4 pence). The candidate answer clearly presents both required elements: it explicitly states \"100,000 shares of Vodafone Group PLC\" and \"87.4 pence per share.\" The answer fully satisfies all requirements specified in the rubric with no missing elements.",
+      "hallucination": "The candidate answer directly cites two specific factual claims from the source document: \"100,000 shares\" and \"87.4 pence per share.\" Both figures appear verbatim in the trade confirmation under \"Instruction\" and \"Executed price\" respectively. The answer makes no claims beyond what is explicitly stated in the document, includes no invented figures, and does not overreach. Every piece of information is grounded in the source material.",
+      "tone": "The candidate answer uses clear formatting with bold headings and structured presentation, which is professional and appropriate for financial documentation. The language is precise and direct, stating factual information without hedging qualifiers or unnecessary elaboration. There is no casual language, bravado, or inappropriate tone\u2014the register is entirely suitable for a regulated financial setting. The response matches the professional standard expected in financial communications."
+    },
+    "overall": 5.0
+  },
+  {
+    "question_id": "fe-5",
+    "category": "factual_extraction",
+    "scores": {
+      "correctness": 5,
+      "completeness": 5,
+      "hallucination": 5,
+      "tone": 5
+    },
+    "rationales": {
+      "correctness": "The candidate answer states the fixed interest rate as 5.0% and the fixed period as 5 years, which exactly matches both the reference answer and the information in the source document. The answer correctly identifies both required elements specified in the rubric: the rate (5.0%) and the duration (5 years). There are no omissions, errors, or contradictions with the source material.",
+      "completeness": "The question asks for two pieces of information: the fixed interest rate and the duration of the fixed period. The rubric specifies that both elements must be present - the rate (5.0% or 5%) and the fixed period (5 years). The candidate answer explicitly provides both required elements: \"5.0%\" for the interest rate and \"5 years\" for the fixed period. All required information is present and clearly stated.",
+      "hallucination": "The candidate answer directly extracts two specific pieces of information from the source document: the interest rate of 5.0% and the fixed period of 5 years. Both claims are explicitly stated in the source document under \"Interest rate: 5.0% fixed for 5 years.\" There are no invented figures, fabricated facts, or overreaching statements. The answer is precisely grounded in the source material and fully addresses the question asked.",
+      "tone": "The candidate answer uses clear formatting with bold headers and straightforward statement of facts, which is appropriate for a regulated financial setting. The language is precise and professional, avoiding casual phrasing or unnecessary hedging. There is no extraneous commentary or informal tone; the response directly states the required information in a manner consistent with regulatory documentation standards. The structured presentation enhances clarity without introducing any inappropriate register elements."
+    },
+    "overall": 5.0
+  },
+  {
+    "question_id": "nr-1",
+    "category": "numerical_reasoning",
+    "scores": {
+      "correctness": 5,
+      "completeness": 5,
+      "hallucination": 5,
+      "tone": 5
+    },
+    "rationales": {
+      "correctness": "The candidate answer calculates the LTV ratio using the correct formula: (Loan Amount / Property Value) \u00d7 100. The numerical inputs are accurately extracted from the source document (GBP 300,000 loan and GBP 400,000 property value). The arithmetic is correct: 300,000 \u00f7 400,000 = 0.75 = 75%. The final answer of 75% matches exactly with the reference answer and directly addresses the question asked.",
+      "completeness": "The question asks for the loan-to-value (LTV) ratio for the mortgage. The rubric requires arriving at 75% and accepts the correct ratio even with brief working. The candidate answer provides the correct formula for LTV calculation, shows the complete working with actual figures from the document, and arrives at the correct answer of 75%. All required elements are present: the calculation method, the numerical substitution, and the final result.",
+      "hallucination": "The candidate answer calculates the LTV ratio using the formula LTV = (Loan Amount / Property Value) \u00d7 100. Both figures used\u2014GBP 300,000 (requested loan) and GBP 400,000 (property value)\u2014are directly stated in the source document. The arithmetic is correct (300,000 \u00f7 400,000 = 0.75 = 75%), and the final answer of 75% matches the reference answer. No invented figures, fabricated facts, or unsupported claims are present.",
+      "tone": "The candidate answer employs a clear, structured format with explicit formula presentation and precise calculation. The language is professional and direct, using standard financial terminology (LTV, Loan Amount, Property Value) without unnecessary elaboration or casual phrasing. The presentation is appropriate for a regulated financial setting, maintaining objectivity and clarity. There are no hedging qualifiers, unwarranted confidence claims, or register lapses\u2014the tone matches what would be expected in formal mortgage documentation or regulatory analysis."
+    },
+    "overall": 5.0
+  },
+  {
+    "question_id": "nr-3",
+    "category": "numerical_reasoning",
+    "scores": {
+      "correctness": 2,
+      "completeness": 1,
+      "hallucination": 1,
+      "tone": 4
+    },
+    "rationales": {
+      "correctness": "The candidate correctly calculates the intermediate step: 100,000 shares \u00d7 87.4 pence = 8,740,000 pence. However, there is a critical error in the final conversion from pence to pounds. The candidate divides 8,740,000 pence by 100 to get \u00a38,740,000, but this is incorrect. The correct conversion should be 8,740,000 pence \u00f7 100 = \u00a387,400 (since 100 pence = 1 pound). The candidate appears to have made a decimal placement error, arriving at an answer that is 100 times too large. The reference answer correctly identifies GBP 87,400 as the gross proceeds.",
+      "completeness": "The candidate answer correctly identifies the number of shares (100,000) and the price per share (87.4 pence), and correctly calculates the intermediate result of 8,740,000 pence. However, there is a critical error in the pence-to-pounds conversion: the candidate divides 8,740,000 pence by 100 to get \u00a38,740,000, when the correct conversion should yield \u00a387,400. The rubric explicitly states that \"the pence-to-pounds conversion is the crux,\" and the candidate has failed this essential requirement by arriving at an answer that is off by a factor of 100. While the candidate covers all structural elements (shares, price, calculation steps), the final answer of \u00a38,740,000 is incorrect; it should be \u00a387,400.",
+      "hallucination": "The candidate correctly extracts all figures from the source document: 100,000 shares and 87.4 pence per share. The multiplication (100,000 \u00d7 87.4 = 8,740,000 pence) is arithmetically correct and grounded in the source. However, the critical error occurs in the pence-to-pounds conversion: the candidate divides 8,740,000 pence by 100 to get \u00a38,740,000, when the correct conversion requires dividing by 100 to get \u00a387,400 (since 100 pence = \u00a31). This is a fabricated figure not derivable from proper application of the source data\u2014the candidate has invented an answer that contradicts basic currency conversion mathematics and differs dramatically from the correct result.",
+      "tone": "The candidate answer uses professional formatting with clear section headers and structured calculations appropriate for a financial document context. The language is precise and technical, with proper use of financial notation (\u00a3, pence). However, the answer contains a critical mathematical error\u2014it converts 8,740,000 pence to \u00a38,740,000 instead of \u00a387,400\u2014which undermines the professional credibility, though this is a content/accuracy issue rather than a tone issue. From a pure tone perspective, the register is appropriately formal and methodical for a regulated financial setting, with no casual language, unnecessary hedging, or unprofessional elements."
+    },
+    "overall": 1.7000000000000002
+  },
+  {
+    "question_id": "nr-5",
+    "category": "numerical_reasoning",
+    "scores": {
+      "correctness": 5,
+      "completeness": 5,
+      "hallucination": 5,
+      "tone": 5
+    },
+    "rationales": {
+      "correctness": "The candidate answer correctly calculates the deposit as a percentage of the property value: GBP 100,000 \u00f7 GBP 400,000 \u00d7 100 = 25%. This matches the reference answer exactly and is supported by the source document, which clearly states a deposit of GBP 100,000 and property value of GBP 400,000. The calculation methodology is shown clearly and the final answer is accurate.",
+      "completeness": "The question asks for a single, specific piece of information: the deposit as a percentage of property value. The rubric requires arriving at 25%, which the candidate answer does. The candidate answer includes the calculation formula, shows the numerical work step-by-step, and clearly states the final answer of 25%. All required elements are present: the correct percentage is identified, the calculation is shown, and the answer is presented clearly. There are no missing elements from what the question and rubric ask for.",
+      "hallucination": "The candidate answer uses two figures directly from the source document: the deposit of GBP 100,000 and the property value of GBP 400,000. The mathematical calculation (100,000 \u00f7 400,000 \u00d7 100 = 25%) is arithmetically correct and properly shown. All claims made in the answer are grounded in the source document with no invented figures, fabricated facts, or unsupported assertions. The answer directly addresses the question asked and arrives at the correct answer of 25%.",
+      "tone": "The candidate answer uses a clear, structured format with explicit calculation steps, which demonstrates precision appropriate for financial documentation. The language is professional and direct, avoiding casual phrasing or unnecessary hedging. The use of bold formatting for the key result and straightforward presentation aligns well with regulated financial communication standards. There are no lapses in register or inappropriate embellishments."
+    },
+    "overall": 5.0
+  },
+  {
+    "question_id": "ci-1",
+    "category": "compliance_interpretation",
+    "scores": {
+      "correctness": 5,
+      "completeness": 5,
+      "hallucination": 5,
+      "tone": 5
+    },
+    "rationales": {
+      "correctness": "The candidate answer directly addresses the question with a clear \"No\" that aligns with the reference answer. It correctly quotes the source document's explicit statement that the firm \"must NOT proceed with a personal recommendation\" when required information cannot be obtained. The answer accurately identifies that financial situation and investment objectives are part of the mandatory information set, and logically concludes that their absence prevents personal recommendations. The answer contains no factual errors and fully satisfies the rubric requirement to conclude the firm must NOT proceed with a personal recommendation.",
+      "completeness": "The candidate answer comprehensively addresses all required elements. It provides a clear \"No\" conclusion that aligns with the rubric requirement. The answer includes direct textual support from the source document, specifically the mandatory quote about not proceeding with personal recommendations. It further elaborates by listing all three categories of required information (knowledge/experience, financial situation, and investment objectives) and explicitly confirms that financial situation and objectives are part of the mandatory set. The answer leaves no ambiguity and fully satisfies both the question and rubric requirements.",
+      "hallucination": "The candidate answer is entirely grounded in the source document. It directly quotes the relevant passage (\"Where the firm cannot obtain the required information, it must NOT proceed with a personal recommendation\") and accurately enumerates the required information categories from the document. The candidate correctly identifies that financial situation and investment objectives are mandatory components of the required information set, and logically concludes that missing these elements means the firm cannot proceed. No fabricated figures, invented facts, or unsupported claims are present.",
+      "tone": "The candidate answer maintains a precise, professional register throughout. The language is direct and unambiguous, with no hedging or unnecessary qualifications\u2014the answer definitively states \"cannot\" and \"must not\" as required by the rubric. The response uses appropriate formatting with direct quotation from the source document and a clear breakdown of required information elements. The tone is formal and measured, consistent with regulatory guidance documentation, with no casual language, bravado, or verbose explanations that would be inappropriate for a financial compliance context."
+    },
+    "overall": 5.0
+  },
+  {
+    "question_id": "ci-4",
+    "category": "compliance_interpretation",
+    "scores": {
+      "correctness": 5,
+      "completeness": 5,
+      "hallucination": 4,
+      "tone": 5
+    },
+    "rationales": {
+      "correctness": "The candidate answer correctly identifies the core requirement: the application is NOT ready for automated approval due to the blank affordability check field. This matches the reference answer precisely. The candidate goes further by explaining the Consumer Duty framework, the specific risks (self-employed status, 2-year trading history, interest rate risk post-fixed period), and providing context about why affordability assessment is mandatory. All of these elaborations are accurate and supportable from the document and regulatory principles; they do not contradict the reference answer or source material. The reasoning is thorough and demonstrates sound understanding of mortgage lending requirements.",
+      "completeness": "The candidate answer addresses all required elements: it clearly concludes the application is NOT ready for automated approval, cites the missing affordability check as the reason, and provides substantial supporting detail about Consumer Duty requirements and why this is a critical deficiency. The answer goes beyond the minimum by explaining the specific risks (self-employed with 2 years trading, estimated monthly payment, interest rate risk) and regulatory implications. It comprehensively covers everything the question and rubric ask for, with no missing core elements.",
+      "hallucination": "The candidate answer correctly identifies the blank affordability check field and concludes the application is not ready for automated approval, which is grounded in the source document. However, the answer includes an estimated monthly payment of \"~\u00a31,430/month\" which is a calculated figure not present in the source document. While this calculation appears mathematically reasonable as an illustrative example, it represents the candidate's own derivation rather than information grounded in the provided document. The references to \"Consumer Duty requirement\" and \"regulatory gap\" are general regulatory knowledge rather than facts from the document itself, though the core claim about the missing affordability check being problematic is sound and document-based. The candidate appropriately avoids fabricating specific affordability details or approval criteria not stated in the source.",
+      "tone": "The candidate answer uses appropriately formal language consistent with regulated financial settings (\"Consumer Duty requirement,\" \"regulatory gap,\" \"mandatory control point\"). The tone is precise and professional throughout, with structured analysis and clear explanations. There is no undue hedging (statements are direct: \"NOT ready for automated approval\") and no bravado. The technical calculations and regulatory references are presented with appropriate confidence and exactness suitable for a compliance context."
+    },
+    "overall": 4.75
+  },
+  {
+    "question_id": "ci-5",
+    "category": "compliance_interpretation",
+    "scores": {
+      "correctness": 4,
+      "completeness": 5,
+      "hallucination": 5,
+      "tone": 5
+    },
+    "rationales": {
+      "correctness": "The candidate answer correctly concludes that the trade confirmation does not show evidence of a MiFID II suitability assessment, matching the reference answer's core position. The candidate appropriately identifies that the document contains only execution details and lacks any suitability-related information. However, there is a minor issue: the candidate states \"The absence of such documentation in this confirmation does not confirm or deny whether an assessment was performed,\" which slightly softens the answer. The reference answer is more direct: the confirmation simply \"contains no evidence\" of a suitability assessment. This distinction is trivial since both answers reach the correct conclusion, but the candidate's phrasing introduces marginal ambiguity about whether an assessment might have occurred elsewhere. Overall, the answer is factually correct and well-reasoned, with only this very minor qualificational nuance that doesn't materially undermine the conclusion.",
+      "completeness": "The candidate answer meets the core requirement stated in the rubric by concluding that the confirmation does not evidence a suitability assessment. It goes beyond the reference answer by providing helpful detail about what types of information would typically be absent (client classification, appropriateness testing, risk warnings, etc.) and clarifying that such documentation would normally be found in separate documents rather than the confirmation itself. The answer directly addresses the question and supports its conclusion with concrete reasoning about MiFID II documentation practices. No required elements are missing.",
+      "hallucination": "The candidate answer makes claims that are entirely grounded in the source document and appropriate epistemic reasoning. It correctly observes that the confirmation contains only execution details and lacks suitability assessment documentation. The answer appropriately declines to confirm whether an assessment was performed elsewhere, acknowledging the limitations of what can be determined from this document alone. All statements about what is absent from the document are accurate, and the reference to typical MiFID II documentation practices is reasonable contextual knowledge that doesn't fabricate facts about this specific document. There are no invented figures, fabricated facts, or overconfident claims about unanswerable questions.",
+      "tone": "The candidate answer employs precise, professional language appropriate for regulated financial discourse. The register is formal and technical, with accurate use of MiFID II terminology and regulatory concepts. The response avoids casual phrasing, unwarranted hedging, or overconfidence. The structured bullet-point enumeration and clear logical organization reinforce professional communication standards expected in financial settings. No lapses in tone or register are apparent."
+    },
+    "overall": 4.6
+  },
+  {
+    "question_id": "au-1",
+    "category": "ambiguous_unanswerable",
+    "scores": {
+      "correctness": 5,
+      "completeness": 5,
+      "hallucination": 5,
+      "tone": 5
+    },
+    "rationales": {
+      "correctness": "The candidate answer correctly identifies that the document does not contain a credit score, matching the reference answer's core finding. The candidate goes further by explaining the distinction between existing credit information (payment status) and an actual credit score, which demonstrates proper understanding of financial documentation. The answer appropriately declines to invent or estimate any numerical credit score value. No factual errors or contradictions with the source document are present.",
+      "completeness": "The question asks what the applicant's credit score is. The rubric requires that the answer must decline to provide a credit score and explicitly state it is not in the document, while avoiding any invented numbers. The candidate answer fully satisfies these requirements by: (1) clearly stating the document does not contain a credit score, (2) distinguishing between credit information that is present (payment status) and what is absent (actual score), and (3) confirming that a credit score cannot be determined. All required elements are present with no omissions.",
+      "hallucination": "The candidate answer correctly declines to provide a credit score, accurately noting that the document does not contain this information. The answer goes further by explicitly clarifying that while the document mentions existing credit facilities and payment status, this does not constitute a credit score. All claims made in the candidate answer are directly supported by the source document\u2014the GBP 9,200 figure and \"up to date\" status are both stated in the application. The candidate appropriately distinguishes between related but different concepts (payment history vs. credit score), demonstrating careful grounding without fabrication.",
+      "tone": "The candidate answer demonstrates appropriate professional tone for a regulated financial setting. The language is precise and measured, correctly distinguishing between payment status and credit score\u2014a nuanced technical distinction important in lending contexts. The response avoids hedging language (\"I think,\" \"probably\") and maintains clarity without unnecessary elaboration. The structured explanation demonstrates professional competence without bravado or casual phrasing."
+    },
+    "overall": 5.0
+  },
+  {
+    "question_id": "au-3",
+    "category": "ambiguous_unanswerable",
+    "scores": {
+      "correctness": 5,
+      "completeness": 5,
+      "hallucination": 5,
+      "tone": 5
+    },
+    "rationales": {
+      "correctness": "The candidate answer correctly identifies that the document contains no approval decision and cannot determine approval status, which matches the reference answer's core finding. The candidate goes further by noting the blank affordability check field and explaining where approval information would typically be found, which adds helpful context without introducing factual errors. The answer avoids the trap of asserting either approval or denial, adhering to the rubric's requirement. All statements are factually accurate relative to the source document.",
+      "completeness": "The candidate answer addresses the core requirement by correctly identifying that no approval decision is recorded in the document. It goes beyond the reference answer by providing additional context: noting the blank affordability check field and explaining what documentation would be needed to determine approval status. The answer fully satisfies the rubric's requirement to decline asserting approval/disapproval and instead acknowledge the absence of a decision. All elements requested by the question and rubric are present.",
+      "hallucination": "The candidate answer correctly identifies that the document contains no approval decision and appropriately declines to answer the question rather than fabricating a status. All claims made are directly supported by the source document: the affordability check field is indeed blank, there is no approval decision or status statement anywhere in the visible document, and the suggestion to refer to other documents for approval status is a reasonable inference, not a fabrication. The response demonstrates good grounding by acknowledging what information is absent rather than inventing details.",
+      "tone": "The candidate answer uses precise, professional language appropriate for a regulated financial setting. It avoids hedging language like \"it seems\" or \"probably,\" instead making clear factual statements (\"The document does not contain information,\" \"The affordability check field is blank\"). The response correctly identifies the evidentiary gaps without speculation, and appropriately directs the reader to proper documentation procedures. The register is formal and measured throughout, with no casual expressions or unwarranted confidence."
+    },
+    "overall": 5.0
+  },
+  {
+    "question_id": "au-4",
+    "category": "ambiguous_unanswerable",
+    "scores": {
+      "correctness": 5,
+      "completeness": 5,
+      "hallucination": 5,
+      "tone": 5
+    },
+    "rationales": {
+      "correctness": "The candidate answer correctly identifies that the document does not contain information about fines or penalties for MiFID II suitability breaches. This matches the reference answer's position that the information \"cannot be determined from this document.\" The candidate goes further by explaining why (the document only covers requirements, not penalties) and suggesting where such information might be found, but critically does not quote or assert any fine amount. The response properly declines to provide a figure, which aligns with the rubric's requirement that \"quoting a figure is a failure.\"",
+      "completeness": "The candidate answer successfully addresses all requirements of the rubric. It explicitly declines to provide a fine amount and correctly states that no fine is mentioned in the document, which is the primary requirement. The answer goes beyond the minimum by explaining what the document does contain (MiFID II suitability requirements) and helpfully directs the reader to appropriate alternative sources for the requested information. No prohibited elements (such as quoting a figure) are present. The response fully satisfies both the spirit and letter of the rubric requirements.",
+      "hallucination": "The candidate answer correctly declines to provide a fine amount, stating that this information cannot be determined from the document. The answer accurately summarizes what the document does contain (suitability requirements) and explicitly acknowledges what it does not contain (penalty information). The suggestion to consult regulatory guidance is reasonable contextual advice that does not constitute a claim about the source document. There are no invented figures, fabricated facts, or confident answers to unanswerable questions\u2014this response is fully grounded in the document's actual content and limitations.",
+      "tone": "The candidate answer demonstrates appropriately precise and professional tone throughout. It clearly states what cannot be determined, avoids speculation or hedging language like \"I believe\" or \"it seems,\" and provides concrete guidance on where to find the relevant information. The language is formal and direct, with no casual expressions or unnecessary elaboration. The structure is logical and the phrasing meets regulatory communication standards."
+    },
+    "overall": 5.0
+  }
+]
