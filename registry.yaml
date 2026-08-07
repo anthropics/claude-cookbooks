@@ -878,3 +878,13 @@
   - RAG & Retrieval
   - Integrations
   - Tools
+- title: Auditing system prompts for defense gaps
+  description: Scan Claude system prompts for missing defenses across 12 attack
+    vectors (OWASP LLM Top 10 mapped) using deterministic regex analysis.
+  path: skills/prompt_defense_audit.ipynb
+  authors:
+  - ppcvote
+  date: '2026-04-06'
+  categories:
+  - Skills
+  - Evals
