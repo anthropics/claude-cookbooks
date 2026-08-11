@@ -1,49 +1,25 @@
-"""Tenki Sandbox analogue of modal_sandbox_webhook.py.
-
-FastAPI app: receives the session.status_run_started webhook, drains the
-environment work queue, and per item creates or reuses a Tenki Sandbox running
-the provider-agnostic ``sandbox_runner.py``. Deploy this anywhere that can
-serve HTTP and reach the Tenki API.
-
-The webhook is a wake-up signal only — each delivery drains *all* pending work
-items, so a single arriving webhook recovers any earlier missed deliveries.
-
-Env on the orchestrator host:
-  ANTHROPIC_WEBHOOK_SECRET, ANTHROPIC_BASE_URL,
-  ANTHROPIC_ENVIRONMENT_ID, ANTHROPIC_ENVIRONMENT_KEY,
-  TENKI_AUTH_TOKEN or TENKI_API_KEY, TENKI_API_ENDPOINT,
-  TENKI_PROJECT_ID, TENKI_SANDBOX_IMAGE
-"""
+"""FastAPI webhook for running Anthropic Managed Agents in Tenki sandboxes."""
 
 import os
 from collections.abc import Mapping
+from contextlib import asynccontextmanager
 from functools import cache
 from pathlib import Path
 
 import anthropic
+import tenki
 from anthropic.types.beta import UnwrapWebhookEvent
 from fastapi import FastAPI, HTTPException, Request
-from tenki_sandbox import Client as TenkiClient
-from tenki_sandbox import Sandbox as TenkiSandbox
 
 SDK_PACKAGE = "anthropic"
-WORKDIR = "/workspace"
+WORKDIR = "workspace"
 RUNNER_PATH = f"{WORKDIR}/sandbox_runner.py"
 RUNNER_LOG = f"{WORKDIR}/anthropic-runner.log"
 RUNNER_SRC = (Path(__file__).resolve().parent.parent / "modal" / "sandbox_runner.py").read_text()
 
-app = FastAPI()
-
 
 @cache
 def _client() -> anthropic.AsyncAnthropic:
-    """Shared client for both webhook verification and the work poller.
-
-    Async because ``client.beta.environments.work.poller(...)`` is async-only
-    (it lives on ``AsyncWork``). ``unwrap()`` is synchronous even on the async
-    client — do not ``await`` it. The ``whsec_`` secret is passed to
-    ``webhook_key`` as-is: the SDK decodes its URL-safe base64 internally.
-    """
     return anthropic.AsyncAnthropic(
         auth_token=os.environ["ANTHROPIC_ENVIRONMENT_KEY"],
         webhook_key=os.environ["ANTHROPIC_WEBHOOK_SECRET"],
@@ -51,25 +27,34 @@ def _client() -> anthropic.AsyncAnthropic:
 
 
 @cache
-def _tenki_client() -> TenkiClient:
-    """Tenki client, lazy so imports do not require deploy-time env vars."""
-    return TenkiClient()
+def _tenki_client() -> tenki.AsyncClient:
+    return tenki.AsyncClient()
+
+
+@asynccontextmanager
+async def _lifespan(_: FastAPI):
+    yield
+    if _tenki_client.cache_info().currsize:
+        client = _tenki_client()
+        _tenki_client.cache_clear()
+        await client.close()
+    if _client.cache_info().currsize:
+        client = _client()
+        _client.cache_clear()
+        await client.close()
+
+
+app = FastAPI(lifespan=_lifespan)
 
 
 def _verify_webhook(
     client: anthropic.AsyncAnthropic, raw: bytes, headers: "Mapping[str, str]"
 ) -> UnwrapWebhookEvent:
-    # `unwrap()` verifies via `standardwebhooks` and lets its
-    # `WebhookVerificationError` propagate unwrapped — import it the same lazy
-    # way the SDK does (it's the `anthropic[webhooks]` extra).
     from standardwebhooks import WebhookVerificationError
 
     try:
         return client.beta.webhooks.unwrap(raw.decode(), headers=headers)
     except (WebhookVerificationError, KeyError) as e:
-        # Messages are signature/config shaped, never the request body — safe
-        # to log. Other exceptions propagate (they indicate a bug, not a bad
-        # delivery).
         print(f"[webhook] signature reject: {type(e).__name__}: {e}", flush=True)
         raise HTTPException(status_code=401, detail="signature verification failed") from None
 
@@ -100,24 +85,23 @@ def _session_tag(session_id: str) -> str:
     return f"anthropic-session:{session_id.lower()}"
 
 
-def _find_sandbox(session_id: str) -> TenkiSandbox | None:
-    """Return a running Tenki Sandbox for the Anthropic session, if any."""
+async def _find_sandbox(session_id: str) -> tenki.AsyncSandbox | None:
     client = _tenki_client()
-    for sandbox in client.list(tags=[_session_tag(session_id)]):
+    for sandbox in await client.list(tags=[_session_tag(session_id)]):
         if sandbox.state == "RUNNING":
             return sandbox
         if sandbox.state == "PAUSED":
-            sandbox.resume()
-            sandbox.wait_ready(_env_int("TENKI_SANDBOX_RESUME_TIMEOUT_SECONDS", 180))
+            await sandbox.resume()
+            await sandbox.wait_ready(_env_int("TENKI_SANDBOX_RESUME_TIMEOUT_SECONDS", 180))
             return sandbox
     return None
 
 
-def _create_sandbox(session_id: str, *, environment_id: str, work_id: str) -> TenkiSandbox:
-    """Create a Tenki Sandbox tagged for idempotent session reuse."""
+async def _create_sandbox(
+    session_id: str, *, environment_id: str, work_id: str
+) -> tenki.AsyncSandbox:
     create_kwargs = {
         "name": f"anthropic-session-{session_id}",
-        "project_id": _optional_env("TENKI_PROJECT_ID"),
         "image": _optional_env("TENKI_SANDBOX_IMAGE"),
         "tags": [_session_tag(session_id)],
         "metadata": {
@@ -139,12 +123,12 @@ def _create_sandbox(session_id: str, *, environment_id: str, work_id: str) -> Te
         if value is not None:
             create_kwargs[key] = value
 
-    return _tenki_client().create(**create_kwargs)
+    return await _tenki_client().create(**create_kwargs)
 
 
-def _runner_is_active(sandbox: TenkiSandbox) -> bool:
+async def _runner_is_active(sandbox: tenki.AsyncSandbox) -> bool:
     try:
-        result = sandbox.shell(
+        result = await sandbox.shell(
             "ps -eo args | grep -F '[s]andbox_runner.py' >/dev/null",
             timeout=10,
         )
@@ -157,27 +141,26 @@ def _runner_is_active(sandbox: TenkiSandbox) -> bool:
     return result.exit_code == 0
 
 
-def _install_runner(sandbox: TenkiSandbox) -> None:
-    sandbox.fs.mkdir(WORKDIR, recursive=True)
-    sandbox.fs.write_text(RUNNER_PATH, RUNNER_SRC)
-    sandbox.shell(
+async def _install_runner(sandbox: tenki.AsyncSandbox) -> None:
+    await sandbox.fs.mkdir(WORKDIR, recursive=True)
+    await sandbox.fs.write_text(RUNNER_PATH, RUNNER_SRC)
+    await sandbox.shell(
         f"python3 -c 'import {SDK_PACKAGE}' 2>/dev/null || python3 -m pip install -q {SDK_PACKAGE}",
         timeout=180,
         check=True,
     )
 
 
-def _start_runner(
-    sandbox: TenkiSandbox,
+async def _start_runner(
+    sandbox: tenki.AsyncSandbox,
     session_id: str,
     *,
     environment_id: str,
     work_id: str,
     environment_key: str,
 ) -> None:
-    """Upload the worker and start it detached inside the Tenki Sandbox."""
-    _install_runner(sandbox)
-    sandbox.shell(
+    await _install_runner(sandbox)
+    await sandbox.shell(
         f"nohup python3 {RUNNER_PATH} >{RUNNER_LOG} 2>&1 &",
         env={
             "ANTHROPIC_BASE_URL": os.environ.get("ANTHROPIC_BASE_URL", "https://api.anthropic.com"),
@@ -185,19 +168,19 @@ def _start_runner(
             "ANTHROPIC_SESSION_ID": session_id,
             "ANTHROPIC_ENVIRONMENT_ID": environment_id,
             "ANTHROPIC_WORK_ID": work_id,
+            "ANTHROPIC_WORKDIR": WORKDIR,
         },
         timeout=30,
         check=True,
     )
 
 
-def _process_work_item(
+async def _process_work_item(
     *, session_id: str, work_id: str, environment_id: str, environment_key: str
 ) -> dict:
-    """Get-or-create a Tenki Sandbox for one already-ack'd work item."""
-    sandbox = _find_sandbox(session_id)
+    sandbox = await _find_sandbox(session_id)
     if sandbox is not None:
-        if _runner_is_active(sandbox):
+        if await _runner_is_active(sandbox):
             print(
                 f"[webhook] work={work_id} session={session_id} sandbox={sandbox.id} (live)",
                 flush=True,
@@ -209,7 +192,7 @@ def _process_work_item(
                 "created": False,
                 "runner_started": False,
             }
-        _start_runner(
+        await _start_runner(
             sandbox,
             session_id,
             environment_id=environment_id,
@@ -228,8 +211,8 @@ def _process_work_item(
             "runner_started": True,
         }
 
-    sandbox = _create_sandbox(session_id, environment_id=environment_id, work_id=work_id)
-    _start_runner(
+    sandbox = await _create_sandbox(session_id, environment_id=environment_id, work_id=work_id)
+    await _start_runner(
         sandbox,
         session_id,
         environment_id=environment_id,
@@ -250,26 +233,16 @@ def _process_work_item(
 
 
 async def _drain_work(client: anthropic.AsyncAnthropic, environment_id: str) -> list[dict]:
-    """Drain the queue via the SDK poller, spawning a sandbox per work item.
-
-    ``client.beta.environments.work.poller`` is the user-facing entry point: it
-    builds a scoped sub-client from the environment key and yields each ack'd
-    work item. It is async-only (lives on ``AsyncWork``). ``drain=True`` returns
-    when the queue is empty (the webhook handler must respond, not loop forever).
-    ``auto_stop=False`` because each item is handed off to a detached Tenki
-    Sandbox that owns ``/stop`` — the poller must not terminate the lease out
-    from under it.
-    """
     environment_key = os.environ["ANTHROPIC_ENVIRONMENT_KEY"]
     spawned: list[dict] = []
     failed: list[dict] = []
     async for work in client.beta.environments.work.poller(
         environment_id=environment_id,
         environment_key=environment_key,
-        # None -> omit -> non-blocking. The API rejects block_ms=0.
         block_ms=None,
         reclaim_older_than_ms=2000,
         drain=True,
+        # The detached sandbox owns the lease, so the host poller must not stop it.
         auto_stop=False,
     ):
         if work.data.type != "session":
@@ -278,7 +251,7 @@ async def _drain_work(client: anthropic.AsyncAnthropic, environment_id: str) -> 
         session_id = work.data.id
         try:
             spawned.append(
-                _process_work_item(
+                await _process_work_item(
                     session_id=session_id,
                     work_id=work.id,
                     environment_id=environment_id,
@@ -286,8 +259,6 @@ async def _drain_work(client: anthropic.AsyncAnthropic, environment_id: str) -> 
                 )
             )
         except Exception as e:
-            # SDK/httpx/Tenki exceptions can embed request context, so log
-            # type only — never the message.
             detail = type(e).__name__
             print(
                 f"[webhook] FAILED work={work.id} session={session_id}: {detail}",
