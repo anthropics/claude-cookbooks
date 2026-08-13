@@ -12,9 +12,9 @@ A tutorial series demonstrating how to build sophisticated general-purpose agent
 
 #### 2. Clone and set up the project
 
-```git clone https://github.com/anthropics/anthropic-cookbook.git ```
+```git clone https://github.com/anthropics/claude-cookbooks.git ```
 
-```cd anthropic-cookbook/claude_agent_sdk```
+```cd claude-cookbooks/claude_agent_sdk```
 
 ```uv sync ```
 
