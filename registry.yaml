@@ -529,7 +529,7 @@
     eval with a severity-weighted scorer, and three annotated boundary-failure walkthroughs.
   path: patterns/agents/authority_routing.ipynb
   authors:
-  - anton-dzyatkovsky
+  - tonydzi
   - Droptops
   date: '2026-07-17'
   categories:
