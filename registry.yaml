@@ -529,7 +529,7 @@
     of the idle time a barrier creates.
   path: patterns/agents/pipeline_vs_barrier.ipynb
   authors:
-  - Palo-Alto-AI-Research-Lab
+  - tonydzi
   date: '2026-07-17'
   categories:
   - Agent Patterns
