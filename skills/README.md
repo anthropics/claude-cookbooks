@@ -178,14 +178,15 @@ response = client.messages.create(
     }]
 )
 
-# Step 2: Extract file_id from the response
+# Step 2: Extract file_id from the response. Generated files show up as
+# outputs of bash_code_execution_tool_result blocks.
 file_id = None
 for block in response.content:
-    if block.type == "tool_result" and hasattr(block, 'output'):
-        # Look for file_id in the tool output
-        if 'file_id' in str(block.output):
-            file_id = extract_file_id(block.output)  # Parse the file_id
-            break
+    if block.type == "bash_code_execution_tool_result":
+        for item in getattr(block.content, "content", []) or []:
+            if getattr(item, "file_id", None):
+                file_id = item.file_id
+                break
 
 # Step 3: Download the file using Files API
 if file_id:

@@ -85,7 +85,7 @@ pip install -U "anthropic>=0.124.0"
 ```
 
 ### 2. GA Namespaces (no beta headers)
-**Problem**: Older examples use `client.beta.*` and `betas=[...]`
+**Problem**: Code written against `anthropic<0.124.0` uses `client.beta.*` and `betas=[...]`
 **Solution**: Skills, code execution, and the Files API are GA. Use the top-level namespaces.
 ```python
 # ❌ Old (beta)
