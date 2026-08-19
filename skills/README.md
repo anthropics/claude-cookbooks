@@ -125,7 +125,6 @@ skills/
 │   ├── brand_guidelines/
 │   └── report_generator/
 ├── outputs/                      # Generated files
-├── docs/                         # Documentation
 ├── requirements.txt             # Python dependencies
 ├── .env.example                 # Environment template
 └── README.md                    # This file
@@ -342,6 +341,6 @@ Special thanks to the Anthropic team for developing the Skills feature and provi
 
 ---
 
-**Questions?** Check the [FAQ](docs/FAQ.md) or open an issue.
+**Questions?** Open an issue on this repository.
 
 **Ready to start?** Open [Notebook 1](notebooks/01_skills_introduction.ipynb) and let's build something amazing! 🎉
