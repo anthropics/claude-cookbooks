@@ -51,7 +51,7 @@ skills/
 ├── custom_skills/         # Custom skill development area
 ├── outputs/               # Generated files (xlsx, pptx, pdf)
 ├── file_utils.py          # Files API helper functions
-└── docs/                  # Implementation tracking
+└── skill_utils.py         # Skills API helper functions
 ```
 
 ### Key Technical Details
@@ -169,7 +169,6 @@ Be patient - the cell will show [*] while running!
 2. Include setup cell with imports and client initialization
 3. Show API call, response handling, file download
 4. Add error handling examples
-5. Update `docs/skills_cookbook_plan.md` checklist
 
 ### Creating Sample Data
 1. Add realistic financial data to `sample_data/`
@@ -201,7 +200,6 @@ Before committing notebook changes:
 - [ ] Verify all file downloads work
 - [ ] Check outputs/ for generated files
 - [ ] Validate files open correctly in native apps
-- [ ] Update skills_cookbook_plan.md checklist
 - [ ] Test in fresh virtual environment
 
 ## Resources
