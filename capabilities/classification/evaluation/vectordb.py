@@ -67,7 +67,7 @@ class VectorDB:
 
                 if len(top_examples) >= k:
                     break
-
+        self.save_db()
         return top_examples
 
     def save_db(self):
