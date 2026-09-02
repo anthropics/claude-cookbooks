@@ -1,0 +1,3 @@
+anthropic>=0.103.0
+boto3
+bedrock-agentcore>=1.14.0
