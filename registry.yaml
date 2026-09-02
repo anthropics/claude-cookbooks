@@ -1,4 +1,14 @@
 # yaml-language-server: $schema=./.github/registry_schema.json
+- title: Anti-deception harness with Ejentum
+  description: Inject a sunk-cost-resistance scaffold into Claude's system prompt
+    via the Ejentum API and observe the behavioral diff against an unaugmented
+    baseline.
+  path: third_party/Ejentum/anti_deception_harness.ipynb
+  authors:
+  - ejentum
+  date: '2026-05-10'
+  categories:
+  - Integrations
 - title: Build a data analyst agent with Claude Managed Agents
   description: Build an analyst that turns a CSV into a narrative HTML report with
     interactive charts, using a sandboxed environment and file mounting.
