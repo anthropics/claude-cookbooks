@@ -6,11 +6,11 @@ Generate realistic support tickets for compaction demonstration
 import random
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
-from enum import Enum
+from enum import StrEnum
 
 
 # Ticket Categories
-class TicketCategory(str, Enum):
+class TicketCategory(StrEnum):
     BILLING = "billing"
     TECHNICAL = "technical"
     ACCOUNT = "account"
@@ -18,14 +18,14 @@ class TicketCategory(str, Enum):
     SHIPPING = "shipping"
 
 
-class TicketPriority(str, Enum):
+class TicketPriority(StrEnum):
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
     URGENT = "urgent"
 
 
-class TicketStatus(str, Enum):
+class TicketStatus(StrEnum):
     NEW = "new"
     OPEN = "open"
     PENDING = "pending"

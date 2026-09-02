@@ -98,9 +98,7 @@ def _verify_webhook(
         # to log. Other exceptions propagate (they indicate a bug, not a bad
         # delivery).
         print(f"[webhook] signature reject: {type(e).__name__}: {e}", flush=True)
-        raise HTTPException(
-            status_code=401, detail="signature verification failed"
-        ) from None
+        raise HTTPException(status_code=401, detail="signature verification failed") from None
 
 
 async def _find_live_sandbox(key: str) -> modal.Sandbox | None:
@@ -124,9 +122,7 @@ async def _create_sandbox(
     # tree and downloaded skills survive across sandbox lifetimes for the
     # same session. Mounted at /workspace so {workdir}/skills/<name>/ matches
     # what the agent's prompt and the other demos use.
-    session_vol = modal.Volume.from_name(
-        f"cma-session-{session_id}", create_if_missing=True
-    )
+    session_vol = modal.Volume.from_name(f"cma-session-{session_id}", create_if_missing=True)
     sb = await modal.Sandbox.create.aio(
         "python",
         RUNNER_PATH,
@@ -139,9 +135,7 @@ async def _create_sandbox(
         # reads these to build the client and run EnvironmentWorker.handle_item().
         # ANTHROPIC_ENVIRONMENT_KEY is the runner's single credential.
         env={
-            "ANTHROPIC_BASE_URL": os.environ.get(
-                "ANTHROPIC_BASE_URL", "https://api.anthropic.com"
-            ),
+            "ANTHROPIC_BASE_URL": os.environ.get("ANTHROPIC_BASE_URL", "https://api.anthropic.com"),
             "ANTHROPIC_ENVIRONMENT_KEY": environment_key,
             "ANTHROPIC_SESSION_ID": session_id,
             "ANTHROPIC_ENVIRONMENT_ID": environment_id,
@@ -192,9 +186,7 @@ async def _process_work_item(
     }
 
 
-async def _drain_work(
-    client: anthropic.AsyncAnthropic, environment_id: str
-) -> list[dict]:
+async def _drain_work(client: anthropic.AsyncAnthropic, environment_id: str) -> list[dict]:
     """Drain the queue via the SDK poller, spawning a sandbox per work item.
 
     ``drain=True`` returns when the queue is empty (the webhook handler must
@@ -217,9 +209,7 @@ async def _drain_work(
         auto_stop=False,
     ):
         if work.data.type != "session":
-            print(
-                f"[webhook] skipping work={work.id} type={work.data.type}", flush=True
-            )
+            print(f"[webhook] skipping work={work.id} type={work.data.type}", flush=True)
             continue
         session_id = work.data.id
         try:
@@ -239,9 +229,7 @@ async def _drain_work(
                 f"[webhook] FAILED work={work.id} session={session_id}: {detail}",
                 flush=True,
             )
-            failed.append(
-                {"work_id": work.id, "session_id": session_id, "error": detail}
-            )
+            failed.append({"work_id": work.id, "session_id": session_id, "error": detail})
     if failed:
         print(
             f"[webhook] drain finished: spawned={len(spawned)} failed={len(failed)}",

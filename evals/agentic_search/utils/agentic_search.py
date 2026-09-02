@@ -136,12 +136,8 @@ def grade_response(
     )
     grader_text = _first_text(grader_msg)
 
-    items = re.findall(
-        r'<item\s+answer="([^"]+)"\s+correct="(true|false)"\s*/?>', grader_text
-    )
-    ex_block = re.search(
-        r"<excessive_answers>(.*?)</excessive_answers>", grader_text, re.DOTALL
-    )
+    items = re.findall(r'<item\s+answer="([^"]+)"\s+correct="(true|false)"\s*/?>', grader_text)
+    ex_block = re.search(r"<excessive_answers>(.*?)</excessive_answers>", grader_text, re.DOTALL)
     excessive = re.findall(r"<item>([^<]+)</item>", ex_block.group(1)) if ex_block else []
 
     n_truth = len(items)
