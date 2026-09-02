@@ -23,6 +23,7 @@ per-session calls.
 | [`cf-worker/`](cf-worker/) | Cloudflare Workers (no container) | TS `SessionToolRunner` in a Durable Object with an in-isolate fake filesystem |
 | [`modal/`](modal/) | [Modal](https://modal.com) | Python `sandbox_runner.py` in a Modal Sandbox with a per-session Volume |
 | [`daytona/`](daytona/) | [Daytona](https://www.daytona.io/) | Same `sandbox_runner.py` uploaded to a Daytona sandbox |
+| [`tenki/`](tenki/) | [Tenki Sandbox](https://pypi.org/project/tenki/) | Same `sandbox_runner.py` uploaded to a Tenki Sandbox |
 | [`vercel/`](vercel/) | Vercel Functions + Sandbox | Node `runner.mjs` in a Vercel Sandbox |
 
 ## Getting started
