@@ -546,6 +546,20 @@
   date: '2026-06-08'
   categories:
   - Agent Patterns
+- title: Adding a trust layer to Claude agent loops
+  description: Wrap a Claude tool loop with deterministic guardrails-as-code for
+    tool validation, HITL escalation, and inspectable audit traces.
+  path: patterns/agents/trust_middleware_guardrails.ipynb
+  authors:
+  - sriram7737
+  date: '2026-06-16'
+  categories:
+  - Agent Patterns
+  - Tools
+  tags:
+  - guardrails
+  - tool-use
+  - safety
 - title: Introduction to Claude Skills
   description: Create documents, analyze data, automate workflows with Claude's Excel,
     PowerPoint, PDF skills.
