@@ -48,12 +48,13 @@ def evaluate_end_to_end(query, generated_answer, correct_answer):
 
         # Use regex to extract explanation and is_correct
         explanation_match = re.search(r"<explanation>(.*?)</explanation>", response_text, re.DOTALL)
-        is_correct_match = re.search(r"<is_correct>(.*?)</is_correct>", response_text, re.DOTALL)
+        is_correct_match = re.search(
+            r"<is_correct>\s*(true|false)\s*</is_correct>", response_text, re.IGNORECASE
+        )
 
-        is_correct = True
         if explanation_match and is_correct_match:
             explanation = explanation_match.group(1).strip()
-            is_correct = is_correct_match.group(1).strip().lower() == "true"
+            is_correct = is_correct_match.group(1).lower() == "true"
         else:
             raise ValueError("Could not extract explanation or is_correct from response")
 
