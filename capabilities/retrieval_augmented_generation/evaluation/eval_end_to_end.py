@@ -30,6 +30,8 @@ def evaluate_end_to_end(query, generated_answer, correct_answer):
     <is_correct>true/false</is_correct>
     </content>
     </evaluation>
+
+    Start your response with <evaluation>. Do not write anything before it.
     """
 
     client = Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
@@ -37,10 +39,7 @@ def evaluate_end_to_end(query, generated_answer, correct_answer):
         response = client.messages.create(
             model="claude-sonnet-4-6",
             max_tokens=1500,
-            messages=[
-                {"role": "user", "content": prompt},
-                {"role": "assistant", "content": "<evaluation>"},
-            ],
+            messages=[{"role": "user", "content": prompt}],
             temperature=0,
             stop_sequences=["</evaluation>"],
         )
