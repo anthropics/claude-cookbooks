@@ -1,4 +1,18 @@
 # yaml-language-server: $schema=./.github/registry_schema.json
+- title: Evaluating agent honesty against a tool ledger
+  description: Score whether an agent's final message matches what its tools actually did,
+    with no LLM judge anywhere in the scoring path. Builds a sandbox whose tools never lie,
+    a probe with a capability gap plus the mirrored control that stops "refuse everything"
+    from winning, and oracles that test the scorer in both directions. Ends with a result a
+    single-turn eval cannot detect - a system prompt telling a model to disclose something
+    can eliminate the disclosure it asks for.
+  path: evals/agent_honesty/agent_honesty_evals.ipynb
+  authors:
+  - Droptops
+  date: '2026-08-08'
+  categories:
+  - Evals
+  - Agent Patterns
 - title: Build a data analyst agent with Claude Managed Agents
   description: Build an analyst that turns a CSV into a narrative HTML report with
     interactive charts, using a sandboxed environment and file mounting.
