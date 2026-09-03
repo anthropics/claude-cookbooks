@@ -556,6 +556,16 @@
   date: '2026-06-08'
   categories:
   - Agent Patterns
+- title: Pipeline vs barrier composition
+  description: When to let each item flow through sub-agent stages independently and
+    when a stage genuinely needs every result together — with measured timing traces
+    of the idle time a barrier creates.
+  path: patterns/agents/pipeline_vs_barrier.ipynb
+  authors:
+  - tonydzi
+  date: '2026-07-17'
+  categories:
+  - Agent Patterns
 - title: Introduction to Claude Skills
   description: Create documents, analyze data, automate workflows with Claude's Excel,
     PowerPoint, PDF skills.
