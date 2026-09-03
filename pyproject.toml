@@ -16,6 +16,8 @@ dependencies = [
     "networkx>=3.6.1",
     "matplotlib>=3.10.8",
     "requests>=2.32.5",
+    "pymongo>=4.17.0",
+    "pyjwt>=2.10.0",
 ]
 
 [build-system]
@@ -32,6 +34,7 @@ dev = [
     "pyyaml>=6.0.3",
     "tox>=4.32.0",
     "tox-uv>=1.29.0",
+    "pytest-cov>=7.1.0",
 ]
 
 [tool.hatch.build.targets.wheel]
@@ -78,9 +81,17 @@ addopts = [
 ]
 markers = [
     "slow: marks tests as slow (requires notebook execution)",
+    "integration: requires live external services (Atlas / Voyage); skipped without credentials",
+    "mutates_state: mutates a real datastore; must run in a disposable namespace and own teardown",
 ]
 filterwarnings = [
     "ignore::DeprecationWarning",
     "ignore::PendingDeprecationWarning",
 ]
+
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
 

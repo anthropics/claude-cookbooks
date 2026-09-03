@@ -1,8 +1,14 @@
 FROM debian:12-slim
-ARG ANT_VERSION=1.9.0
+ARG ANT_VERSION=1.10.0
 ARG TARGETOS=linux
 ARG TARGETARCH=amd64
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl \
+# ca-certificates + curl: fetch the ant CLI. python3 + python3-pymongo: let the agent query
+# MongoDB from its bash tool (e.g. python3 -c "from pymongo import MongoClient; ..."). The
+# connection string arrives as the MONGO_URI env var, set host-side in on-work.sh — see README.
+# python3-dnspython is REQUIRED for mongodb+srv:// URIs (every Atlas connection string is SRV);
+# pymongo raises "The dnspython module must be installed to use mongodb+srv:// URIs" without it.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      ca-certificates curl python3 python3-pymongo python3-dnspython \
  && rm -rf /var/lib/apt/lists/*
 ADD https://github.com/anthropics/anthropic-cli/releases/download/v${ANT_VERSION}/ant_${ANT_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz /tmp/ant.tgz
 RUN tar -xzf /tmp/ant.tgz -C /usr/local/bin ant \

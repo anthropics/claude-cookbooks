@@ -1,0 +1,493 @@
+{
+  "$comment": "Hand-authored reference compilation of policies.md against schema.json + context.json. Used (a) as engine test fixture, (b) to score the NL->rules compiler. 'scope' = where the rule applies (context \u222a fields); 'when' = the VIOLATION over extracted fields (incl. derived): rule fires => policy breached.",
+  "derived_fields": {
+    "depicted_person_apparent_under_25": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "judge": "True if any person depicted in the creative appears to be under 25 years old. Null if no people are depicted or age is genuinely indeterminate.",
+      "source_policy": "1.1"
+    }
+  },
+  "rules": [
+    {
+      "id": "1.1a_alcohol_targeting_21",
+      "policy_ref": "1.1",
+      "policy_text": "Alcohol advertising is accepted only when audience targeting is set to 21+.",
+      "action": "block",
+      "scope": {
+        "field": "ad_category",
+        "op": "eq",
+        "value": "alcohol"
+      },
+      "when": {
+        "any": [
+          {
+            "not": {
+              "field": "target_min_age",
+              "op": "exists"
+            }
+          },
+          {
+            "field": "target_min_age",
+            "op": "lt",
+            "value": 21
+          }
+        ]
+      }
+    },
+    {
+      "id": "1.1b_alcohol_responsible_message",
+      "policy_ref": "1.1",
+      "policy_text": "Alcohol creative must carry a responsible-drinking message.",
+      "action": "block",
+      "scope": {
+        "field": "ad_category",
+        "op": "eq",
+        "value": "alcohol"
+      },
+      "when": {
+        "any": [
+          {
+            "field": "disclaimer_present",
+            "op": "eq",
+            "value": false
+          },
+          {
+            "not": {
+              "field": "disclaimer_text",
+              "op": "regex",
+              "value": "responsibl"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "1.1c_alcohol_no_under_25",
+      "policy_ref": "1.1",
+      "policy_text": "Alcohol creatives must not depict anyone who appears to be under 25.",
+      "action": "block",
+      "uses_llm_fields": true,
+      "scope": {
+        "field": "ad_category",
+        "op": "eq",
+        "value": "alcohol"
+      },
+      "when": {
+        "all": [
+          {
+            "field": "people_depicted",
+            "op": "eq",
+            "value": true
+          },
+          {
+            "field": "depicted_person_apparent_under_25",
+            "op": "eq",
+            "value": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "1.2a_gambling_targeting_18",
+      "policy_ref": "1.2",
+      "policy_text": "Gambling must target 18+.",
+      "action": "block",
+      "scope": {
+        "field": "ad_category",
+        "op": "eq",
+        "value": "gambling"
+      },
+      "when": {
+        "any": [
+          {
+            "not": {
+              "field": "target_min_age",
+              "op": "exists"
+            }
+          },
+          {
+            "field": "target_min_age",
+            "op": "lt",
+            "value": 18
+          }
+        ]
+      }
+    },
+    {
+      "id": "1.2b_gambling_age_badge",
+      "policy_ref": "1.2",
+      "policy_text": "Gambling creative must display an age badge.",
+      "action": "block",
+      "scope": {
+        "field": "ad_category",
+        "op": "eq",
+        "value": "gambling"
+      },
+      "when": {
+        "not": {
+          "field": "age_gate_shown",
+          "op": "exists"
+        }
+      }
+    },
+    {
+      "id": "1.2c_gambling_responsible_message",
+      "policy_ref": "1.2",
+      "policy_text": "Gambling creative must include a problem-gambling / gamble-responsibly message.",
+      "action": "block",
+      "scope": {
+        "field": "ad_category",
+        "op": "eq",
+        "value": "gambling"
+      },
+      "when": {
+        "any": [
+          {
+            "field": "disclaimer_present",
+            "op": "eq",
+            "value": false
+          },
+          {
+            "not": {
+              "field": "disclaimer_text",
+              "op": "regex",
+              "value": "gambl|helpline|1-800"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "1.2d_gambling_no_guarantees",
+      "policy_ref": "1.2",
+      "policy_text": "Claims of guaranteed winnings or risk-free bets are prohibited.",
+      "action": "block",
+      "scope": {
+        "field": "ad_category",
+        "op": "eq",
+        "value": "gambling"
+      },
+      "when": {
+        "any": [
+          {
+            "field": "superlative_claims",
+            "op": "contains",
+            "value": "guaranteed"
+          },
+          {
+            "field": "superlative_claims",
+            "op": "contains",
+            "value": "risk-free"
+          }
+        ]
+      }
+    },
+    {
+      "id": "1.3a_finance_apr_required",
+      "policy_ref": "1.3",
+      "policy_text": "Financial ads showing a rate/payment/credit offer must state a representative APR.",
+      "action": "block",
+      "scope": {
+        "field": "ad_category",
+        "op": "eq",
+        "value": "financial_services"
+      },
+      "when": {
+        "all": [
+          {
+            "field": "price_or_rate_shown",
+            "op": "eq",
+            "value": true
+          },
+          {
+            "field": "apr_disclosed",
+            "op": "eq",
+            "value": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "1.3b_finance_no_guaranteed_approval",
+      "policy_ref": "1.3",
+      "policy_text": "'Guaranteed approval' language is not permitted in financial ads.",
+      "action": "block",
+      "scope": {
+        "field": "ad_category",
+        "op": "eq",
+        "value": "financial_services"
+      },
+      "when": {
+        "field": "superlative_claims",
+        "op": "contains",
+        "value": "guaranteed"
+      }
+    },
+    {
+      "id": "1.4a_no_before_after",
+      "policy_ref": "1.4",
+      "policy_text": "Before/after body or skin comparison imagery is not permitted in any category.",
+      "action": "block",
+      "when": {
+        "field": "before_after_imagery",
+        "op": "eq",
+        "value": true
+      }
+    },
+    {
+      "id": "1.4b_no_health_claims",
+      "policy_ref": "1.4",
+      "policy_text": "Ads must not claim to treat, cure, or prevent a medical condition.",
+      "action": "block",
+      "when": {
+        "field": "health_claim_present",
+        "op": "eq",
+        "value": true
+      }
+    },
+    {
+      "id": "1.4c_weight_loss_targeting_18",
+      "policy_ref": "1.4",
+      "policy_text": "Weight-loss ads may not target under-18s.",
+      "action": "block",
+      "scope": {
+        "field": "ad_category",
+        "op": "eq",
+        "value": "weight_loss"
+      },
+      "when": {
+        "any": [
+          {
+            "not": {
+              "field": "target_min_age",
+              "op": "exists"
+            }
+          },
+          {
+            "field": "target_min_age",
+            "op": "lt",
+            "value": 18
+          }
+        ]
+      }
+    },
+    {
+      "id": "2.1_superlatives_review",
+      "policy_ref": "2.1",
+      "policy_text": "Superlatives/absolutes require substantiation \u2014 flag for manual review.",
+      "action": "flag",
+      "when": {
+        "any": [
+          {
+            "field": "superlative_claims",
+            "op": "contains",
+            "value": "#1"
+          },
+          {
+            "field": "superlative_claims",
+            "op": "contains",
+            "value": "best"
+          },
+          {
+            "field": "superlative_claims",
+            "op": "contains",
+            "value": "guaranteed"
+          },
+          {
+            "field": "superlative_claims",
+            "op": "contains",
+            "value": "instant"
+          },
+          {
+            "field": "superlative_claims",
+            "op": "contains",
+            "value": "miracle"
+          },
+          {
+            "field": "superlative_claims",
+            "op": "contains",
+            "value": "risk-free"
+          }
+        ]
+      }
+    },
+    {
+      "id": "2.2_competitor_reference",
+      "policy_ref": "2.2",
+      "policy_text": "Comparative advertising naming/showing a competitor is flagged for legal review.",
+      "action": "flag",
+      "when": {
+        "field": "competitor_reference",
+        "op": "eq",
+        "value": true
+      }
+    },
+    {
+      "id": "3.1a_text_coverage_high",
+      "policy_ref": "3.1",
+      "policy_text": "Creatives with high text coverage are rejected.",
+      "action": "block",
+      "when": {
+        "field": "text_coverage",
+        "op": "eq",
+        "value": "high"
+      }
+    },
+    {
+      "id": "3.1b_text_coverage_medium",
+      "policy_ref": "3.1",
+      "policy_text": "Medium text coverage is flagged with a recommendation to reduce.",
+      "action": "flag",
+      "when": {
+        "field": "text_coverage",
+        "op": "eq",
+        "value": "medium"
+      }
+    },
+    {
+      "id": "3.2_brand_visible",
+      "policy_ref": "3.2",
+      "policy_text": "Every creative must clearly identify the advertiser.",
+      "action": "block",
+      "when": {
+        "not": {
+          "field": "brand_name",
+          "op": "exists"
+        }
+      }
+    },
+    {
+      "id": "4.1_restricted_untargeted",
+      "policy_ref": "4.1",
+      "policy_text": "Restricted categories with minimum age unset are rejected.",
+      "action": "block",
+      "scope": {
+        "field": "ad_category",
+        "op": "in",
+        "value": [
+          "alcohol",
+          "gambling",
+          "weight_loss",
+          "financial_services"
+        ]
+      },
+      "when": {
+        "not": {
+          "field": "target_min_age",
+          "op": "exists"
+        }
+      }
+    },
+    {
+      "id": "4.2_minors_in_restricted",
+      "policy_ref": "4.2",
+      "policy_text": "Creatives depicting apparent minors are not permitted in alcohol, gambling, weight-loss, or cosmetics/skincare.",
+      "action": "block",
+      "scope": {
+        "field": "ad_category",
+        "op": "in",
+        "value": [
+          "alcohol",
+          "gambling",
+          "weight_loss",
+          "cosmetics_skincare"
+        ]
+      },
+      "when": {
+        "all": [
+          {
+            "field": "people_depicted",
+            "op": "eq",
+            "value": true
+          },
+          {
+            "field": "depicted_person_apparent_minor",
+            "op": "eq",
+            "value": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "5.1_nj_gambling_helpline",
+      "policy_ref": "5.1",
+      "policy_text": "Gambling creatives running in New Jersey must display the 1-800-GAMBLER helpline number.",
+      "action": "block",
+      "scope": {
+        "all": [
+          {
+            "field": "state",
+            "op": "eq",
+            "value": "NJ"
+          },
+          {
+            "field": "ad_category",
+            "op": "eq",
+            "value": "gambling"
+          }
+        ]
+      },
+      "when": {
+        "any": [
+          {
+            "field": "disclaimer_present",
+            "op": "eq",
+            "value": false
+          },
+          {
+            "not": {
+              "field": "disclaimer_text",
+              "op": "regex",
+              "value": "1-800-GAMBLER"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "5.2_no_alcohol_gambling_email",
+      "policy_ref": "5.2",
+      "policy_text": "Alcohol and gambling creatives may not run in the email channel.",
+      "action": "block",
+      "scope": {
+        "field": "channel",
+        "op": "eq",
+        "value": "email"
+      },
+      "when": {
+        "field": "ad_category",
+        "op": "in",
+        "value": [
+          "alcohol",
+          "gambling"
+        ]
+      }
+    },
+    {
+      "id": "5.3_self_serve_finance_review",
+      "policy_ref": "5.3",
+      "policy_text": "Financial-services ads from self-serve advertisers are always flagged for manual review.",
+      "action": "flag",
+      "scope": {
+        "field": "advertiser_tier",
+        "op": "eq",
+        "value": "self_serve"
+      },
+      "when": {
+        "field": "ad_category",
+        "op": "eq",
+        "value": "financial_services"
+      }
+    }
+  ],
+  "uncompilable": [
+    {
+      "policy_ref": "1.2",
+      "policy_text": "Gambling advertisers must hold a valid gaming license in every state the campaign targets.",
+      "reason": "Requires external data (a license registry lookup per advertiser and state). Not derivable from the creative, the copy, or the campaign context schema \u2014 route to the licensing team's system."
+    }
+  ]
+}

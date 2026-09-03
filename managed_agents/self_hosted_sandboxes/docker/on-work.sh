@@ -31,12 +31,26 @@ if [ -n "$(docker ps -q --filter "name=^${NAME}$" 2>/dev/null)" ]; then
 fi
 docker rm -f "$NAME" >/dev/null 2>&1 || true  # clear any exited leftover
 
-# Detached + --rm: the poller continues immediately; the container owns the
-# session's heartbeat / SSE / tool dispatch / force-stop and removes itself on
-# exit. ANTHROPIC_AUTH_TOKEN is set to the environment key because the CLI's
+# Foreground (exec, no -d): this script MUST stay alive for the session's whole
+# lifetime. `ant beta:worker poll` posts a stop on the work item as soon as the
+# --on-work script exits, and there is no CLI flag to opt out — so a detached
+# `docker run -d` that returned immediately would make the poller stop the work
+# before the just-spawned container could claim it ("heartbeat reports shutdown,
+# state stopped" → the tool call never runs). Blocking here keeps the work item
+# live until `ant beta:worker run` finishes (it idles out 60s after end_turn).
+# --rm removes the container on exit; the per-session volume persists.
+# ANTHROPIC_AUTH_TOKEN is set to the environment key because the CLI's
 # skill-download client only resolves ANTHROPIC_API_KEY / ANTHROPIC_AUTH_TOKEN,
 # not ANTHROPIC_ENVIRONMENT_KEY — without it skills silently fail to download.
-CID="$(docker run -d --rm --name "$NAME" \
+# MONGO_URI (optional) is YOUR database secret, not Anthropic's — forwarded into the
+# per-session container as a normal env var so the agent can query MongoDB from bash. Because
+# this is a self-hosted container, the secret stays here: it never reaches the control plane or
+# the session event history (a cloud sandbox has no env-var channel — there you keep the
+# credential host-side behind a custom tool instead). The agent's bash CAN read it, which is
+# fine when you trust the task; for least privilege, expose a narrow query via your own tool
+# rather than the raw URI. Unset MONGO_URI is passed through as empty (a no-op). See README.
+echo "[on-work] session=${ANTHROPIC_SESSION_ID} work=${ANTHROPIC_WORK_ID} (running container in foreground)" >&2
+exec docker run --rm --name "$NAME" \
   -v "${VOLUME}:/workspace" \
   -e "ANTHROPIC_BASE_URL=${ANTHROPIC_BASE_URL:-https://api.anthropic.com}" \
   -e "ANTHROPIC_ENVIRONMENT_KEY=${ANTHROPIC_ENVIRONMENT_KEY}" \
@@ -44,5 +58,5 @@ CID="$(docker run -d --rm --name "$NAME" \
   -e "ANTHROPIC_SESSION_ID=${ANTHROPIC_SESSION_ID}" \
   -e "ANTHROPIC_ENVIRONMENT_ID=${ANTHROPIC_ENVIRONMENT_ID}" \
   -e "ANTHROPIC_WORK_ID=${ANTHROPIC_WORK_ID}" \
-  "$IMAGE")"
-echo "[on-work] session=${ANTHROPIC_SESSION_ID} work=${ANTHROPIC_WORK_ID} container=${CID:0:12} (started)" >&2
+  -e "MONGO_URI=${MONGO_URI:-}" \
+  "$IMAGE"

@@ -211,9 +211,7 @@ jobs:
             fi
           done < changed_notebooks.txt
 
-          if [ "$EXEC_FAILED" -gt 0 ]; then
-            echo "exec_failures=$EXEC_FAILED" >> $GITHUB_OUTPUT
-          fi
+          echo "exec_failures=$EXEC_FAILED" >> $GITHUB_OUTPUT
         continue-on-error: true
 
       - name: Upload test artifacts
@@ -231,9 +229,26 @@ jobs:
 
       - name: Final status check
         if: steps.changed-notebooks.outputs.has_notebooks == 'true'
+        env:
+          # 'failure' only when the execution step's own SCRIPT errored (its
+          # per-notebook test failures never fail the step); 'skipped' on fork
+          # PRs. Without this, a script error there leaves exec_failures
+          # unwritten and would read as a clean skip.
+          EXEC_OUTCOME: ${{ steps.execution-tests.outcome }}
+          # Empty when the execution step was skipped or had no API key, so
+          # external contributors are never gated on API execution.
+          EXEC_FAILURES: ${{ steps.execution-tests.outputs.exec_failures }}
         run: |
           if [ "${{ steps.structure-tests.outputs.has_failures }}" = "true" ]; then
             echo "❌ Some notebook tests failed. Please fix the issues above."
+            exit 1
+          fi
+          if [ "$EXEC_OUTCOME" = "failure" ]; then
+            echo "❌ The notebook execution step itself errored. See its log above."
+            exit 1
+          fi
+          if [ "${EXEC_FAILURES:-0}" -gt 0 ]; then
+            echo "❌ $EXEC_FAILURES notebook(s) failed to execute against the API. Please fix the issues above."
             exit 1
           fi
           echo "✅ All notebook tests passed!"

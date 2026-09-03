@@ -1,0 +1,48 @@
+{
+  "$comment": "Marketplace catalog listings (third-party sellers on a retail site). Text-only domain — the submission is the listing title + description + structured attributes.",
+  "type": "object",
+  "properties": {
+    "product_category": {
+      "type": "string",
+      "enum": ["electronics", "supplements", "beauty", "toys", "apparel", "kitchen", "blades_and_tools", "other"],
+      "description": "Primary category of the item being sold, judged from title and description."
+    },
+    "title_text": {
+      "type": "string",
+      "description": "The listing title as submitted."
+    },
+    "price_usd": {
+      "type": ["number", "null"],
+      "description": "Listed price in USD; null if no price is present."
+    },
+    "luxury_brand_mentioned": {
+      "type": ["string", "null"],
+      "description": "Luxury brand named in the listing (e.g. Rolex, Louis Vuitton, Gucci, Hermes, Cartier); null if none."
+    },
+    "claims_authentic": {
+      "type": "boolean",
+      "description": "True if the listing asserts authenticity ('100% authentic', 'genuine', 'with papers')."
+    },
+    "health_claim_present": {
+      "type": "boolean",
+      "description": "True if the listing claims to treat, cure, prevent, or diagnose a medical condition."
+    },
+    "fda_approval_claimed": {
+      "type": "boolean",
+      "description": "True if the listing claims FDA approval, clearance, or endorsement."
+    },
+    "contains_contact_info": {
+      "type": "boolean",
+      "description": "True if a phone number, email address, or messaging handle (WhatsApp, Telegram) appears anywhere in the listing."
+    },
+    "requests_offplatform_payment": {
+      "type": "boolean",
+      "description": "True if the listing asks buyers to pay outside the marketplace (Venmo, Zelle, wire, 'message me to pay less')."
+    },
+    "age_restricted_item": {
+      "type": "boolean",
+      "description": "True if the item is a knife, blade, airsoft/BB device, lighter fluid, or similar age-restricted product."
+    }
+  },
+  "required": ["product_category", "title_text", "claims_authentic", "health_claim_present", "fda_approval_claimed", "contains_contact_info", "requests_offplatform_payment", "age_restricted_item"]
+}

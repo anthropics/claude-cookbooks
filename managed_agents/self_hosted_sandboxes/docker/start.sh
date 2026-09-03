@@ -15,6 +15,9 @@
 #                                both the control-plane poll and (inside the
 #                                container) every per-session call
 #   ANTHROPIC_BASE_URL         - optional, default https://api.anthropic.com
+#   MONGO_URI                  - optional; if set, forwarded into each per-session container so
+#                                the agent can query MongoDB from bash (see README). Your secret,
+#                                never sent to Anthropic.
 set -euo pipefail
 cd "$(dirname "$0")"
 
@@ -37,7 +40,7 @@ echo "[start] polling env=${ANTHROPIC_ENVIRONMENT_ID} base=${ANTHROPIC_BASE_URL}
 # --on-work delegates each work item to on-work.sh (CMA_IMAGE/ANTHROPIC_* are
 # inherited). The poll side runs no tools, so its --workdir is unused; point it
 # at a throwaway. Exits cleanly on SIGTERM/SIGINT.
-exec env CMA_IMAGE="$IMAGE" \
+exec env CMA_IMAGE="$IMAGE" MONGO_URI="${MONGO_URI:-}" \
   ant beta:worker poll \
     --on-work "$PWD/on-work.sh" \
     --workdir /tmp \

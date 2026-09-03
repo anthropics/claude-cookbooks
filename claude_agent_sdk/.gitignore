@@ -22,5 +22,8 @@ uv.lock
 .ipynb_checkpoints/
 *.ipynb_checkpoints/
 
+# Workspace created at runtime by 08_Dynamic_workflows.ipynb
+orbitcart_data/
+
 # macOS
 .DS_Store
