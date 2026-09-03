@@ -290,6 +290,16 @@
   categories:
   - Claude Agent SDK
   - Agent Patterns
+- title: Build a scheduled repository reviewer
+  description: Build a scheduled, read-only review agent that resumes its session
+    and returns schema-validated verdicts linking each review to the last.
+  path: claude_agent_sdk/scheduled_repository_reviewer/scheduled_repository_reviewer.ipynb
+  authors:
+  - codyanthony736
+  date: '2026-08-26'
+  categories:
+  - Claude Agent SDK
+  - Agent Patterns
 - title: Extended thinking
   description: Use Claude's extended thinking for transparent step-by-step reasoning
     with budget management.
