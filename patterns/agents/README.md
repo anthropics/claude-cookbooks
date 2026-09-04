@@ -19,3 +19,4 @@ See the Jupyter notebooks for detailed examples:
 - [Evaluator-Optimizer Workflow](evaluator_optimizer.ipynb) 
 - [Orchestrator-Workers Workflow](orchestrator_workers.ipynb)
 - [Async Multi-Agent Orchestration](async_multi_agent_orchestration.ipynb)
+- [Authority Routing (ADVISE / EXECUTE / DEFER / STOP)](authority_routing.ipynb)
