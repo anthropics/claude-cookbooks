@@ -1,0 +1,24 @@
+{
+  "$comment": "Context schema: facts about WHERE/HOW the content will run, supplied by the caller at evaluation time (from the ad server / order system), never extracted by the model. Rules' scope clauses may reference these keys; the compiler is validated against this schema.",
+  "type": "object",
+  "properties": {
+    "country": {
+      "type": "string",
+      "description": "ISO 3166-1 alpha-2 country code of the audience, e.g. 'US'."
+    },
+    "state": {
+      "type": ["string", "null"],
+      "description": "US state code the campaign is geo-targeted to (e.g. 'NJ'); null if national or non-US."
+    },
+    "channel": {
+      "type": "string",
+      "enum": ["display", "social", "video", "email"],
+      "description": "Delivery channel the creative is booked for."
+    },
+    "advertiser_tier": {
+      "type": "string",
+      "enum": ["managed", "self_serve"],
+      "description": "Managed accounts have a named account team; self-serve is open signup."
+    }
+  }
+}

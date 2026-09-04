@@ -135,6 +135,8 @@ dmypy.json
 
 # Data
 *transactions*.jsonl
+# Cookbook example-data fixture is intentionally checked in (see example_data/OVERVIEW.md)
+!managed_agents/example_data/mongodb_on_cma/seed_transactions.jsonl
 /examples/data/transactions*
 *.DS_Store
 tmp_*
@@ -161,3 +163,13 @@ tool_use/.env
 
 # Cybersecurity notebook artifacts (regenerated each run)
 claude_agent_sdk/vulnerability_detection_agent/canary/THREAT_MODEL.md
+
+# content_moderation: generated eval artifacts
+capabilities/content_moderation/evaluation/compiled/
+capabilities/content_moderation/evaluation/results.json
+
+# scheduled_repository_reviewer: runtime sample repo. Anchored to the two
+# places it can appear: the recipe directory (the documented location) and
+# the repo root (a kernel started there).
+/demo_repo/
+/claude_agent_sdk/scheduled_repository_reviewer/demo_repo/
