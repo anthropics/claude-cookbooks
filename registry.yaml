@@ -556,6 +556,16 @@
   date: '2026-06-08'
   categories:
   - Agent Patterns
+- title: Multi-agent consensus and verification
+  description: Propose-verify-reconcile pattern for agents that disagree, with adversarial
+    verification and a deterministic human-approval gate for irreversible actions.
+  path: patterns/agents/consensus_and_verification.ipynb
+  authors:
+  - tonydzi
+  date: '2026-07-16'
+  categories:
+  - Agent Patterns
+  - Evals
 - title: Introduction to Claude Skills
   description: Create documents, analyze data, automate workflows with Claude's Excel,
     PowerPoint, PDF skills.
