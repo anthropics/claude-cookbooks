@@ -101,10 +101,6 @@ mikaelagrace:
 nadine-anthropic:
   name: Nadine Yasser
   avatar: https://avatars.githubusercontent.com/u/238355370?v=4
-Palo-Alto-AI-Research-Lab:
-  name: Anton Dzyatkovsky
-  website: https://palo-alto-ai-research-lab.github.io/the-journey
-  avatar: https://github.com/Palo-Alto-AI-Research-Lab.png
 paulchen-go:
   name: Paul Chen
   website: https://github.com/paulchen-go
@@ -140,6 +136,10 @@ rodrigo-olivares:
   name: Rodrigo Olivares
   website: https://github.com/rodrigo-olivares
   avatar: https://avatars.githubusercontent.com/u/185015001?v=4
+tonydzi:
+  name: Anton Dzyatkovsky
+  website: https://github.com/tonydzi
+  avatar: https://avatars.githubusercontent.com/u/194927794?v=4
 zealoushacker:
   name: Alex Notov
   website: https://github.com/zealoushacker
