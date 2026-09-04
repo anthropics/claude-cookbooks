@@ -957,3 +957,15 @@
   - Agent Patterns
   - Tools
   - Multimodal
+- title: 'Citation-faithfulness evals: catching hallucinated support'
+  description: Build a two-stage citation auditor - a deterministic quote-existence
+    gate in front of a skeptical LLM judge with the burden of proof on the citation
+    - then score it on a labelled trap dataset of fabricated, misattributed, and
+    plausible-but-unsupported citations.
+  path: evals/citation_faithfulness/citation_faithfulness_evals.ipynb
+  authors:
+  - tonydzi
+  date: '2026-07-17'
+  categories:
+  - Evals
+  - RAG & Retrieval
