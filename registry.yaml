@@ -528,7 +528,7 @@
     verification and a deterministic human-approval gate for irreversible actions.
   path: patterns/agents/consensus_and_verification.ipynb
   authors:
-  - Palo-Alto-AI-Research-Lab
+  - tonydzi
   date: '2026-07-16'
   categories:
   - Agent Patterns
