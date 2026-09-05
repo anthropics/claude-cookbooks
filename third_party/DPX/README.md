@@ -2,7 +2,7 @@
 
 [DPX](https://docs.untitledfinancial.com) is the financial action layer for AI agents — settlement infrastructure where any autonomous agent can discover, price, screen, and execute a cross-border payment end-to-end without human intervention. No API key. No onboarding. No human in the loop.
 
-DPX publishes a native MCP server (76 tools) so Claude can call settlement, compliance, and oracle endpoints directly as tool calls — no HTTP wiring required.
+DPX publishes a native MCP server (83 tools) so Claude can call settlement, compliance, and oracle endpoints directly as tool calls — no HTTP wiring required.
 
 ## What's Included
 
@@ -54,7 +54,7 @@ These endpoints require no authentication and no API key:
 |---|---|
 | `GET https://stability.untitledfinancial.com/reliability` | Oracle status — STABLE / CAUTION / UNSTABLE |
 | `GET https://stability.untitledfinancial.com/quote` | Binding fee quote (300s TTL) |
-| `POST https://compliance.untitledfinancial.com/flow-check` | AML + sanctions + FATF R16 screen |
+| `GET https://agent.untitledfinancial.com/flow-check` | AML + sanctions + compliance pre-flight screen |
 | `POST https://agent.untitledfinancial.com/settle` | Execute settlement (sandbox safe) |
 
 ## Additional Resources
