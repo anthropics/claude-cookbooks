@@ -18,6 +18,10 @@ Anthropic:
   name: Anthropic
   website: https://www.anthropic.com
   avatar: https://github.com/anthropics.png
+aravind-ant:
+  name: Aravind Singirikonda
+  website: https://github.com/aravind-ant
+  avatar: https://avatars.githubusercontent.com/u/305638968?v=4
 benlehrburger-ant:
   name: Ben Lehrburger
   website: https://github.com/benlehrburger-ant
@@ -37,6 +41,10 @@ cj-ant:
   name: CJ Avilla
   website: https://github.com/cj-ant
   avatar: https://avatars.githubusercontent.com/u/286490957?v=4
+codyanthony736:
+  name: Cody Anthony
+  website: https://github.com/codyanthony736
+  avatar: https://avatars.githubusercontent.com/u/307781013?v=4
 davidhershey:
   name: David Hershey
   website: https://github.com/davidhershey
@@ -66,6 +74,9 @@ james-briggs:
 jannet-park:
   name: Jannet Park
   avatar: https://avatars.githubusercontent.com/u/233145170?v=4
+jimmyechan-ant:
+  name: Jimmy Chan
+  avatar: https://avatars.githubusercontent.com/u/280539776?v=4
 JiriDeJonghe:
   name: Jiri De Jonghe
   website: https://github.com/JiriDeJonghe

@@ -1,0 +1,42 @@
+claim_id,seq,timestamp,note
+CLM-001,1,08:41:03,"front 3/4 — bumper displaced, hood buckled"
+CLM-001,2,08:41:19,front direct — grille/condenser exposed
+CLM-001,3,08:42:07,LH fender crease into A-pillar
+CLM-001,4,08:43:11,"interior — airbag deployed, no intrusion"
+CLM-001,5,08:44:30,"VIN plate + odometer 61,204 mi"
+CLM-002,1,14:02:10,front-left corner — fender/bumper/wheel destroyed
+CLM-002,2,14:02:48,undercarriage — subframe visibly bent
+CLM-002,3,14:03:21,"track marshal photo — car against tire wall, turn 5"
+CLM-002,4,14:04:06,"VIN plate + odometer 28,917 mi"
+CLM-003,1,18:47:15,"front bumper — cracked, pushed under"
+CLM-003,2,18:47:52,"hood — leading-edge fold, latch intact"
+CLM-003,3,18:48:30,"front direct — grille cracked, no fluid leak"
+CLM-003,4,18:49:14,"VIN plate + odometer 54,611 mi"
+CLM-004,1,12:10:33,"front-left — bumper and fender crushed, headlamp destroyed"
+CLM-004,2,12:11:05,"scene — both vehicles at intersection, other car in insured's lane"
+CLM-004,3,12:11:48,"VIN plate + odometer 44,290 mi"
+CLM-004,4,12:12:30,"front direct — hood buckled at leading edge, no coolant leak observed"
+CLM-005,1,09:15:20,"front-right — bumper corner torn, RH fender crushed at wheel arch"
+CLM-005,2,09:15:52,"headlamp RH — lens shattered, mailbox debris in engine bay"
+CLM-005,3,09:16:30,"VIN plate + odometer 66,014 mi"
+CLM-005,4,09:17:05,bumper cover close-up — fence-post wood splinters embedded; RH mirror intact
+CLM-006,1,18:20:41,"rear bumper cover RH corner — scrape and paint transfer (white, garage trim)"
+CLM-006,2,18:21:15,RH quarter panel — small dent above bumper line
+CLM-006,3,18:21:50,"wide shot — vehicle in driveway, garage frame trim board splintered"
+CLM-006,4,18:22:24,"VIN plate + odometer 68,133 mi"
+CLM-007,1,11:30:14,"rear bumper cover — cracked at center, grey concrete transfer"
+CLM-007,2,11:30:52,rear body panel — shallow buckle above bumper line
+CLM-007,3,11:31:30,"tail lamp RH — lens cracked, housing intact"
+CLM-007,4,11:32:05,"VIN plate + odometer 47,220 mi"
+CLM-008,1,07:30:20,"windshield — shattered, impact point lower center; camera bracket exposed"
+CLM-008,2,07:31:02,"LH front door glass — smashed out, fragments on seat"
+CLM-008,3,07:31:45,"dash — head unit removed, brackets bent, wiring cut"
+CLM-008,4,07:32:30,"VIN plate + odometer 93,004 mi"
+CLM-009,1,10:41:03,"front-left — bumper cover torn at corner, LH fender creased above wheel arch"
+CLM-009,2,10:41:40,"headlamp LH — lens cracked, silver paint transfer on bumper"
+CLM-009,3,10:42:15,"wide shot — parked in marked apartment-lot stall, no other vehicle present"
+CLM-009,4,10:42:50,"VIN plate + odometer 71,880 mi"
+CLM-010,1,06:44:11,"rear of bed — tailgate missing, hinge cups intact"
+CLM-010,2,06:44:50,"tail lamp openings LH/RH — assemblies removed, harness connectors cut"
+CLM-010,3,06:45:30,"wide shot — pickup in carport, no other damage"
+CLM-010,4,06:46:05,"VIN plate + odometer 41,650 mi"
