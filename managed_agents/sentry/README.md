@@ -41,4 +41,4 @@ Authenticate with an `ANTHROPIC_API_KEY` in `.env`, or sign in once with [`ant a
 | `teardown.py` | Pause and archive everything |
 | `skill.md` | Setup walkthrough, gotchas, debugging |
 
-Requires `anthropic` ≥ 0.109.0.
+Requires `anthropic` ≥ 0.124.0.

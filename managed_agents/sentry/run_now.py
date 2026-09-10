@@ -21,7 +21,8 @@ stream_until_end_turn(manual_run.session_id)
 
 # The agent wrote to /mnt/session/outputs/, which the Files API captures
 # automatically. Indexing can lag 1-3 seconds after the session goes idle,
-# so retry an empty list a few times.
+# so retry an empty list a few times. scope_id is a Managed Agents beta
+# parameter, so list via client.beta.files; download uses the GA client.files.
 report_files = []
 for _ in range(5):
     report_files = client.beta.files.list(
@@ -41,6 +42,6 @@ if not report_files:
 for f in report_files:
     local_name = Path(f.filename).name
     print(f"\n{f.filename}  ({f.size_bytes} bytes)")
-    content = client.beta.files.download(f.id)
+    content = client.files.download(f.id)
     content.write_to_file(local_name)
     print(f"downloaded to ./{local_name}")
