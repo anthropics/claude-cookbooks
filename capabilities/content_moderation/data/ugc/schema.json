@@ -1,0 +1,40 @@
+{
+  "$comment": "User-generated content on a media property: comments and product reviews. Text-only domain.",
+  "type": "object",
+  "properties": {
+    "content_kind": {
+      "type": "string",
+      "enum": ["comment", "review"],
+      "description": "Whether the submission reads as a discussion comment or a product/content review."
+    },
+    "contains_profanity": {
+      "type": "boolean",
+      "description": "True if the text contains profanity or slurs (masked variants like f*** count)."
+    },
+    "personal_attack": {
+      "type": ["boolean", "null"],
+      "description": "True if the text attacks, demeans, or harasses a specific person (another user, an author, a named individual) rather than criticizing ideas or products. Null if genuinely ambiguous."
+    },
+    "contains_pii": {
+      "type": "boolean",
+      "description": "True if the text exposes someone's personal information: full name with address, phone number, email, or account numbers."
+    },
+    "contains_links": {
+      "type": "boolean",
+      "description": "True if the text contains any URL or domain name."
+    },
+    "promotional": {
+      "type": "boolean",
+      "description": "True if the text primarily promotes a product, service, channel, or website rather than contributing to the discussion."
+    },
+    "disclosed_incentive": {
+      "type": ["boolean", "null"],
+      "description": "For reviews: true if the reviewer discloses receiving the product free or being paid; false if a review shows signs of being incentivized without disclosure ('received for free' patterns absent but text reads sponsored). Null if not a review or no incentive signals either way."
+    },
+    "off_topic": {
+      "type": ["boolean", "null"],
+      "description": "True if the submission is unrelated to the article or product it is attached to. Null if the parent topic cannot be inferred."
+    }
+  },
+  "required": ["content_kind", "contains_profanity", "contains_pii", "contains_links", "promotional"]
+}

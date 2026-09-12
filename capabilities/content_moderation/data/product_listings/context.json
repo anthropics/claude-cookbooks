@@ -1,0 +1,21 @@
+{
+  "$comment": "Placement facts from the marketplace's seller system — never extracted from the listing.",
+  "type": "object",
+  "properties": {
+    "seller_tier": {
+      "type": "string",
+      "enum": ["new_seller", "established"],
+      "description": "New sellers have under 90 days of history; established sellers have a track record."
+    },
+    "marketplace_region": {
+      "type": "string",
+      "enum": ["US", "EU"],
+      "description": "Which regional marketplace the listing is being published to."
+    },
+    "fulfillment": {
+      "type": "string",
+      "enum": ["marketplace", "seller_direct"],
+      "description": "Whether the marketplace or the seller handles fulfillment."
+    }
+  }
+}

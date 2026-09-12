@@ -1,0 +1,16 @@
+{
+  "$comment": "Facts from the platform about where the content is being posted.",
+  "type": "object",
+  "properties": {
+    "surface": {
+      "type": "string",
+      "enum": ["news_comments", "product_reviews", "forum"],
+      "description": "Which surface the content is posted to."
+    },
+    "author_status": {
+      "type": "string",
+      "enum": ["new_account", "established", "verified"],
+      "description": "Account standing of the author."
+    }
+  }
+}

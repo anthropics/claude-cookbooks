@@ -290,6 +290,16 @@
   categories:
   - Claude Agent SDK
   - Agent Patterns
+- title: Build a scheduled repository reviewer
+  description: Build a scheduled, read-only review agent that resumes its session
+    and returns schema-validated verdicts linking each review to the last.
+  path: claude_agent_sdk/scheduled_repository_reviewer/scheduled_repository_reviewer.ipynb
+  authors:
+  - codyanthony736
+  date: '2026-08-26'
+  categories:
+  - Claude Agent SDK
+  - Agent Patterns
 - title: Extended thinking
   description: Use Claude's extended thinking for transparent step-by-step reasoning
     with budget management.
@@ -935,3 +945,15 @@
   - RAG & Retrieval
   - Integrations
   - Tools
+- title: Content policy enforcement with Claude
+  description: Compile a written content policy into deterministic JSON rules, extract
+    typed fields from text and images, and produce auditable verdicts from a rule engine
+    that never calls a model.
+  path: capabilities/content_moderation/guide.ipynb
+  authors:
+  - aravind-ant
+  date: '2026-08-13'
+  categories:
+  - Agent Patterns
+  - Tools
+  - Multimodal
