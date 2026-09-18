@@ -328,6 +328,15 @@
   date: '2024-08-19'
   categories:
   - Fine-Tuning
+- title: Manage your organization with the Admin API
+  description: Invite users, create workspaces, audit API keys, provision service
+    accounts, and read rate limits with client.beta.organization in the Python SDK.
+  path: misc/admin_api.ipynb
+  authors:
+  - cj-ant
+  date: '2026-08-26'
+  categories:
+  - Observability
 - title: Batch processing with Message Batches API
   description: Process large volumes of Claude requests asynchronously with 50% cost
     reduction using batches.
