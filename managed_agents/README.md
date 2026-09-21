@@ -91,5 +91,6 @@ directory map.
 ## Runnable apps
 
 This directory holds notebooks. Full apps built on Managed Agents, such as
-the Slack bot and the Sentry triage agent that used to live here, are in
+the Slack and Linear bots, the Sentry triage agent, the road trip planner,
+and the MCP server that used to live here, are in
 [claude-quickstarts/managed-agents](https://github.com/anthropics/claude-quickstarts/tree/main/managed-agents).
