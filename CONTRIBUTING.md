@@ -142,7 +142,7 @@ If a hook fails, fix the issues and try committing again.
    ```
    - Pass this on every `agents.create` call so we can see which cookbooks people run
    - The value is `claude-cookbooks/` plus the notebook filename in kebab-case (`data_analyst_agent.ipynb` becomes `data-analyst-agent`)
-   - Use lowercase letters, digits, and hyphens only. The API drops any other value without an error
+   - Use lowercase letters, digits, and hyphens only. A value in any other shape is ignored for attribution, with no error to warn you
    - Sessions inherit the tag from their agent, so `sessions.create` needs nothing
 
 ### Git Workflow

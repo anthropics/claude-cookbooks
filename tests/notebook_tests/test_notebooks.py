@@ -305,8 +305,8 @@ class TestModelUsage:
 class TestCookbookAttribution:
     """Tests for the anthropic_cookbook tag on Managed Agents."""
 
-    # The API keeps the tag only when it matches this shape, and silently drops
-    # anything else, so a typo here would lose attribution without an error.
+    # Attribution only counts a tag that matches this shape. Anything else is
+    # ignored with no error, so a typo would lose attribution unnoticed.
     SLUG_PATTERN = r"[a-z0-9][a-z0-9-]{0,63}"
 
     def test_agents_carry_cookbook_tag(
