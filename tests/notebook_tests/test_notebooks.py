@@ -341,17 +341,24 @@ class TestCookbookAttribution:
                     continue
 
                 calls += 1
+                where = f"Cell {cell.index}, line {node.lineno}"
                 metadata = next((kw.value for kw in node.keywords if kw.arg == "metadata"), None)
-                try:
-                    tag = ast.literal_eval(metadata).get("anthropic_cookbook") if metadata else None
-                except ValueError:
-                    # Not a plain dict literal, so the tag can't be checked here.
-                    tag = None
+                if metadata is None:
+                    issues.append(f"{where}: no metadata argument")
+                    continue
 
+                try:
+                    value = ast.literal_eval(metadata)
+                except ValueError:
+                    value = None
+                if not isinstance(value, dict):
+                    # A variable or a spread can't be checked without running the cell.
+                    issues.append(f"{where}: metadata must be a plain dict literal")
+                    continue
+
+                tag = value.get("anthropic_cookbook")
                 if tag != expected:
-                    issues.append(
-                        f"Cell {cell.index}, line {node.lineno}: anthropic_cookbook is {tag!r}"
-                    )
+                    issues.append(f"{where}: anthropic_cookbook is {tag!r}")
 
         if calls:
             assert re.fullmatch(self.SLUG_PATTERN, name), f"Notebook name makes a bad slug: {name}"
