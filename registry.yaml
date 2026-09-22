@@ -565,6 +565,16 @@
   date: '2026-06-08'
   categories:
   - Agent Patterns
+- title: Multi-agent teams under latency pressure and budgets
+  description: Starter code for a lead-and-helpers agent team with a shared wall-clock, and two
+    ways to make time matter, a time-matters sentence or a latency budget on the clock line.
+  path: patterns/agents/latency_multi_agent.ipynb
+  authors:
+  - eloreaux-ant
+  date: '2026-09-18'
+  categories:
+  - Agent Patterns
+  - Tools
 - title: Introduction to Claude Skills
   description: Create documents, analyze data, automate workflows with Claude's Excel,
     PowerPoint, PDF skills.
