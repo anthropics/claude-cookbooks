@@ -132,6 +132,19 @@ If a hook fails, fix the issues and try committing again.
    - Use minimal tokens for example API calls
    - Include error handling
 
+5. **Tag Managed Agents with the cookbook name**:
+   ```python
+   agent = client.beta.agents.create(
+       name="cookbook-data-analyst",
+       metadata={"anthropic_cookbook": "claude-cookbooks/data-analyst-agent"},
+       ...
+   )
+   ```
+   - Pass this on every `agents.create` call so we can see which cookbooks people run
+   - The value is `claude-cookbooks/` plus the notebook filename in kebab-case (`data_analyst_agent.ipynb` becomes `data-analyst-agent`)
+   - Use lowercase letters, digits, and hyphens only. The API drops any other value without an error
+   - Sessions inherit the tag from their agent, so `sessions.create` needs nothing
+
 ### Git Workflow
 
 1. **Create a feature branch**:

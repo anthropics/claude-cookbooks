@@ -300,3 +300,39 @@ class TestModelUsage:
                 + "\n".join(f"  - {i}" for i in issues)
                 + f"\n\nPlease use one of the current models: {', '.join(sorted(self.CURRENT_MODELS))}"
             )
+
+
+class TestCookbookAttribution:
+    """Tests for the anthropic_cookbook tag on Managed Agents."""
+
+    # The API keeps the tag only when it matches this shape, and silently drops
+    # anything else, so a typo here would lose attribution without an error.
+    SLUG_PATTERN = r"[a-z0-9][a-z0-9-]{0,63}"
+
+    def test_agents_carry_cookbook_tag(
+        self, notebook_path: Path, notebook_cells: list[CellInfo]
+    ) -> None:
+        """Test that every agents.create call tags the agent with this cookbook."""
+        import re
+
+        name = re.sub(r"[^a-z0-9]+", "-", notebook_path.stem.lower()).strip("-")
+        assert re.fullmatch(self.SLUG_PATTERN, name), f"Notebook name makes a bad slug: {name}"
+        expected = f'"anthropic_cookbook": "claude-cookbooks/{name}"'
+
+        issues = []
+
+        for cell in notebook_cells:
+            if cell.cell_type != "code":
+                continue
+
+            creates = cell.source.count("agents.create(")
+            tags = cell.source.count(expected)
+
+            if tags < creates:
+                issues.append(f"Cell {cell.index}: {creates} agents.create call(s), {tags} tagged")
+
+        if issues:
+            pytest.fail(
+                f"agents.create calls missing metadata={{{expected}}}:\n"
+                + "\n".join(f"  - {i}" for i in issues)
+            )
