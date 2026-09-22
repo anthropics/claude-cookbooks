@@ -23,8 +23,8 @@ Thank you for your interest in contributing to the Claude Cookbooks! This guide 
 
 2. **Clone the repository**:
    ```bash
-   git clone https://github.com/anthropics/anthropic-cookbook.git
-   cd anthropic-cookbook
+   git clone https://github.com/anthropics/claude-cookbooks.git
+   cd claude-cookbooks
    ```
 
 3. **Set up the development environment**:
