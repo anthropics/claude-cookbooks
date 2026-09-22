@@ -313,26 +313,51 @@ class TestCookbookAttribution:
         self, notebook_path: Path, notebook_cells: list[CellInfo]
     ) -> None:
         """Test that every agents.create call tags the agent with this cookbook."""
+        import ast
         import re
 
         name = re.sub(r"[^a-z0-9]+", "-", notebook_path.stem.lower()).strip("-")
-        assert re.fullmatch(self.SLUG_PATTERN, name), f"Notebook name makes a bad slug: {name}"
-        expected = f'"anthropic_cookbook": "claude-cookbooks/{name}"'
+        expected = f"claude-cookbooks/{name}"
 
+        calls = 0
         issues = []
 
         for cell in notebook_cells:
-            if cell.cell_type != "code":
+            if cell.cell_type != "code" or "agents.create" not in cell.source:
                 continue
 
-            creates = cell.source.count("agents.create(")
-            tags = cell.source.count(expected)
+            # IPython magics and shell escapes are not Python, so blank them out.
+            source = re.sub(r"^(\s*)[%!].*$", r"\1pass", cell.source, flags=re.MULTILINE)
+            try:
+                tree = ast.parse(source)
+            except SyntaxError as e:
+                issues.append(f"Cell {cell.index}: could not parse the cell ({e.msg})")
+                continue
 
-            if tags < creates:
-                issues.append(f"Cell {cell.index}: {creates} agents.create call(s), {tags} tagged")
+            for node in ast.walk(tree):
+                if not isinstance(node, ast.Call):
+                    continue
+                if not ast.unparse(node.func).endswith("agents.create"):
+                    continue
+
+                calls += 1
+                metadata = next((kw.value for kw in node.keywords if kw.arg == "metadata"), None)
+                try:
+                    tag = ast.literal_eval(metadata).get("anthropic_cookbook") if metadata else None
+                except ValueError:
+                    # Not a plain dict literal, so the tag can't be checked here.
+                    tag = None
+
+                if tag != expected:
+                    issues.append(
+                        f"Cell {cell.index}, line {node.lineno}: anthropic_cookbook is {tag!r}"
+                    )
+
+        if calls:
+            assert re.fullmatch(self.SLUG_PATTERN, name), f"Notebook name makes a bad slug: {name}"
 
         if issues:
             pytest.fail(
-                f"agents.create calls missing metadata={{{expected}}}:\n"
+                f'agents.create calls need metadata={{"anthropic_cookbook": "{expected}"}}:\n'
                 + "\n".join(f"  - {i}" for i in issues)
             )
