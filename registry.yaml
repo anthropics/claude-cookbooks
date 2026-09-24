@@ -1,4 +1,15 @@
 # yaml-language-server: $schema=./.github/registry_schema.json
+- title: Coordinating agents that don't share memory (message-bus consensus + liveness)
+  description: Coordinate independent Claude agents running in separate processes or
+    hosts using an append-only message bus as their only channel, a propose/vote/commit
+    consensus so a shared irreversible action runs exactly once, and heartbeat-based
+    failover when the committing peer crashes.
+  path: patterns/agents/distributed_agent_consensus.ipynb
+  authors:
+  - Palo-Alto-AI-Research-Lab
+  date: '2026-07-11'
+  categories:
+  - Agent Patterns
 - title: Build a data analyst agent with Claude Managed Agents
   description: Build an analyst that turns a CSV into a narrative HTML report with
     interactive charts, using a sandboxed environment and file mounting.
