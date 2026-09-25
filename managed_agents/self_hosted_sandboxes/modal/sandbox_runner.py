@@ -44,7 +44,7 @@ logging.basicConfig(
     stream=sys.stdout,
 )
 
-WORKDIR = "/workspace"
+WORKDIR = os.environ.get("ANTHROPIC_WORKDIR", "/workspace")
 
 
 async def main() -> None:
