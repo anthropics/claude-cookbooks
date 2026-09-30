@@ -60,12 +60,12 @@ class S3Adapter:
 
     def parse_s3_path(self, s3_path):
         # Remove 's3://' prefix if present
-        s3_path = s3_path.replace("s3://", "")
+        s3_path = s3_path.removeprefix("s3://")
 
         # Split the path into bucket and key
         parts = s3_path.split("/", 1)
 
-        if len(parts) != 2:
+        if len(parts) != 2 or not all(parts):
             raise ValueError("Invalid S3 path format")
 
         bucket_name = parts[0]
