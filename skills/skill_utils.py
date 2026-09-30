@@ -9,6 +9,7 @@ This module provides helper functions for:
 - Deleting skills
 """
 
+import re
 from pathlib import Path
 from typing import Any
 
@@ -321,17 +322,21 @@ def validate_skill_directory(skill_path: str) -> dict[str, Any]:
         result["errors"].append("SKILL.md file is required")
     else:
         # Read and validate SKILL.md
-        content = skill_md.read_text()
+        content = skill_md.read_text(encoding="utf-8")
 
         # Check for YAML frontmatter
-        if not content.startswith("---"):
+        fence = re.compile(r"^---[ \t]*\r?$", re.MULTILINE)
+        opening = fence.match(content)
+        if opening is None:
             result["valid"] = False
             result["errors"].append("SKILL.md must start with YAML frontmatter (---)")
         else:
             # Extract frontmatter
             try:
-                end_idx = content.index("---", 3)
-                frontmatter = content[3:end_idx].strip()
+                closing = fence.search(content, opening.end())
+                if closing is None:
+                    raise ValueError("Missing closing frontmatter fence")
+                frontmatter = content[opening.end() : closing.start()].strip()
 
                 # Check for required fields
                 if "name:" not in frontmatter:
