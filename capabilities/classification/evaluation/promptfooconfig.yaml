@@ -6,6 +6,9 @@ prompts:
   - prompts.py:rag_classify
   - prompts.py:rag_chain_of_thought_classify
 
+# Recorded configuration: a temperature sweep on claude-haiku-4-5 (the run behind data/results.csv).
+# Current models, including claude-haiku-5-5, reject a non-default temperature, so to re-run
+# on them drop the temperature lines and compare models (e.g. claude-haiku-5-5 vs claude-sonnet-5-5).
 providers:
   - id: anthropic:messages:claude-haiku-4-5
     label: "Haiku: T-0.0"

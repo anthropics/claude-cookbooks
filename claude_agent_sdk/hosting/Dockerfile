@@ -8,15 +8,12 @@
 
 FROM python:3.11-slim
 
-# The Agent SDK shells out to the Claude Code CLI under the hood. Install Node
-# and the CLI so `query()` has a runtime to drive.
+# The Agent SDK shells out to the Claude Code CLI under the hood. The
+# claude-agent-sdk wheel pinned in hosting/requirements.txt bundles a matching
+# native CLI binary (0.2.168 ships 2.1.301) and uses it by default, so no Node
+# or npm install is needed here.
 RUN apt-get update \
- && apt-get install -y --no-install-recommends curl ca-certificates \
- && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
- && apt-get install -y --no-install-recommends nodejs \
- && npm install -g @anthropic-ai/claude-code@2.1.140 \
- && apt-get purge -y curl \
- && apt-get autoremove -y \
+ && apt-get install -y --no-install-recommends ca-certificates \
  && rm -rf /var/lib/apt/lists/*
 
 # Pin WORKDIR. Session transcripts are stored under

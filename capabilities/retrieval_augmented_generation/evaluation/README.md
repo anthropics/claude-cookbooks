@@ -32,7 +32,7 @@ The evaluation is orchestrated by the `promptfooconfig...` `.yaml` files. In our
         - The functions are identical to those used in `guide.ipynb` except that instead of calling the Claude API they just return the prompt. Promptfoo then handles the orchestration of calling the API and storing the results.
         - You can read more about prompt functions [here](https://www.promptfoo.dev/docs/configuration/parameters#prompt-functions). Using python allows us to reuse the VectorDB class which is necessary for RAG, this is defined in `vectordb.py`.
 - Providers
-    - With Promptfoo you can connect to many different LLMs from different platforms, see [here for more](https://www.promptfoo.dev/docs/providers). In `guide.ipynb` we used Haiku with default temperature 0.0. We will use Promptfoo to experiment with different models.
+    - With Promptfoo you can connect to many different LLMs from different platforms, see [here for more](https://www.promptfoo.dev/docs/providers). In `guide.ipynb` we used Claude Haiku with default sampling settings. We will use Promptfoo to experiment with different models.
 - Tests
     - We will use the same data that was used in `guide.ipynb`. We split it into `end_to_end_dataset.csv` and `retrieval_dataset.csv` and added an `__expected` column to each dataset which allows us to automatically run assertions for each row
     - Promptfoo has a wide array of built in tests which can be found [here](https://www.promptfoo.dev/docs/configuration/expected-outputs/deterministic).

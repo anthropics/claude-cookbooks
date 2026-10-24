@@ -10,6 +10,8 @@ class InferenceAdapter:
             service_name="bedrock-runtime",
             region_name="us-east-1",  # change region as needed
         )
+        # InvokeModel takes the dated Bedrock ID; Claude Haiku 4.5 is the newest Haiku offered through
+        # InvokeModel (Haiku 5.5 is served on Bedrock's Messages-API endpoint as anthropic.claude-haiku-5-5).
         self.model_id = "anthropic.claude-haiku-4-5-20251001-v1:0"
 
     def invoke_model_with_response_stream(self, prompt, max_tokens=1000):

@@ -68,23 +68,17 @@ def _rerank_results(query: str, results: list[dict], k: int = 3) -> list[dict]:
 
     client = Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
     try:
-        # Re-rank with Haiku, matching the notebook's retrieval step: it is fast and cheap for
-        # this short task, and it still accepts the assistant prefill and temperature=0 used
-        # below (current Sonnet and Opus models reject both).
+        # Re-rank with Haiku, matching the notebook's retrieval step: fast and cheap for this
+        # short task. No prefill or temperature: current models reject both.
         response = client.messages.create(
-            model="claude-haiku-4-5",
-            max_tokens=50,
-            messages=[
-                {"role": "user", "content": prompt},
-                {"role": "assistant", "content": "<relevant_indices>"},
-            ],
-            temperature=0,
+            model="claude-haiku-5-5",
+            max_tokens=1024,
+            messages=[{"role": "user", "content": prompt}],
             stop_sequences=["</relevant_indices>"],
         )
 
-        # Extract the indices from the response
-        response_text = response.content[0].text.strip()
-        indices_str = response_text
+        response_text = "".join(b.text for b in response.content if b.type == "text").strip()
+        indices_str = response_text.split("<relevant_indices>")[-1].strip()
         relevant_indices = []
         for idx in indices_str.split(","):
             try:

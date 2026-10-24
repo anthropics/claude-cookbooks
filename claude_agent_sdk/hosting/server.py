@@ -142,6 +142,10 @@ def _build_options(*, resume: str | None) -> ClaudeAgentOptions:
         # Must match the Dockerfile WORKDIR for resume to find transcripts.
         cwd="/app",
         resume=resume,
+        # Deterministic container: don't load filesystem settings, and pin the
+        # permission mode rather than inheriting the CLI's default.
+        setting_sources=[],
+        permission_mode="default",
     )
 
 
