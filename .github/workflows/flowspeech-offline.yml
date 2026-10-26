@@ -1,0 +1,26 @@
+name: FlowSpeech offline v1
+on:
+  pull_request:
+    paths:
+      - "third_party/FlowSpeech/**"
+      - ".github/workflows/flowspeech-offline.yml"
+  workflow_dispatch:
+jobs:
+  offline:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m pip install --only-binary=:all: httpx==0.28.1 pytest==8.4.2 ruff==0.14.2
+      - run: python -m pytest third_party/FlowSpeech/tests --confcutdir=third_party/FlowSpeech/tests -q
+        env:
+          PYTEST_DISABLE_PLUGIN_AUTOLOAD: "1"
+      - run: python third_party/FlowSpeech/verify_bundle.py
+      - run: ruff check third_party/FlowSpeech
+      - run: ruff format --check third_party/FlowSpeech
+      - run: python scripts/validate_notebooks.py third_party/FlowSpeech/claude_directed_narration.ipynb
