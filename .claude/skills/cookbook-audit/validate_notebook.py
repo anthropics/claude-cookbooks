@@ -23,6 +23,11 @@ import subprocess
 import sys
 from pathlib import Path
 
+# Ensure UTF-8 output on Windows
+if sys.platform == "win32":
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
+
 # Model tables. Keep in sync with LATEST_MODELS / SUPERSEDED_MODELS / RETIRED_MODELS in
 # scripts/validate_all_notebooks.py and TestModelUsage in tests/notebook_tests/test_notebooks.py
 # (those two also list the few notebooks that pin a superseded model on purpose).
@@ -236,7 +241,7 @@ class NotebookValidator:
     def _check_hardcoded_secrets_fallback(self):
         """Fallback basic secret detection if detect-secrets unavailable."""
         patterns = {
-            "Anthropic API key": r"sk-ant-[a-zA-Z0-9-]+",
+            "Anthropic API key": r"sk-ant-[a-zA-Z0-9\-_]{20,}",
             "OpenAI API key": r"sk-[a-zA-Z0-9]{32,}",
             "Generic secret": r'(secret|password|token)\s*=\s*["\'][^"\']{20,}["\']',
         }
