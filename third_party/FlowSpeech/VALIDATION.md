@@ -1,5 +1,60 @@
 # FlowSpeech v1 Migration Handoff
 
+## Unreleased Candidate Verification (2026-10-27)
+
+This section records the current local candidate, not a published fix. Runtime
+source was not changed during this artifact/evidence refresh. The independently
+reviewed source suite passed 243 tests; this refresh rebuilt a separately named
+candidate and passed **243 extracted-runtime tests, zero failures**.
+
+Candidate: `third_party/FlowSpeech/dist/unreleased-20261027-final/flowspeech-v1-cookbook-review.tar.gz`
+
+SHA-256: `0b4d4c36348da64dd4ee14636851d060af05cd8871823720bb1a23c1c60bcdce`
+
+Frozen `flowspeech_v1.py` SHA-256:
+`32b581099c094e8829952f0cc20663921908e00cb9432bba1d5b444aa8b5354f`
+
+The existing six-file allowlist matched the extracted archive and source byte
+for byte. The credential-pattern scan passed. Current local tests (including
+worker lifecycle and error privacy regressions) were run against the extracted
+runtime via `FLOWSPEECH_TEST_ROOT`; tests and local verification helpers are not
+included in the archive. This is source validation, not deployment validation.
+
+### Command and Local Evidence
+
+From the repository root, set `PY` to the existing Python 3.12.1 test interpreter
+with HTTPX 0.28.1 and pytest 9.0.3:
+
+```bash
+env -i PATH=/usr/bin:/bin HOME=/private/tmp PYTHONDONTWRITEBYTECODE=1 "$PY" third_party/FlowSpeech/dist/verify_unreleased_20261027.py unreleased-20261027-final
+```
+
+The local-only wrapper uses the unchanged `verify_bundle.py` with a new output
+path, refuses an existing candidate directory, and verifies that the previous
+fixed-path archive and frozen runtime hash remain unchanged. For another run,
+use a fresh directory label instead of overwriting this evidence. Its
+`validation.json` is alongside the candidate. Generated helpers, archives and
+evidence under `dist/` are local artifacts, not files to stage or publish.
+
+### Historical Evidence and Limits
+
+The 2026-10-26 section below is retained verbatim as historical evidence; its
+test counts and archive hash do not describe this candidate. Before this refresh,
+earlier verification had already regenerated the fixed-name archive, so the
+original 26 October archive bytes are no longer present at that path. This
+refresh preserves the existing fixed-name file, whose SHA-256 equals the new
+candidate SHA-256 above. It does not reconstruct or claim to revalidate the
+historical archive.
+
+No API keys, paid generation, commits, pushes, publishes, or version changes
+were involved. No live writing/speech generation or full Jupyter kernel run was performed.
+Independent cross-review covered source, not this new archive. A blocked sync
+transport can finish its one in-flight operation after caller timeout; workers
+remain bounded, with no queued late submission and no caller-owned client close.
+
+## Historical Handoff (2026-10-26)
+
+
 Date: 2026-10-26. Branch: `codex/add-flowspeech-cookbook`.
 Base commit: `57a678c2542856957d0c0aeac9f897b4eb610335`.
 Existing PR: https://github.com/anthropics/claude-cookbooks/pull/812

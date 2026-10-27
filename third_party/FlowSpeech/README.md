@@ -49,6 +49,19 @@ five seconds between status queries, and longer Retry-After cooldowns, including
 body-read failures. Cancelling the notebook stops the caller; it does not cancel
 the paid server job. Keep the saved request file even after a timeout.
 
+HTTP workers are limited to eight per loaded adapter module, with no task queue.
+If capacity is full, or this client has a timed-out request still finishing,
+new calls fail with `client_busy` without sending a request. Retain the original
+UUID and use read-only recovery when capacity is available. A blocked transport
+may continue its single in-flight request after the caller's deadline, but cannot
+start a queued POST or another retry. Owned clients close only after active
+workers finish; injected clients are never closed by the adapter.
+
+API exceptions use local messages, not upstream error prose. Diagnostic code and
+trace tokens are limited to 128 ASCII letters, digits, underscores or hyphens,
+and values containing the configured API key are omitted. Signed URLs are not
+included in these diagnostics; result URLs retained for recovery remain private.
+
 For read-only recovery, use `speech.find_job(request_id)` or
 `speech.get_job(job_id)` inside a `V1Client` context. A success result can be
 downloaded with `speech.download_audio(job["result"]["url"])`, without another
