@@ -1001,3 +1001,13 @@
   categories:
   - Observability
   - Claude Managed Agents
+- title: Cut text-to-SQL prompt tokens with schemagate
+  description: Send Claude only the tables a question needs, picked from the tables
+    the caller may read, and measure the prompt tokens saved against the full schema.
+  path: third_party/schemagate/cut_nl2sql_tokens.ipynb
+  authors:
+  - ashishsinha1602
+  date: '2026-10-27'
+  categories:
+  - Integrations
+  - RAG & Retrieval
