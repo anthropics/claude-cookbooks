@@ -706,15 +706,6 @@
   categories:
   - Integrations
   - RAG & Retrieval
-- title: Iteratively searching Wikipedia with Claude
-  description: Legacy notebook showing iterative Wikipedia searches with Claude 2
-    for research workflows.
-  path: third_party/Wikipedia/wikipedia-search-cookbook.ipynb
-  authors:
-  - Anthropic
-  date: '2023-08-15'
-  categories:
-  - Integrations
 - title: Using the Wolfram Alpha LLM API as a tool with Claude
   description: Integrate Wolfram Alpha LLM API as Claude tool for computational queries
     and answers.
@@ -1001,3 +992,16 @@
   categories:
   - Observability
   - Claude Managed Agents
+- title: Review your agents' sessions for security issues with Claude
+  description: Build a review system for finished agent sessions. It turns Managed Agents
+    sessions, Messages API logs or Agent SDK logs into transcripts, flags what looks off in code, has
+    Claude review each session in a Managed Agents dynamic workflow, and returns a ranked
+    report with quoted evidence.
+  path: managed_agents/CMA_agent_security_review.ipynb
+  authors:
+  - bradabrams
+  date: '2026-10-16'
+  categories:
+  - Claude Managed Agents
+  - Cybersecurity
+  - Agent Patterns

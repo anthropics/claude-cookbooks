@@ -314,8 +314,6 @@ class TestModelUsage:
         "misc/sampling_past_max_tokens.ipynb": {"claude-haiku-4-5"},
         # Recorded chart-reading benchmark results and costs are for Fable 5 / Sonnet 5.
         "multimodal/crop_tool.ipynb": {"claude-fable-5", "claude-sonnet-5"},
-        # The recorded compaction run and its token counts are for Haiku 4.5.
-        "tool_use/automatic-context-compaction.ipynb": {"claude-haiku-4-5"},
     }
 
     # Whole model IDs in code cells: first-party `claude-<family>-...` and legacy

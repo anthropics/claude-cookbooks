@@ -558,7 +558,7 @@ def visualize_conversation_html(messages: list[Any]) -> None:
                     tool_name = block.name
                     tool_input = block.input if hasattr(block, "input") else {}
 
-                    if tool_name == "Task":
+                    if tool_name in ("Agent", "Task"):  # subagent tool ("Task" before SDK 0.2)
                         flush_tools()
                         subagent_type = (
                             tool_input.get("subagent_type", "unknown") if tool_input else "unknown"

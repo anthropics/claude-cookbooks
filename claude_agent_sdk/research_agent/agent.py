@@ -104,6 +104,11 @@ async def send_query(
         continue_conversation=continue_conversation,
         system_prompt=RESEARCH_SYSTEM_PROMPT,
         max_buffer_size=10 * 1024 * 1024,  # 10MB buffer for handling images and large responses
+        # Be explicit: since claude-agent-sdk 0.2, leaving these unset loads every
+        # filesystem settings source (user, project, local) and lets the CLI pick the
+        # permission mode. An empty list keeps the agent isolated and reproducible.
+        setting_sources=[],
+        permission_mode="default",
     )
 
     result = None
