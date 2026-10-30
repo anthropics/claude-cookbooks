@@ -188,6 +188,7 @@ class SensitivityAnalyzer:
         variable_updates: dict[str, Callable],
         output_func: Callable,
         probability_weights: dict[str, float] | None = None,
+        reset: Callable[[], None] | None = None,
     ) -> pd.DataFrame:
         """
         Analyze multiple scenarios with different variable combinations.
@@ -197,39 +198,67 @@ class SensitivityAnalyzer:
             variable_updates: Functions to update each variable
             output_func: Function to calculate output
             probability_weights: Optional probability for each scenario
+            reset: Optional callable that returns the model to its starting state.
+                When omitted, the model's attributes are snapshotted and restored
+                before each scenario and after the analysis.
 
         Returns:
             DataFrame with scenario results
+
+        Raises:
+            ValueError: If no reset callable is provided and the model's attributes
+                cannot be snapshotted.
         """
         results = []
 
-        for scenario_name, variables in scenarios.items():
-            # Update all variables for this scenario
-            for var_name, value in variables.items():
-                if var_name in variable_updates:
-                    variable_updates[var_name](value)
+        if reset is None:
+            try:
+                initial_state = dict(vars(self.base_model))
+            except TypeError as exc:
+                raise ValueError(
+                    "scenario_analysis cannot snapshot this model's state; pass "
+                    "reset=... so every scenario starts from the same values"
+                ) from exc
 
-            # Calculate output
-            output = output_func()
+        def restore_model() -> None:
+            if reset is not None:
+                reset()
+                return
+            vars(self.base_model).clear()
+            vars(self.base_model).update(initial_state)
 
-            # Get probability if provided
-            prob = (
-                probability_weights.get(scenario_name, 1 / len(scenarios))
-                if probability_weights
-                else 1 / len(scenarios)
-            )
+        try:
+            for scenario_name, variables in scenarios.items():
+                # Every scenario runs against the same starting model, so a variable
+                # one scenario changes cannot leak into the next one.
+                restore_model()
 
-            results.append(
-                {
-                    "scenario": scenario_name,
-                    "probability": prob,
-                    "output": output,
-                    **variables,  # Include all variable values
-                }
-            )
+                # Update all variables for this scenario
+                for var_name, value in variables.items():
+                    if var_name in variable_updates:
+                        variable_updates[var_name](value)
 
-            # Reset model (simplified - should restore all base values)
+                # Calculate output
+                output = output_func()
 
+                # Get probability if provided
+                prob = (
+                    probability_weights.get(scenario_name, 1 / len(scenarios))
+                    if probability_weights
+                    else 1 / len(scenarios)
+                )
+
+                results.append(
+                    {
+                        "scenario": scenario_name,
+                        "probability": prob,
+                        "output": output,
+                        **variables,  # Include all variable values
+                    }
+                )
+        finally:
+            # Leave the model as it was found, whatever the scenarios changed.
+            restore_model()
         df = pd.DataFrame(results)
 
         # Calculate expected value
