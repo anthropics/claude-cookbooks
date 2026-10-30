@@ -6,7 +6,7 @@ Validates content against brand guidelines including colors, fonts, tone, and me
 
 import json
 import re
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 
 
 @dataclass
@@ -21,6 +21,7 @@ class BrandGuidelines:
     prohibited_words: list[str]
     tagline: str | None = None
     logo_usage_rules: dict | None = None
+    prohibited_fonts: list[str] = field(default_factory=lambda: ["Comic Sans", "Papyrus"])
 
 
 @dataclass
@@ -36,6 +37,28 @@ class ValidationResult:
 
 class BrandValidator:
     """Validates content against brand guidelines"""
+
+    # Generic CSS families that carry no brand signal, so a stack may end in one.
+    GENERIC_FONT_FAMILIES = frozenset(
+        {
+            "serif",
+            "sans-serif",
+            "monospace",
+            "cursive",
+            "fantasy",
+            "system-ui",
+            "ui-serif",
+            "ui-sans-serif",
+            "ui-monospace",
+            "ui-rounded",
+            "emoji",
+            "math",
+            "fangsong",
+            "inherit",
+            "initial",
+            "unset",
+        }
+    )
 
     def __init__(self, guidelines: BrandGuidelines):
         self.guidelines = guidelines
@@ -83,11 +106,30 @@ class BrandValidator:
             matches = re.findall(pattern, content, re.IGNORECASE)
             found_fonts.extend(matches)
 
-        for font in found_fonts:
-            font_clean = font.strip().lower()
-            # Check if any approved font is in the found font string
-            if not any(approved.lower() in font_clean for approved in self.guidelines.fonts):
-                violations.append(f"Unapproved font used: {font}")
+        reported = set()
+        for declaration in found_fonts:
+            # Each declaration is a stack: check every family, so an approved
+            # fallback cannot hide a prohibited or unapproved first choice.
+            for family in (part.strip().strip("\"'") for part in declaration.split(",")):
+                if not family:
+                    continue
+                family_lower = family.lower()
+                if any(
+                    prohibited.lower() in family_lower
+                    for prohibited in self.guidelines.prohibited_fonts
+                ):
+                    message = f"Prohibited font used: {family}"
+                elif family_lower in self.GENERIC_FONT_FAMILIES:
+                    continue
+                elif not any(
+                    approved.lower() in family_lower for approved in self.guidelines.fonts
+                ):
+                    message = f"Unapproved font used: {family}"
+                else:
+                    continue
+                if message not in reported:
+                    reported.add(message)
+                    violations.append(message)
 
         return violations, warnings
 
