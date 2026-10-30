@@ -208,21 +208,50 @@ class RatioInterpreter:
         first_value = values[0]
         last_value = values[-1]
         change = last_value - first_value
-        pct_change = (change / abs(first_value)) * 100 if first_value != 0 else 0
+        # A zero starting value makes the relative change undefined. Keep None instead
+        # of a 0% that would hide a real move and read as "Stable".
+        pct_change = (change / abs(first_value)) * 100 if first_value != 0 else None
 
         # Determine trend direction
-        if abs(pct_change) < 5:
+        if pct_change is None:
+            if change == 0:
+                trend = "Stable"
+            else:
+                # From a zero baseline any non-zero move is a change; keep its direction.
+                rising = change > 0
+                improving = not rising if ratio_name == "debt_to_equity" else rising
+                trend = "Improving" if improving else "Deteriorating"
+        elif abs(pct_change) < 5:
             trend = "Stable"
         elif pct_change > 0:
             trend = "Improving" if ratio_name != "debt_to_equity" else "Deteriorating"
         else:
             trend = "Deteriorating" if ratio_name != "debt_to_equity" else "Improving"
 
+        if pct_change is None:
+            if change == 0:
+                message = (
+                    f"{ratio_name} stayed at 0.0 from {periods[0]} to {periods[-1]}; "
+                    "the percentage change is undefined"
+                )
+            else:
+                direction = "increased" if change > 0 else "decreased"
+                message = (
+                    f"{ratio_name} {direction} from 0.0 to {last_value:.1f} between "
+                    f"{periods[0]} and {periods[-1]}; the percentage change is undefined "
+                    "because the starting value is zero"
+                )
+        else:
+            message = (
+                f"{ratio_name} has {'increased' if change > 0 else 'decreased'} by "
+                f"{abs(pct_change):.1f}% from {periods[0]} to {periods[-1]}"
+            )
+
         return {
             "trend": trend,
             "change": change,
             "pct_change": pct_change,
-            "message": f"{ratio_name} has {'increased' if change > 0 else 'decreased'} by {abs(pct_change):.1f}% from {periods[0]} to {periods[-1]}",
+            "message": message,
             "values": list(zip(periods, values, strict=False)),
         }
 
