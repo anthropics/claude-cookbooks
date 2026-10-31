@@ -84,10 +84,16 @@ class BrandValidator:
             found_fonts.extend(matches)
 
         for font in found_fonts:
-            font_clean = font.strip().lower()
-            # Check if any approved font is in the found font string
-            if not any(approved.lower() in font_clean for approved in self.guidelines.fonts):
-                violations.append(f"Unapproved font used: {font}")
+            # A font-family declaration is a comma-separated list of family names.
+            # Each one is checked on its own, so an approved fallback cannot hide an
+            # unapproved first choice, and names are compared whole so "NotSegoe UI"
+            # is not accepted as "Segoe UI".
+            for family in font.split(","):
+                family_clean = " ".join(family.split()).lower()
+                if family_clean and not any(
+                    family_clean == approved.lower() for approved in self.guidelines.fonts
+                ):
+                    violations.append(f"Unapproved font used: {family.strip()}")
 
         return violations, warnings
 
