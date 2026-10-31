@@ -8,6 +8,27 @@ import json
 import re
 from dataclasses import asdict, dataclass
 
+RGB_PATTERN = re.compile(
+    r"rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*(?:,\s*[\d.]+\s*)?\)",
+    re.IGNORECASE,
+)
+
+
+def normalize_color(value: str) -> str | None:
+    """Return ``#RRGGBB`` for a hex or ``rgb()``/``rgba()`` color, or None otherwise."""
+    text = value.strip()
+    if text.startswith("#"):
+        digits = text[1:]
+        if len(digits) == 3:
+            digits = "".join(ch * 2 for ch in digits)
+        if len(digits) == 6 and all(ch in "0123456789abcdefABCDEF" for ch in digits):
+            return f"#{digits.upper()}"
+        return None
+    match = RGB_PATTERN.fullmatch(text)
+    if match:
+        return "#{:02X}{:02X}{:02X}".format(*(int(part) for part in match.groups()))
+    return None
+
 
 @dataclass
 class BrandGuidelines:
@@ -48,19 +69,25 @@ class BrandValidator:
         violations = []
         warnings = []
 
-        # Find hex colors
+        # Find hex and rgb()/rgba() colors
         hex_pattern = r"#[0-9A-Fa-f]{6}|#[0-9A-Fa-f]{3}"
         found_colors = re.findall(hex_pattern, content)
+        found_colors.extend(match.group(0) for match in RGB_PATTERN.finditer(content))
 
-        # Find RGB colors
-        rgb_pattern = r"rgb\s*\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*\)"
-        found_colors.extend(re.findall(rgb_pattern, content, re.IGNORECASE))
+        approved_colors = {
+            normalize_color(color)
+            for color in self.guidelines.primary_colors + self.guidelines.secondary_colors
+        } - {None}
 
-        approved_colors = self.guidelines.primary_colors + self.guidelines.secondary_colors
-
+        reported = set()
         for color in found_colors:
-            if color.upper() not in [c.upper() for c in approved_colors]:
-                violations.append(f"Unapproved color used: {color}")
+            normalized = normalize_color(color)
+            # Compare canonical values, so #fff, #FFFFFF and rgb(255, 255, 255) agree.
+            if normalized is None or normalized not in approved_colors:
+                message = f"Unapproved color used: {color}"
+                if message not in reported:
+                    reported.add(message)
+                    violations.append(message)
 
         return violations, warnings
 
