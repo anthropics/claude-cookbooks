@@ -33,12 +33,25 @@ def validate_notebook(path: Path) -> list:
     return issues
 
 
+def discover_notebooks() -> list[Path]:
+    """Every notebook in the checkout, skipping Jupyter checkpoint copies."""
+    return sorted(
+        path for path in Path(".").rglob("*.ipynb") if ".ipynb_checkpoints" not in path.parts
+    )
+
+
 def main():
-    """Check notebooks passed as arguments."""
+    """Check notebooks passed as arguments, or every notebook when none are given."""
     has_issues = False
 
     # Get notebook paths from command line arguments
     notebooks = [Path(arg) for arg in sys.argv[1:] if arg.endswith(".ipynb")]
+
+    if not notebooks:
+        # The notebook-quality job calls this script without arguments, so an
+        # empty argument list must mean "the notebooks in this checkout", not
+        # "nothing to validate".
+        notebooks = discover_notebooks()
 
     if not notebooks:
         print("⚠️ No notebooks to validate")
