@@ -77,7 +77,7 @@ import dotenv
 dotenv.load_dotenv()
 
 # constant model name is easier to change 
-MODEL = "claude-haiku-4-5"
+MODEL = "claude-haiku-5-5"
 
 client = anthropic.Anthropic()
 ```
