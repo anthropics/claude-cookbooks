@@ -4,6 +4,7 @@ results/sweep.jsonl and results/race.jsonl hold one line per task attempt that c
 the same tasks in the same rounds, so each comparison is made inside a round and then combined over the rounds."""
 
 import json
+import re
 from dataclasses import dataclass, fields
 
 import matplotlib.pyplot as plt
@@ -55,13 +56,31 @@ def _text(rows, places=1):
     return [dict(cell(k, v) for k, v in row.items()) for row in rows]
 
 
+def _aligned(rows):
+    """Rows of text as one aligned table: the first column to the left, the rest to the right"""
+    wide = {k: max(len(k), *(len(row[k]) for row in rows)) for k in rows[0]}
+    first, *rest = wide
+    lines = (
+        [row[first].ljust(wide[first]), *(row[k].rjust(wide[k]) for k in rest)]
+        for row in [{k: k for k in wide}, *rows]
+    )
+    return "\n".join("   ".join(line).rstrip() for line in lines)
+
+
 def show(rows, places=1):
     """Print dicts as an aligned table, with floats to `places` decimals and seconds marked on the values"""
-    rows = _text(rows, places)
-    wide = {k: max(len(k), *(len(row[k]) for row in rows)) for k in rows[0]}
-    for row in [{k: k for k in wide}, *rows]:
-        first, *rest = wide
-        print(row[first].ljust(wide[first]), *(row[k].rjust(wide[k]) for k in rest), sep="   ")
+    print(_aligned(_text(rows, places)))
+
+
+class Table(HTML):
+    """An HTML table that reads as the same aligned table as show() wherever HTML outputs aren't rendered"""
+
+    def __init__(self, html, text):
+        super().__init__(html)
+        self.text = text
+
+    def __repr__(self):
+        return self.text
 
 
 def table(rows):
@@ -71,7 +90,9 @@ def table(rows):
         [f"<th>{k}</th>" for k in rows[0]],
         *([f"<td>{v}</td>" for v in r.values()] for r in rows),
     ]
-    return HTML("<table>" + "".join(f"<tr>{''.join(line)}</tr>" for line in lines) + "</table>")
+    html = "<table>" + "".join(f"<tr>{''.join(line)}</tr>" for line in lines) + "</table>"
+    untagged = [{k: re.sub(r"</?\w+>", "", v) for k, v in r.items()} for r in rows]
+    return Table(html, _aligned(untagged))
 
 
 def show_task(row, cfg):
