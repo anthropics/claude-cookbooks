@@ -62,6 +62,7 @@ If you have ideas for new examples or guides, share them on the [issues page](ht
 - [Create a moderation filter](https://github.com/anthropics/anthropic-cookbook/blob/main/misc/building_moderation_filter.ipynb): Use Claude to create a content moderation filter for your application.
 - [Prompt caching](https://github.com/anthropics/anthropic-cookbook/blob/main/misc/prompt_caching.ipynb): Learn techniques for efficient prompt caching with Claude.
 - [Cost optimization](https://github.com/anthropics/anthropic-cookbook/blob/main/cost_optimization/cost_optimization.ipynb): Work through a cost optimization checklist on an agent, measuring pass rate and cost per task to find the Pareto-optimal configuration.
+- [Latency optimization](https://github.com/anthropics/anthropic-cookbook/blob/main/latency_optimization/latency_optimization.ipynb): Work through the latency levers on an agent, measuring time to first token, task time, and accuracy to pick the fastest configuration that clears your quality bar.
 
 ## Additional Resources
 

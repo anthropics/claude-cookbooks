@@ -428,6 +428,17 @@
   categories:
   - Agent Patterns
   - Evals
+- title: Latency Optimization on the Claude API
+  description: Find the fastest agent configuration that still meets your accuracy bar
+    by testing each of the Claude API's latency levers on a real eval.
+  path: latency_optimization/latency_optimization.ipynb
+  authors:
+  - benlehrburger-ant
+  - owenz-ant
+  date: '2026-10-15'
+  categories:
+  - Agent Patterns
+  - Evals
 - title: Session memory compaction
   description: Manage long-running Claude conversations with instant session memory
     compaction using background threading and prompt caching.
