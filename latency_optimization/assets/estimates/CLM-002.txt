@@ -1,0 +1,14 @@
+SPEEDWORKS COLLISION — ESTIMATE OF RECORD
+Claim CLM-002 · loss state CA · prepared 2024-04-03
+
+ 01  Front bumper cover — replace                             part $   385.00   2.4h body @ $78/hr         $   187.20
+ 02  LH fender — replace                                      part $   330.00   2.4h body @ $78/hr         $   187.20
+ 03  Headlamp assy LH — replace                               part $   460.00   0.9h body @ $78/hr         $    70.20
+ 04  Wheel + tire LH — replace                                part $   780.00   0.8h mech @ $145/hr        $   116.00
+ 05  LH lower control arm + tie rod — replace, align          part $   520.00   3.2h mech @ $145/hr        $   464.00
+ 06  Front subframe/crossmember — replace                     part $ 1,450.00   8.0h frame @ $95/hr        $   760.00
+ 07  Refinish — 3 panels + blend                              part $     0.00   7.0h refinish @ $78/hr     $   546.00
+ 08  Paint & materials                                        part $   280.00   materials                  $     0.00
+
+ PARTS $4,205.00   LABOR $2,330.60   TOTAL $6,535.60
+Notes: OEM parts where available; labor rates per §3.4 regional caps; supplements pending teardown; photos on file.

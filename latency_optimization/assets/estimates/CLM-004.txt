@@ -1,0 +1,13 @@
+CASCADE RANGE COLLISION — ESTIMATE OF RECORD
+Claim CLM-004 · loss state WA · prepared 2024-07-21
+
+ 01  Front bumper cover — replace                             part $   385.00   2.4h body @ $78/hr         $   187.20
+ 02  LH fender — replace                                      part $   330.00   2.4h body @ $78/hr         $   187.20
+ 03  Headlamp assy LH — replace                               part $   460.00   0.9h body @ $78/hr         $    70.20
+ 04  Hood panel — repair buckle at leading edge               part $     0.00   3.5h body @ $78/hr         $   273.00
+ 05  Fog lamp LH — replace                                    part $   120.00   0.4h body @ $78/hr         $    31.20
+ 06  Refinish — 3 panels + blend                              part $     0.00   7.0h refinish @ $78/hr     $   546.00
+ 07  Paint & materials                                        part $   300.00   materials                  $     0.00
+
+ PARTS $1,595.00   LABOR $1,294.80   TOTAL $2,889.80
+Notes: OEM parts where available; labor rates per §3.4 regional caps; supplements pending teardown; photos on file.
