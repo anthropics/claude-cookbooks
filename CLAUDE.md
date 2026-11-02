@@ -99,7 +99,7 @@ skills/            # Advanced skill-based notebooks
 tool_use/          # Tool use and integration patterns
 multimodal/        # Vision and image processing
 misc/              # Batch processing, caching, utilities
-third_party/       # Pinecone, Voyage, Wikipedia integrations
+third_party/       # Pinecone, Voyage, LlamaIndex integrations
 extended_thinking/ # Extended reasoning patterns
 scripts/           # Validation scripts
 .claude/           # Claude Code commands and skills

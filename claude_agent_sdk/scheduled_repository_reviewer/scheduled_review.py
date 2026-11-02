@@ -48,7 +48,7 @@ import asyncio
 import json
 import sys
 import uuid
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 from enum import StrEnum
 from pathlib import Path
 from typing import Any
@@ -58,6 +58,7 @@ from claude_agent_sdk import (
     ClaudeAgentOptions,
     HookContext,
     HookMatcher,
+    ProcessError,
     ResultError,
     ResultMessage,
     TextBlock,
@@ -328,26 +329,42 @@ async def run_review(
     """Run one review pass and return its structured result."""
     options = review_options(repo, schema, max_turns, resume_session_id, service_dir)
     outcome = RunOutcome()
-    async for message in query(prompt=prompt, options=options):
-        match message:
-            case AssistantMessage(content=blocks):
-                for block in blocks:
-                    match block:
-                        case TextBlock(text=text):
-                            line = text.strip()
-                            if line:
-                                # Cap what a scheduled log absorbs per block.
-                                print(f"[{label}] {clip(line)}")
-                        case ToolUseBlock(name=tool_name):
-                            outcome.tools_attempted.append(tool_name)
-            case ResultMessage() as result:
-                outcome.session_id = result.session_id
-                outcome.subtype = result.subtype
-                outcome.num_turns = result.num_turns
-                outcome.total_cost_usd = result.total_cost_usd
-                outcome.denials = len(result.permission_denials or [])
-                if isinstance(result.structured_output, dict):
-                    outcome.payload = result.structured_output
+    # The raw payload of a terminal error result, kept so the except branch
+    # below can re-raise it typed.
+    error_result: dict[str, Any] | None = None
+    try:
+        async for message in query(prompt=prompt, options=options):
+            match message:
+                case AssistantMessage(content=blocks):
+                    for block in blocks:
+                        match block:
+                            case TextBlock(text=text):
+                                line = text.strip()
+                                if line:
+                                    # Cap what a scheduled log absorbs per block.
+                                    print(f"[{label}] {clip(line)}")
+                            case ToolUseBlock(name=tool_name):
+                                outcome.tools_attempted.append(tool_name)
+                case ResultMessage() as result:
+                    outcome.session_id = result.session_id
+                    outcome.subtype = result.subtype
+                    outcome.num_turns = result.num_turns
+                    outcome.total_cost_usd = result.total_cost_usd
+                    outcome.denials = len(result.permission_denials or [])
+                    if isinstance(result.structured_output, dict):
+                        outcome.payload = result.structured_output
+                    error_result = asdict(result) if result.is_error else None
+    except ProcessError as exc:
+        # The SDK raises ResultError itself when the error result is the last
+        # frame the CLI emits. CLI 2.1.301 (bundled with claude-agent-sdk
+        # 0.2.168) sends a task_summary frame after it, and the SDK then falls
+        # back to a bare ProcessError; re-raise it typed from the result this
+        # loop already saw, so callers keep one narrow `except ResultError`.
+        if isinstance(exc, ResultError) or error_result is None:
+            raise
+        reason = "; ".join(error_result.get("errors") or []) or error_result.get("result")
+        message = f"Claude Code returned an error result: {reason or error_result.get('subtype')}"
+        raise ResultError(message, data=error_result, exit_code=exc.exit_code) from exc
     return outcome
 
 

@@ -30,6 +30,11 @@ record and audit backbone.
   the agent investigates and opens a PR, then pauses for human
   approval before merging. You'll wire the alert webhook, attach a
   Skill and custom tools, and review the full run in the Console.
+- **[CMA_agent_security_review.ipynb](CMA_agent_security_review.ipynb)**
+  builds a review system for finished agent sessions. You'll describe
+  each agent's limits, turn Managed Agents, Messages API or Agent SDK
+  logs into transcripts, have Claude review each session in a dynamic workflow,
+  and get a ranked report with quoted evidence.
 
 ## Guided tutorials
 

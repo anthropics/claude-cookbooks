@@ -452,6 +452,8 @@ async def process_investigation(
         ],
         permission_mode="acceptEdits",
         model="claude-opus-5-5",
+        # Keep the bot isolated from user/project filesystem settings.
+        setting_sources=[],
     )
 
     # Stream responses to Slack as they arrive

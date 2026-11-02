@@ -14,16 +14,18 @@ RUN apt-get update && apt-get install -y \
     "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" > /etc/apt/sources.list.d/docker.list \
     && apt-get update \
     && apt-get install -y docker-ce-cli \
-    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get install -y nodejs \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# The claude-agent-sdk wheel bundles its own CLI binary and prefers it; this
+# global install (Node 22+) is a fallback and provides `claude --version` below.
 RUN npm install -g @anthropic-ai/claude-code
 
 COPY observability_agent ./observability_agent
 
 RUN pip install --no-cache-dir \
-    claude-agent-sdk \
+    "claude-agent-sdk>=0.2.168" \
     fastapi \
     python-dotenv \
     uvicorn[standard] \
