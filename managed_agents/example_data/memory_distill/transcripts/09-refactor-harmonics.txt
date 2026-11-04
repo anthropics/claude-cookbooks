@@ -1,0 +1,676 @@
+SESSION sesn_example09: Tidy harmonics and predict (agent coding-agent; created 2026-10-21T02:27:37.065811Z)
+
+NOTE ABOUT THIS FILE: A generated example: a coding agent working on a fictional repository.
+
+=== primary thread sthr_example09: coding-agent ===
+
+USER:
+Refactor `tidewick/harmonics.py` and `tidewick/predict.py` for readability without changing behaviour. Run every test the project has, including any that are skipped by default, before and after, and tell me how you ran them and whether anything changed.
+
+TOOL CALL bash:
+command: mkdir -p /work && tar xzf /mnt/session/uploads/repo/tidewick.tar.gz -C /work && find /work/tidewick -type f | sort
+
+TOOL RESULT (bash):
+/work/tidewick/CHANGELOG.md
+/work/tidewick/CONTRIBUTING.md
+/work/tidewick/Makefile
+/work/tidewick/README.md
+/work/tidewick/data/constituents/cape-mallow.json
+/work/tidewick/data/constituents/hollins-inlet.json
+/work/tidewick/data/constituents/port-avery.json
+/work/tidewick/data/stations.json
+/work/tidewick/docs/ARCHITECTURE.md
+/work/tidewick/docs/adr/0001-stdlib-only.md
+/work/tidewick/docs/adr/0002-json-files-not-sqlite.md
+/work/tidewick/tests/__init__.py
+/work/tidewick/tests/test_cli.py
+/work/tidewick/tests/test_predict.py
+/work/tidewick/tests/test_stations.py
+/work/tidewick/tidewick/__init__.py
+/work/tidewick/tidewick/__main__.py
+/work/tidewick/tidewick/cli.py
+/work/tidewick/tidewick/config.py
+/work/tidewick/tidewick/harmonics.py
+/work/tidewick/tidewick/legacy_parser.py
+/work/tidewick/tidewick/predict.py
+/work/tidewick/tidewick/stations.py
+/work/tidewick/tools/check_style.py
+/work/tidewick/tools/make_fixtures.py
+
+TOOL CALL read:
+file_path: /work/tidewick/tidewick/harmonics.py
+
+TOOL CALL read:
+file_path: /work/tidewick/tidewick/predict.py
+
+TOOL RESULT (read):
+1	"""Constituent speeds in degrees per hour, and a helper to look one up."""
+2	
+3	SPEEDS = {
+4	    "M2": 28.9841042,
+5	    "S2": 30.0000000,
+6	    "N2": 28.4397295,
+7	    "K1": 15.0410686,
+8	    "O1": 13.9430356,
+9	    "M4": 57.9682084,
+10	}
+11	
+12	
+13	def speed(name: str) -> float:
+14	    """The speed of a constituent by name; raises KeyError with the known names listed."""
+15	    try:
+16	        return SPEEDS[name]
+17	    except KeyError:
+18	        known = ", ".join(sorted(SPEEDS))
+19	        raise KeyError(f"unknown constituent {name!r}; known: {known}") from None
+
+TOOL RESULT (read):
+1	"""The prediction arithmetic."""
+2	
+3	import math
+4	from datetime import datetime, timedelta
+5	
+6	from tidewick import harmonics
+7	from tidewick.stations import Station
+8	
+9	EPOCH = datetime(2026, 1, 1)  # local standard time at every station
+10	
+11	FEET_PER_METER = 3.28084
+12	
+13	
+14	def to_units(meters: float, units: str) -> float:
+15	    """Convert a height in metres to the given unit ('m' or 'ft')."""
+16	    if units == "m":
+17	        return meters
+18	    if units == "ft":
+19	        return meters * FEET_PER_METER
+20	    raise ValueError(f"unknown units {units!r}; expected 'm' or 'ft'")
+21	
+22	
+23	def height_at(station: Station, when: datetime) -> float:
+24	    """Predicted height in metres at a local standard time."""
+25	    t_hours = (when - EPOCH).total_seconds() / 3600.0
+26	    total = station.mean_level_m
+27	    for name, amplitude, phase_deg in station.constituents:
+28	        angle = math.radians(harmonics.speed(name) * t_hours + phase_deg)
+29	        total += amplitude * math.cos(angle)
+30	    return total
+31	
+32	
+33	def series(station: Station, start: datetime, hours: int, step_minutes: int = 60) -> list:
+34	    """(time, height) pairs from start for the given number of hours."""
+35	    if hours <= 0 or step_minutes <= 0:
+36	        raise ValueError("hours and step_minutes must be positive")
+37	    points = []
+38	    steps = int(hours * 60 / step_minutes) + 1
+39	    for i in range(steps):
+40	        when = start + timedelta(minutes=i * step_minutes)
+41	        points.append((when, height_at(station, when)))
+42	    return points
+
+TOOL CALL read:
+file_path: /work/tidewick/tidewick/stations.py
+
+TOOL CALL read:
+file_path: /work/tidewick/tests/test_predict.py
+
+TOOL CALL bash:
+command: cat /work/tidewick/Makefile; echo ---; cat /work/tidewick/tools/check_style.py
+
+TOOL RESULT (read):
+1	"""Loading and validating station data files."""
+2	
+3	import json
+4	import re
+5	from dataclasses import dataclass
+6	
+7	from tidewick import config, harmonics
+8	
+9	STATION_ID = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
+10	
+11	
+12	@dataclass(frozen=True)
+13	class Station:
+14	    id: str
+15	    name: str
+16	    mean_level_m: float
+17	    utc_offset_hours: float
+18	    datum: str
+19	    constituents: tuple  # of (name, amplitude_m, phase_deg)
+20	
+21	
+22	def list_ids() -> list:
+23	    """The station ids listed in stations.json, in file order."""
+24	    index = json.loads((config.data_dir() / "stations.json").read_text())
+25	    return [entry["id"] for entry in index["stations"]]
+26	
+27	
+28	def load(station_id: str) -> Station:
+29	    """Load one station by id. Raises ValueError when the id is malformed or the files disagree."""
+30	    if not STATION_ID.match(station_id):
+31	        raise ValueError(f"station id {station_id!r} is not lowercase kebab-case")
+32	    index = json.loads((config.data_dir() / "stations.json").read_text())
+33	    entry = next((e for e in index["stations"] if e["id"] == station_id), None)
+34	    if entry is None:
+35	        raise ValueError(f"no station {station_id!r} in stations.json")
+36	    path = config.data_dir() / "constituents" / f"{station_id}.json"
+37	    doc = json.loads(path.read_text())
+38	    if doc.get("station") != station_id:
+39	        found = doc.get("station")
+40	        raise ValueError(f"{path.name} says station {found!r}, expected {station_id!r}")
+41	    constituents = []
+42	    for c in doc["constituents"]:
+43	        harmonics.speed(c["name"])  # validates the name
+44	        constituents.append((c["name"], float(c["amplitude_m"]), float(c["phase_deg"])))
+45	    return Station(
+46	        id=station_id,
+47	        name=entry["name"],
+48	        mean_level_m=float(entry["mean_level_m"]),
+49	        utc_offset_hours=float(entry["utc_offset_hours"]),
+50	        datum=entry.get("datum", "MSL"),
+51	        constituents=tuple(constituents),
+52	    )
+
+TOOL RESULT (read):
+1	import os
+2	import unittest
+3	from datetime import datetime
+4	
+5	from tidewick import predict, stations
+6	
+7	
+8	class PredictTest(unittest.TestCase):
+9	    def test_height_is_near_mean_level_on_average(self):
+10	        s = stations.load("port-avery")
+11	        points = predict.series(s, datetime(2026, 3, 1), hours=48, step_minutes=30)
+12	        mean = sum(h for _, h in points) / len(points)
+13	        self.assertAlmostEqual(mean, s.mean_level_m, delta=0.15)
+14	
+15	    def test_series_rejects_zero_hours(self):
+16	        s = stations.load("cape-mallow")
+17	        with self.assertRaises(ValueError):
+18	            predict.series(s, datetime(2026, 3, 1), hours=0)
+19	
+20	    def test_to_units_converts_meters_to_feet(self):
+21	        self.assertAlmostEqual(predict.to_units(1.0, "ft"), 3.28084, places=5)
+22	        self.assertEqual(predict.to_units(1.0, "m"), 1.0)
+23	
+24	    def test_to_units_rejects_unknown_unit(self):
+25	        with self.assertRaises(ValueError):
+26	            predict.to_units(1.0, "cubit")
+27	
+28	    @unittest.skipUnless(os.environ.get("TIDEWICK_SLOW") == "1", "set TIDEWICK_SLOW=1 to run")
+29	    def test_year_long_series_has_two_tides_a_day(self):
+30	        s = stations.load("port-avery")
+31	        points = predict.series(s, datetime(2026, 1, 1), hours=24 * 365, step_minutes=20)
+32	        highs = sum(
+33	            1 for i in range(1, len(points) - 1) if points[i - 1][1] < points[i][1] > points[i + 1][1]
+34	        )
+35	        self.assertTrue(680 < highs < 720, highs)
+36	
+37	
+38	if __name__ == "__main__":
+39	    unittest.main()
+
+TOOL RESULT (bash):
+.PHONY: test check fixtures slow
+
+test:
+	cd tests && python -m unittest discover -s . -t ..
+
+slow:
+	cd tests && TIDEWICK_SLOW=1 python -m unittest discover -s . -t ..
+
+check: test
+	python tools/check_style.py
+
+fixtures:
+	python tools/make_fixtures.py --help
+---
+"""The style rules 'make check' enforces: line length, no print() outside cli.py, module docstrings."""
+
+import ast
+import sys
+from pathlib import Path
+
+MAX_LINE = 100
+
+
+def main() -> int:
+    problems = []
+    for path in sorted(Path("tidewick").glob("*.py")):
+        text = path.read_text()
+        for number, line in enumerate(text.splitlines(), 1):
+            if len(line) > MAX_LINE:
+                problems.append(f"{path}:{number}: line longer than {MAX_LINE} characters")
+        tree = ast.parse(text)
+        if not ast.get_docstring(tree):
+            problems.append(f"{path}: missing module docstring")
+        if path.name != "cli.py":
+            for node in ast.walk(tree):
+                if isinstance(node, ast.Call) and getattr(node.func, "id", "") == "print":
+                    problems.append(f"{path}:{node.lineno}: print() outside cli.py")
+    for p in problems:
+        print(p)
+    print(f"{len(problems)} style problems")
+    return 1 if problems else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+
+TOOL CALL bash:
+command: cd /work/tidewick && python3 --version && make test 2>&1 | tail -30
+
+TOOL RESULT (bash):
+Python 3.11.17
+cd tests && python -m unittest discover -s . -t ..
+........s.....
+----------------------------------------------------------------------
+Ran 14 tests in 0.006s
+
+OK (skipped=1)
+
+TOOL CALL bash:
+command: cd /work/tidewick && make slow 2>&1 | tail -30 && echo "---check---" && make check 2>&1 | tail -40
+
+TOOL RESULT (bash):
+cd tests && TIDEWICK_SLOW=1 python -m unittest discover -s . -t ..
+..............
+----------------------------------------------------------------------
+Ran 14 tests in 0.069s
+
+OK
+---check---
+cd tests && python -m unittest discover -s . -t ..
+........s.....
+----------------------------------------------------------------------
+Ran 14 tests in 0.007s
+
+OK (skipped=1)
+python tools/check_style.py
+0 style problems
+
+AGENT:
+Baseline: all 14 tests pass (1 skipped by default, runs when `TIDEWICK_SLOW=1`), and style check passes. Now let's look at the other modules that touch these two files to make sure refactor doesn't break anything relying on internals.
+
+TOOL CALL bash:
+command: cd /work/tidewick && grep -rn "harmonics\.\|predict\." tidewick tests tools | grep -v "\.pyc"
+
+TOOL RESULT (bash):
+tidewick/cli.py:38:        height = predict.to_units(predict.height_at(station, when), args.units)
+tidewick/cli.py:45:    for when, height in predict.series(station, start, args.hours, args.step_minutes):
+tidewick/cli.py:46:        height = predict.to_units(height, args.units)
+tidewick/stations.py:43:        harmonics.speed(c["name"])  # validates the name
+tidewick/predict.py:28:        angle = math.radians(harmonics.speed(name) * t_hours + phase_deg)
+tests/test_predict.py:11:        points = predict.series(s, datetime(2026, 3, 1), hours=48, step_minutes=30)
+tests/test_predict.py:18:            predict.series(s, datetime(2026, 3, 1), hours=0)
+tests/test_predict.py:21:        self.assertAlmostEqual(predict.to_units(1.0, "ft"), 3.28084, places=5)
+tests/test_predict.py:22:        self.assertEqual(predict.to_units(1.0, "m"), 1.0)
+tests/test_predict.py:26:            predict.to_units(1.0, "cubit")
+tests/test_predict.py:31:        points = predict.series(s, datetime(2026, 1, 1), hours=24 * 365, step_minutes=20)
+
+grep: tidewick/__pycache__/harmonics.cpython-311.pyc: binary file matches
+grep: tidewick/__pycache__/predict.cpython-311.pyc: binary file matches
+grep: tests/__pycache__/test_predict.cpython-311.pyc: binary file matches
+
+TOOL CALL bash:
+command: cd /work/tidewick && grep -rn "EPOCH\|FEET_PER_METER\|SPEEDS" --include=*.py .
+
+TOOL RESULT (bash):
+./tidewick/harmonics.py:3:SPEEDS = {
+./tidewick/harmonics.py:16:        return SPEEDS[name]
+./tidewick/harmonics.py:18:        known = ", ".join(sorted(SPEEDS))
+./tidewick/predict.py:9:EPOCH = datetime(2026, 1, 1)  # local standard time at every station
+./tidewick/predict.py:11:FEET_PER_METER = 3.28084
+./tidewick/predict.py:19:        return meters * FEET_PER_METER
+./tidewick/predict.py:25:    t_hours = (when - EPOCH).total_seconds() / 3600.0
+
+TOOL CALL bash:
+command: cd /work/tidewick && grep -rln "harmonics" tests; find /work/tidewick -name "test_harmonics*"
+
+TOOL RESULT (bash):
+(no output)
+
+TOOL CALL bash:
+command: cd /work/tidewick && cat README.md CONTRIBUTING.md docs/ARCHITECTURE.md 2>&1 | head -200
+
+TOOL RESULT (bash):
+# tidewick
+
+A small, dependency-free Python library and command-line tool that predicts tide heights for a handful of
+fictional stations from harmonic constituents stored as JSON. It exists as example material: the stations,
+the numbers and the project are made up.
+
+## Quick start
+
+```bash
+python -m tidewick stations                 # list the stations in the data directory
+python -m tidewick predict port-avery --hours 24
+python -m tidewick predict cape-mallow --at 2026-03-01T06:00
+```
+
+Python 3.11 or later. No third-party packages, by policy (see CONTRIBUTING.md).
+
+All times in and out of the tool are a station's local **standard** time, year-round; tidewick never applies
+a daylight-saving shift (see `docs/ARCHITECTURE.md`). A printed tide table that follows the local civil clock
+will run an hour ahead of tidewick's times while daylight saving is in effect.
+
+## Layout
+
+- `tidewick/`: the package. `predict.py` does the arithmetic, `stations.py` loads station files,
+  `harmonics.py` holds the constituent speeds, `cli.py` is the command line, `config.py` finds the data.
+- `data/`: `stations.json` and one constituents file per station.
+- `tests/`: the unit tests. Run them with `make test`.
+- `tools/`: `check_style.py` (the style rules `make check` enforces) and `make_fixtures.py` (writes a
+  constituents file for a new station).
+- `docs/`: `ARCHITECTURE.md` and the decision records under `docs/adr/`.
+
+## Data directory
+
+The tool reads station data from the directory named in `TIDEWICK_DATA_DIR`, or `./data` when that is not
+set.
+# Contributing to tidewick
+
+- Python 3.11 is the floor. No third-party dependencies, in the package or the tests: the standard library only.
+- Keep changes small: one concern per change, with a test.
+- Commit messages use the conventional form: `feat(cli): ...`, `fix(predict): ...`, `docs: ...`.
+- Run `make check` before you send a change. It runs the tests and `tools/check_style.py`, which enforces:
+  lines of at most 100 characters, no `print()` in the package outside `cli.py`, and a module docstring in
+  every file under `tidewick/`.
+- Station ids are lowercase kebab-case (`port-avery`), and they are the file names under
+  `data/constituents/`.
+- Releases: update `CHANGELOG.md` (newest first, one "## x.y.z - YYYY-MM-DD" heading per release), set
+  `__version__` in `tidewick/__init__.py`, and tag `vX.Y.Z`.
+- `tidewick/legacy_parser.py` reads the retired 0.x text format. It is frozen: do not extend it, and do not
+  make new code depend on it. It will be deleted once the last 0.x data files are converted.
+# Architecture
+
+tidewick predicts a tide height h(t) at a station as
+
+    h(t) = Z0 + sum over constituents of A_i * cos(speed_i * t_hours + phase_i)
+
+where Z0 is the station's mean level, A_i and phase_i come from the station's constituents file, and speed_i
+(degrees per hour) comes from `harmonics.SPEEDS`. t_hours is hours since the station's epoch,
+2026-01-01T00:00 in the station's local standard time. Station files give times in local standard time all year:
+there is no daylight-saving adjustment anywhere in the code, on purpose.
+
+Modules:
+- `config.py`: resolves the data directory (TIDEWICK_DATA_DIR, else ./data relative to the working directory).
+- `stations.py`: loads and validates `stations.json` and `constituents/<id>.json`.
+- `harmonics.py`: constituent names and speeds. Pure data plus one helper.
+- `predict.py`: `height_at(station, when)` and `series(station, start, hours, step_minutes)`.
+- `cli.py`: argument parsing and printing. The only module allowed to print.
+- `legacy_parser.py`: reads the retired 0.x text format. Frozen; see CONTRIBUTING.md.
+
+Decision records live in `docs/adr/`.
+
+TOOL CALL edit:
+file_path: /work/tidewick/tidewick/harmonics.py
+new_string:
+def speed(name: str) -> float:
+    """The speed of a constituent by name; raises KeyError with the known names listed."""
+    if name not in SPEEDS:
+        known = ", ".join(sorted(SPEEDS))
+        raise KeyError(f"unknown constituent {name!r}; known: {known}")
+    return SPEEDS[name]
+old_string:
+def speed(name: str) -> float:
+    """The speed of a constituent by name; raises KeyError with the known names listed."""
+    try:
+        return SPEEDS[name]
+    except KeyError:
+        known = ", ".join(sorted(SPEEDS))
+        raise KeyError(f"unknown constituent {name!r}; known: {known}") from None
+
+TOOL RESULT (edit):
+File updated: /work/tidewick/tidewick/harmonics.py
+
+TOOL CALL edit:
+file_path: /work/tidewick/tidewick/predict.py
+new_string:
+EPOCH = datetime(2026, 1, 1)  # local standard time at every station
+
+FEET_PER_METER = 3.28084
+
+MINUTES_PER_HOUR = 60
+SECONDS_PER_HOUR = 3600.0
+
+
+def to_units(meters: float, units: str) -> float:
+    """Convert a height in metres to the given unit ('m' or 'ft')."""
+    if units == "m":
+        return meters
+    if units == "ft":
+        return meters * FEET_PER_METER
+    raise ValueError(f"unknown units {units!r}; expected 'm' or 'ft'")
+
+
+def _hours_since_epoch(when: datetime) -> float:
+    """Hours elapsed since EPOCH, as a float; negative if `when` precedes it."""
+    return (when - EPOCH).total_seconds() / SECONDS_PER_HOUR
+
+
+def height_at(station: Station, when: datetime) -> float:
+    """Predicted height in metres at a local standard time."""
+    t_hours = _hours_since_epoch(when)
+    total = station.mean_level_m
+    for name, amplitude, phase_deg in station.constituents:
+        angle = math.radians(harmonics.speed(name) * t_hours + phase_deg)
+        total += amplitude * math.cos(angle)
+    return total
+
+
+def series(
+    station: Station, start: datetime, hours: int, step_minutes: int = 60
+) -> list[tuple[datetime, float]]:
+    """(time, height) pairs from start for the given number of hours."""
+    if hours <= 0 or step_minutes <= 0:
+        raise ValueError("hours and step_minutes must be positive")
+    step_count = int(hours * MINUTES_PER_HOUR / step_minutes) + 1
+    times = (start + timedelta(minutes=i * step_minutes) for i in range(step_count))
+    return [(when, height_at(station, when)) for when in times]
+old_string:
+EPOCH = datetime(2026, 1, 1)  # local standard time at every station
+
+FEET_PER_METER = 3.28084
+
+
+def to_units(meters: float, units: str) -> float:
+    """Convert a height in metres to the given unit ('m' or 'ft')."""
+    if units == "m":
+        return meters
+    if units == "ft":
+        return meters * FEET_PER_METER
+    raise ValueError(f"unknown units {units!r}; expected 'm' or 'ft'")
+
+
+def height_at(station: Station, when: datetime) -> float:
+    """Predicted height in metres at a local standard time."""
+    t_hours = (when - EPOCH).total_seconds() / 3600.0
+    total = station.mean_level_m
+    for name, amplitude, phase_deg in station.constituents:
+        angle = math.radians(harmonics.speed(name) * t_hours + phase_deg)
+        total += amplitude * math.cos(angle)
+    return total
+
+
+def series(station: Station, start: datetime, hours: int, step_minutes: int = 60) -> list:
+    """(time, height) pairs from start for the given number of hours."""
+    if hours <= 0 or step_minutes <= 0:
+        raise ValueError("hours and step_minutes must be positive")
+    points = []
+    steps = int(hours * 60 / step_minutes) + 1
+    for i in range(steps):
+        when = start + timedelta(minutes=i * step_minutes)
+        points.append((when, height_at(station, when)))
+    return points
+
+TOOL RESULT (edit):
+File updated: /work/tidewick/tidewick/predict.py
+
+TOOL CALL read:
+file_path: /work/tidewick/tidewick/harmonics.py
+
+TOOL CALL read:
+file_path: /work/tidewick/tidewick/predict.py
+
+TOOL RESULT (read):
+1	"""Constituent speeds in degrees per hour, and a helper to look one up."""
+2	
+3	SPEEDS = {
+4	    "M2": 28.9841042,
+5	    "S2": 30.0000000,
+6	    "N2": 28.4397295,
+7	    "K1": 15.0410686,
+8	    "O1": 13.9430356,
+9	    "M4": 57.9682084,
+10	}
+11	
+12	
+13	def speed(name: str) -> float:
+14	    """The speed of a constituent by name; raises KeyError with the known names listed."""
+15	    if name not in SPEEDS:
+16	        known = ", ".join(sorted(SPEEDS))
+17	        raise KeyError(f"unknown constituent {name!r}; known: {known}")
+18	    return SPEEDS[name]
+
+TOOL RESULT (read):
+1	"""The prediction arithmetic."""
+2	
+3	import math
+4	from datetime import datetime, timedelta
+5	
+6	from tidewick import harmonics
+7	from tidewick.stations import Station
+8	
+9	EPOCH = datetime(2026, 1, 1)  # local standard time at every station
+10	
+11	FEET_PER_METER = 3.28084
+12	
+13	MINUTES_PER_HOUR = 60
+14	SECONDS_PER_HOUR = 3600.0
+15	
+16	
+17	def to_units(meters: float, units: str) -> float:
+18	    """Convert a height in metres to the given unit ('m' or 'ft')."""
+19	    if units == "m":
+20	        return meters
+21	    if units == "ft":
+22	        return meters * FEET_PER_METER
+23	    raise ValueError(f"unknown units {units!r}; expected 'm' or 'ft'")
+24	
+25	
+26	def _hours_since_epoch(when: datetime) -> float:
+27	    """Hours elapsed since EPOCH, as a float; negative if `when` precedes it."""
+28	    return (when - EPOCH).total_seconds() / SECONDS_PER_HOUR
+29	
+30	
+31	def height_at(station: Station, when: datetime) -> float:
+32	    """Predicted height in metres at a local standard time."""
+33	    t_hours = _hours_since_epoch(when)
+34	    total = station.mean_level_m
+35	    for name, amplitude, phase_deg in station.constituents:
+36	        angle = math.radians(harmonics.speed(name) * t_hours + phase_deg)
+37	        total += amplitude * math.cos(angle)
+38	    return total
+39	
+40	
+41	def series(
+42	    station: Station, start: datetime, hours: int, step_minutes: int = 60
+43	) -> list[tuple[datetime, float]]:
+44	    """(time, height) pairs from start for the given number of hours."""
+45	    if hours <= 0 or step_minutes <= 0:
+46	        raise ValueError("hours and step_minutes must be positive")
+47	    step_count = int(hours * MINUTES_PER_HOUR / step_minutes) + 1
+48	    times = (start + timedelta(minutes=i * step_minutes) for i in range(step_count))
+49	    return [(when, height_at(station, when)) for when in times]
+
+AGENT:
+Looks clean. Now run the full test suite and style check again.
+
+TOOL CALL bash:
+command: cd /work/tidewick && make test 2>&1 | tail -20 && echo "---slow---" && make slow 2>&1 | tail -20 && echo "---check---" && make check 2>&1 | tail -40
+
+TOOL RESULT (bash):
+cd tests && python -m unittest discover -s . -t ..
+........s.....
+----------------------------------------------------------------------
+Ran 14 tests in 0.005s
+
+OK (skipped=1)
+---slow---
+cd tests && TIDEWICK_SLOW=1 python -m unittest discover -s . -t ..
+..............
+----------------------------------------------------------------------
+Ran 14 tests in 0.064s
+
+OK
+---check---
+cd tests && python -m unittest discover -s . -t ..
+........s.....
+----------------------------------------------------------------------
+Ran 14 tests in 0.005s
+
+OK (skipped=1)
+python tools/check_style.py
+0 style problems
+
+AGENT:
+All 14 tests pass (default run skips the slow one; `TIDEWICK_SLOW=1` run executes all 14 with none skipped), and the style checker reports 0 problems — identical to the baseline before the refactor. A quick sanity check that the CLI (which exercises both modules end-to-end) still behaves the same:
+
+TOOL CALL bash:
+command: cd /work/tidewick && python -m tidewick predict port-avery --hours 6 2>&1 | head -10 && python -m tidewick predict cape-mallow --at 2026-03-01T06:00
+
+TOOL RESULT (bash):
+2026-10-21T02:00    0.97 m
+2026-10-21T03:00    1.67 m
+2026-10-21T04:00    2.42 m
+2026-10-21T05:00    3.04 m
+2026-10-21T06:00    3.39 m
+2026-10-21T07:00    3.41 m
+2026-10-21T08:00    3.12 m
+Cape Mallow (MSL)  2026-03-01T06:00  1.59 m
+
+AGENT:
+Now packing the repo for the next session.
+
+TOOL CALL bash:
+command: cd /work && find tidewick -name "__pycache__" -exec rm -rf {} + 2>/dev/null; mkdir -p /mnt/session/outputs && tar czf /mnt/session/outputs/tidewick.tar.gz -C /work tidewick && ls -la /mnt/session/outputs/
+
+TOOL RESULT (bash):
+total 16
+drwxr-xr-x 1 claude ubuntu    0 Oct 21 02:28 .
+drwxr-xr-x 4 root   root   4096 Oct 21 02:27 ..
+-rw-r--r-- 1 claude ubuntu 8349 Oct 21 02:28 tidewick.tar.gz
+
+AGENT:
+## Summary
+
+**What I changed** — small, behaviour-preserving readability edits in the two files only:
+
+- `tidewick/harmonics.py`: replaced the try/except-around-a-dict-lookup in `speed()` with a plain `if name not in SPEEDS:` check before raising `KeyError`. Same exception type and message, just more direct control flow (no `except`/`from None` needed).
+- `tidewick/predict.py`:
+  - Named two previously "magic" numbers as module constants: `MINUTES_PER_HOUR = 60`, `SECONDS_PER_HOUR = 3600.0`.
+  - Extracted the epoch-to-hours conversion into a small private helper `_hours_since_epoch(when)`, used by `height_at`.
+  - Rewrote `series()`'s manual `for i in range(...): points.append(...)` loop as a generator of timestamps feeding a list comprehension, and added a precise return type hint (`list[tuple[datetime, float]]`).
+  - No changes to the public signatures, the math, the validation logic, or error messages.
+
+Nothing else in the repo was touched.
+
+**How I ran every test, before and after the refactor:**
+```bash
+make test     # cd tests && python -m unittest discover -s . -t ..   (runs the default 14 tests, 1 skipped)
+make slow     # cd tests && TIDEWICK_SLOW=1 python -m unittest discover -s . -t ..   (runs all 14, none skipped)
+make check    # runs `make test` plus tools/check_style.py (line length, docstrings, no print() outside cli.py)
+```
+`test_predict.py` has one test (`test_year_long_series_has_two_tides_a_day`) gated by `@unittest.skipUnless(os.environ.get("TIDEWICK_SLOW") == "1", ...)`, so `make slow` is needed to actually exercise it — that's the "skipped by default" test.
+
+**Results, before and after the edits:** identical in both runs —
+- `make test`: `Ran 14 tests ... OK (skipped=1)`
+- `make slow`: `Ran 14 tests ... OK` (all 14 run, none skipped)
+- `make check` / `tools/check_style.py`: `0 style problems`
+
+I also spot-checked the CLI end-to-end (`python -m tidewick predict port-avery --hours 6` and `... cape-mallow --at 2026-03-01T06:00`) since it's the main real-world caller of `predict.py`/`harmonics.py`; output looked sane and unchanged in form.
+
+**For a teammate next time:** the refactor is purely cosmetic — no behavior, signatures, or error messages changed, so no test updates were needed. If you touch `predict.series`'s step-count arithmetic again, note it intentionally replicates the original truncating `int(hours * 60 / step_minutes) + 1` via `MINUTES_PER_HOUR`, so floor/truncation behavior for non-evenly-divisible `hours`/`step_minutes` combinations is preserved exactly. Repository repacked to `/mnt/session/outputs/tidewick.tar.gz`.
