@@ -35,6 +35,11 @@ record and audit backbone.
   each agent's limits, turn Managed Agents, Messages API or Agent SDK
   logs into transcripts, have Claude review each session in a dynamic workflow,
   and get a ranked report with quoted evidence.
+- **[CMA_dreaming_with_a_dynamic_workflow.ipynb](CMA_dreaming_with_a_dynamic_workflow.ipynb)**
+  builds a small working dream. You'll export an agent's finished
+  sessions as transcripts, have a dynamic workflow distill them into a
+  wiki-style memory store that future sessions mount read-only, and
+  run it every night from cron.
 
 ## Guided tutorials
 

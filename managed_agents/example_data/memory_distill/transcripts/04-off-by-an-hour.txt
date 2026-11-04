@@ -1,0 +1,1108 @@
+SESSION sesn_example04: Cape Mallow looks an hour off (agent coding-agent; created 2026-10-21T02:20:55.224360Z)
+
+NOTE ABOUT THIS FILE: A line indented by one space that starts like a label is part of the text above it, not a label.
+
+NOTE ABOUT THIS FILE: A generated example: a coding agent working on a fictional repository.
+
+=== primary thread sthr_example04: coding-agent ===
+
+USER:
+A user says the predicted high tide for cape-mallow on 2026-03-08 is about an hour earlier than their printed tide table shows. Investigate whether the code or the data has a time-handling bug and tell me what you conclude and what, if anything, should change. Don't change config.py or the Makefile.
+
+TOOL CALL bash:
+command: mkdir -p /work && tar xzf /mnt/session/uploads/repo/tidewick.tar.gz -C /work && find /work/tidewick -type f | grep -v .git | sort
+
+TOOL RESULT (bash):
+/work/tidewick/CHANGELOG.md
+/work/tidewick/CONTRIBUTING.md
+/work/tidewick/Makefile
+/work/tidewick/README.md
+/work/tidewick/data/constituents/cape-mallow.json
+/work/tidewick/data/constituents/port-avery.json
+/work/tidewick/data/stations.json
+/work/tidewick/docs/ARCHITECTURE.md
+/work/tidewick/docs/adr/0001-stdlib-only.md
+/work/tidewick/docs/adr/0002-json-files-not-sqlite.md
+/work/tidewick/tests/__init__.py
+/work/tidewick/tests/test_cli.py
+/work/tidewick/tests/test_predict.py
+/work/tidewick/tests/test_stations.py
+/work/tidewick/tidewick/__init__.py
+/work/tidewick/tidewick/__main__.py
+/work/tidewick/tidewick/cli.py
+/work/tidewick/tidewick/config.py
+/work/tidewick/tidewick/harmonics.py
+/work/tidewick/tidewick/legacy_parser.py
+/work/tidewick/tidewick/predict.py
+/work/tidewick/tidewick/stations.py
+/work/tidewick/tools/check_style.py
+/work/tidewick/tools/make_fixtures.py
+
+TOOL CALL bash:
+command: cd /work/tidewick && for f in tidewick/predict.py tidewick/harmonics.py tidewick/stations.py tidewick/config.py; do echo "=== $f ==="; cat -n "$f"; done
+
+TOOL RESULT (bash):
+ === tidewick/predict.py ===
+     1	"""The prediction arithmetic."""
+     2	
+     3	import math
+     4	from datetime import datetime, timedelta
+     5	
+     6	from tidewick import harmonics
+     7	from tidewick.stations import Station
+     8	
+     9	EPOCH = datetime(2026, 1, 1)  # local standard time at every station
+    10	
+    11	FEET_PER_METER = 3.28084
+    12	
+    13	
+    14	def to_units(meters: float, units: str) -> float:
+    15	    """Convert a height in metres to the given unit ('m' or 'ft')."""
+    16	    if units == "m":
+    17	        return meters
+    18	    if units == "ft":
+    19	        return meters * FEET_PER_METER
+    20	    raise ValueError(f"unknown units {units!r}; expected 'm' or 'ft'")
+    21	
+    22	
+    23	def height_at(station: Station, when: datetime) -> float:
+    24	    """Predicted height in metres at a local standard time."""
+    25	    t_hours = (when - EPOCH).total_seconds() / 3600.0
+    26	    total = station.mean_level_m
+    27	    for name, amplitude, phase_deg in station.constituents:
+    28	        angle = math.radians(harmonics.speed(name) * t_hours + phase_deg)
+    29	        total += amplitude * math.cos(angle)
+    30	    return total
+    31	
+    32	
+    33	def series(station: Station, start: datetime, hours: int, step_minutes: int = 60) -> list:
+    34	    """(time, height) pairs from start for the given number of hours."""
+    35	    if hours <= 0 or step_minutes <= 0:
+    36	        raise ValueError("hours and step_minutes must be positive")
+    37	    points = []
+    38	    steps = int(hours * 60 / step_minutes) + 1
+    39	    for i in range(steps):
+    40	        when = start + timedelta(minutes=i * step_minutes)
+    41	        points.append((when, height_at(station, when)))
+    42	    return points
+ === tidewick/harmonics.py ===
+     1	"""Constituent speeds in degrees per hour, and a helper to look one up."""
+     2	
+     3	SPEEDS = {
+     4	    "M2": 28.9841042,
+     5	    "S2": 30.0000000,
+     6	    "N2": 28.4397295,
+     7	    "K1": 15.0410686,
+     8	    "O1": 13.9430356,
+     9	    "M4": 57.9682084,
+    10	}
+    11	
+    12	
+    13	def speed(name: str) -> float:
+    14	    """The speed of a constituent by name; raises KeyError with the known names listed."""
+    15	    try:
+    16	        return SPEEDS[name]
+    17	    except KeyError:
+    18	        known = ", ".join(sorted(SPEEDS))
+    19	        raise KeyError(f"unknown constituent {name!r}; known: {known}") from None
+ === tidewick/stations.py ===
+     1	"""Loading and validating station data files."""
+     2	
+     3	import json
+     4	import re
+     5	from dataclasses import dataclass
+     6	
+     7	from tidewick import config, harmonics
+     8	
+     9	STATION_ID = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
+    10	
+    11	
+    12	@dataclass(frozen=True)
+    13	class Station:
+    14	    id: str
+    15	    name: str
+    16	    mean_level_m: float
+    17	    utc_offset_hours: float
+    18	    constituents: tuple  # of (name, amplitude_m, phase_deg)
+    19	
+    20	
+    21	def list_ids() -> list:
+    22	    """The station ids listed in stations.json, in file order."""
+    23	    index = json.loads((config.data_dir() / "stations.json").read_text())
+    24	    return [entry["id"] for entry in index["stations"]]
+    25	
+    26	
+    27	def load(station_id: str) -> Station:
+    28	    """Load one station by id. Raises ValueError when the id is malformed or the files disagree."""
+    29	    if not STATION_ID.match(station_id):
+    30	        raise ValueError(f"station id {station_id!r} is not lowercase kebab-case")
+    31	    index = json.loads((config.data_dir() / "stations.json").read_text())
+    32	    entry = next((e for e in index["stations"] if e["id"] == station_id), None)
+    33	    if entry is None:
+    34	        raise ValueError(f"no station {station_id!r} in stations.json")
+    35	    path = config.data_dir() / "constituents" / f"{station_id}.json"
+    36	    doc = json.loads(path.read_text())
+    37	    if doc.get("station") != station_id:
+    38	        found = doc.get("station")
+    39	        raise ValueError(f"{path.name} says station {found!r}, expected {station_id!r}")
+    40	    constituents = []
+    41	    for c in doc["constituents"]:
+    42	        harmonics.speed(c["name"])  # validates the name
+    43	        constituents.append((c["name"], float(c["amplitude_m"]), float(c["phase_deg"])))
+    44	    return Station(
+    45	        id=station_id,
+    46	        name=entry["name"],
+    47	        mean_level_m=float(entry["mean_level_m"]),
+    48	        utc_offset_hours=float(entry["utc_offset_hours"]),
+    49	        constituents=tuple(constituents),
+    50	    )
+ === tidewick/config.py ===
+     1	"""Where the station data lives."""
+     2	
+     3	import os
+     4	from pathlib import Path
+     5	
+     6	
+     7	def data_dir() -> Path:
+     8	    """TIDEWICK_DATA_DIR if set, else ./data under the current working directory."""
+     9	    configured = os.environ.get("TIDEWICK_DATA_DIR")
+    10	    return Path(configured) if configured else Path.cwd() / "data"
+
+TOOL CALL bash:
+command: cd /work/tidewick && cat -n tidewick/cli.py
+
+TOOL RESULT (bash):
+     1	"""Command line: python -m tidewick {stations,predict}."""
+     2	
+     3	import argparse
+     4	from datetime import datetime
+     5	
+     6	from tidewick import __version__, predict, stations
+     7	
+     8	
+     9	def parse_args(argv=None):
+    10	    parser = argparse.ArgumentParser(prog="tidewick", description="Tide predictions.")
+    11	    parser.add_argument("--version", action="version", version=__version__)
+    12	    sub = parser.add_subparsers(dest="command", required=True)
+    13	    sub.add_parser("stations", help="list station ids")
+    14	    p = sub.add_parser("predict", help="predict heights for a station")
+    15	    p.add_argument("station")
+    16	    p.add_argument("--hours", type=int, default=24)
+    17	    p.add_argument("--step-minutes", type=int, default=60)
+    18	    p.add_argument("--at", help="a single local time, YYYY-MM-DDTHH:MM")
+    19	    p.add_argument("--units", choices=["m", "ft"], default="m", help="height units (default: m)")
+    20	    return parser.parse_args(argv)
+    21	
+    22	
+    23	def main(argv=None) -> int:
+    24	    args = parse_args(argv)
+    25	    if args.command == "stations":
+    26	        for station_id in stations.list_ids():
+    27	            print(station_id)
+    28	        return 0
+    29	    station = stations.load(args.station)
+    30	    if args.at:
+    31	        when = datetime.fromisoformat(args.at)
+    32	        height = predict.to_units(predict.height_at(station, when), args.units)
+    33	        print(f"{station.name}  {when.isoformat(timespec='minutes')}  {height:.2f} {args.units}")
+    34	        return 0
+    35	    start = datetime.now().replace(minute=0, second=0, microsecond=0)
+    36	    for when, height in predict.series(station, start, args.hours, args.step_minutes):
+    37	        height = predict.to_units(height, args.units)
+    38	        print(f"{when.isoformat(timespec='minutes')}  {height:6.2f} {args.units}")
+    39	    return 0
+
+TOOL CALL bash:
+command: cd /work/tidewick && cat data/stations.json && echo --- && cat data/constituents/cape-mallow.json
+
+TOOL RESULT (bash):
+{
+  "stations": [
+    {
+      "id": "port-avery",
+      "name": "Port Avery",
+      "mean_level_m": 2.1,
+      "utc_offset_hours": -8
+    },
+    {
+      "id": "cape-mallow",
+      "name": "Cape Mallow",
+      "mean_level_m": 1.45,
+      "utc_offset_hours": -8
+    }
+  ]
+}
+---
+{
+  "station": "cape-mallow",
+  "constituents": [
+    {
+      "name": "M2",
+      "amplitude_m": 0.92,
+      "phase_deg": 87.1
+    },
+    {
+      "name": "S2",
+      "amplitude_m": 0.3,
+      "phase_deg": 118.9
+    },
+    {
+      "name": "N2",
+      "amplitude_m": 0.19,
+      "phase_deg": 70.2
+    },
+    {
+      "name": "K1",
+      "amplitude_m": 0.51,
+      "phase_deg": 221.5
+    },
+    {
+      "name": "O1",
+      "amplitude_m": 0.33,
+      "phase_deg": 205
+    }
+  ]
+}
+
+TOOL CALL bash:
+command:
+python3 -c "
+import datetime
+d = datetime.date(2026,3,8)
+print(d, d.weekday())  # 6 = Sunday
+"
+
+TOOL RESULT (bash):
+2026-03-08 6
+
+TOOL CALL bash:
+command:
+python3 -c "
+import datetime
+sundays = [d for d in range(1,32) if datetime.date(2026,3,d).weekday()==6]
+print(sundays)
+"
+
+TOOL RESULT (bash):
+[1, 8, 15, 22, 29]
+
+TOOL CALL bash:
+command: cd /work/tidewick && grep -rni "dst\|daylight\|timezone\|utc_offset\|standard time" --include=*.py --include=*.md .
+
+TOOL RESULT (bash):
+./tools/make_fixtures.py:1:"""Write a constituents file for a new station: python tools/make_fixtures.py <station-id> <mean_level_m> <utc_offset_hours> "<Name>"."""
+./tools/make_fixtures.py:29:    index["stations"].append({"id": station_id, "name": name, "mean_level_m": mean_level, "utc_offset_hours": offset})
+./docs/ARCHITECTURE.md:9:2026-01-01T00:00 in the station's local standard time. Station files give times in local standard time all year:
+./docs/ARCHITECTURE.md:10:there is no daylight-saving adjustment anywhere in the code, on purpose.
+./tidewick/stations.py:17:    utc_offset_hours: float
+./tidewick/stations.py:48:        utc_offset_hours=float(entry["utc_offset_hours"]),
+./tidewick/predict.py:9:EPOCH = datetime(2026, 1, 1)  # local standard time at every station
+./tidewick/predict.py:24:    """Predicted height in metres at a local standard time."""
+
+TOOL CALL bash:
+command: cd /work/tidewick && cat docs/ARCHITECTURE.md
+
+TOOL RESULT (bash):
+# Architecture
+
+tidewick predicts a tide height h(t) at a station as
+
+    h(t) = Z0 + sum over constituents of A_i * cos(speed_i * t_hours + phase_i)
+
+where Z0 is the station's mean level, A_i and phase_i come from the station's constituents file, and speed_i
+(degrees per hour) comes from `harmonics.SPEEDS`. t_hours is hours since the station's epoch,
+2026-01-01T00:00 in the station's local standard time. Station files give times in local standard time all year:
+there is no daylight-saving adjustment anywhere in the code, on purpose.
+
+Modules:
+- `config.py`: resolves the data directory (TIDEWICK_DATA_DIR, else ./data relative to the working directory).
+- `stations.py`: loads and validates `stations.json` and `constituents/<id>.json`.
+- `harmonics.py`: constituent names and speeds. Pure data plus one helper.
+- `predict.py`: `height_at(station, when)` and `series(station, start, hours, step_minutes)`.
+- `cli.py`: argument parsing and printing. The only module allowed to print.
+- `legacy_parser.py`: reads the retired 0.x text format. Frozen; see CONTRIBUTING.md.
+
+Decision records live in `docs/adr/`.
+
+AGENT:
+This confirms it's deliberate by design. Let me check the ADRs and README, plus find where high tide / peak finding happens, and check if there's anything in CLI or docs telling the user this is standard time, not the local clock.
+
+TOOL CALL bash:
+command: cd /work/tidewick && cat README.md && echo ---ADR1--- && cat docs/adr/0001-stdlib-only.md && echo ---ADR2--- && cat docs/adr/0002-json-files-not-sqlite.md && echo ---CHANGELOG--- && cat CHANGELOG.md
+
+TOOL RESULT (bash):
+# tidewick
+
+A small, dependency-free Python library and command-line tool that predicts tide heights for a handful of
+fictional stations from harmonic constituents stored as JSON. It exists as example material: the stations,
+the numbers and the project are made up.
+
+## Quick start
+
+```bash
+python -m tidewick stations                 # list the stations in the data directory
+python -m tidewick predict port-avery --hours 24
+python -m tidewick predict cape-mallow --at 2026-03-01T06:00
+```
+
+Python 3.11 or later. No third-party packages, by policy (see CONTRIBUTING.md).
+
+## Layout
+
+- `tidewick/`: the package. `predict.py` does the arithmetic, `stations.py` loads station files,
+  `harmonics.py` holds the constituent speeds, `cli.py` is the command line, `config.py` finds the data.
+- `data/`: `stations.json` and one constituents file per station.
+- `tests/`: the unit tests. Run them with `make test`.
+- `tools/`: `check_style.py` (the style rules `make check` enforces) and `make_fixtures.py` (writes a
+  constituents file for a new station).
+- `docs/`: `ARCHITECTURE.md` and the decision records under `docs/adr/`.
+
+## Data directory
+
+The tool reads station data from the directory named in `TIDEWICK_DATA_DIR`, or `./data` when that is not
+set.
+---ADR1---
+# 1. Standard library only
+
+Status: accepted (2025-11)
+
+tidewick ships with no third-party dependencies and its tests use `unittest`. The tool is meant to run from
+a fresh checkout on any machine with Python 3.11, including ones with no package index access. The cost is a
+little more code in `cli.py` and `stations.py` than argparse-plus-a-schema-library would need.
+---ADR2---
+# 2. Station data as JSON files, not SQLite
+
+Status: accepted (2025-12)
+
+Each station is one small JSON file under `data/constituents/`, listed in `data/stations.json`. We
+considered one SQLite file. JSON won because the files are reviewed in pull requests line by line, a station
+is added by adding a file, and nothing in the tool needs queries across stations. If cross-station queries
+ever matter, revisit this.
+---CHANGELOG---
+# Changelog
+
+## 0.3.1 - 2026-02-11
+- fix(stations): reject a constituents file whose station id does not match its file name.
+
+## 0.3.0 - 2026-01-20
+- feat(cli): `predict --at` for a single time.
+- docs: ARCHITECTURE.md and the first two decision records.
+
+## 0.2.0 - 2025-12-02
+- feat: JSON station data replaces the 0.x text format; `legacy_parser.py` kept for conversion only.
+
+TOOL CALL bash:
+command: cd /work/tidewick && cat -n tests/test_predict.py
+
+TOOL RESULT (bash):
+     1	import os
+     2	import unittest
+     3	from datetime import datetime
+     4	
+     5	from tidewick import predict, stations
+     6	
+     7	
+     8	class PredictTest(unittest.TestCase):
+     9	    def test_height_is_near_mean_level_on_average(self):
+    10	        s = stations.load("port-avery")
+    11	        points = predict.series(s, datetime(2026, 3, 1), hours=48, step_minutes=30)
+    12	        mean = sum(h for _, h in points) / len(points)
+    13	        self.assertAlmostEqual(mean, s.mean_level_m, delta=0.15)
+    14	
+    15	    def test_series_rejects_zero_hours(self):
+    16	        s = stations.load("cape-mallow")
+    17	        with self.assertRaises(ValueError):
+    18	            predict.series(s, datetime(2026, 3, 1), hours=0)
+    19	
+    20	    def test_to_units_converts_meters_to_feet(self):
+    21	        self.assertAlmostEqual(predict.to_units(1.0, "ft"), 3.28084, places=5)
+    22	        self.assertEqual(predict.to_units(1.0, "m"), 1.0)
+    23	
+    24	    def test_to_units_rejects_unknown_unit(self):
+    25	        with self.assertRaises(ValueError):
+    26	            predict.to_units(1.0, "cubit")
+    27	
+    28	    @unittest.skipUnless(os.environ.get("TIDEWICK_SLOW") == "1", "set TIDEWICK_SLOW=1 to run")
+    29	    def test_year_long_series_has_two_tides_a_day(self):
+    30	        s = stations.load("port-avery")
+    31	        points = predict.series(s, datetime(2026, 1, 1), hours=24 * 365, step_minutes=20)
+    32	        highs = sum(
+    33	            1 for i in range(1, len(points) - 1) if points[i - 1][1] < points[i][1] > points[i + 1][1]
+    34	        )
+    35	        self.assertTrue(680 < highs < 720, highs)
+    36	
+    37	
+    38	if __name__ == "__main__":
+    39	    unittest.main()
+
+TOOL CALL bash:
+command:
+cd /work/tidewick && TIDEWICK_DATA_DIR=$(pwd)/data python3 -c "
+from datetime import datetime
+from tidewick import predict, stations
+s = stations.load('cape-mallow')
+points = predict.series(s, datetime(2026,3,8), hours=24, step_minutes=1)
+highs = [points[i] for i in range(1,len(points)-1) if points[i-1][1] < points[i][1] > points[i+1][1]]
+for t,h in highs:
+    print(t, round(h,3))
+"
+
+TOOL RESULT (bash):
+2026-03-08 03:41:00 2.743
+2026-03-08 16:03:00 1.174
+
+TOOL CALL bash:
+command: cd /work/tidewick && cat -n tidewick/legacy_parser.py
+
+TOOL RESULT (bash):
+     1	"""Reader for the retired 0.x text format. Frozen: see CONTRIBUTING.md before touching this file."""
+     2	
+     3	
+     4	def parse_legacy(text: str) -> dict:
+     5	    """Parse 'NAME AMPLITUDE PHASE' lines into the JSON document shape stations.py expects."""
+     6	    constituents = []
+     7	    station = None
+     8	    for raw in text.splitlines():
+     9	        line = raw.strip()
+    10	        if not line or line.startswith("#"):
+    11	            continue
+    12	        if line.lower().startswith("station "):
+    13	            station = line.split(None, 1)[1].strip()
+    14	            continue
+    15	        name, amplitude, phase = line.split()
+    16	        constituents.append(
+    17	            {"name": name, "amplitude_m": float(amplitude), "phase_deg": float(phase)}
+    18	        )
+    19	    return {"station": station, "constituents": constituents}
+
+TOOL CALL bash:
+command: cd /work/tidewick && cat -n tests/test_cli.py tests/test_stations.py | head -150
+
+TOOL RESULT (bash):
+     1	import io
+     2	import unittest
+     3	from contextlib import redirect_stdout
+     4	
+     5	from tidewick import cli
+     6	
+     7	
+     8	class CliTest(unittest.TestCase):
+     9	    def test_stations_command_lists_ids(self):
+    10	        out = io.StringIO()
+    11	        with redirect_stdout(out):
+    12	            self.assertEqual(cli.main(["stations"]), 0)
+    13	        self.assertIn("port-avery", out.getvalue())
+    14	
+    15	    def test_predict_at(self):
+    16	        out = io.StringIO()
+    17	        with redirect_stdout(out):
+    18	            self.assertEqual(cli.main(["predict", "cape-mallow", "--at", "2026-03-01T06:00"]), 0)
+    19	        self.assertIn("Cape Mallow", out.getvalue())
+    20	
+    21	    def test_predict_at_units_feet(self):
+    22	        meters_out = io.StringIO()
+    23	        with redirect_stdout(meters_out):
+    24	            cli.main(["predict", "cape-mallow", "--at", "2026-03-01T06:00", "--units", "m"])
+    25	        feet_out = io.StringIO()
+    26	        with redirect_stdout(feet_out):
+    27	            self.assertEqual(
+    28	                cli.main(["predict", "cape-mallow", "--at", "2026-03-01T06:00", "--units", "ft"]), 0
+    29	            )
+    30	        self.assertIn(" ft", feet_out.getvalue())
+    31	        meters_height = float(meters_out.getvalue().split()[-2])
+    32	        feet_height = float(feet_out.getvalue().split()[-2])
+    33	        self.assertAlmostEqual(feet_height, meters_height * 3.28084, places=1)
+    34	
+    35	
+    36	if __name__ == "__main__":
+    37	    unittest.main()
+    38	import unittest
+    39	
+    40	from tidewick import stations
+    41	
+    42	
+    43	class StationsTest(unittest.TestCase):
+    44	    def test_list_ids(self):
+    45	        self.assertEqual(stations.list_ids()[:2], ["port-avery", "cape-mallow"])
+    46	
+    47	    def test_load(self):
+    48	        s = stations.load("port-avery")
+    49	        self.assertEqual(s.name, "Port Avery")
+    50	        self.assertGreater(len(s.constituents), 3)
+    51	
+    52	    def test_bad_id(self):
+    53	        with self.assertRaises(ValueError):
+    54	            stations.load("Port Avery")
+    55	
+    56	
+    57	if __name__ == "__main__":
+    58	    unittest.main()
+
+AGENT:
+Now let's run the test suite and check style, to confirm nothing broken, and check the Makefile/config for reference only (not to modify).
+
+TOOL CALL bash:
+command: cd /work/tidewick && cat Makefile && echo --- && python3 -m unittest discover -s tests -v 2>&1 | tail -30
+
+TOOL RESULT (bash):
+.PHONY: test check fixtures slow
+
+test:
+	cd tests && python -m unittest discover -s . -t ..
+
+slow:
+	cd tests && TIDEWICK_SLOW=1 python -m unittest discover -s . -t ..
+
+check: test
+	python tools/check_style.py
+
+fixtures:
+	python tools/make_fixtures.py --help
+---
+test_predict_at (test_cli.CliTest.test_predict_at) ... ok
+test_predict_at_units_feet (test_cli.CliTest.test_predict_at_units_feet) ... ok
+test_stations_command_lists_ids (test_cli.CliTest.test_stations_command_lists_ids) ... ok
+test_height_is_near_mean_level_on_average (test_predict.PredictTest.test_height_is_near_mean_level_on_average) ... ok
+test_series_rejects_zero_hours (test_predict.PredictTest.test_series_rejects_zero_hours) ... ok
+test_to_units_converts_meters_to_feet (test_predict.PredictTest.test_to_units_converts_meters_to_feet) ... ok
+test_to_units_rejects_unknown_unit (test_predict.PredictTest.test_to_units_rejects_unknown_unit) ... ok
+test_year_long_series_has_two_tides_a_day (test_predict.PredictTest.test_year_long_series_has_two_tides_a_day) ... skipped 'set TIDEWICK_SLOW=1 to run'
+test_bad_id (test_stations.StationsTest.test_bad_id) ... ok
+test_list_ids (test_stations.StationsTest.test_list_ids) ... ok
+test_load (test_stations.StationsTest.test_load) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.009s
+
+OK (skipped=1)
+
+AGENT:
+All tests pass. Now let's double check `utc_offset_hours` is dead/unused in `predict.py` — confirming it's not part of any conversion logic, which supports that the system never does timezone math.
+
+TOOL CALL bash:
+command: cd /work/tidewick && grep -rn "utc_offset_hours" tidewick/ tests/ tools/
+
+TOOL RESULT (bash):
+tidewick/stations.py:17:    utc_offset_hours: float
+tidewick/stations.py:48:        utc_offset_hours=float(entry["utc_offset_hours"]),
+tools/make_fixtures.py:1:"""Write a constituents file for a new station: python tools/make_fixtures.py <station-id> <mean_level_m> <utc_offset_hours> "<Name>"."""
+tools/make_fixtures.py:29:    index["stations"].append({"id": station_id, "name": name, "mean_level_m": mean_level, "utc_offset_hours": offset})
+
+grep: tidewick/__pycache__/stations.cpython-311.pyc: binary file matches
+
+TOOL CALL bash:
+command:
+cd /work/tidewick && python3 -c "
+from datetime import datetime, timedelta, timezone
+from zoneinfo import ZoneInfo
+
+# cape-mallow: utc_offset_hours = -8 (standard, e.g. Pacific)
+offset = -8
+tz = ZoneInfo('America/Los_Angeles')
+
+# tidewick says local-standard-time high tide at 2026-03-08 03:41
+local_standard = datetime(2026,3,8,3,41)
+utc_instant = local_standard - timedelta(hours=offset)  # local_standard = UTC + offset  => UTC = local_standard - offset
+utc_instant = utc_instant.replace(tzinfo=timezone.utc)
+civil = utc_instant.astimezone(tz)
+print('UTC instant:', utc_instant)
+print('Civil (DST-aware) local time:', civil, civil.tzname())
+"
+
+TOOL RESULT (bash):
+UTC instant: 2026-03-08 11:41:00+00:00
+Civil (DST-aware) local time: 2026-03-08 04:41:00-07:00 PDT
+
+TOOL CALL bash:
+command: cd /work/tidewick && cat CONTRIBUTING.md
+
+TOOL RESULT (bash):
+# Contributing to tidewick
+
+- Python 3.11 is the floor. No third-party dependencies, in the package or the tests: the standard library only.
+- Keep changes small: one concern per change, with a test.
+- Commit messages use the conventional form: `feat(cli): ...`, `fix(predict): ...`, `docs: ...`.
+- Run `make check` before you send a change. It runs the tests and `tools/check_style.py`, which enforces:
+  lines of at most 100 characters, no `print()` in the package outside `cli.py`, and a module docstring in
+  every file under `tidewick/`.
+- Station ids are lowercase kebab-case (`port-avery`), and they are the file names under
+  `data/constituents/`.
+- Releases: update `CHANGELOG.md` (newest first, one "## x.y.z - YYYY-MM-DD" heading per release), set
+  `__version__` in `tidewick/__init__.py`, and tag `vX.Y.Z`.
+- `tidewick/legacy_parser.py` reads the retired 0.x text format. It is frozen: do not extend it, and do not
+  make new code depend on it. It will be deleted once the last 0.x data files are converted.
+
+TOOL CALL bash:
+command: cd /work/tidewick && cat -n tools/check_style.py
+
+TOOL RESULT (bash):
+     1	"""The style rules 'make check' enforces: line length, no print() outside cli.py, module docstrings."""
+     2	
+     3	import ast
+     4	import sys
+     5	from pathlib import Path
+     6	
+     7	MAX_LINE = 100
+     8	
+     9	
+    10	def main() -> int:
+    11	    problems = []
+    12	    for path in sorted(Path("tidewick").glob("*.py")):
+    13	        text = path.read_text()
+    14	        for number, line in enumerate(text.splitlines(), 1):
+    15	            if len(line) > MAX_LINE:
+    16	                problems.append(f"{path}:{number}: line longer than {MAX_LINE} characters")
+    17	        tree = ast.parse(text)
+    18	        if not ast.get_docstring(tree):
+    19	            problems.append(f"{path}: missing module docstring")
+    20	        if path.name != "cli.py":
+    21	            for node in ast.walk(tree):
+    22	                if isinstance(node, ast.Call) and getattr(node.func, "id", "") == "print":
+    23	                    problems.append(f"{path}:{node.lineno}: print() outside cli.py")
+    24	    for p in problems:
+    25	        print(p)
+    26	    print(f"{len(problems)} style problems")
+    27	    return 1 if problems else 0
+    28	
+    29	
+    30	if __name__ == "__main__":
+    31	    sys.exit(main())
+
+AGENT:
+Now I have a clear picture. Let me verify the exact mechanism one more time with a broader check (second high tide and the full day), then make the narrow documentation clarifications.
+
+TOOL CALL bash:
+command:
+cd /work/tidewick && python3 -c "
+from datetime import datetime, timedelta, timezone
+from zoneinfo import ZoneInfo
+offset=-8
+tz=ZoneInfo('America/Los_Angeles')
+for hh,mm in [(3,41),(16,3)]:
+    local_standard = datetime(2026,3,8,hh,mm)
+    utc_instant=(local_standard - timedelta(hours=offset)).replace(tzinfo=timezone.utc)
+    civil=utc_instant.astimezone(tz)
+    print(local_standard,'tidewick ->', civil, civil.tzname())
+"
+
+TOOL RESULT (bash):
+2026-03-08 03:41:00 tidewick -> 2026-03-08 04:41:00-07:00 PDT
+2026-03-08 16:03:00 tidewick -> 2026-03-08 17:03:00-07:00 PDT
+
+AGENT:
+Both tide events that day print one hour earlier than their real civil-clock equivalent, which matches the reported symptom exactly. Now let's make a small, low-risk documentation/UX clarification so users don't get caught by this again — without touching the prediction math, `config.py`, or the `Makefile`.
+
+TOOL CALL read:
+file_path: /work/tidewick/tidewick/cli.py
+
+TOOL RESULT (read):
+1	"""Command line: python -m tidewick {stations,predict}."""
+2	
+3	import argparse
+4	from datetime import datetime
+5	
+6	from tidewick import __version__, predict, stations
+7	
+8	
+9	def parse_args(argv=None):
+10	    parser = argparse.ArgumentParser(prog="tidewick", description="Tide predictions.")
+11	    parser.add_argument("--version", action="version", version=__version__)
+12	    sub = parser.add_subparsers(dest="command", required=True)
+13	    sub.add_parser("stations", help="list station ids")
+14	    p = sub.add_parser("predict", help="predict heights for a station")
+15	    p.add_argument("station")
+16	    p.add_argument("--hours", type=int, default=24)
+17	    p.add_argument("--step-minutes", type=int, default=60)
+18	    p.add_argument("--at", help="a single local time, YYYY-MM-DDTHH:MM")
+19	    p.add_argument("--units", choices=["m", "ft"], default="m", help="height units (default: m)")
+20	    return parser.parse_args(argv)
+21	
+22	
+23	def main(argv=None) -> int:
+24	    args = parse_args(argv)
+25	    if args.command == "stations":
+26	        for station_id in stations.list_ids():
+27	            print(station_id)
+28	        return 0
+29	    station = stations.load(args.station)
+30	    if args.at:
+31	        when = datetime.fromisoformat(args.at)
+32	        height = predict.to_units(predict.height_at(station, when), args.units)
+33	        print(f"{station.name}  {when.isoformat(timespec='minutes')}  {height:.2f} {args.units}")
+34	        return 0
+35	    start = datetime.now().replace(minute=0, second=0, microsecond=0)
+36	    for when, height in predict.series(station, start, args.hours, args.step_minutes):
+37	        height = predict.to_units(height, args.units)
+38	        print(f"{when.isoformat(timespec='minutes')}  {height:6.2f} {args.units}")
+39	    return 0
+
+TOOL CALL edit:
+file_path: /work/tidewick/tidewick/cli.py
+new_string:
+    p.add_argument(
+        "--at",
+        help=(
+            "a single time, YYYY-MM-DDTHH:MM, in the station's local STANDARD time "
+            "(no daylight-saving adjustment; see docs/ARCHITECTURE.md)"
+        ),
+    )
+old_string:     p.add_argument("--at", help="a single local time, YYYY-MM-DDTHH:MM")
+
+TOOL RESULT (edit):
+File updated: /work/tidewick/tidewick/cli.py
+
+TOOL CALL read:
+file_path: /work/tidewick/README.md
+
+TOOL RESULT (read):
+1	# tidewick
+2	
+3	A small, dependency-free Python library and command-line tool that predicts tide heights for a handful of
+4	fictional stations from harmonic constituents stored as JSON. It exists as example material: the stations,
+5	the numbers and the project are made up.
+6	
+7	## Quick start
+8	
+9	```bash
+10	python -m tidewick stations                 # list the stations in the data directory
+11	python -m tidewick predict port-avery --hours 24
+12	python -m tidewick predict cape-mallow --at 2026-03-01T06:00
+13	```
+14	
+15	Python 3.11 or later. No third-party packages, by policy (see CONTRIBUTING.md).
+16	
+17	## Layout
+18	
+19	- `tidewick/`: the package. `predict.py` does the arithmetic, `stations.py` loads station files,
+20	  `harmonics.py` holds the constituent speeds, `cli.py` is the command line, `config.py` finds the data.
+21	- `data/`: `stations.json` and one constituents file per station.
+22	- `tests/`: the unit tests. Run them with `make test`.
+23	- `tools/`: `check_style.py` (the style rules `make check` enforces) and `make_fixtures.py` (writes a
+24	  constituents file for a new station).
+25	- `docs/`: `ARCHITECTURE.md` and the decision records under `docs/adr/`.
+26	
+27	## Data directory
+28	
+29	The tool reads station data from the directory named in `TIDEWICK_DATA_DIR`, or `./data` when that is not
+30	set.
+
+TOOL CALL edit:
+file_path: /work/tidewick/README.md
+new_string:
+Python 3.11 or later. No third-party packages, by policy (see CONTRIBUTING.md).
+
+All times in and out of the tool are a station's local **standard** time, year-round; tidewick never applies
+a daylight-saving shift (see `docs/ARCHITECTURE.md`). A printed tide table that follows the local civil clock
+will run an hour ahead of tidewick's times while daylight saving is in effect.
+
+## Layout
+old_string:
+Python 3.11 or later. No third-party packages, by policy (see CONTRIBUTING.md).
+
+## Layout
+
+TOOL RESULT (edit):
+File updated: /work/tidewick/README.md
+
+AGENT:
+Now let's run the full test/check suite to confirm nothing is broken.
+
+TOOL CALL bash:
+command: cd /work/tidewick && make check
+
+TOOL RESULT (bash) [error]:
+EEEEE..s.EE
+======================================================================
+ERROR: test_predict_at (tests.test_cli.CliTest.test_predict_at)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/work/tidewick/tests/test_cli.py", line 18, in test_predict_at
+    self.assertEqual(cli.main(["predict", "cape-mallow", "--at", "2026-03-01T06:00"]), 0)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/work/tidewick/tidewick/cli.py", line 35, in main
+    station = stations.load(args.station)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/work/tidewick/tidewick/stations.py", line 31, in load
+    index = json.loads((config.data_dir() / "stations.json").read_text())
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/pathlib.py", line 1058, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/pathlib.py", line 1044, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/work/tidewick/tests/data/stations.json'
+
+======================================================================
+ERROR: test_predict_at_units_feet (tests.test_cli.CliTest.test_predict_at_units_feet)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/work/tidewick/tests/test_cli.py", line 24, in test_predict_at_units_feet
+    cli.main(["predict", "cape-mallow", "--at", "2026-03-01T06:00", "--units", "m"])
+  File "/work/tidewick/tidewick/cli.py", line 35, in main
+    station = stations.load(args.station)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/work/tidewick/tidewick/stations.py", line 31, in load
+    index = json.loads((config.data_dir() / "stations.json").read_text())
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/pathlib.py", line 1058, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/pathlib.py", line 1044, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/work/tidewick/tests/data/stations.json'
+
+======================================================================
+ERROR: test_stations_command_lists_ids (tests.test_cli.CliTest.test_stations_command_lists_ids)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/work/tidewick/tests/test_cli.py", line 12, in test_stations_command_lists_ids
+    self.assertEqual(cli.main(["stations"]), 0)
+                     ^^^^^^^^^^^^^^^^^^^^^^
+  File "/work/tidewick/tidewick/cli.py", line 32, in main
+    for station_id in stations.list_ids():
+                      ^^^^^^^^^^^^^^^^^^^
+  File "/work/tidewick/tidewick/stations.py", line 23, in list_ids
+    index = json.loads((config.data_dir() / "stations.json").read_text())
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/pathlib.py", line 1058, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/pathlib.py", line 1044, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/work/tidewick/tests/data/stations.json'
+
+======================================================================
+ERROR: test_height_is_near_mean_level_on_average (tests.test_predict.PredictTest.test_height_is_near_mean_level_on_average)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/work/tidewick/tests/test_predict.py", line 10, in test_height_is_near_mean_level_on_average
+    s = stations.load("port-avery")
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/work/tidewick/tidewick/stations.py", line 31, in load
+    index = json.loads((config.data_dir() / "stations.json").read_text())
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/pathlib.py", line 1058, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/pathlib.py", line 1044, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/work/tidewick/tests/data/stations.json'
+
+======================================================================
+ERROR: test_series_rejects_zero_hours (tests.test_predict.PredictTest.test_series_rejects_zero_hours)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/work/tidewick/tests/test_predict.py", line 16, in test_series_rejects_zero_hours
+    s = stations.load("cape-mallow")
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/work/tidewick/tidewick/stations.py", line 31, in load
+    index = json.loads((config.data_dir() / "stations.json").read_text())
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/pathlib.py", line 1058, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/pathlib.py", line 1044, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/work/tidewick/tests/data/stations.json'
+
+======================================================================
+ERROR: test_list_ids (tests.test_stations.StationsTest.test_list_ids)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/work/tidewick/tests/test_stations.py", line 8, in test_list_ids
+    self.assertEqual(stations.list_ids()[:2], ["port-avery", "cape-mallow"])
+                     ^^^^^^^^^^^^^^^^^^^
+  File "/work/tidewick/tidewick/stations.py", line 23, in list_ids
+    index = json.loads((config.data_dir() / "stations.json").read_text())
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/pathlib.py", line 1058, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/pathlib.py", line 1044, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/work/tidewick/tests/data/stations.json'
+
+======================================================================
+ERROR: test_load (tests.test_stations.StationsTest.test_load)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/work/tidewick/tests/test_stations.py", line 11, in test_load
+    s = stations.load("port-avery")
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/work/tidewick/tidewick/stations.py", line 31, in load
+    index = json.loads((config.data_dir() / "stations.json").read_text())
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/pathlib.py", line 1058, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/pathlib.py", line 1044, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/work/tidewick/tests/data/stations.json'
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.061s
+
+FAILED (errors=7, skipped=1)
+make: *** [Makefile:4: test] Error 1
+
+cd tests && python -m unittest discover -s . -t ..
+
+TOOL CALL bash:
+command: mkdir -p /tmp/orig && tar xzf /mnt/session/uploads/repo/tidewick.tar.gz -C /tmp/orig && cd /tmp/orig/tidewick && make check 2>&1 | tail -20
+
+TOOL RESULT (bash):
+Traceback (most recent call last):
+  File "/tmp/orig/tidewick/tests/test_stations.py", line 11, in test_load
+    s = stations.load("port-avery")
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/orig/tidewick/tidewick/stations.py", line 31, in load
+    index = json.loads((config.data_dir() / "stations.json").read_text())
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/pathlib.py", line 1058, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/pathlib.py", line 1044, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/orig/tidewick/tests/data/stations.json'
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.008s
+
+FAILED (errors=7, skipped=1)
+make: *** [Makefile:4: test] Error 1
+
+TOOL CALL bash:
+command: cd /work/tidewick && python3 -m unittest discover -s tests -t . -v 2>&1 | tail -20 && echo "=== style ===" && python3 tools/check_style.py
+
+TOOL RESULT (bash):
+test_predict_at (tests.test_cli.CliTest.test_predict_at) ... ok
+test_predict_at_units_feet (tests.test_cli.CliTest.test_predict_at_units_feet) ... ok
+test_stations_command_lists_ids (tests.test_cli.CliTest.test_stations_command_lists_ids) ... ok
+test_height_is_near_mean_level_on_average (tests.test_predict.PredictTest.test_height_is_near_mean_level_on_average) ... ok
+test_series_rejects_zero_hours (tests.test_predict.PredictTest.test_series_rejects_zero_hours) ... ok
+test_to_units_converts_meters_to_feet (tests.test_predict.PredictTest.test_to_units_converts_meters_to_feet) ... ok
+test_to_units_rejects_unknown_unit (tests.test_predict.PredictTest.test_to_units_rejects_unknown_unit) ... ok
+test_year_long_series_has_two_tides_a_day (tests.test_predict.PredictTest.test_year_long_series_has_two_tides_a_day) ... skipped 'set TIDEWICK_SLOW=1 to run'
+test_bad_id (tests.test_stations.StationsTest.test_bad_id) ... ok
+test_list_ids (tests.test_stations.StationsTest.test_list_ids) ... ok
+test_load (tests.test_stations.StationsTest.test_load) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.006s
+
+OK (skipped=1)
+ === style ===
+0 style problems
+
+AGENT:
+All tests pass and style checks are clean (the `make check`/`make test` failure is a pre-existing, environment-specific cwd issue unrelated to this investigation — confirmed it reproduces identically on the untouched original tarball, and we were told not to touch the Makefile). Let's double check the final diffs and CLI `--help` output, then package the result.
+
+TOOL CALL bash:
+command:
+cd /work/tidewick && TIDEWICK_DATA_DIR=$(pwd)/data python3 -m tidewick predict --help 2>&1
+echo ---
+diff -u /tmp/orig/tidewick/tidewick/cli.py /work/tidewick/tidewick/cli.py
+echo ---
+diff -u /tmp/orig/tidewick/README.md /work/tidewick/README.md
+
+TOOL RESULT (bash) [error]:
+usage: tidewick predict [-h] [--hours HOURS] [--step-minutes STEP_MINUTES]
+                        [--at AT] [--units {m,ft}]
+                        station
+
+positional arguments:
+  station
+
+options:
+  -h, --help            show this help message and exit
+  --hours HOURS
+  --step-minutes STEP_MINUTES
+  --at AT               a single time, YYYY-MM-DDTHH:MM, in the station's
+                        local STANDARD time (no daylight-saving adjustment;
+                        see docs/ARCHITECTURE.md)
+  --units {m,ft}        height units (default: m)
+---
+--- /tmp/orig/tidewick/tidewick/cli.py	2026-10-21 02:20:10.000000000 +0000
++++ /work/tidewick/tidewick/cli.py	2026-10-21 02:22:42.945049683 +0000
+@@ -15,7 +15,13 @@
+     p.add_argument("station")
+     p.add_argument("--hours", type=int, default=24)
+     p.add_argument("--step-minutes", type=int, default=60)
+-    p.add_argument("--at", help="a single local time, YYYY-MM-DDTHH:MM")
++    p.add_argument(
++        "--at",
++        help=(
++            "a single time, YYYY-MM-DDTHH:MM, in the station's local STANDARD time "
++            "(no daylight-saving adjustment; see docs/ARCHITECTURE.md)"
++        ),
++    )
+     p.add_argument("--units", choices=["m", "ft"], default="m", help="height units (default: m)")
+     return parser.parse_args(argv)
+ 
+---
+--- /tmp/orig/tidewick/README.md	2026-10-21 02:15:51.000000000 +0000
++++ /work/tidewick/README.md	2026-10-21 02:22:49.854064007 +0000
+@@ -14,6 +14,10 @@
+ 
+ Python 3.11 or later. No third-party packages, by policy (see CONTRIBUTING.md).
+ 
++All times in and out of the tool are a station's local **standard** time, year-round; tidewick never applies
++a daylight-saving shift (see `docs/ARCHITECTURE.md`). A printed tide table that follows the local civil clock
++will run an hour ahead of tidewick's times while daylight saving is in effect.
++
+ ## Layout
+ 
+ - `tidewick/`: the package. `predict.py` does the arithmetic, `stations.py` loads station files,
+
+AGENT:
+Good — that `--help` output to stderr/stdout is just argparse's normal exit (not an actual error). Diffs look clean and minimal. Now let's package the repo.
+
+TOOL CALL bash:
+command: mkdir -p /mnt/session/outputs && tar czf /mnt/session/outputs/tidewick.tar.gz -C /work tidewick && ls -la /mnt/session/outputs/
+
+TOOL RESULT (bash):
+total 24
+drwxr-xr-x 1 claude ubuntu     0 Oct 21 02:23 .
+drwxr-xr-x 4 root   root    4096 Oct 21 02:20 ..
+-rw-r--r-- 1 claude ubuntu 17622 Oct 21 02:23 tidewick.tar.gz
+
+AGENT:
+## Conclusion: not a bug — it's the documented, on-purpose behavior, and it's biting on exactly the wrong day
+
+**Root cause:** tidewick never does any timezone/DST math. `predict.py`'s `EPOCH` and `height_at()` work entirely in a flat "hours since 2026-01-01T00:00" scale, explicitly commented as "local standard time at every station," and `docs/ARCHITECTURE.md` says outright: *"there is no daylight-saving adjustment anywhere in the code, on purpose."* `Station.utc_offset_hours` is loaded but never consumed by `predict.py`/`cli.py` — it's metadata only, confirming there's no hidden DST logic to go wrong.
+
+**Why cape-mallow on 2026-03-08 specifically:** that date is the second Sunday of March 2026 — the day US clocks spring forward for DST. I computed the predicted highs for cape-mallow that day:
+
+```
+2026-03-08 03:41  (tidewick, local standard time) -> 2.74 m
+2026-03-08 16:03  (tidewick, local standard time) -> 1.17 m
+```
+
+Converting those same physical instants through `America/Los_Angeles` (the zone matching the station's `utc_offset_hours: -8`) gives the civil clock time a printed tide table would show:
+
+```
+03:41 standard -> 04:41 PDT
+16:03 standard -> 17:03 PDT
+```
+
+Every tide on/after the spring-forward instant prints exactly one hour earlier from tidewick than it would on a DST-aware printed table — matching the user's report precisely. On most other days of the year (no DST transition in the window), this discrepancy wouldn't appear, which is consistent with it being an edge-of-DST-transition artifact rather than a general miscalibration.
+
+I checked the harmonic data itself (`cape-mallow.json`, `stations.json`) and the loader (`stations.py`) for sign/unit/phase errors — amplitudes, phases and the mean level all look like plausible, self-consistent data, and `make check`'s tests (run correctly from the repo root) all pass. Nothing there points to a data bug; the arithmetic and data are doing exactly what the architecture doc says they should.
+
+**What I changed (small, docs/UX only, nothing in `config.py` or `Makefile`):**
+- `tidewick/cli.py`: clarified the `--at` help text to state explicitly that the time is the station's local *standard* time with no DST adjustment, pointing at `docs/ARCHITECTURE.md`.
+- `README.md`: added a short note that all tidewick times are local standard time year-round, and that a civil-clock printed table will run an hour ahead during daylight saving.
+
+No change to `predict.py`, `harmonics.py`, `stations.py`, or any data file — the prediction math is working as designed, and altering it to add DST would contradict an explicit, documented decision and is a much bigger change than this investigation calls for.
+
+**Note for a teammate:** `make test` / `make check` fail in this environment with `FileNotFoundError: tests/data/stations.json` — that's pre-existing (reproduces on the untouched tarball too) because the `test` target does `cd tests && python -m unittest discover ...`, and `config.data_dir()` resolves `./data` relative to the *current working directory*, which becomes `tests/` once you `cd` there. Since we were told not to touch the Makefile, I validated instead with `python3 -m unittest discover -s tests -t .` run from the repo root (`/work/tidewick`), which passes all 11 tests (1 skipped, as usual, unless `TIDEWICK_SLOW=1`), and `python3 tools/check_style.py`, which reports 0 problems. Worth flagging to whoever owns the Makefile.
+
+Repacked at `/mnt/session/outputs/tidewick.tar.gz`.
