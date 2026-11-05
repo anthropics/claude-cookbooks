@@ -32,7 +32,7 @@ LATEST_MODELS = {
     "claude-opus-5-5",
     "claude-sonnet-5-5",
     "claude-fable-5-1",
-    "claude-haiku-4-5",
+    "claude-haiku-5-5",
 }
 
 # Still served by the API, but a newer model exists in the same family. Reported as a warning:
@@ -50,6 +50,9 @@ SUPERSEDED_MODELS = {
     "claude-sonnet-4-6": "claude-sonnet-5-5",
     # Fable family
     "claude-fable-5": "claude-fable-5-1",
+    # Haiku family
+    "claude-haiku-4-5-20251001": "claude-haiku-5-5",
+    "claude-haiku-4-5": "claude-haiku-5-5",
 }
 
 # Retired (the API returns 404) or officially deprecated with a retirement date on the
@@ -74,9 +77,9 @@ RETIRED_MODELS = {
     "claude-3-5-sonnet-latest": "claude-sonnet-5-5",
     "claude-3-sonnet-20240229": "claude-sonnet-5-5",
     # Haiku family
-    "claude-3-5-haiku-20241022": "claude-haiku-4-5",
-    "claude-3-5-haiku-latest": "claude-haiku-4-5",
-    "claude-3-haiku-20240307": "claude-haiku-4-5",
+    "claude-3-5-haiku-20241022": "claude-haiku-5-5",
+    "claude-3-5-haiku-latest": "claude-haiku-5-5",
+    "claude-3-haiku-20240307": "claude-haiku-5-5",
 }
 
 
