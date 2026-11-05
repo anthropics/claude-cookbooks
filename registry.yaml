@@ -1017,5 +1017,7 @@
 - title: "Before Your Agent Pays: Run a Conformity Check and Get Certified"
   path: patterns/agents/conformity_check_before_payment.ipynb
   slug: conformity-check-before-payment
+  categories: ["Agent Patterns"]
   tags: [agents, tool-use, evaluation, commerce]
   authors: [provecart]
+  date: "2026-11-04"
