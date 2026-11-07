@@ -30,7 +30,7 @@ def has_anthropic_credentials() -> bool:
 
 
 # The newest model in each family. Everything older maps to one of these.
-LATEST_MODELS = {"claude-opus-5-5", "claude-sonnet-5-5", "claude-fable-5-1", "claude-haiku-4-5"}
+LATEST_MODELS = {"claude-opus-5-5", "claude-sonnet-5-5", "claude-fable-5-1", "claude-haiku-5-5"}
 
 # Still served by the API, but a newer model exists in the same family -> warning (auto-fixable).
 SUPERSEDED_MODELS: dict[str, str] = {
@@ -46,6 +46,9 @@ SUPERSEDED_MODELS: dict[str, str] = {
     "claude-sonnet-4-6": "claude-sonnet-5-5",
     # Fable family
     "claude-fable-5": "claude-fable-5-1",
+    # Haiku family
+    "claude-haiku-4-5-20251001": "claude-haiku-5-5",
+    "claude-haiku-4-5": "claude-haiku-5-5",
 }
 
 # Retired (the API returns 404) or officially deprecated with a retirement date on the
@@ -70,9 +73,9 @@ RETIRED_MODELS: dict[str, str] = {
     "claude-3-5-sonnet-latest": "claude-sonnet-5-5",
     "claude-3-sonnet-20240229": "claude-sonnet-5-5",
     # Haiku family
-    "claude-3-5-haiku-20241022": "claude-haiku-4-5",
-    "claude-3-5-haiku-latest": "claude-haiku-4-5",
-    "claude-3-haiku-20240307": "claude-haiku-4-5",
+    "claude-3-5-haiku-20241022": "claude-haiku-5-5",
+    "claude-3-5-haiku-latest": "claude-haiku-5-5",
+    "claude-3-haiku-20240307": "claude-haiku-5-5",
 }
 
 # Every older ID -> its replacement (superseded first, then retired; used by --auto-fix).
@@ -94,13 +97,18 @@ DATED_MODEL_PATTERN = re.compile(r"(?<![\w.])claude-[a-z0-9.-]+?-\d{8}(?!-v\d)")
 # Notebooks that pin an older model on purpose (pricing tables, recorded eval/benchmark results,
 # model-specific billing behaviour). Older-model hits here are reported as info and are
 # never auto-fixed. Keep in sync with TestModelUsage.ALLOWED_LEGACY_MODELS in
-# tests/notebook_tests/test_notebooks.py. The model tables above are also mirrored in
+# tests/notebook_tests/test_notebooks.py, except for entries that only pin a Bedrock ID
+# (e.g. finetuning_on_bedrock): the patterns above never match inside an `anthropic.`-prefixed
+# ID, so Bedrock IDs are out of scope for this script. The model tables above are also mirrored in
 # .claude/skills/cookbook-audit/validate_notebook.py (single-notebook audit).
 PINNED_LEGACY_NOTEBOOKS = {
     "cost_optimization/cost_optimization.ipynb",
     "fable_5_fallback_billing/guide.ipynb",
     "multimodal/crop_tool.ipynb",
     "evals/agentic_search/reproduce_agentic_search_benchmarks.ipynb",
+    # Assistant-message prefill is the technique these two teach; only Claude Haiku 4.5 accepts it.
+    "misc/how_to_enable_json_mode.ipynb",
+    "misc/sampling_past_max_tokens.ipynb",
 }
 
 

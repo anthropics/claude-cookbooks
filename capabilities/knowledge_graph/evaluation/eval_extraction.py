@@ -14,7 +14,7 @@ import requests
 from dotenv import load_dotenv
 from pydantic import BaseModel
 
-MODEL = "claude-haiku-4-5"
+MODEL = "claude-haiku-5-5"
 WIKI_API = "https://en.wikipedia.org/api/rest_v1/page/summary/"
 # Wikimedia policy rejects requests without an identifying User-Agent
 HEADERS = {"User-Agent": "claude-cookbooks/1.0 (https://github.com/anthropics/claude-cookbooks)"}
@@ -72,7 +72,7 @@ def fetch_summary(title: str) -> str:
 def extract(client: anthropic.Anthropic, text: str) -> ExtractedGraph:
     response = client.messages.parse(
         model=MODEL,
-        max_tokens=2048,
+        max_tokens=4096,
         messages=[{"role": "user", "content": PROMPT.format(text=text)}],
         output_format=ExtractedGraph,
     )

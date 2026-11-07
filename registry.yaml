@@ -428,6 +428,17 @@
   categories:
   - Agent Patterns
   - Evals
+- title: Latency Optimization on the Claude API
+  description: Find the fastest agent configuration that still meets your accuracy bar
+    by testing each of the Claude API's latency levers on a real eval.
+  path: latency_optimization/latency_optimization.ipynb
+  authors:
+  - benlehrburger-ant
+  - owenz-ant
+  date: '2026-11-02'
+  categories:
+  - Agent Patterns
+  - Evals
 - title: Session memory compaction
   description: Manage long-running Claude conversations with instant session memory
     compaction using background threading and prompt caching.
@@ -438,8 +449,8 @@
   categories:
   - Agent Patterns
   - Responses
-- title: Summarizing web page content with Claude Haiku 4.5
-  description: Fetch and summarize web page content using Claude Haiku 4.5 via URL extraction.
+- title: Summarizing web page content with Claude Haiku
+  description: Fetch and summarize web page content using Claude Haiku via URL extraction.
   path: misc/read_web_pages_with_haiku.ipynb
   authors:
   - alexalbertt
@@ -706,15 +717,6 @@
   categories:
   - Integrations
   - RAG & Retrieval
-- title: Iteratively searching Wikipedia with Claude
-  description: Legacy notebook showing iterative Wikipedia searches with Claude 2
-    for research workflows.
-  path: third_party/Wikipedia/wikipedia-search-cookbook.ipynb
-  authors:
-  - Anthropic
-  date: '2023-08-15'
-  categories:
-  - Integrations
 - title: Using the Wolfram Alpha LLM API as a tool with Claude
   description: Integrate Wolfram Alpha LLM API as Claude tool for computational queries
     and answers.
@@ -856,19 +858,6 @@
   date: '2026-07-02'
   categories:
   - Claude Managed Agents
-- title: Review your agents' sessions for security issues with Claude
-  description: Build a review system for finished agent sessions. It turns Managed Agents
-    sessions, Messages API logs or Agent SDK logs into transcripts, flags what looks off in code, has
-    Claude review each session in a Managed Agents dynamic workflow, and returns a ranked
-    report with quoted evidence.
-  path: managed_agents/CMA_agent_security_review.ipynb
-  authors:
-  - bradabrams
-  date: '2026-10-16'
-  categories:
-  - Claude Managed Agents
-  - Cybersecurity
-  - Agent Patterns
 - title: 'Outcomes: agents that verify their own work'
   description: 'Build a grade-and-revise loop with Outcomes: a writer drafts a cited
     research brief, a stateless grader fetches every URL and checks every quote against
@@ -1001,6 +990,30 @@
   categories:
   - Observability
   - Claude Managed Agents
+- title: Review your agents' sessions for security issues with Claude
+  description: Build a review system for finished agent sessions. It turns Managed Agents
+    sessions, Messages API logs or Agent SDK logs into transcripts, flags what looks off in code, has
+    Claude review each session in a Managed Agents dynamic workflow, and returns a ranked
+    report with quoted evidence.
+  path: managed_agents/CMA_agent_security_review.ipynb
+  authors:
+  - bradabrams
+  date: '2026-10-16'
+  categories:
+  - Claude Managed Agents
+  - Cybersecurity
+  - Agent Patterns
+- title: Dreaming with a dynamic workflow
+  description: Build a small working dream for your agents. A Managed Agents dynamic workflow
+    reads finished sessions, distills them into a wiki-style memory store that future
+    sessions mount read-only, and can run every night from cron.
+  path: managed_agents/CMA_dreaming_with_a_dynamic_workflow.ipynb
+  authors:
+  - bradabrams
+  date: '2026-11-02'
+  categories:
+  - Claude Managed Agents
+  - Agent Patterns
 - title: Cut text-to-SQL prompt tokens with schemagate
   description: Send Claude only the tables a question needs, picked from the tables
     the caller may read, and measure the prompt tokens saved against the full schema.

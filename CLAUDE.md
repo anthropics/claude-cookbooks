@@ -65,13 +65,13 @@ style: lint/format
    - Opus: `claude-opus-5-5`
    - Sonnet: `claude-sonnet-5-5`
    - Fable: `claude-fable-5-1`
-   - Haiku: `claude-haiku-4-5`
+   - Haiku: `claude-haiku-5-5`
    - **Never use dated model IDs** (e.g., `claude-sonnet-4-5-20250929`). Always use the non-dated alias.
    - **Bedrock model IDs** follow a different format. Use the base Bedrock model ID from the docs:
      - Opus 5.5: `anthropic.claude-opus-5-5`
      - Sonnet 5.5: `anthropic.claude-sonnet-5-5`
      - Fable 5.1: `anthropic.claude-fable-5-1`
-     - Haiku 4.5: `anthropic.claude-haiku-4-5`
+     - Haiku 5.5: `anthropic.claude-haiku-5-5`
      - Prepend `global.` for global endpoints (recommended): `global.anthropic.claude-opus-5-5`
      - Note: these are the IDs for Bedrock's Messages-API endpoint. Integrations that only go through InvokeModel (for example `boto3` `invoke_model`, or fine-tuning jobs) use the dated form instead, e.g. `anthropic.claude-haiku-4-5-20251001-v1:0`.
 
@@ -99,7 +99,7 @@ skills/            # Advanced skill-based notebooks
 tool_use/          # Tool use and integration patterns
 multimodal/        # Vision and image processing
 misc/              # Batch processing, caching, utilities
-third_party/       # Pinecone, Voyage, Wikipedia integrations
+third_party/       # Pinecone, Voyage, LlamaIndex integrations
 extended_thinking/ # Extended reasoning patterns
 scripts/           # Validation scripts
 .claude/           # Claude Code commands and skills

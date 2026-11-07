@@ -108,7 +108,8 @@ async def send_query(
 
     # Configure disallowed tools to ensure MCP usage
     # Without this, the agent could bypass MCP by using Bash with gh CLI
-    disallowed_tools = ["Bash", "Task", "WebSearch", "WebFetch"] if restrict_to_mcp else []
+    # "Agent" is the subagent tool (named "Task" before claude-agent-sdk 0.2; both are accepted).
+    disallowed_tools = ["Bash", "Agent", "Task", "WebSearch", "WebFetch"] if restrict_to_mcp else []
 
     options = ClaudeAgentOptions(
         model=model,
@@ -118,6 +119,8 @@ async def send_query(
         system_prompt=DEFAULT_SYSTEM_PROMPT,
         mcp_servers=servers,  # Empty dict is valid, no need for None
         permission_mode="acceptEdits",
+        # Only use the MCP servers configured above; don't load user/project settings.
+        setting_sources=[],
     )
 
     result = None

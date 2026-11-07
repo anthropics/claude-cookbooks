@@ -274,19 +274,16 @@ class TestModelUsage:
         "claude-opus-5-5",
         "claude-sonnet-5-5",
         "claude-fable-5-1",
-        "claude-haiku-4-5",
+        "claude-haiku-5-5",
     }
 
     # Bedrock base IDs for the current models (see CLAUDE.md). Regional prefixes such as
     # `global.` and context-window suffixes such as `:200k` are stripped before comparing.
-    # Haiku 4.5 is listed in both forms: the dated `-v1:0` ID used with InvokeModel and the
-    # alias used with the Messages-API endpoint.
     CURRENT_BEDROCK_MODELS = {
         "anthropic.claude-opus-5-5",
         "anthropic.claude-sonnet-5-5",
         "anthropic.claude-fable-5-1",
-        "anthropic.claude-haiku-4-5",
-        "anthropic.claude-haiku-4-5-20251001-v1:0",
+        "anthropic.claude-haiku-5-5",
     }
 
     # Older IDs that specific notebooks pin on purpose because the content is tied to that
@@ -302,12 +299,19 @@ class TestModelUsage:
             "claude-fable-5",
             "claude-opus-5",
             "claude-sonnet-5",
+            "claude-haiku-4-5",
         },
         # GRADER_MODEL that produced the published benchmark numbers (eval methodology).
         "evals/agentic_search/reproduce_agentic_search_benchmarks.ipynb": {"claude-opus-4-6"},
         # The Fable 5 -> Opus 4.8 classifier-fallback and billing behaviour it documents is
         # specific to these two models.
         "fable_5_fallback_billing/guide.ipynb": {"claude-fable-5", "claude-opus-4-8"},
+        # Bedrock fine-tuning targets the dated InvokeModel ID of Haiku 4.5.
+        "finetuning/finetuning_on_bedrock.ipynb": {"anthropic.claude-haiku-4-5-20251001-v1:0"},
+        # Assistant-message prefill is the technique these two teach, and Claude Haiku 4.5 is
+        # the only served model that still accepts it.
+        "misc/how_to_enable_json_mode.ipynb": {"claude-haiku-4-5"},
+        "misc/sampling_past_max_tokens.ipynb": {"claude-haiku-4-5"},
         # Recorded chart-reading benchmark results and costs are for Fable 5 / Sonnet 5.
         "multimodal/crop_tool.ipynb": {"claude-fable-5", "claude-sonnet-5"},
     }
@@ -329,7 +333,7 @@ class TestModelUsage:
         if "anthropic." in model_id:
             base = model_id[model_id.index("anthropic.") :]  # drop regional prefix
             base = re.sub(r":\d+k$", "", base)  # drop context-window suffix (e.g. :200k)
-            return base in cls.CURRENT_BEDROCK_MODELS
+            return base in cls.CURRENT_BEDROCK_MODELS or base in allowed_legacy
         return model_id in cls.CURRENT_MODELS or model_id in allowed_legacy
 
     def test_no_deprecated_models(

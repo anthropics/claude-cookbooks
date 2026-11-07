@@ -118,8 +118,8 @@ If a hook fails, fix the issues and try committing again.
 
 2. **Use current Claude models**:
    - Use model aliases for better maintainability when available
-   - Current models: `claude-opus-5-5`, `claude-sonnet-5-5`, `claude-fable-5-1`, `claude-haiku-4-5`
-   - Never use dated model IDs; `claude-haiku-4-5` is a good low-cost default for examples
+   - Current models: `claude-opus-5-5`, `claude-sonnet-5-5`, `claude-fable-5-1`, `claude-haiku-5-5`
+   - Never use dated model IDs; `claude-haiku-5-5` is a good low-cost default for examples
    - Check current models at: https://platform.claude.com/docs/en/about-claude/models/overview
    - Claude will automatically validate model usage in PR reviews
 
