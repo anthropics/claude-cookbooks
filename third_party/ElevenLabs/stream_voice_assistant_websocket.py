@@ -335,9 +335,9 @@ def stream_claude_and_synthesize_ws(messages, audio_queue):
 
     # Stream Claude response and send each chunk to WebSocket
     with anthropic_client.messages.stream(
-        model="claude-haiku-4-5",
+        model="claude-haiku-5-5",
         max_tokens=1000,
-        temperature=0,
+        output_config={"effort": "low"},
         system="""You are a helpful voice assistant. Your responses will be converted to speech using ElevenLabs.
 Do not write in markdown, as it cannot be read aloud properly.""",
         messages=messages,

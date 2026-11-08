@@ -1,8 +1,8 @@
 # Hard-pinned so the cookbook doesn't silently break on a future release.
 # Bump deliberately when you've re-run the notebook end-to-end.
-# The npm @anthropic-ai/claude-code pin in the Dockerfile is part of the same
-# pin set — bump together.
-claude-agent-sdk==0.1.50
+# The claude-agent-sdk wheel bundles the Claude Code CLI it drives (0.2.168
+# ships CLI 2.1.301), so this one pin covers both.
+claude-agent-sdk==0.2.168
 fastapi==0.118.3
 uvicorn[standard]==0.37.0
 sse-starlette==2.1.3

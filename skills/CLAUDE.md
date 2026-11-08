@@ -65,8 +65,8 @@ skills/
 
 **Files API Integration:**
 - Skills generate files and return `file_id` attributes
-- Must use `client.beta.files.download()` to download files
-- Must use `client.beta.files.retrieve_metadata()` to get file info
+- Use `client.files.download()` to download files (GA in SDK 2.x; `client.beta.files` still works)
+- Use `client.files.retrieve_metadata()` to get file info
 - Helper functions in `file_utils.py` handle extraction and download
 
 **Built-in Skills:**
@@ -78,23 +78,23 @@ skills/
 ## Development Gotchas
 
 ### 1. SDK Version
-**Important**: Ensure you have the Anthropic SDK version 0.71.0 or later with Skills support
+**Important**: Ensure you have the Anthropic SDK version 2.0.0 or later. In 2.x the Skills and Files APIs are GA (`client.skills`, `client.files`); skill objects expose `display_name` / `latest_version_id` and skill versions are addressed by `id`.
 ```bash
-pip install anthropic>=0.71.0
+pip install "anthropic>=2.0.0"
 # Restart Jupyter kernel after installation if upgrading!
 ```
 
-### 2. Beta Namespace Required
-**Problem**: `container` parameter not recognized, files API fails
-**Solution**: Use `client.beta.messages.create()` and `client.beta.files.*`
+### 2. Beta Namespace for Skills Messages
+**Problem**: `betas` parameter not recognized
+**Solution**: Use `client.beta.messages.create()` for requests that pass `betas=[...]`; download files with `client.files.download()`
 ```python
 # ❌ Wrong
-response = client.messages.create(container={...})
+response = client.messages.create(container={...}, betas=[...])
 content = client.files.content(file_id)
 
 # ✅ Correct
-response = client.beta.messages.create(container={...})
-content = client.beta.files.content(file_id)
+response = client.beta.messages.create(container={...}, betas=[...])
+content = client.files.download(file_id)
 ```
 
 ### 3. Beta Headers Placement
@@ -125,17 +125,17 @@ file_ids = extract_file_ids(response)
 **Solution**: Use `.read()` for file content and `.size_bytes` for file size
 ```python
 # ❌ Wrong
-file_content = client.beta.files.download(file_id)
+file_content = client.files.download(file_id)
 with open(path, 'wb') as f:
     f.write(file_content.content)  # No .content attribute!
 
 # ✅ Correct
-file_content = client.beta.files.download(file_id)
+file_content = client.files.download(file_id)
 with open(path, 'wb') as f:
     f.write(file_content.read())  # Use .read()
 
-# FileMetadata fields: id, filename, size_bytes (not size), mime_type, created_at, type, downloadable
-metadata = client.beta.files.retrieve_metadata(file_id)
+# FileMetadata fields: id, filename, size_bytes (not size), mime_type, created_at, type, downloadable, expires_at
+metadata = client.files.retrieve_metadata(file_id)
 print(f"Size: {metadata.size_bytes} bytes")  # Use size_bytes, not size
 ```
 
@@ -193,7 +193,7 @@ Be patient - the cell will show [*] while running!
 **Note**: Files are overwritten by default. You'll see `[overwritten]` in the download summary when a file already existed. Set `overwrite=False` to prevent this.
 
 ### Debugging API Errors
-1. Check SDK version: `anthropic.__version__` should be `0.69.0`
+1. Check SDK version: `anthropic.__version__` should be `2.0.0` or later
 2. Verify beta headers are passed per-request
 3. Ensure code_execution tool is included
 4. Check response structure with `print(response)`

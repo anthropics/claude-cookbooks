@@ -69,8 +69,8 @@ MAX_BUFFER_SIZE = 10 * 1024 * 1024
 # the gateway.
 MAX_BODY_BYTES = 256 * 1024
 # Default to Sonnet so running the notebook end-to-end stays cheap. Override
-# with MODEL=claude-opus-4-6 to match notebook 00's DEFAULT_MODEL exactly.
-DEFAULT_MODEL = "claude-sonnet-4-6"
+# with MODEL=claude-opus-5-5 to match notebook 00's DEFAULT_MODEL exactly.
+DEFAULT_MODEL = "claude-sonnet-5-5"
 
 _session_map: dict[str, str] = {}  # external session_id → SDK session_id
 _map_lock = asyncio.Lock()
@@ -142,6 +142,10 @@ def _build_options(*, resume: str | None) -> ClaudeAgentOptions:
         # Must match the Dockerfile WORKDIR for resume to find transcripts.
         cwd="/app",
         resume=resume,
+        # Deterministic container: don't load filesystem settings, and pin the
+        # permission mode rather than inheriting the CLI's default.
+        setting_sources=[],
+        permission_mode="default",
     )
 
 

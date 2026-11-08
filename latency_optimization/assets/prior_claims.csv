@@ -1,0 +1,19 @@
+policyholder_id,prior_ref,loss_date,type,amount_usd,shop,flagged
+PH-5198,P-9931,2022-03-19,collision,6100,Coastline Collision,N
+PH-7444,P-7710,2021-06-14,collision,2400,Great Lakes Auto Body,N
+PH-3660,P-4402,2023-11-02,collision,2200,Metro Collision,N
+PH-3660,P-3390,2022-12-15,comprehensive/glass,410,GlassPro,N
+PH-3660,P-2288,2021-10-30,collision,5900,Metro Collision,N
+PH-3660,P-1177,2020-03-11,comprehensive/hail,3300,HailTech PDR,N
+PH-6031,P-4590,2023-10-10,collision,2200,Southside Auto Body,N
+PH-6031,P-3470,2022-08-02,comprehensive/weather,1400,Statewide Glass & Body,N
+PH-6031,P-2495,2021-09-15,collision,3900,Southside Auto Body,N
+PH-6031,P-1305,2020-01-20,comprehensive/animal,1100,Rural Route Body,N
+PH-6250,P-4402,2023-09-30,comprehensive/glass,410,Puget Sound Auto Glass,N
+PH-6250,P-3305,2022-06-11,collision,3300,Rainier Body Works,N
+PH-6250,P-2409,2021-05-08,comprehensive/weather,780,Rainier Body Works,N
+PH-6250,P-1230,2020-11-30,collision,1900,Rainier Body Works,N
+PH-6250,P-0410,2019-02-14,comprehensive/glass,290,Puget Sound Auto Glass,N
+PH-3915,P-4570,2023-11-20,collision,2900,Desert Truck & Body,N
+PH-3915,P-3455,2022-10-05,comprehensive/animal,1300,Desert Truck & Body,N
+PH-3915,P-2500,2021-08-16,collision,2200,Copper State Collision,N

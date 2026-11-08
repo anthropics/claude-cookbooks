@@ -1,0 +1,286 @@
+SESSION sesn_example06: Tests fail on CI with FileNotFoundError (agent coding-agent; created 2026-10-21T02:25:10.414754Z)
+
+NOTE ABOUT THIS FILE: A generated example: a coding agent working on a fictional repository.
+
+=== primary thread sthr_example06: coding-agent ===
+
+USER:
+On the CI machine `make test` fails with FileNotFoundError for stations.json, although the data directory is in the checkout. Find the real cause and fix it properly in the code, so the tests pass from a fresh checkout with no environment variables set. Keep `TIDEWICK_DATA_DIR` working as an override. Explain the cause in two sentences when you're done.
+
+TOOL CALL bash:
+command: mkdir -p /work && tar xzf /mnt/session/uploads/repo/tidewick.tar.gz -C /work && find /work/tidewick -type f | grep -v '.git' | sort
+
+TOOL RESULT (bash):
+/work/tidewick/CHANGELOG.md
+/work/tidewick/CONTRIBUTING.md
+/work/tidewick/Makefile
+/work/tidewick/README.md
+/work/tidewick/data/constituents/cape-mallow.json
+/work/tidewick/data/constituents/port-avery.json
+/work/tidewick/data/stations.json
+/work/tidewick/docs/ARCHITECTURE.md
+/work/tidewick/docs/adr/0001-stdlib-only.md
+/work/tidewick/docs/adr/0002-json-files-not-sqlite.md
+/work/tidewick/tests/__init__.py
+/work/tidewick/tests/test_cli.py
+/work/tidewick/tests/test_predict.py
+/work/tidewick/tests/test_stations.py
+/work/tidewick/tidewick/__init__.py
+/work/tidewick/tidewick/__main__.py
+/work/tidewick/tidewick/cli.py
+/work/tidewick/tidewick/config.py
+/work/tidewick/tidewick/harmonics.py
+/work/tidewick/tidewick/legacy_parser.py
+/work/tidewick/tidewick/predict.py
+/work/tidewick/tidewick/stations.py
+/work/tidewick/tools/check_style.py
+/work/tidewick/tools/make_fixtures.py
+
+TOOL CALL bash:
+command: cd /work/tidewick && cat tidewick/config.py
+
+TOOL RESULT (bash):
+"""Where the station data lives."""
+
+import os
+from pathlib import Path
+
+
+def data_dir() -> Path:
+    """TIDEWICK_DATA_DIR if set, else ./data under the current working directory."""
+    configured = os.environ.get("TIDEWICK_DATA_DIR")
+    return Path(configured) if configured else Path.cwd() / "data"
+
+TOOL CALL bash:
+command: cd /work/tidewick && cat Makefile && echo ---- && cat tidewick/stations.py
+
+TOOL RESULT (bash):
+.PHONY: test check fixtures slow
+
+test:
+	cd tests && python -m unittest discover -s . -t ..
+
+slow:
+	cd tests && TIDEWICK_SLOW=1 python -m unittest discover -s . -t ..
+
+check: test
+	python tools/check_style.py
+
+fixtures:
+	python tools/make_fixtures.py --help
+----
+"""Loading and validating station data files."""
+
+import json
+import re
+from dataclasses import dataclass
+
+from tidewick import config, harmonics
+
+STATION_ID = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
+
+
+@dataclass(frozen=True)
+class Station:
+    id: str
+    name: str
+    mean_level_m: float
+    utc_offset_hours: float
+    datum: str
+    constituents: tuple  # of (name, amplitude_m, phase_deg)
+
+
+def list_ids() -> list:
+    """The station ids listed in stations.json, in file order."""
+    index = json.loads((config.data_dir() / "stations.json").read_text())
+    return [entry["id"] for entry in index["stations"]]
+
+
+def load(station_id: str) -> Station:
+    """Load one station by id. Raises ValueError when the id is malformed or the files disagree."""
+    if not STATION_ID.match(station_id):
+        raise ValueError(f"station id {station_id!r} is not lowercase kebab-case")
+    index = json.loads((config.data_dir() / "stations.json").read_text())
+    entry = next((e for e in index["stations"] if e["id"] == station_id), None)
+    if entry is None:
+        raise ValueError(f"no station {station_id!r} in stations.json")
+    path = config.data_dir() / "constituents" / f"{station_id}.json"
+    doc = json.loads(path.read_text())
+    if doc.get("station") != station_id:
+        found = doc.get("station")
+        raise ValueError(f"{path.name} says station {found!r}, expected {station_id!r}")
+    constituents = []
+    for c in doc["constituents"]:
+        harmonics.speed(c["name"])  # validates the name
+        constituents.append((c["name"], float(c["amplitude_m"]), float(c["phase_deg"])))
+    return Station(
+        id=station_id,
+        name=entry["name"],
+        mean_level_m=float(entry["mean_level_m"]),
+        utc_offset_hours=float(entry["utc_offset_hours"]),
+        datum=entry.get("datum", "MSL"),
+        constituents=tuple(constituents),
+    )
+
+TOOL CALL bash:
+command: cd /work/tidewick && make test 2>&1 | tail -40
+
+TOOL RESULT (bash):
+ERROR: test_list_ids (tests.test_stations.StationsTest.test_list_ids)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/work/tidewick/tests/test_stations.py", line 8, in test_list_ids
+    self.assertEqual(stations.list_ids()[:2], ["port-avery", "cape-mallow"])
+                     ^^^^^^^^^^^^^^^^^^^
+  File "/work/tidewick/tidewick/stations.py", line 24, in list_ids
+    index = json.loads((config.data_dir() / "stations.json").read_text())
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/pathlib.py", line 1058, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/pathlib.py", line 1044, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/work/tidewick/tests/data/stations.json'
+
+======================================================================
+ERROR: test_load (tests.test_stations.StationsTest.test_load)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/work/tidewick/tests/test_stations.py", line 11, in test_load
+    s = stations.load("port-avery")
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/work/tidewick/tidewick/stations.py", line 32, in load
+    index = json.loads((config.data_dir() / "stations.json").read_text())
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/pathlib.py", line 1058, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/pathlib.py", line 1044, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/work/tidewick/tests/data/stations.json'
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.050s
+
+FAILED (errors=10, skipped=1)
+make: *** [Makefile:4: test] Error 1
+
+AGENT:
+Confirmed. Now fix `config.py` to resolve the data dir relative to the package install location (repo root), not the process's current working directory, while still honoring `TIDEWICK_DATA_DIR`.
+
+TOOL CALL edit:
+file_path: /work/tidewick/tidewick/config.py
+new_string:
+"""Where the station data lives."""
+
+import os
+from pathlib import Path
+
+# The repository root, i.e. the parent of the installed "tidewick" package
+# directory. Used as the base for the default data directory so lookups do
+# not depend on the process's current working directory.
+_REPO_ROOT = Path(__file__).resolve().parent.parent
+
+
+def data_dir() -> Path:
+    """TIDEWICK_DATA_DIR if set, else the "data" directory next to the package."""
+    configured = os.environ.get("TIDEWICK_DATA_DIR")
+    return Path(configured) if configured else _REPO_ROOT / "data"
+old_string:
+"""Where the station data lives."""
+
+import os
+from pathlib import Path
+
+
+def data_dir() -> Path:
+    """TIDEWICK_DATA_DIR if set, else ./data under the current working directory."""
+    configured = os.environ.get("TIDEWICK_DATA_DIR")
+    return Path(configured) if configured else Path.cwd() / "data"
+
+TOOL RESULT (edit):
+File updated: /work/tidewick/tidewick/config.py
+
+TOOL CALL bash:
+command: cd /work/tidewick && make test 2>&1 | tail -20
+
+TOOL RESULT (bash):
+cd tests && python -m unittest discover -s . -t ..
+........s.....
+----------------------------------------------------------------------
+Ran 14 tests in 0.005s
+
+OK (skipped=1)
+
+AGENT:
+Passes. Let's also verify the override still works and run `make check`/from a different cwd to be thorough.
+
+TOOL CALL bash:
+command:
+cd /work/tidewick && TIDEWICK_DATA_DIR=/tmp/nope python -c "
+import sys
+sys.path.insert(0, '.')
+from tidewick import config
+print(config.data_dir())
+" 
+echo "---default---"
+cd / && python -c "
+import sys
+sys.path.insert(0, '/work/tidewick')
+from tidewick import config
+print(config.data_dir())
+"
+cd /work/tidewick && make check 2>&1 | tail -20
+
+TOOL RESULT (bash):
+/tmp/nope
+---default---
+/work/tidewick/data
+cd tests && python -m unittest discover -s . -t ..
+........s.....
+----------------------------------------------------------------------
+Ran 14 tests in 0.005s
+
+OK (skipped=1)
+python tools/check_style.py
+0 style problems
+
+AGENT:
+Both cases work correctly regardless of the current working directory, and `make check` (tests + style) passes too.
+
+TOOL CALL bash:
+command: mkdir -p /mnt/session/outputs && tar czf /mnt/session/outputs/tidewick.tar.gz -C /work tidewick && ls -la /mnt/session/outputs
+
+TOOL RESULT (bash):
+total 24
+drwxr-xr-x 1 claude ubuntu     0 Oct 21 02:25 .
+drwxr-xr-x 4 root   root    4096 Oct 21 02:25 ..
+-rw-r--r-- 1 claude ubuntu 18102 Oct 21 02:25 tidewick.tar.gz
+
+AGENT:
+## Summary
+
+**Root cause:** `tidewick/config.py`'s `data_dir()` fell back to `Path.cwd() / "data"` whenever `TIDEWICK_DATA_DIR` wasn't set. The `Makefile`'s `test` target runs `cd tests && python -m unittest discover -s . -t ..`, so the process's cwd during tests is `tests/`, not the repo root — meaning it looked for a nonexistent `tests/data/stations.json` even though `data/` exists at the repo root. This only bites on a fresh checkout run via `make test` (no lingering cwd/env from manual `cd`-less invocations), which is exactly the CI scenario described.
+
+**Fix:** In `tidewick/config.py`, changed the default to resolve relative to the package's own location (`Path(__file__).resolve().parent.parent`, i.e. the repo root) instead of the current working directory:
+
+```python
+_REPO_ROOT = Path(__file__).resolve().parent.parent
+
+def data_dir() -> Path:
+    configured = os.environ.get("TIDEWICK_DATA_DIR")
+    return Path(configured) if configured else _REPO_ROOT / "data"
+```
+
+`TIDEWICK_DATA_DIR` still overrides when set (verified explicitly).
+
+**Verification:**
+- `make test` → `Ran 14 tests in 0.005s / OK (skipped=1)` (was failing with `FileNotFoundError` before).
+- `make check` → tests pass, `0 style problems`.
+- Confirmed `data_dir()` returns the repo's `data/` dir regardless of cwd, and still honors `TIDEWICK_DATA_DIR` when set.
+
+Repacked the repo to `/mnt/session/outputs/tidewick.tar.gz`.
+
+**One-sentence cause (as requested, two sentences):** `data_dir()` defaulted to `cwd/data` rather than a path anchored to the package/repo location, and the `Makefile` test target changes into `tests/` before running unittest discovery, so the default path resolved to the nonexistent `tests/data`. Anchoring the default to the package's own directory (`__file__`-relative) instead of the process cwd fixes it while leaving the `TIDEWICK_DATA_DIR` override intact.
