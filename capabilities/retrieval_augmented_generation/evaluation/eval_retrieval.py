@@ -22,6 +22,7 @@ def evaluate_retrieval(retrieved_links, correct_links):
 def get_assert(output: str, context) -> bool | float | dict[str, Any]:
     correct_chunks = context["vars"]["correct_chunks"]
 
+    precision = recall = mrr = f1 = 0.0
     try:
         precision, recall, mrr, f1 = evaluate_retrieval(output, correct_chunks)
         metrics: dict[str, float] = {}
