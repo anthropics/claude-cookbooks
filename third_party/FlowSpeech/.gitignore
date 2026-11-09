@@ -1,0 +1,8 @@
+flowspeech-request*.json
+flowspeech-*.wav
+__pycache__/
+.pytest_cache/
+.test-tmp/
+.validation-tools/
+.validation-cache/
+dist/
