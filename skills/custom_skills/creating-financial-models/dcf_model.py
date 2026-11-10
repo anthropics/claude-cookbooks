@@ -52,6 +52,9 @@ class DCFModel:
             "ebitda_margin": [ebitda[i] / revenue[i] for i in range(len(revenue))],
             "capex_percent": [capex[i] / revenue[i] for i in range(len(revenue))],
         }
+        # Invalidate dependent cached calculations
+        self.projections = {}
+        self.valuation_results = {}
 
     def set_assumptions(
         self,
@@ -101,6 +104,9 @@ class DCFModel:
             "nwc_percent": nwc_percent,
             "terminal_growth": terminal_growth,
         }
+        # Invalidate dependent cached calculations
+        self.projections = {}
+        self.valuation_results = {}
 
     def calculate_wacc(
         self,
