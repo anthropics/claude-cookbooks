@@ -201,9 +201,20 @@ class SensitivityAnalyzer:
         Returns:
             DataFrame with scenario results
         """
+        all_var_names = {v for sc in scenarios.values() for v in sc}
+        base_values = {}
+        for var_name in all_var_names:
+            if var_name in variable_updates and hasattr(self.base_model, var_name):
+                base_values[var_name] = getattr(self.base_model, var_name)
+
         results = []
 
         for scenario_name, variables in scenarios.items():
+            # Reset to base before each scenario
+            for var_name, base_val in base_values.items():
+                if var_name in variable_updates:
+                    variable_updates[var_name](base_val)
+
             # Update all variables for this scenario
             for var_name, value in variables.items():
                 if var_name in variable_updates:
@@ -228,7 +239,10 @@ class SensitivityAnalyzer:
                 }
             )
 
-            # Reset model (simplified - should restore all base values)
+        # Restore base values
+        for var_name, base_val in base_values.items():
+            if var_name in variable_updates:
+                variable_updates[var_name](base_val)
 
         df = pd.DataFrame(results)
 
