@@ -717,6 +717,17 @@
   categories:
   - Integrations
   - RAG & Retrieval
+- title: Build a research agent with cited answers using Claude and Qdrant
+  description: Answer questions about recent arXiv papers with Qdrant hybrid search and
+    sentence-level citations from search result blocks.
+  path: third_party/Qdrant/rag_agent_with_qdrant.ipynb
+  authors:
+  - anush008
+  date: '2026-11-16'
+  categories:
+  - Integrations
+  - RAG & Retrieval
+  - Agent Patterns
 - title: Using the Wolfram Alpha LLM API as a tool with Claude
   description: Integrate Wolfram Alpha LLM API as Claude tool for computational queries
     and answers.
