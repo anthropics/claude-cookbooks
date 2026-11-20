@@ -94,35 +94,42 @@ OLDER_MODEL_PATTERNS = {old: model_id_pattern(old) for old in OLDER_MODELS}
 # (anthropic.claude-...-v1:0), which legitimately carry dates.
 DATED_MODEL_PATTERN = re.compile(r"(?<![\w.])claude-[a-z0-9.-]+?-\d{8}(?!-v\d)")
 
-# Notebooks that pin an older model on purpose (pricing tables, recorded eval/benchmark results,
-# model-specific billing behaviour). Older-model hits here are reported as info and are
-# never auto-fixed. Keep in sync with TestModelUsage.ALLOWED_LEGACY_MODELS in
+# Notebooks that pin specific older models on purpose (pricing tables, recorded eval/benchmark
+# results, model-specific billing behaviour), keyed by path relative to the repo root. Only the
+# listed IDs are allowed in that notebook: they are reported as info and never auto-fixed, while
+# any other older ID in the same notebook is still flagged (and auto-fixed) as usual. Keep in sync
+# with TestModelUsage.ALLOWED_LEGACY_MODELS in
 # tests/notebook_tests/test_notebooks.py, except for entries that only pin a Bedrock ID
 # (e.g. finetuning_on_bedrock): the patterns above never match inside an `anthropic.`-prefixed
 # ID, so Bedrock IDs are out of scope for this script. The model tables above are also mirrored in
 # .claude/skills/cookbook-audit/validate_notebook.py (single-notebook audit).
-PINNED_LEGACY_NOTEBOOKS = {
-    "cost_optimization/cost_optimization.ipynb",
-    "fable_5_fallback_billing/guide.ipynb",
-    "multimodal/crop_tool.ipynb",
-    "evals/agentic_search/reproduce_agentic_search_benchmarks.ipynb",
+PINNED_LEGACY_NOTEBOOKS: dict[str, frozenset[str]] = {
+    "cost_optimization/cost_optimization.ipynb": frozenset(
+        {"claude-fable-5", "claude-opus-5", "claude-sonnet-5", "claude-haiku-4-5"}
+    ),
+    "fable_5_fallback_billing/guide.ipynb": frozenset({"claude-fable-5", "claude-opus-4-8"}),
+    "multimodal/crop_tool.ipynb": frozenset({"claude-fable-5", "claude-sonnet-5"}),
+    "evals/agentic_search/reproduce_agentic_search_benchmarks.ipynb": frozenset(
+        {"claude-opus-4-6"}
+    ),
     # Assistant-message prefill is the technique these two teach; only Claude Haiku 4.5 accepts it.
-    "misc/how_to_enable_json_mode.ipynb",
-    "misc/sampling_past_max_tokens.ipynb",
+    "misc/how_to_enable_json_mode.ipynb": frozenset({"claude-haiku-4-5"}),
+    "misc/sampling_past_max_tokens.ipynb": frozenset({"claude-haiku-4-5"}),
 }
 
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
 
-def is_pinned_legacy_notebook(notebook_path: Path) -> bool:
-    """True when the notebook's path relative to the repo root is in PINNED_LEGACY_NOTEBOOKS
-    (exact match, same keying as TestModelUsage.ALLOWED_LEGACY_MODELS)."""
+def pinned_legacy_models(notebook_path: Path) -> frozenset[str]:
+    """Older model IDs this notebook pins on purpose: its PINNED_LEGACY_NOTEBOOKS entry, looked
+    up by path relative to the repo root (exact match, same keying as
+    TestModelUsage.ALLOWED_LEGACY_MODELS). Empty for notebooks that pin nothing."""
     try:
         rel = Path(notebook_path).resolve().relative_to(REPO_ROOT).as_posix()
     except ValueError:
-        return False
-    return rel in PINNED_LEGACY_NOTEBOOKS
+        return frozenset()
+    return PINNED_LEGACY_NOTEBOOKS.get(rel, frozenset())
 
 
 class NotebookValidator:
@@ -214,7 +221,7 @@ class NotebookValidator:
                             }
                         )
 
-        pinned = is_pinned_legacy_notebook(notebook_path)
+        pinned_models = pinned_legacy_models(notebook_path)
         for i, cell in enumerate(nb.get("cells", [])):
             if cell.get("cell_type") == "code":
                 source = "".join(cell.get("source", []))
@@ -240,7 +247,7 @@ class NotebookValidator:
                     if not OLDER_MODEL_PATTERNS[old_model].search(source):
                         continue
                     retired = old_model in RETIRED_MODELS
-                    if pinned:
+                    if old_model in pinned_models:
                         result["issues"].append(
                             {
                                 "type": "pinned_legacy_model",
@@ -763,10 +770,10 @@ Overall: {passing}/{total} notebooks passing ({percentage:.1f}%)
             print("\nRe-run validation to verify all issues are resolved.")
 
     def fix_older_models(self, notebook_path: Path) -> bool:
-        """Replace superseded and retired model IDs with the latest model in the same family."""
-        if is_pinned_legacy_notebook(notebook_path):
-            print("(skipped: pins a legacy model on purpose)", end=" ")
-            return False
+        """Replace superseded and retired model IDs with the latest model in the same family,
+        leaving any IDs the notebook pins on purpose (PINNED_LEGACY_NOTEBOOKS) untouched."""
+        pinned_models = pinned_legacy_models(notebook_path)
+        replacements = {old: new for old, new in OLDER_MODELS.items() if old not in pinned_models}
         try:
             with open(notebook_path) as f:
                 nb = json.load(f)
@@ -782,7 +789,7 @@ Overall: {passing}/{total} notebooks passing ({percentage:.1f}%)
 
                     for line in lines:
                         new_line = line
-                        for old, new in OLDER_MODELS.items():
+                        for old, new in replacements.items():
                             new_line, n = OLDER_MODEL_PATTERNS[old].subn(new, new_line)
                             if n:
                                 cell_modified = True
