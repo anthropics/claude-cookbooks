@@ -113,7 +113,67 @@ _subagent_context: dict[str, Any] = {
     "active": False,
     "name": None,
     "depth": 0,
+    "stack": [],
 }
+
+
+def _extract_tool_result(block: Any) -> tuple[str | None, str] | None:
+    if isinstance(block, dict):
+        if block.get("type") != "tool_result":
+            return None
+        raw_content = block.get("content", "")
+        tool_use_id = block.get("tool_use_id")
+    elif hasattr(block, "tool_use_id") or block.__class__.__name__ == "ToolResultBlock":
+        raw_content = getattr(block, "content", "")
+        tool_use_id = getattr(block, "tool_use_id", None)
+    else:
+        return None
+
+    if isinstance(raw_content, str):
+        text = raw_content
+    elif isinstance(raw_content, list):
+        parts = []
+        for item in raw_content:
+            if isinstance(item, dict) and item.get("type") == "text":
+                parts.append(str(item.get("text", "")))
+            elif hasattr(item, "text"):
+                parts.append(str(item.text))
+        text = "\n".join(parts)
+    else:
+        text = ""
+    return (str(tool_use_id) if tool_use_id else None), text
+
+
+def _active_subagent_name(stack: list[tuple[str | None, str]], msg: Any) -> str | None:
+    parent_id = getattr(msg, "parent_tool_use_id", None)
+    if parent_id:
+        for tid, name in reversed(stack):
+            if tid == parent_id:
+                return name
+    return stack[-1][1] if stack else None
+
+
+def _pop_completed_subagent(
+    stack: list[tuple[str | None, str]],
+    tool_use_id: str | None,
+    content: str,
+) -> str | None:
+    if tool_use_id is not None:
+        for i in range(len(stack) - 1, -1, -1):
+            if stack[i][0] == tool_use_id:
+                return stack.pop(i)[1]
+        return None
+    for i in range(len(stack) - 1, -1, -1):
+        if stack[i][0] is None and ("subagent" in content.lower() or len(content) > 200):
+            return stack.pop(i)[1]
+    return None
+
+
+def _sync_subagent_context() -> None:
+    stack = _subagent_context["stack"]
+    _subagent_context["depth"] = len(stack)
+    _subagent_context["active"] = bool(stack)
+    _subagent_context["name"] = stack[-1][1] if stack else None
 
 
 def print_activity(msg: Any) -> None:
@@ -135,73 +195,76 @@ def print_activity(msg: Any) -> None:
         msg: A message object from the Claude Agent SDK response stream
     """
     global _subagent_context
+    stack: list[tuple[str | None, str]] = _subagent_context.setdefault("stack", [])
 
     if "Assistant" in msg.__class__.__name__:
-        # Check if content exists and has elements
-        if hasattr(msg, "content") and msg.content:
-            first_block = msg.content[0]
-            tool_name = first_block.name if hasattr(first_block, "name") else None
+        blocks = msg.content if hasattr(msg, "content") and msg.content else []
+        tool_blocks = [b for b in blocks if getattr(b, "name", None)]
+        if tool_blocks:
+            for block in tool_blocks:
+                tool_name = block.name
+                if tool_name in ("Agent", "Task"):
+                    tool_input = getattr(block, "input", None)
+                    tool_id = getattr(block, "id", None)
+                    if isinstance(tool_input, dict) and tool_input:
+                        subagent_type = tool_input.get("subagent_type", "unknown")
+                        description = tool_input.get("description", "")
+                        stack.append((tool_id, subagent_type))
+                        _sync_subagent_context()
 
-            if tool_name in ("Agent", "Task"):  # subagent tool ("Task" before SDK 0.2)
-                # Extract subagent details from the Task tool input
-                if hasattr(first_block, "input") and first_block.input:
-                    subagent_type = first_block.input.get("subagent_type", "unknown")
-                    description = first_block.input.get("description", "")
-                    _subagent_context["active"] = True
-                    _subagent_context["name"] = subagent_type
-                    _subagent_context["depth"] += 1
-
-                    print(f"🚀 Delegating to subagent: {subagent_type}")
-                    if description:
-                        print(f"   └─ Task: {description}")
-                else:
-                    print("🚀 Delegating to subagent...")
-            elif tool_name:
-                # Check if we're inside a subagent context
-                if _subagent_context["active"]:
+                        print(f"🚀 Delegating to subagent: {subagent_type}")
+                        if description:
+                            print(f"   └─ Task: {description}")
+                    else:
+                        if tool_id is not None:
+                            stack.append((tool_id, "unknown"))
+                            _sync_subagent_context()
+                        print("🚀 Delegating to subagent...")
+                elif _subagent_context["active"]:
+                    active_name = _active_subagent_name(stack, msg) or _subagent_context["name"]
                     indent = "   " * _subagent_context["depth"]
-                    print(f"{indent}📎 [{_subagent_context['name']}] Using: {tool_name}()")
+                    print(f"{indent}📎 [{active_name}] Using: {tool_name}()")
                 else:
                     print(f"🤖 Using: {tool_name}()")
-            else:
-                if _subagent_context["active"]:
-                    indent = "   " * _subagent_context["depth"]
-                    print(f"{indent}📎 [{_subagent_context['name']}] Thinking...")
-                else:
-                    print("🤖 Thinking...")
+        elif _subagent_context["active"]:
+            active_name = _active_subagent_name(stack, msg) or _subagent_context["name"]
+            indent = "   " * _subagent_context["depth"]
+            print(f"{indent}📎 [{active_name}] Thinking...")
         else:
-            if _subagent_context["active"]:
-                indent = "   " * _subagent_context["depth"]
-                print(f"{indent}📎 [{_subagent_context['name']}] Thinking...")
-            else:
-                print("🤖 Thinking...")
+            print("🤖 Thinking...")
 
     elif "User" in msg.__class__.__name__:
-        # Check if this is a Task tool result (subagent completed)
+        handled = False
         if hasattr(msg, "content") and msg.content:
-            for result in msg.content if isinstance(msg.content, list) else [msg.content]:
-                if isinstance(result, dict) and result.get("type") == "tool_result":
-                    # Try to detect if this was a Task result
-                    content = result.get("content", "")
-                    if isinstance(content, str) and (
-                        "subagent" in content.lower() or _subagent_context["active"]
-                    ):
-                        if _subagent_context["active"]:
-                            indent = "   " * _subagent_context["depth"]
-                            print(f"{indent}✅ Subagent [{_subagent_context['name']}] completed")
-                            _subagent_context["depth"] = max(0, _subagent_context["depth"] - 1)
-                            if _subagent_context["depth"] == 0:
-                                _subagent_context["active"] = False
-                                _subagent_context["name"] = None
-                        else:
-                            print("✓ Task completed")
-                        return
+            raw_items = msg.content if isinstance(msg.content, list) else [msg.content]
+            for item in raw_items:
+                parsed = _extract_tool_result(item)
+                if parsed is None:
+                    continue
+                tool_use_id, content = parsed
+                depth_before = _subagent_context["depth"]
+                completed_name = _pop_completed_subagent(stack, tool_use_id, content)
+                if completed_name is not None:
+                    _sync_subagent_context()
+                    indent = "   " * max(1, depth_before)
+                    print(f"{indent}✅ Subagent [{completed_name}] completed")
+                    handled = True
+                elif not _subagent_context["active"] and "subagent" in content.lower():
+                    print("✓ Task completed")
+                    handled = True
+                else:
+                    indent = (
+                        "   " * _subagent_context["depth"] if _subagent_context["active"] else ""
+                    )
+                    print(f"{indent}✓ Tool completed")
+                    handled = True
 
-        if _subagent_context["active"]:
-            indent = "   " * _subagent_context["depth"]
-            print(f"{indent}✓ Tool completed")
-        else:
-            print("✓ Tool completed")
+        if not handled:
+            if _subagent_context["active"]:
+                indent = "   " * _subagent_context["depth"]
+                print(f"{indent}✓ Tool completed")
+            else:
+                print("✓ Tool completed")
 
 
 def reset_activity_context() -> None:
@@ -223,6 +286,7 @@ def reset_activity_context() -> None:
         "active": False,
         "name": None,
         "depth": 0,
+        "stack": [],
     }
 
 
@@ -357,8 +421,7 @@ def visualize_conversation(messages: list[Any]) -> None:
     print(f"📝 Model: {model or 'unknown'}")
 
     # Track state
-    in_subagent = False
-    current_subagent: str | None = None
+    active_subagents: list[tuple[str | None, str]] = []
     pending_tools: list[str] = []  # Collect consecutive tool calls
 
     def flush_pending_tools(indent: str = "") -> None:
@@ -384,22 +447,21 @@ def visualize_conversation(messages: list[Any]) -> None:
             if not msg.content:
                 continue
 
+            active_name = _active_subagent_name(active_subagents, msg)
+
             for block in msg.content:
                 if hasattr(block, "text"):
-                    # Flush any pending tools before text
-                    flush_pending_tools("   " if in_subagent else "")
+                    flush_pending_tools("   " if active_name else "")
 
                     text = block.text
 
-                    if in_subagent:
-                        print(f"\n   📎 [{current_subagent}] Response:")
-                        # Indent the text nicely
+                    if active_name:
+                        print(f"\n   📎 [{active_name}] Response:")
                         for line in text.split("\n"):
                             if line.strip():
                                 print(f"      {line.strip()}")
                     else:
                         print("\n🤖 Assistant:")
-                        # Indent the text nicely
                         for line in text.split("\n"):
                             if line.strip():
                                 print(f"   {line.strip()}")
@@ -409,10 +471,8 @@ def visualize_conversation(messages: list[Any]) -> None:
                     tool_input = block.input if hasattr(block, "input") else {}
 
                     if tool_name in ("Agent", "Task"):  # subagent tool ("Task" before SDK 0.2)
-                        # Flush pending tools
-                        flush_pending_tools("   " if in_subagent else "")
+                        flush_pending_tools("   " if active_name else "")
 
-                        # Subagent delegation - create clear visual block
                         subagent_type = (
                             tool_input.get("subagent_type", "unknown") if tool_input else "unknown"
                         )
@@ -432,38 +492,34 @@ def visualize_conversation(messages: list[Any]) -> None:
                             print(f"   📝 Prompt: {prompt}")
 
                         print()
-                        in_subagent = True
-                        current_subagent = subagent_type
+                        active_subagents.append((getattr(block, "id", None), subagent_type))
+                        active_name = subagent_type
 
                     else:
-                        # Regular tool - accumulate for grouped display
                         tool_info = _format_tool_info(tool_name, tool_input)
                         pending_tools.append(tool_info)
 
         elif msg_type == "UserMessage":
-            if not msg.content or not isinstance(msg.content, list):
+            if not msg.content:
                 continue
 
-            for result in msg.content:
-                if not isinstance(result, dict) or result.get("type") != "tool_result":
+            raw_items = msg.content if isinstance(msg.content, list) else [msg.content]
+            for result in raw_items:
+                parsed = _extract_tool_result(result)
+                if parsed is None:
                     continue
 
-                content = result.get("content", "")
+                tool_use_id, content = parsed
+                completed_subagent = _pop_completed_subagent(active_subagents, tool_use_id, content)
 
-                # Detect subagent completion (Task tool result with substantial content)
-                is_subagent_result = in_subagent and isinstance(content, str) and len(content) > 200
-
-                if is_subagent_result:
-                    # Flush any pending tools
+                if completed_subagent is not None:
                     flush_pending_tools("   ")
 
-                    # Show subagent completion
                     print()
                     print(f"   {SUBAGENT_TOP}")
-                    print(_format_subagent_completion_line(current_subagent))
+                    print(_format_subagent_completion_line(completed_subagent))
                     print(f"   {SUBAGENT_BOTTOM}")
 
-                    # Show result summary
                     if content:
                         lines = [line.strip() for line in content.split("\n") if line.strip()]
                         if lines:
@@ -472,27 +528,17 @@ def visualize_conversation(messages: list[Any]) -> None:
                                 print(f"      {line}")
                     print()
 
-                    in_subagent = False
-                    current_subagent = None
-                else:
-                    # Regular tool result - just flush pending tools
-                    # (tool results don't need individual display)
-                    pass
-
-            # Flush tools after processing user message
-            flush_pending_tools("   " if in_subagent else "")
+            flush_pending_tools("   " if active_subagents else "")
 
         elif msg_type == "ResultMessage":
-            # Flush any remaining pending tools
-            flush_pending_tools("   " if in_subagent else "")
+            flush_pending_tools("   " if active_subagents else "")
 
-            # Close subagent if still open
-            if in_subagent:
+            while active_subagents:
+                _, remaining_subagent = active_subagents.pop()
                 print()
                 print(f"   {SUBAGENT_TOP}")
-                print(_format_subagent_completion_line(current_subagent))
+                print(_format_subagent_completion_line(remaining_subagent))
                 print(f"   {SUBAGENT_BOTTOM}")
-                in_subagent = False
 
             # Final stats
             print()
