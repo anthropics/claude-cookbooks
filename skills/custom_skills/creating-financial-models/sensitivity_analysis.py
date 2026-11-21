@@ -172,7 +172,9 @@ class SensitivityAnalyzer:
                     "low_delta": low_delta,
                     "high_delta": high_delta,
                     "impact": abs(impact),
-                    "impact_pct": abs(impact) / self.base_output * 100,
+                    "impact_pct": abs(impact) / self.base_output * 100
+                    if self.base_output != 0
+                    else float("inf"),
                 }
             )
 
