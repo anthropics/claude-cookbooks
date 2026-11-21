@@ -102,6 +102,8 @@ class DCFModel:
             "terminal_growth": terminal_growth,
         }
 
+        self.projections = {}
+
     def calculate_wacc(
         self,
         risk_free_rate: float,
