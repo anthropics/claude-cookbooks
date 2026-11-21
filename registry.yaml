@@ -1014,3 +1014,14 @@
   categories:
   - Claude Managed Agents
   - Agent Patterns
+- title: Trace an agent in Sentry, from the Messages API to Managed Agents
+  description: Build one site-health agent on the Messages API, the Agent SDK, and Managed
+    Agents, and send OpenTelemetry spans from each to Sentry, including the custom
+    tools your own code runs.
+  path: observability/trace_agents_in_sentry.ipynb
+  authors:
+  - cj-ant
+  date: '2026-11-17'
+  categories:
+  - Observability
+  - Integrations
