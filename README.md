@@ -42,6 +42,7 @@ If you have ideas for new examples or guides, share them on the [issues page](ht
 ### Third-Party Integrations
 - [Retrieval augmented generation](https://github.com/anthropics/anthropic-cookbook/tree/main/third_party): Supplement Claude's knowledge with external data sources.
   - [Vector databases (Pinecone)](https://github.com/anthropics/anthropic-cookbook/blob/main/third_party/Pinecone/rag_using_pinecone.ipynb)
+  - [Research agent with cited answers (Qdrant)](https://github.com/anthropics/anthropic-cookbook/blob/main/third_party/Qdrant/rag_agent_with_qdrant.ipynb)
   - [Web pages](https://github.com/anthropics/anthropic-cookbook/blob/main/misc/read_web_pages_with_haiku.ipynb)
 - [Embeddings with Voyage AI](https://github.com/anthropics/anthropic-cookbook/blob/main/third_party/VoyageAI/how_to_create_embeddings.md)
 
