@@ -208,7 +208,10 @@ class RatioInterpreter:
         first_value = values[0]
         last_value = values[-1]
         change = last_value - first_value
-        pct_change = (change / abs(first_value)) * 100 if first_value != 0 else 0
+        if first_value != 0:
+            pct_change = (change / abs(first_value)) * 100
+        else:
+            pct_change = float("inf") * (1 if change > 0 else -1) if change != 0 else 0
 
         # Determine trend direction
         if abs(pct_change) < 5:
@@ -222,7 +225,12 @@ class RatioInterpreter:
             "trend": trend,
             "change": change,
             "pct_change": pct_change,
-            "message": f"{ratio_name} has {'increased' if change > 0 else 'decreased'} by {abs(pct_change):.1f}% from {periods[0]} to {periods[-1]}",
+            "message": f"{ratio_name} has {'increased' if change > 0 else 'decreased'}"
+            f" by {abs(pct_change):.1f}% from {periods[0]} to {periods[-1]}"
+            if not abs(pct_change) == float("inf")
+            else f"{ratio_name} has {'increased' if change > 0 else 'decreased'}"
+            f" from {first_value} to {last_value} (from zero baseline)"
+            f" from {periods[0]} to {periods[-1]}",
             "values": list(zip(periods, values, strict=False)),
         }
 
