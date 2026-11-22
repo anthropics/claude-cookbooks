@@ -1014,3 +1014,13 @@
   categories:
   - Claude Managed Agents
   - Agent Patterns
+- title: Is the new prompt actually better? Evals with error bars
+  description: Decide whether a prompt change helped. Put confidence intervals on eval
+    scores and on the paired difference between two prompts, separate run-to-run noise
+    from case-to-case noise, size the eval, and run it through the Message Batches API.
+  path: evals/prompt_comparison_error_bars/guide.ipynb
+  authors:
+  - AnatoliTsoi
+  date: '2026-11-22'
+  categories:
+  - Evals
