@@ -142,7 +142,7 @@ def print_activity(msg: Any) -> None:
             first_block = msg.content[0]
             tool_name = first_block.name if hasattr(first_block, "name") else None
 
-            if tool_name == "Task":
+            if tool_name in ("Agent", "Task"):  # subagent tool ("Task" before SDK 0.2)
                 # Extract subagent details from the Task tool input
                 if hasattr(first_block, "input") and first_block.input:
                     subagent_type = first_block.input.get("subagent_type", "unknown")
@@ -408,7 +408,7 @@ def visualize_conversation(messages: list[Any]) -> None:
                     tool_name = block.name
                     tool_input = block.input if hasattr(block, "input") else {}
 
-                    if tool_name == "Task":
+                    if tool_name in ("Agent", "Task"):  # subagent tool ("Task" before SDK 0.2)
                         # Flush pending tools
                         flush_pending_tools("   " if in_subagent else "")
 

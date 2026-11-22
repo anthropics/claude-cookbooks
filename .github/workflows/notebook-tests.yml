@@ -123,11 +123,13 @@ jobs:
           cat test_output_*.txt > all_test_output.txt 2>/dev/null || echo "No test output files"
 
       - name: Post test results to PR
+        # Not on pull requests from forks
         if: |
           github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name == github.repository &&
           steps.changed-notebooks.outputs.has_notebooks == 'true' &&
           steps.structure-tests.outputs.has_failures == 'true'
-        uses: anthropics/claude-code-action@bbfaf8e1ffe3e688f7ab65ceee78de241e24a238 # v1.0.132 (>=v1.0.130 for WIF inputs)
+        uses: anthropics/claude-code-action@v1
         with:
           # Anthropic auth via Workload Identity Federation — the action
           # exchanges this job's GitHub OIDC token (id-token: write above)
@@ -159,6 +161,8 @@ jobs:
 
             Post using: gh pr comment $PR_NUMBER --body "your comment"
           claude_args: |
+            --model claude-sonnet-5-5
+            --permission-mode default
             --allowedTools "Bash(gh pr comment:*),Bash(cat:*),Read"
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}

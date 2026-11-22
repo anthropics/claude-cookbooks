@@ -109,8 +109,6 @@ PINNED_LEGACY_NOTEBOOKS = {
     # Assistant-message prefill is the technique these two teach; only Claude Haiku 4.5 accepts it.
     "misc/how_to_enable_json_mode.ipynb",
     "misc/sampling_past_max_tokens.ipynb",
-    # The recorded compaction run and its token counts are for Haiku 4.5.
-    "tool_use/automatic-context-compaction.ipynb",
 }
 
 

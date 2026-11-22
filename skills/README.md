@@ -197,7 +197,7 @@ for block in response.content:
 
 # Step 3: Download the file using Files API
 if file_id:
-    file_content = client.beta.files.download(file_id=file_id)
+    file_content = client.files.download(file_id=file_id)
 
     # Step 4: Save to disk
     with open("outputs/budget.xlsx", "wb") as f:
@@ -208,23 +208,25 @@ if file_id:
 
 ### Files API Methods
 
+The Files API is GA in the Anthropic SDK 2.x, so these calls live on `client.files` (the older `client.beta.files` namespace still works).
+
 ```python
 # Download file content (binary)
-content = client.beta.files.download(file_id="file_abc123...")
+content = client.files.download(file_id="file_abc123...")
 with open("output.xlsx", "wb") as f:
     f.write(content.read())  # Use .read() not .content
 
 # Get file metadata
-info = client.beta.files.retrieve_metadata(file_id="file_abc123...")
+info = client.files.retrieve_metadata(file_id="file_abc123...")
 print(f"Filename: {info.filename}, Size: {info.size_bytes} bytes")  # Use size_bytes not size
 
 # List all files
-files = client.beta.files.list()
+files = client.files.list()
 for file in files.data:
     print(f"{file.filename} - {file.created_at}")
 
 # Delete a file
-client.beta.files.delete(file_id="file_abc123...")
+client.files.delete(file_id="file_abc123...")
 ```
 
 **Important Notes:**

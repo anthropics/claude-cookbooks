@@ -85,7 +85,7 @@ async def send_query(
     options = ClaudeAgentOptions(
         model="claude-opus-5-5",
         allowed_tools=[
-            "Task",  # enables subagent delegation
+            "Agent",  # enables subagent delegation (named "Task" before claude-agent-sdk 0.2)
             "Read",
             "Write",
             "Edit",
@@ -102,7 +102,8 @@ async def send_query(
         # - CLAUDE.md project instructions
         # - Subagent definitions from .claude/agents/
         # - Hooks from .claude/settings.local.json
-        # Without this, the SDK operates in isolation mode with no filesystem settings loaded.
+        # Listing sources explicitly keeps the user's ~/.claude settings out of the run;
+        # since claude-agent-sdk 0.2, leaving setting_sources unset loads every source.
         setting_sources=["project", "local"],
     )
 

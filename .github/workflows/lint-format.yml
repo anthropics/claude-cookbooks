@@ -118,7 +118,7 @@ jobs:
           github.event.pull_request.head.repo.full_name == github.repository &&
           (steps.format-check.outputs.has_format_issues == 'true' ||
            steps.lint-check.outputs.has_lint_issues == 'true')
-        uses: anthropics/claude-code-action@bbfaf8e1ffe3e688f7ab65ceee78de241e24a238 # v1.0.132 (>=v1.0.130 for WIF inputs)
+        uses: anthropics/claude-code-action@v1
         with:
           # Anthropic auth via Workload Identity Federation — the action
           # exchanges this job's GitHub OIDC token (id-token: write above)
@@ -143,6 +143,8 @@ jobs:
 
             Post using: gh pr comment $PR_NUMBER --body "your comment"
           claude_args: |
+            --model claude-sonnet-5-5
+            --permission-mode default
             --allowedTools "Bash(gh pr comment:*)"
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}

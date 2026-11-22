@@ -68,7 +68,7 @@ jobs:
 
       - name: Claude Model Validation
         if: steps.changed-files.outputs.has_files == 'true'
-        uses: anthropics/claude-code-action@bbfaf8e1ffe3e688f7ab65ceee78de241e24a238 # v1.0.132 (>=v1.0.130 for WIF inputs)
+        uses: anthropics/claude-code-action@v1
         with:
           # Anthropic auth via Workload Identity Federation — the action
           # exchanges this job's GitHub OIDC token (id-token: write above)
@@ -83,6 +83,8 @@ jobs:
             Changed files to review:
             $(cat changed_files.txt)
           claude_args: |
+            --model claude-sonnet-5-5
+            --permission-mode default
             --allowedTools "Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(echo:*),Read,Glob,Grep,WebFetch"
         env:
           PR_NUMBER: ${{ steps.pr-number.outputs.number }}
