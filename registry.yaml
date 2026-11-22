@@ -346,6 +346,16 @@
   date: '2024-10-08'
   categories:
   - Responses
+- title: Evaluate a CRM analyst before acting on its budget advice
+  description: Catch account join duplication and immature follow-up by grading
+    executed SQL and the resulting budget decision separately.
+  path: misc/evaluate_crm_budget_decisions.ipynb
+  authors:
+  - AliFozooni
+  date: '2026-11-08'
+  categories:
+  - Evals
+  - Tools
 - title: Building evals
   description: Build robust evaluation systems to measure and improve Claude's performance
     on key metrics.
