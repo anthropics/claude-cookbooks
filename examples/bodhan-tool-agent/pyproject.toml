@@ -1,0 +1,33 @@
+[project]
+name = "bodhan-tool-agent"
+version = "0.1.0"
+description = "MCP tool server exposing Bodhan's Indic models, plus a task agent that plans, calls them, verifies its own output and respects budgets."
+requires-python = ">=3.10"
+dependencies = [
+    "mcp>=1.2.0",
+    "openai>=1.59.0",
+    "httpx>=0.27.0",
+    "python-dotenv>=1.0.1",
+    "pymupdf>=1.24.0",
+    "pydantic>=2.9.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.0",
+    "ruff>=0.8.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/bodhan_mcp", "src/bodhan_agent"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
