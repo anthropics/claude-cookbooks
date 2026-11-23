@@ -44,6 +44,7 @@ If you have ideas for new examples or guides, share them on the [issues page](ht
   - [Vector databases (Pinecone)](https://github.com/anthropics/anthropic-cookbook/blob/main/third_party/Pinecone/rag_using_pinecone.ipynb)
   - [Web pages](https://github.com/anthropics/anthropic-cookbook/blob/main/misc/read_web_pages_with_haiku.ipynb)
 - [Embeddings with Voyage AI](https://github.com/anthropics/anthropic-cookbook/blob/main/third_party/VoyageAI/how_to_create_embeddings.md)
+- [Private audio meeting notes with FunASR](./third_party/FunASR/funasr_claude_meeting_notes.ipynb): Transcribe audio locally, then use Claude for structured notes.
 
 ### Multimodal Capabilities
 - [Vision with Claude](https://github.com/anthropics/anthropic-cookbook/tree/main/multimodal): 
