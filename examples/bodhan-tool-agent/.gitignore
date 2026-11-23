@@ -1,0 +1,18 @@
+.env
+.cache/
+out/
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+dist/
+build/
+*.egg-info/
+
+# media stays out of git — link it from the README instead
+inputs/
+*.mp3
+*.wav
+*.mp4
+*.m4a
