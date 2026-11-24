@@ -85,7 +85,10 @@ def lambda_handler(event, context):
             output_key = f"Output/{input_key}"
 
             # write updated chunk to output S3
-            s3_adapter.write_output_to_s3(input_bucket, output_key, chunked_content)
+            if not s3_adapter.write_output_to_s3(input_bucket, output_key, chunked_content):
+                raise RuntimeError(
+                    f"Failed to write contextualized batch to s3://{input_bucket}/{output_key}"
+                )
 
             # Append the processed chunks file to list of files
             processed_batches.append({"key": output_key})
