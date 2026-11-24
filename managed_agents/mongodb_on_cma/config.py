@@ -6,7 +6,7 @@ tool, and AP2 modules. Kept import-light so every other module can depend on it 
 
 from __future__ import annotations
 
-DEFAULT_MODEL = "claude-haiku-4-5"
+DEFAULT_MODEL = "claude-haiku-5-5"
 EMBED_MODEL = "voyage-4-large"
 EMBED_DIM = 1024
 RERANK_MODEL = "rerank-2.5"

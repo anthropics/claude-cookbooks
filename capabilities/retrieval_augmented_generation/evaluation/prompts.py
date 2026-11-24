@@ -111,19 +111,16 @@ def _rerank_results(query: str, results: list[dict], k: int = 5) -> list[dict]:
     """
     try:
         response = client.messages.create(
-            model="claude-haiku-4-5",
-            max_tokens=50,
-            messages=[
-                {"role": "user", "content": prompt},
-                {"role": "assistant", "content": "<relevant_indices>"},
-            ],
-            temperature=0,
+            model="claude-haiku-5-5",
+            max_tokens=1024,
+            messages=[{"role": "user", "content": prompt}],
             stop_sequences=["</relevant_indices>"],
         )
 
-        # Extract the indices from the response
-        response_text = response.content[0].text.strip()
-        indices_str = response_text
+        # The reply may open with a thinking block; read the text blocks and keep what
+        # follows the opening tag (the stop sequence trims the closing one).
+        response_text = "".join(b.text for b in response.content if b.type == "text").strip()
+        indices_str = response_text.split("<relevant_indices>")[-1].strip()
         relevant_indices = []
         for idx in indices_str.split(","):
             try:

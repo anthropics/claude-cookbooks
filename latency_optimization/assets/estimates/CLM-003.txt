@@ -1,0 +1,12 @@
+CASCADE COLLISION — ESTIMATE OF RECORD
+Claim CLM-003 · loss state OR · prepared 2024-06-19
+
+ 01  Front bumper cover — replace                             part $   385.00   2.4h body @ $54/hr         $   129.60
+ 02  Grille — replace                                         part $   165.00   0.6h body @ $54/hr         $    32.40
+ 03  Hood panel — repair leading edge                         part $     0.00   4.0h body @ $54/hr         $   216.00
+ 04  Headlamp mount bracket LH — replace                      part $    60.00   0.5h body @ $54/hr         $    27.00
+ 05  Refinish — bumper + hood + blend                         part $     0.00   6.0h refinish @ $54/hr     $   324.00
+ 06  Paint & materials                                        part $   240.00   materials                  $     0.00
+
+ PARTS $850.00   LABOR $729.00   TOTAL $1,579.00
+Notes: OEM parts where available; labor rates per §3.4 regional caps; supplements pending teardown; photos on file.

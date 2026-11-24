@@ -123,11 +123,13 @@ jobs:
           cat test_output_*.txt > all_test_output.txt 2>/dev/null || echo "No test output files"
 
       - name: Post test results to PR
+        # Not on pull requests from forks
         if: |
           github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name == github.repository &&
           steps.changed-notebooks.outputs.has_notebooks == 'true' &&
           steps.structure-tests.outputs.has_failures == 'true'
-        uses: anthropics/claude-code-action@bbfaf8e1ffe3e688f7ab65ceee78de241e24a238 # v1.0.132 (>=v1.0.130 for WIF inputs)
+        uses: anthropics/claude-code-action@v1
         with:
           # Anthropic auth via Workload Identity Federation — the action
           # exchanges this job's GitHub OIDC token (id-token: write above)
@@ -152,13 +154,15 @@ jobs:
             - Explains how to fix common issues:
               - "Cells not executed": Run all cells from top to bottom before committing
               - "Execution order issues": Restart kernel and run all cells sequentially
-              - "Deprecated models": Update to current model versions (claude-sonnet-4-6, etc.)
+              - "Deprecated or non-current models": Switch to a current alias (claude-opus-5-5, claude-sonnet-5-5, claude-fable-5-1, claude-haiku-4-5); if the notebook pins an older model on purpose (pricing tables, recorded eval numbers), add it to ALLOWED_LEGACY_MODELS in tests/notebook_tests/test_notebooks.py with a one-line reason
               - "Hardcoded API keys": Use os.environ.get("ANTHROPIC_API_KEY") instead
             - Mentions they can test locally with: `make test-notebooks NOTEBOOK=path/to/notebook.ipynb`
             - Uses friendly, constructive language
 
             Post using: gh pr comment $PR_NUMBER --body "your comment"
           claude_args: |
+            --model claude-sonnet-5-5
+            --permission-mode default
             --allowedTools "Bash(gh pr comment:*),Bash(cat:*),Read"
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}

@@ -25,7 +25,7 @@ uv run python capabilities/knowledge_graph/evaluation/eval_extraction.py
 
 ## Expected baseline
 
-With `claude-haiku-4-5` and the extraction prompt from the guide, expect roughly:
+The ranges below were recorded with `claude-haiku-4-5` and the extraction prompt from the guide; the script now defaults to `claude-haiku-5-5`, so re-run it to refresh them:
 
 | Metric | P | R | F1 |
 |---|---|---|---|

@@ -42,7 +42,7 @@ Prompts:
 
 Providers:
 - We configure different Claude versions and their settings here.
-- This allows us to test across multiple models or with varying parameters (e.g., different temperature settings).
+- This allows us to test across multiple models or with varying parameters (e.g., different `max_tokens` or effort settings).
 
 
 Tests:

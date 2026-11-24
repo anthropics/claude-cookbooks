@@ -1,0 +1,11 @@
+DESERT TRUCK & BODY — ESTIMATE OF RECORD
+Claim CLM-010 · loss state AZ · prepared 2024-07-03
+
+ 01  Tailgate assembly — replace (OEM shell + hardware)       part $ 1,350.00   1.6h body @ $62/hr         $    99.20
+ 02  Tail lamp assemblies LH + RH — replace                   part $   420.00   0.6h body @ $62/hr         $    37.20
+ 03  Wiring pigtails — repair                                 part $    45.00   0.8h mech @ $125/hr        $   100.00
+ 04  Refinish — tailgate, blend to bed sides                  part $     0.00   5.0h refinish @ $62/hr     $   310.00
+ 05  Paint & materials                                        part $   210.00   materials                  $     0.00
+
+ PARTS $2,025.00   LABOR $546.40   TOTAL $2,571.40
+Notes: OEM parts where available; labor rates per §3.4 regional caps; supplements pending teardown; photos on file.
