@@ -170,10 +170,12 @@ class Sweep:
         # Blended figures weight the jobs (the type field) equally, and the levels equally within a job
         levels = sorted({(r["type"], r["level"]) for r in lines})
         types = [kind for kind, _ in levels]
-        self.share = {level: 1 / len(set(types)) / types.count(kind) for kind, level in levels}
-        self.hardest = tuple(
-            max(lv for k, lv in levels if k == kind) for kind in sorted(set(types))
-        )
+        self.share = {
+            (kind, level): 1 / len(set(types)) / types.count(kind) for kind, level in levels
+        }
+        # Level names sort by difficulty in the log, so the last one for each job is its hardest.
+        self.hardest_by_type = dict(levels)
+        self.hardest = tuple(self.hardest_by_type.values())
         # Tasks in one cluster (say, two pre-screens at one repair shop) are redrawn together, under the lower level
         stratum = {}
         for r in lines:
@@ -218,7 +220,7 @@ class Sweep:
     def stat(self, cfg, metric, **only):
         """metric: "p50" or "p90" of seconds per task, "first token p50" or "first token p90" of seconds to the first
         visible token, or a field to average ("correct", "usd", "calls", "output_tokens").
-        only: keep some tasks, as in type="quote" or level=sweep.hardest.
+        only: keep some tasks, as in type="quote", level=sweep.hardest_by_type["quote"].
         Returns an array of shape (rounds, 1 + redraws), with the tasks as they are in column 0"""
         only = {f: v if isinstance(v, tuple) else (v,) for f, v in only.items()}
         memo = (cfg, metric, tuple(sorted(only.items())))
@@ -228,11 +230,13 @@ class Sweep:
                 rows = [r for r in self.rows[(cfg, rnd)] if all(r[f] in v for f, v in only.items())]
                 assert rows, f"no task of {cfg.name} in round {rnd} matches {only}"
                 w = self.draws[:, [r["group"] for r in rows]]
-                level = np.array([r["level"] for r in rows])
-                # Each level keeps its share of the weight, whatever was redrawn or left out
-                for lv in np.unique(level):
-                    total = w[:, level == lv].sum(axis=1, keepdims=True)
-                    w[:, level == lv] *= self.share[lv] / np.where(total > 0, total, 1)
+                by_level = {}
+                for i, row in enumerate(rows):
+                    by_level.setdefault((row["type"], row["level"]), []).append(i)
+                # Each level within a job keeps its share, whatever was redrawn or left out.
+                for level, indices in by_level.items():
+                    total = w[:, indices].sum(axis=1, keepdims=True)
+                    w[:, indices] *= self.share[level] / np.where(total > 0, total, 1)
                 total = w.sum(axis=1)
                 # A redraw that holds none of the tasks `only` keeps divides 0 by 0, and its figure is NaN
                 with np.errstate(invalid="ignore"):
@@ -346,7 +350,12 @@ def to_beat(sweep, cfg, products):
 def rank_row(sweep, cfg, bounds, tied=""):
     """One line of a product's ranking: the product's own metric first, then seconds per task.
     Hardest level: accuracy on each job's hardest level, weighted equally"""
-    hardest = np.mean([sweep.value(cfg, "correct", level=level) for level in sweep.hardest])
+    hardest = np.mean(
+        [
+            sweep.value(cfg, "correct", type=kind, level=level)
+            for kind, level in sweep.hardest_by_type.items()
+        ]
+    )
     row = {
         "setting": cfg.name,
         "correct (hardest level)": f"{sweep.value(cfg, 'correct'):.1%} ({hardest:.1%})",
