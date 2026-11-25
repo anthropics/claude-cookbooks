@@ -22,7 +22,7 @@ The evaluation is orchestrated by the `promptfooconfig.yaml` file. In this file 
         - The functions are identical to those used in `guide.ipynb` except that instead of calling the Claude API they just return the prompt. Promptfoo then handles the orchestration of calling the API and storing the results.
         - You can read more about prompt functions [here](https://www.promptfoo.dev/docs/configuration/parameters#prompt-functions). Using python allows us to reuse the VectorDB class which is necessary for RAG, this is defined in `vectordb.py`.
 - Providers
-    - With Promptfoo you can connect to many different LLMs from different platforms, see [here for more](https://www.promptfoo.dev/docs/providers). In `guide.ipynb` we used Haiku with default temperature 0.0. We will use Promptfoo to experiment with an array of different temperature settings to identify the optimal choice for our use case.
+    - With Promptfoo you can connect to many different LLMs from different platforms, see [here for more](https://www.promptfoo.dev/docs/providers). In `guide.ipynb` we used Claude Haiku with default sampling settings. The checked-in Promptfoo configuration is the recorded temperature sweep on `claude-haiku-4-5`; current models reject a non-default `temperature`, so to re-run it on Claude Haiku 5.5 drop the `temperature` lines and compare models instead.
 - Tests
     - We will use the same data that was used in `guide.ipynb` which can be found in [`dataset.csv`](./dataset.csv).
     - Promptfoo has a wide array of built in tests which can be found [here](https://www.promptfoo.dev/docs/configuration/expected-outputs/deterministic).

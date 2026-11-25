@@ -1,0 +1,65 @@
+# Egress Proxy: A TLS-terminating nginx reverse proxy. Agent pods send their
+# Anthropic API requests here instead of directly to the internet. Combined with
+# the NetworkPolicy, this ensures agent pods can ONLY reach api.anthropic.com —
+# no other external endpoints. The proxy terminates TLS from the agent, then
+# re-encrypts the request to api.anthropic.com.
+#
+# The nginx configuration lives in egress-proxy/nginx.conf and is baked into
+# the egress-proxy image at build time (see egress-proxy/Dockerfile) — that
+# file is the single source of truth. Only the TLS cert/key are mounted here.
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: egress-proxy
+    namespace: claude-agent
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: egress-proxy
+    template:
+        metadata:
+            labels:
+                app: egress-proxy
+        spec:
+            containers:
+                - name: egress-proxy
+                  image: REGISTRY_URL/egress-proxy:latest
+                  imagePullPolicy: IfNotPresent
+                  ports:
+                      - containerPort: 443
+                      - containerPort: 80
+                  volumeMounts:
+                      - name: tls-certs
+                        mountPath: /etc/nginx/certs
+                        readOnly: true
+                  livenessProbe:
+                      httpGet:
+                          path: /health
+                          port: 80
+                      initialDelaySeconds: 5
+                      periodSeconds: 10
+                  readinessProbe:
+                      httpGet:
+                          path: /health
+                          port: 80
+                      initialDelaySeconds: 5
+                      periodSeconds: 10
+            volumes:
+                - name: tls-certs
+                  secret:
+                      secretName: egress-proxy-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: egress-proxy
+    namespace: claude-agent
+spec:
+    type: ClusterIP
+    selector:
+        app: egress-proxy
+    ports:
+        - port: 443
+          targetPort: 443

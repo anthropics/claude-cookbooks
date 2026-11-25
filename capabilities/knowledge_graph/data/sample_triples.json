@@ -1,0 +1,49 @@
+{
+  "Apollo 11": {
+    "entities": [
+      {"name": "Apollo 11", "type": "EVENT"},
+      {"name": "Neil Armstrong", "type": "PERSON"},
+      {"name": "Buzz Aldrin", "type": "PERSON"},
+      {"name": "Michael Collins", "type": "PERSON"},
+      {"name": "NASA", "type": "ORGANIZATION"},
+      {"name": "Moon", "type": "LOCATION"},
+      {"name": "Apollo program", "type": "EVENT"},
+      {"name": "Saturn V", "type": "ARTIFACT"},
+      {"name": "Kennedy Space Center", "type": "LOCATION"},
+      {"name": "Lunar Module Eagle", "type": "ARTIFACT"},
+      {"name": "Columbia", "type": "ARTIFACT"}
+    ],
+    "relations": [
+      {"source": "Neil Armstrong", "predicate": "commanded", "target": "Apollo 11"},
+      {"source": "Buzz Aldrin", "predicate": "crew member of", "target": "Apollo 11"},
+      {"source": "Michael Collins", "predicate": "crew member of", "target": "Apollo 11"},
+      {"source": "Apollo 11", "predicate": "part of", "target": "Apollo program"},
+      {"source": "Apollo 11", "predicate": "launched by", "target": "Saturn V"},
+      {"source": "Apollo 11", "predicate": "launched from", "target": "Kennedy Space Center"},
+      {"source": "Neil Armstrong", "predicate": "walked on", "target": "Moon"},
+      {"source": "Buzz Aldrin", "predicate": "walked on", "target": "Moon"},
+      {"source": "NASA", "predicate": "operated", "target": "Apollo 11"}
+    ]
+  },
+  "Neil Armstrong": {
+    "entities": [
+      {"name": "Neil Armstrong", "type": "PERSON"},
+      {"name": "NASA", "type": "ORGANIZATION"},
+      {"name": "Apollo 11", "type": "EVENT"},
+      {"name": "Moon", "type": "LOCATION"},
+      {"name": "Gemini 8", "type": "EVENT"},
+      {"name": "United States Navy", "type": "ORGANIZATION"},
+      {"name": "Purdue University", "type": "ORGANIZATION"},
+      {"name": "Korean War", "type": "EVENT"}
+    ],
+    "relations": [
+      {"source": "Neil Armstrong", "predicate": "commanded", "target": "Apollo 11"},
+      {"source": "Neil Armstrong", "predicate": "first person to walk on", "target": "Moon"},
+      {"source": "Neil Armstrong", "predicate": "served in", "target": "United States Navy"},
+      {"source": "Neil Armstrong", "predicate": "flew on", "target": "Gemini 8"},
+      {"source": "Neil Armstrong", "predicate": "worked for", "target": "NASA"},
+      {"source": "Neil Armstrong", "predicate": "studied at", "target": "Purdue University"},
+      {"source": "Neil Armstrong", "predicate": "fought in", "target": "Korean War"}
+    ]
+  }
+}

@@ -1,0 +1,72 @@
+# NetworkPolicy: Kubernetes firewall rules that restrict network traffic to and
+# from pods.
+#
+# This policy targets all pods with the label "role: agent" and enforces:
+#
+#   INGRESS (incoming traffic):
+#     - Only pods labeled "app: gateway" can connect to agent pods.
+#       All other incoming connections are dropped. This means only the gateway
+#       can send instructions to agent pods — no other service in the cluster
+#       can reach them directly.
+#
+#   EGRESS (outgoing traffic):
+#     - Agent pods can connect to the egress-proxy on port 443 (TCP).
+#       This is the only path to the Anthropic API.
+#     - Agent pods can make DNS queries on port 53 (UDP and TCP) to any
+#       destination. This is required because DNS resolution must work before
+#       the pod can find the egress-proxy service IP. GKE uses NodeLocal
+#       DNSCache (169.254.20.10), not kube-dns pods directly, so the DNS rule
+#       cannot be scoped to a specific podSelector and stay portable.
+#     - ALL other outbound traffic is dropped. Agent pods cannot reach the
+#       internet, other services, or other namespaces.
+#
+# The net effect: agent pods are fully isolated. They accept work only from
+# the gateway and can only talk to the Anthropic API (via the egress-proxy)
+# and DNS. Any attempt to exfiltrate data or reach unauthorized endpoints
+# is blocked at the network level.
+#
+# KNOWN RESIDUAL CHANNEL: because port 53 is open to any destination, a
+# determined attacker inside the pod could still tunnel data out via DNS
+# queries. If your cluster talks to kube-dns/CoreDNS pods directly (no
+# node-local DNS cache), tighten the last rule by adding:
+#
+#     - to:
+#           - namespaceSelector:
+#                 matchLabels:
+#                     kubernetes.io/metadata.name: kube-system
+#       ports: [...]
+#
+# or enforce DNS policy at the resolver (CoreDNS ACLs, Cilium DNS policies).
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+    name: agent-egress-policy
+    namespace: claude-agent
+spec:
+    podSelector:
+        matchLabels:
+            role: agent
+    policyTypes:
+        - Ingress
+        - Egress
+    ingress:
+        - from:
+              - podSelector:
+                    matchLabels:
+                        app: gateway
+    egress:
+        - to:
+              - podSelector:
+                    matchLabels:
+                        app: egress-proxy
+          ports:
+              - protocol: TCP
+                port: 443
+    # DNS: allow to any destination on port 53 (GKE uses NodeLocal DNSCache
+    # at 169.254.20.10, not directly to kube-dns pods)
+        - ports:
+              - protocol: UDP
+                port: 53
+              - protocol: TCP
+                port: 53

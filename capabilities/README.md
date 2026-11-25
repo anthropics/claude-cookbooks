@@ -14,6 +14,10 @@ Welcome to the Capabilities section of the Claude Cookbooks! This directory cont
 
 - **[Text-to-SQL with Claude](./text_to_sql/guide.ipynb)**: This guide covers how to generate complex SQL queries from natural language using prompting techniques, self-improvement, and RAG. We'll also explore how to evaluate and improve the accuracy of generated SQL queries, with evals that test for syntax, data correctness, row count, and more.
 
+- **[Knowledge Graph Construction with Claude](./knowledge_graph/guide.ipynb)**: Build a knowledge graph from unstructured text end-to-end — named entity recognition, relation extraction, entity resolution, and multi-hop querying — using structured outputs for schema-validated extraction and Claude-driven deduplication in place of string-similarity heuristics.
+
+- **[Content Policy Enforcement with Claude](./content_moderation/guide.ipynb)**: Turn a written content policy into rules a program can enforce. Claude compiles policy prose into validated JSON rules and extracts typed fields from each piece of content (text and images); a deterministic rule engine produces the verdict with a full audit trail. Covers ad creatives, marketplace listings, and community content.
+
 ## Getting Started
 
 To get started with these guides, simply navigate to the desired guide's directory and follow the instructions provided in the `guide.ipynb` file. Each guide is self-contained and includes all the necessary code, data, and evaluation scripts to reproduce the examples and experiments.

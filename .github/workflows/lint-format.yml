@@ -17,6 +17,7 @@ on:
 permissions:
   contents: read
   pull-requests: write
+  id-token: write # Anthropic Workload Identity Federation
 
 jobs:
   lint-and-format:
@@ -26,7 +27,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v4
+        uses: astral-sh/setup-uv@38f3f104447c67c051c4a08e39b64a148898af3a # v4.2.0 (sha-pinned)
         with:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
@@ -119,7 +120,12 @@ jobs:
            steps.lint-check.outputs.has_lint_issues == 'true')
         uses: anthropics/claude-code-action@v1
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Anthropic auth via Workload Identity Federation — the action
+          # exchanges this job's GitHub OIDC token (id-token: write above)
+          # for a short-lived access token instead of a static API key.
+          anthropic_federation_rule_id: fdrl_01SqmTwzmEE547mtaYN1mqHL
+          anthropic_organization_id: 1ec12c5c-6542-4da8-bf2f-c15919aef01c
+          anthropic_service_account_id: svac_01BHcCBa1UWFvNrHMqJjuaUZ
           github_token: ${{ secrets.GITHUB_TOKEN }}
           prompt: |
             The linting and formatting checks found issues.
@@ -137,6 +143,8 @@ jobs:
 
             Post using: gh pr comment $PR_NUMBER --body "your comment"
           claude_args: |
+            --model claude-sonnet-5-5
+            --permission-mode default
             --allowedTools "Bash(gh pr comment:*)"
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}

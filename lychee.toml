@@ -15,8 +15,8 @@ max_cache_age = "1d"
 max_retries = 3
 retry_wait_time = 2
 
-# Skip checking code blocks (important for notebooks with example code)
-skip_code_blocks = true
+# Code blocks are skipped by default (include_verbatim defaults to false;
+# the old skip_code_blocks field was removed in lychee 0.23)
 
 # Fallback extensions for local file checking
 # When checking relative links, try these extensions if the exact path doesn't exist
@@ -33,20 +33,27 @@ exclude_path = [
     "scripts/"
 ]
 
-# Exclude API endpoints and local development URLs from link checking
+
+# Accepted status codes: success codes plus 403 (gated sites) and
+# 429 (rate limited). Note this list REPLACES lychee's defaults, so the
+# 2xx codes must be listed explicitly.
+accept = [200, 201, 202, 203, 204, 206, 301, 302, 304, 307, 308, 403, 429]
+
+# User agent for requests ("headers" was renamed in lychee 0.23; the only
+# header we set is the user agent, which has a dedicated option)
+user_agent = "Mozilla/5.0 (compatible; lychee; anthropic-cookbook)"
+
+# The check-links workflow converts changed notebooks into a flat temp_md/
+# scratch dir, which breaks resolution of any relative file link (they
+# point at real files in the notebook's own directory). Notebook links to
+# repo files should be absolute GitHub URLs (house convention); the one
+# legitimate relative link is a notebook's own image, which must stay
+# relative to render on GitHub. Exclude the artifact class.
 exclude = [
     "https://api.anthropic.com.*",
     "https://console.anthropic.com.*",
     "https://www.claude.ai/",
     "http://localhost.*",
-    "http://127.0.0.1.*"
-]
-
-# Accept 403 (forbidden) and 429 (rate limited) as valid
-# These are returned by gated and rate-limited sites
-accept = [403, 429]
-
-# Headers for authenticated requests
-headers = [
-    "User-Agent=Mozilla/5.0 (compatible; lychee/0.20.1; anthropic-cookbook)"
+    "http://127.0.0.1.*",
+    "file://.*/temp_md/.*",
 ]

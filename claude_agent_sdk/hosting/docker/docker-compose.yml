@@ -1,0 +1,18 @@
+services:
+  research-agent:
+    build:
+      # Build context is claude_agent_sdk/ so research_agent/ and utils/ are in scope.
+      context: ../..
+      dockerfile: hosting/Dockerfile
+    image: research-agent
+    command: ["serve"]
+    env_file:
+      - ../.env
+    ports:
+      # Loopback only. The server has no auth, so don't expose it to the LAN
+      # by default — `curl localhost:8000` still works. Production deployments
+      # must front this with an authenticating reverse proxy (see README).
+      - "127.0.0.1:8000:8000"
+    volumes:
+      # Persist session transcripts across container restarts.
+      - ./sessions:/data

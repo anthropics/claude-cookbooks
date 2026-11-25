@@ -1,0 +1,51 @@
+order_id,customer_id,product,category,price,quantity,order_date,region
+1001,C001,Wireless Mouse,Electronics,24.99,2,2025-01-03,West
+1002,C002,Yoga Mat,Sports,39.99,1,2025-01-03,East
+1003,C001,USB-C Cable,Electronics,12.50,3,2025-01-04,West
+1004,C003,Coffee Maker,Home,89.00,1,2025-01-05,Midwest
+1005,C004,Running Shoes,Sports,119.99,1,2025-01-05,South
+1006,C002,Resistance Bands,Sports,18.99,2,2025-01-06,East
+1007,C005,Desk Lamp,Home,34.50,1,2025-01-07,West
+1008,C006,Bluetooth Speaker,Electronics,59.99,1,2025-01-07,East
+1009,C003,Blender,Home,64.99,1,2025-01-08,Midwest
+1010,C007,Notebook Set,Office,14.99,4,2025-01-08,South
+1011,C001,Mechanical Keyboard,Electronics,129.00,1,2025-01-09,West
+1012,C008,Water Bottle,Sports,22.00,2,2025-01-10,East
+1013,C004,Tennis Racket,Sports,89.99,1,2025-01-10,South
+1014,C009,Standing Desk,Office,299.00,1,2025-01-11,West
+1015,C005,Throw Pillow,Home,19.99,3,2025-01-11,West
+1016,C010,Webcam,Electronics,79.99,1,2025-01-12,Midwest
+1017,C002,Foam Roller,Sports,27.50,1,2025-01-12,East
+1018,C006,Smart Plug,Electronics,15.99,4,2025-01-13,East
+1019,C011,Desk Organizer,Office,24.00,2,2025-01-14,South
+1020,C003,Air Fryer,Home,109.99,1,2025-01-14,Midwest
+1021,C012,Dumbbells,Sports,49.99,2,2025-01-15,West
+1022,C007,Monitor Stand,Office,45.00,1,2025-01-15,South
+1023,C001,HDMI Cable,Electronics,9.99,2,2025-01-16,West
+1024,C013,Cutting Board,Home,29.99,1,2025-01-17,East
+1025,C008,Jump Rope,Sports,12.99,1,2025-01-17,East
+1026,C014,Laptop Stand,Office,54.99,1,2025-01-18,Midwest
+1027,C004,Basketball,Sports,34.99,1,2025-01-18,South
+1028,C009,Ergonomic Chair,Office,389.00,1,2025-01-19,West
+1029,C015,Tablet Case,Electronics,19.99,2,2025-01-20,East
+1030,C005,Candle Set,Home,24.99,2,2025-01-20,West
+1031,C010,Ring Light,Electronics,39.99,1,2025-01-21,Midwest
+1032,C002,Yoga Block,Sports,14.99,2,2025-01-21,East
+1033,C016,File Cabinet,Office,149.00,1,2025-01-22,South
+1034,C003,Toaster,Home,44.99,1,2025-01-23,Midwest
+1035,C011,Whiteboard,Office,69.99,1,2025-01-23,South
+1036,C006,Noise-Canceling Headphones,Electronics,199.99,1,2025-01-24,East
+1037,C012,Kettlebell,Sports,42.00,1,2025-01-24,West
+1038,C017,Picture Frame,Home,16.99,3,2025-01-25,West
+1039,C007,Stapler,Office,8.99,2,2025-01-25,South
+1040,C001,Power Bank,Electronics,34.99,1,2025-01-26,West
+1041,C013,Knife Set,Home,79.99,1,2025-01-27,East
+1042,C008,Pull-up Bar,Sports,32.99,1,2025-01-27,East
+1043,C018,Printer,Electronics,159.99,1,2025-01-28,Midwest
+1044,C014,Desk Pad,Office,29.99,1,2025-01-28,Midwest
+1045,C004,Soccer Ball,Sports,27.99,1,2025-01-29,South
+1046,C009,Bookshelf,Office,189.00,1,2025-01-29,West
+1047,C015,Phone Charger,Electronics,17.99,3,2025-01-30,East
+1048,C005,Wall Clock,Home,39.99,1,2025-01-30,West
+1049,C019,Exercise Bike,Sports,449.00,1,2025-01-31,Midwest
+1050,C010,USB Hub,Electronics,28.99,1,2025-01-31,Midwest

@@ -1,0 +1,39 @@
+part,oem_no,labor_hrs,rate_per_hr,area,tier
+Front bumper cover,004101,2.4,75,front,1
+Grille,004107,0.6,75,front,1
+Headlamp assy LH,004105,1.1,75,front,1
+Hood panel,004102,2.0,75,front,1
+Headlamp assy RH,004106,1.1,75,front,1
+LH fender,004103,2.4,75,front,1
+RH fender,004104,2.4,75,front,1
+Radiator support,004108,3.2,75,front,2
+A/C condenser,004109,1.5,75,front,2
+Front impact bar,004112,1.8,75,front,2
+Front crossmember,004110,4.0,95,front,2
+Rear bumper cover,004201,2.2,75,rear,1
+Tail lamp assy LH,004203,0.8,75,rear,1
+Trunk lid,004202,1.8,75,rear,1
+Tail lamp assy RH,004204,0.8,75,rear,1
+Rear impact bar,004208,1.6,75,rear,2
+Rear body panel,004206,4.4,75,rear,2
+Quarter panel LH,004205,6.5,75,rear,2
+Trunk floor pan,004207,5.2,95,rear,2
+Front door shell LH,004301,3.6,75,side,1
+Rear door shell LH,004302,3.4,75,side,1
+Rocker panel LH,004304,4.9,95,side,2
+B-pillar reinforcement,004303,5.8,95,side,2
+Roof panel,004401,8.0,75,roof,1
+PDR — paintless dent labor block,004402,6.0,75,roof,1
+Hood panel,004102,2.0,75,roof,1
+Trunk lid,004202,1.8,75,roof,1
+Gasket and seal kit,004503,1.0,145,engine,1
+Oil pump,004502,1.5,145,engine,1
+Engine mount set,004504,1.2,145,engine,1
+Long block reman assembly,004501,14.0,145,engine,2
+Airbag module — driver,004111,1.4,75,interior,2
+Airbag module — curtain,004113,1.6,75,interior,2
+Seat-belt pretensioner,004114,0.9,75,interior,2
+Catalytic converter assy,004601,1.2,110,exhaust,1
+Oxygen sensors (pair),004602,0.5,110,exhaust,1
+Exhaust pipe section,004603,0.9,110,exhaust,1
+Fuel line assembly,004604,1.6,110,exhaust,1

@@ -27,7 +27,7 @@ from claude_agent_sdk import ClaudeAgentOptions, ClaudeSDKClient
 load_dotenv()
 
 # Default model for the research agent
-DEFAULT_MODEL = "claude-opus-4-6"
+DEFAULT_MODEL = "claude-opus-5-5"
 
 # System prompt with citation requirements for research quality
 RESEARCH_SYSTEM_PROMPT = """You are a research agent specialized in AI.
@@ -80,7 +80,7 @@ async def send_query(
         prompt: The query to send
         activity_handler: Callback for activity updates (default: print_activity)
         continue_conversation: Continue the previous conversation if True
-        model: Model to use (default: claude-sonnet-4-6)
+        model: Model to use (default: claude-opus-5-5)
         display_result: If True, display the response using display_agent_response()
             after completion. Set to False for programmatic use.
 
@@ -104,6 +104,11 @@ async def send_query(
         continue_conversation=continue_conversation,
         system_prompt=RESEARCH_SYSTEM_PROMPT,
         max_buffer_size=10 * 1024 * 1024,  # 10MB buffer for handling images and large responses
+        # Be explicit: since claude-agent-sdk 0.2, leaving these unset loads every
+        # filesystem settings source (user, project, local) and lets the CLI pick the
+        # permission mode. An empty list keeps the agent isolated and reproducible.
+        setting_sources=[],
+        permission_mode="default",
     )
 
     result = None

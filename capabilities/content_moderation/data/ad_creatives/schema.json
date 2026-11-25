@@ -1,0 +1,127 @@
+{
+  "$comment": "Fields Claude extracts from an ad submission (creative image + headline + body copy + targeting metadata). Descriptions matter: they are the extraction instructions AND what the policy compiler reads to decide which field a rule should reference.",
+  "type": "object",
+  "properties": {
+    "ad_category": {
+      "type": "string",
+      "enum": [
+        "alcohol",
+        "gambling",
+        "financial_services",
+        "pharma_supplements",
+        "weight_loss",
+        "cosmetics_skincare",
+        "apparel_footwear",
+        "electronics",
+        "food_beverage",
+        "other"
+      ],
+      "description": "Primary product/service category being advertised, judged from image and copy together."
+    },
+    "brand_name": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Advertiser brand as shown in the creative or copy; null if none visible."
+    },
+    "headline_text": {
+      "type": "string",
+      "description": "The headline as submitted (from metadata, not OCR)."
+    },
+    "disclaimer_present": {
+      "type": "boolean",
+      "description": "True if the creative image contains any legal/responsibility disclaimer text (small print strip, age badge, APR line, etc.)."
+    },
+    "disclaimer_text": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Verbatim disclaimer text read from the image, or null if none."
+    },
+    "age_gate_shown": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "Minimum age displayed in the creative (e.g. 18 or 21 from an '18+' / '21+' badge); null if no age badge."
+    },
+    "text_coverage": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "description": "Rough share of the image area covered by overlaid text glyphs: low (<20%), medium (20-40%), high (>40%). Judge by the area the letters themselves occupy, not their bounding boxes or text regions; a headline plus small print and a badge on an otherwise clean image is low."
+    },
+    "before_after_imagery": {
+      "type": "boolean",
+      "description": "True if the creative shows a side-by-side or sequential before/after comparison of a person's body, skin, or face."
+    },
+    "superlative_claims": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Absolute or unverifiable claims found in headline, body, or image text \u2014 e.g. '#1', 'best', 'guaranteed', 'cure', 'instant results', 'risk-free'. Empty list if none."
+    },
+    "health_claim_present": {
+      "type": "boolean",
+      "description": "True if copy or image claims to treat, cure, prevent, or diagnose a medical condition."
+    },
+    "price_or_rate_shown": {
+      "type": "boolean",
+      "description": "True if a specific price, discount percentage, interest rate, or APR appears anywhere in the ad."
+    },
+    "apr_disclosed": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "For financial ads that mention credit/loans/rates: true if a representative APR is stated. Null if not a credit product."
+    },
+    "people_depicted": {
+      "type": "boolean",
+      "description": "True if one or more real-looking people appear in the creative."
+    },
+    "depicted_person_apparent_minor": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "If people are depicted: true if any appears to be under 18. Null if no people or genuinely indeterminate."
+    },
+    "competitor_reference": {
+      "type": "boolean",
+      "description": "True if the ad names or shows the logo of a brand other than the advertiser in a comparative way."
+    },
+    "landing_url_domain": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Domain of the click-through URL from metadata; null if not provided."
+    },
+    "target_min_age": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "Minimum audience age from the submitted targeting metadata; null if advertiser left it unset."
+    }
+  },
+  "required": [
+    "ad_category",
+    "headline_text",
+    "disclaimer_present",
+    "text_coverage",
+    "before_after_imagery",
+    "superlative_claims",
+    "health_claim_present",
+    "price_or_rate_shown",
+    "people_depicted",
+    "competitor_reference"
+  ]
+}

@@ -3,7 +3,8 @@ name = "anthropic-cookbook"
 version = "0.1.0"
 requires-python = ">=3.11,<3.13"
 dependencies = [
-    "anthropic>=0.71.0",
+    "anthropic>=2.0.0",
+    "claude-agent-sdk>=0.2.168",
     "ipykernel>=7.1.0",
     "notebook>=7.4.7",
     "numpy>=2.3.4",
@@ -12,6 +13,11 @@ dependencies = [
     "rich>=14.2.0",
     "python-dotenv>=1.2.1",
     "voyageai>=0.3.5",
+    "networkx>=3.6.1",
+    "matplotlib>=3.10.8",
+    "requests>=2.32.5",
+    "pymongo>=4.17.0",
+    "pyjwt>=2.10.0",
 ]
 
 [build-system]
@@ -28,6 +34,7 @@ dev = [
     "pyyaml>=6.0.3",
     "tox>=4.32.0",
     "tox-uv>=1.29.0",
+    "pytest-cov>=7.1.0",
 ]
 
 [tool.hatch.build.targets.wheel]
@@ -74,9 +81,17 @@ addopts = [
 ]
 markers = [
     "slow: marks tests as slow (requires notebook execution)",
+    "integration: requires live external services (Atlas / Voyage); skipped without credentials",
+    "mutates_state: mutates a real datastore; must run in a disposable namespace and own teardown",
 ]
 filterwarnings = [
     "ignore::DeprecationWarning",
     "ignore::PendingDeprecationWarning",
 ]
+
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
 

@@ -1,0 +1,12 @@
+{"id": "r01", "vendor": "Blue Bottle Coffee", "amount": 18.50, "category": "meals", "has_image": true, "date": "2026-03-01"}
+{"id": "r02", "vendor": "Office Depot", "amount": 42.00, "category": "supplies", "has_image": true, "date": "2026-03-02"}
+{"id": "r03", "vendor": "Uber", "amount": 31.20, "category": "transport", "has_image": true, "date": "2026-03-03"}
+{"id": "r04", "vendor": "Zoom", "amount": 15.99, "category": "software", "has_image": true, "date": "2026-03-04"}
+{"id": "r05", "vendor": "Staples", "amount": 38.00, "category": "supplies", "has_image": false, "date": "2026-03-05"}
+{"id": "r06", "vendor": "Figma", "amount": 144.00, "category": "software", "has_image": true, "date": "2026-03-06"}
+{"id": "r07", "vendor": "AWS", "amount": 287.43, "category": "infrastructure", "has_image": true, "date": "2026-03-07"}
+{"id": "r08", "vendor": "LinkedIn Ads", "amount": 450.00, "category": "marketing", "has_image": true, "date": "2026-03-08"}
+{"id": "r09", "vendor": "Dell", "amount": 1249.00, "category": "equipment", "has_image": true, "date": "2026-03-09"}
+{"id": "r10", "vendor": "Conference Registration", "amount": 899.00, "category": "events", "has_image": true, "date": "2026-03-10"}
+{"id": "r11", "vendor": "Delta Airlines", "amount": 80.00, "category": "travel", "has_image": true, "date": "2026-03-11"}
+{"id": "r12", "vendor": "Consulting LLC", "amount": 200.00, "category": null, "has_image": true, "date": "2026-03-12", "note": "category unclear — could be legal or marketing"}

@@ -1,0 +1,12 @@
+FRONT RANGE COLLISION CENTER — ESTIMATE OF RECORD
+Claim CLM-005 · loss state CO · prepared 2024-06-23
+
+ 01  Front bumper cover — replace                             part $   385.00   2.4h body @ $62/hr         $   148.80
+ 02  RH fender — replace                                      part $   330.00   2.4h body @ $62/hr         $   148.80
+ 03  Headlamp assy RH — replace                               part $   460.00   0.9h body @ $62/hr         $    55.80
+ 04  Wheel-arch liner RH — replace                            part $    85.00   0.4h body @ $62/hr         $    24.80
+ 05  Refinish — 2 panels + blend                              part $     0.00   6.0h refinish @ $62/hr     $   372.00
+ 06  Paint & materials                                        part $   240.00   materials                  $     0.00
+
+ PARTS $1,500.00   LABOR $750.20   TOTAL $2,250.20
+Notes: OEM parts where available; labor rates per §3.4 regional caps; supplements pending teardown; photos on file.

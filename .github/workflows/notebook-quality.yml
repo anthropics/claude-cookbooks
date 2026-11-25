@@ -14,6 +14,7 @@ on:
 permissions:
   contents: read
   pull-requests: write
+  id-token: write # Anthropic Workload Identity Federation
 
 jobs:
   validate-notebooks:
@@ -23,7 +24,7 @@ jobs:
       - uses: actions/checkout@v6
       
       - name: Install uv
-        uses: astral-sh/setup-uv@v4
+        uses: astral-sh/setup-uv@38f3f104447c67c051c4a08e39b64a148898af3a # v4.2.0 (sha-pinned)
         with:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
@@ -54,10 +55,19 @@ jobs:
         continue-on-error: true
 
       - name: Summarize validation issues with Claude
-        if: github.event_name == 'pull_request' && steps.validate.outputs.has_issues == 'true'
+        # Not on pull requests from forks
+        if: |
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name == github.repository &&
+          steps.validate.outputs.has_issues == 'true'
         uses: anthropics/claude-code-action@v1
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Anthropic auth via Workload Identity Federation — the action
+          # exchanges this job's GitHub OIDC token (id-token: write above)
+          # for a short-lived access token instead of a static API key.
+          anthropic_federation_rule_id: fdrl_01SqmTwzmEE547mtaYN1mqHL
+          anthropic_organization_id: 1ec12c5c-6542-4da8-bf2f-c15919aef01c
+          anthropic_service_account_id: svac_01BHcCBa1UWFvNrHMqJjuaUZ
           github_token: ${{ secrets.GITHUB_TOKEN }}
           prompt: |
             The notebook validation found these issues:
@@ -77,11 +87,18 @@ jobs:
             Format as a nice GitHub comment with markdown. Use emoji sparingly for clarity.
             Post using: gh pr comment $PR_NUMBER --body "your comment"
           claude_args: |
+            --model claude-sonnet-5-5
+            --permission-mode default
             --allowedTools "Bash(gh pr comment:*),Bash(cat:*),Read"
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
 
       # Only run API tests on main branch or for maintainers (costs money)
+      # TODO: this step still reads the static ANTHROPIC_API_KEY secret. The
+      # claude-code-action steps above use Workload Identity Federation; this
+      # direct-API step needs a separate inline OIDC mint+exchange (or the
+      # anthropic SDK's WIF env-var trio). Non-fatal in the meantime — each
+      # notebook execution failure is caught by the `|| echo` below.
       - name: Execute notebooks (API Testing)
         if: |
           github.event_name == 'push' || 

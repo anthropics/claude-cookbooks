@@ -1,0 +1,13 @@
+# Hard-pinned so the cookbook doesn't silently break on a future release.
+# Bump deliberately when you've re-run the notebook end-to-end.
+# The claude-agent-sdk wheel bundles the Claude Code CLI it drives (0.2.168
+# ships CLI 2.1.301), so this one pin covers both.
+claude-agent-sdk==0.2.168
+fastapi==0.118.3
+uvicorn[standard]==0.37.0
+sse-starlette==2.1.3
+python-dotenv==1.0.1
+# research_agent.agent imports utils.agent_visualizer → utils.html_renderer,
+# which uses IPython.display. The server never renders HTML, but the import
+# chain needs to resolve.
+ipython==8.37.0

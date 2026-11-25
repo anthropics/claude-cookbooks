@@ -1,0 +1,5 @@
+fastapi>=0.115.0,<1
+uvicorn[standard]>=0.34.0,<1
+redis>=5.0,<6
+kubernetes>=31.0.0,<32
+httpx>=0.28.0,<1

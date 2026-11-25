@@ -1,0 +1,9 @@
+{
+  "number": 42,
+  "title": "Blog post URLs with accented characters 404",
+  "body": "## Problem\n\nPosts with accented titles like 'Café Culture' generate broken URLs. The slug becomes `caf-culture` instead of `cafe-culture`, so the route doesn't match.\n\n## Repro\n\n```python\n>>> from src.url_utils import slugify\n>>> slugify('Café Culture')\n'caf-culture'  # expected: 'cafe-culture'\n```\n\n## Where it breaks\n\nNot sure if this is in `url_utils.py` or how `blog.py` calls it. The `generate_post_url()` in `blog.py` is what users actually hit.\n\n## Impact\n\nAny post title with é, ñ, ü, etc. produces a 404. We have 23 affected posts in prod.",
+  "labels": ["bug", "p1", "routing"],
+  "comments": [
+    {"author": "alice", "body": "Pretty sure this is the `.encode('ascii', 'ignore')` call dropping the chars instead of transliterating. unicodedata.normalize might help?"}
+  ]
+}

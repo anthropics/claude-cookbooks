@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+# Mock gh CLI — simulates issues, PRs, CI checks, and review comments.
+# State persists in .gh-state/ across calls within a session.
+set -e
+STATE=.gh-state
+mkdir -p $STATE
+
+case "$1 $2" in
+  "issue view")
+    cat issue_$3.json
+    ;;
+
+  "pr create")
+    shift 2
+    python3 - "$@" <<'PY'
+import json, sys, os
+args = dict(zip(sys.argv[1::2], sys.argv[2::2]))
+args["number"] = 101
+args["state"] = "open"
+args["checks"] = {"ci/test": "pending"}
+args["reviews"] = []
+os.makedirs(".gh-state", exist_ok=True)
+json.dump(args, open(".gh-state/pr_101.json", "w"), indent=2)
+print(f"Created PR #101: {args.get('--title', '(no title)')}")
+print("View at: https://github.com/mock/repo/pull/101")
+PY
+    ;;
+
+  "pr checks")
+    # CI runs the actual test suite and updates the check status
+    python3 - <<'PY'
+import json, subprocess, sys
+pr = json.load(open(".gh-state/pr_101.json"))
+r = subprocess.run(["python3", "-m", "pytest", "tests/", "-q", "--tb=short"],
+                   capture_output=True, text=True)
+status = "pass" if r.returncode == 0 else "fail"
+pr["checks"]["ci/test"] = status
+pr["checks"]["_last_output"] = (r.stdout + r.stderr)[-800:]
+json.dump(pr, open(".gh-state/pr_101.json", "w"), indent=2)
+print(f"ci/test: {status}")
+if status == "fail":
+    print("---")
+    print(r.stdout + r.stderr)
+    sys.exit(1)
+PY
+    ;;
+
+  "pr view")
+    python3 -c "import json; print(json.dumps(json.load(open('.gh-state/pr_$3.json')), indent=2))"
+    ;;
+
+  "pr review")
+    # Mock reviewer: nitpicks if slugify() lacks a docstring
+    python3 - <<'PY'
+import json
+pr = json.load(open(".gh-state/pr_101.json"))
+with open("src/url_utils.py") as f:
+    code = f.read()
+fn_body = code.split("def slugify")[1].split("\ndef ")[0]
+if '"""' not in fn_body:
+    pr["reviews"].append({
+        "author": "reviewer-bot", "state": "CHANGES_REQUESTED",
+        "body": "Please add a docstring to slugify() explaining the unicode handling."
+    })
+    print("Review: CHANGES_REQUESTED")
+    print("  > Please add a docstring to slugify() explaining the unicode handling.")
+else:
+    pr["reviews"].append({"author": "reviewer-bot", "state": "APPROVED", "body": "LGTM"})
+    print("Review: APPROVED")
+json.dump(pr, open(".gh-state/pr_101.json", "w"), indent=2)
+PY
+    ;;
+
+  "pr merge")
+    python3 - <<'PY'
+import json, sys
+pr = json.load(open(".gh-state/pr_101.json"))
+if pr["checks"].get("ci/test") != "pass":
+    print("Cannot merge: ci/test is not passing", file=sys.stderr); sys.exit(1)
+if not any(r["state"] == "APPROVED" for r in pr.get("reviews", [])):
+    print("Cannot merge: needs an approving review", file=sys.stderr); sys.exit(1)
+pr["state"] = "merged"
+json.dump(pr, open(".gh-state/pr_101.json", "w"), indent=2)
+print("Merged PR #101 into main")
+PY
+    ;;
+
+  *) echo "gh-mock: unknown command '$*'" >&2; exit 1 ;;
+esac

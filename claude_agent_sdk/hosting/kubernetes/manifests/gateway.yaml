@@ -1,0 +1,137 @@
+# Gateway: The central API server that manages agent pod lifecycles.
+#
+# RBAC (Role-Based Access Control) explained:
+#   The gateway needs Kubernetes API permissions to create and delete agent pods
+#   on demand. This is set up with three resources:
+#
+#   1. ServiceAccount (gateway-sa) — an identity the gateway pod runs as.
+#   2. Role (gateway-pod-manager) — defines what actions are allowed: create,
+#      get, list, patch, and delete on pods — exactly the calls k8s.py makes,
+#      nothing more. The Role is scoped to the 'claude-agent' namespace only.
+#   3. RoleBinding — attaches the Role to gateway-sa, so the gateway deployment
+#      (which uses serviceAccountName: gateway-sa) inherits those permissions.
+#
+#   A separate ServiceAccount (agent-sa) is provided for agent pods. It has no
+#   extra Role — agent pods don't need Kubernetes API access. The Workload
+#   Identity annotation allows it to authenticate to cloud provider APIs if
+#   needed.
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+    name: gateway-sa
+    namespace: claude-agent
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+    name: agent-sa
+    namespace: claude-agent
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+    name: gateway-pod-manager
+    namespace: claude-agent
+rules:
+    - apiGroups: [""]
+      resources: ["pods"]
+      verbs: ["create", "get", "list", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+    name: gateway-pod-manager-binding
+    namespace: claude-agent
+roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: Role
+    name: gateway-pod-manager
+subjects:
+    - kind: ServiceAccount
+      name: gateway-sa
+      namespace: claude-agent
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: gateway
+    namespace: claude-agent
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: gateway
+    template:
+        metadata:
+            labels:
+                app: gateway
+        spec:
+            serviceAccountName: gateway-sa
+            # uvicorn doesn't fast-exit on SIGTERM; 5s is enough to drain.
+            terminationGracePeriodSeconds: 5
+            containers:
+                - name: gateway
+                  image: REGISTRY_URL/gateway:latest
+                  imagePullPolicy: IfNotPresent
+                  ports:
+                      - containerPort: 8080
+                  env:
+                      - name: REDIS_URL
+                        value: "redis://redis:6379"
+                      - name: AGENT_IMAGE
+                        valueFrom:
+                            configMapKeyRef:
+                                name: agent-config
+                                key: AGENT_IMAGE
+                      - name: AGENT_NAMESPACE
+                        value: "claude-agent"
+                      - name: STANDBY_POOL_SIZE
+                        valueFrom:
+                            configMapKeyRef:
+                                name: agent-config
+                                key: STANDBY_POOL_SIZE
+                      - name: IDLE_TIMEOUT_S
+                        value: "900"
+                      # token→tenant map ("tokenA:alice,tokenB:bob"). Sessions are
+                      # scoped to the tenant that created them. Optional so the
+                      # manifest applies before the secret exists, but don't run
+                      # without it anywhere other callers can reach.
+                      - name: GATEWAY_TENANTS
+                        valueFrom:
+                            secretKeyRef:
+                                name: gateway-tenants
+                                key: GATEWAY_TENANTS
+                                optional: true
+                  startupProbe:
+                      httpGet:
+                          path: /health
+                          port: 8080
+                      initialDelaySeconds: 10
+                      periodSeconds: 10
+                      failureThreshold: 30
+                  livenessProbe:
+                      httpGet:
+                          path: /health
+                          port: 8080
+                      initialDelaySeconds: 5
+                      periodSeconds: 10
+                  readinessProbe:
+                      httpGet:
+                          path: /health
+                          port: 8080
+                      initialDelaySeconds: 5
+                      periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: gateway
+    namespace: claude-agent
+spec:
+    type: ClusterIP
+    selector:
+        app: gateway
+    ports:
+        - port: 8080
+          targetPort: 8080

@@ -1,0 +1,24 @@
+{
+  "event": {
+    "id": "01F3K8M2WQXYZ5R7ABCD",
+    "event_type": "incident.triggered",
+    "occurred_at": "2026-04-07T03:14:22Z",
+    "data": {
+      "id": "Q0ABCXYZ",
+      "type": "incident",
+      "title": "checkout-svc pods crash-looping (CrashLoopBackOff)",
+      "service": {
+        "id": "P123456",
+        "summary": "checkout-svc"
+      },
+      "urgency": "high",
+      "status": "triggered",
+      "details": {
+        "cluster": "prod-us-east",
+        "namespace": "shop",
+        "deployment": "checkout-svc",
+        "restarts_5m": 7
+      }
+    }
+  }
+}

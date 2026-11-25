@@ -16,6 +16,7 @@ on:
 permissions:
   contents: read
   pull-requests: write
+  id-token: write # Anthropic Workload Identity Federation
 
 jobs:
   test-notebooks:
@@ -27,7 +28,7 @@ jobs:
           fetch-depth: 0  # Need full history for diff
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v4
+        uses: astral-sh/setup-uv@38f3f104447c67c051c4a08e39b64a148898af3a # v4.2.0 (sha-pinned)
         with:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
@@ -122,13 +123,20 @@ jobs:
           cat test_output_*.txt > all_test_output.txt 2>/dev/null || echo "No test output files"
 
       - name: Post test results to PR
+        # Not on pull requests from forks
         if: |
           github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name == github.repository &&
           steps.changed-notebooks.outputs.has_notebooks == 'true' &&
           steps.structure-tests.outputs.has_failures == 'true'
         uses: anthropics/claude-code-action@v1
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Anthropic auth via Workload Identity Federation — the action
+          # exchanges this job's GitHub OIDC token (id-token: write above)
+          # for a short-lived access token instead of a static API key.
+          anthropic_federation_rule_id: fdrl_01SqmTwzmEE547mtaYN1mqHL
+          anthropic_organization_id: 1ec12c5c-6542-4da8-bf2f-c15919aef01c
+          anthropic_service_account_id: svac_01BHcCBa1UWFvNrHMqJjuaUZ
           github_token: ${{ secrets.GITHUB_TOKEN }}
           prompt: |
             The notebook tests found issues in the changed notebooks.
@@ -146,17 +154,24 @@ jobs:
             - Explains how to fix common issues:
               - "Cells not executed": Run all cells from top to bottom before committing
               - "Execution order issues": Restart kernel and run all cells sequentially
-              - "Deprecated models": Update to current model versions (claude-sonnet-4-6, etc.)
+              - "Deprecated or non-current models": Switch to a current alias (claude-opus-5-5, claude-sonnet-5-5, claude-fable-5-1, claude-haiku-4-5); if the notebook pins an older model on purpose (pricing tables, recorded eval numbers), add it to ALLOWED_LEGACY_MODELS in tests/notebook_tests/test_notebooks.py with a one-line reason
               - "Hardcoded API keys": Use os.environ.get("ANTHROPIC_API_KEY") instead
             - Mentions they can test locally with: `make test-notebooks NOTEBOOK=path/to/notebook.ipynb`
             - Uses friendly, constructive language
 
             Post using: gh pr comment $PR_NUMBER --body "your comment"
           claude_args: |
+            --model claude-sonnet-5-5
+            --permission-mode default
             --allowedTools "Bash(gh pr comment:*),Bash(cat:*),Read"
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
 
+      # TODO: this step still reads the static ANTHROPIC_API_KEY secret. The
+      # claude-code-action step above uses Workload Identity Federation; this
+      # direct-API step needs a separate inline OIDC mint+exchange (or the
+      # anthropic SDK's WIF env-var trio). Gracefully skips when the secret
+      # is absent (the `[ -z "$ANTHROPIC_API_KEY" ]` guard below).
       - name: Run notebook execution tests (maintainers only)
         id: execution-tests
         if: |
@@ -200,9 +215,7 @@ jobs:
             fi
           done < changed_notebooks.txt
 
-          if [ "$EXEC_FAILED" -gt 0 ]; then
-            echo "exec_failures=$EXEC_FAILED" >> $GITHUB_OUTPUT
-          fi
+          echo "exec_failures=$EXEC_FAILED" >> $GITHUB_OUTPUT
         continue-on-error: true
 
       - name: Upload test artifacts
@@ -220,9 +233,26 @@ jobs:
 
       - name: Final status check
         if: steps.changed-notebooks.outputs.has_notebooks == 'true'
+        env:
+          # 'failure' only when the execution step's own SCRIPT errored (its
+          # per-notebook test failures never fail the step); 'skipped' on fork
+          # PRs. Without this, a script error there leaves exec_failures
+          # unwritten and would read as a clean skip.
+          EXEC_OUTCOME: ${{ steps.execution-tests.outcome }}
+          # Empty when the execution step was skipped or had no API key, so
+          # external contributors are never gated on API execution.
+          EXEC_FAILURES: ${{ steps.execution-tests.outputs.exec_failures }}
         run: |
           if [ "${{ steps.structure-tests.outputs.has_failures }}" = "true" ]; then
             echo "❌ Some notebook tests failed. Please fix the issues above."
+            exit 1
+          fi
+          if [ "$EXEC_OUTCOME" = "failure" ]; then
+            echo "❌ The notebook execution step itself errored. See its log above."
+            exit 1
+          fi
+          if [ "${EXEC_FAILURES:-0}" -gt 0 ]; then
+            echo "❌ $EXEC_FAILURES notebook(s) failed to execute against the API. Please fix the issues above."
             exit 1
           fi
           echo "✅ All notebook tests passed!"

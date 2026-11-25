@@ -1,0 +1,8 @@
+# Namespace: A Kubernetes namespace isolates resources — everything for this
+# application lives in the 'claude-agent' namespace, keeping it separate from
+# other workloads in the cluster.
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+    name: claude-agent

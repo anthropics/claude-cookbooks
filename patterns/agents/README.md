@@ -18,3 +18,5 @@ See the Jupyter notebooks for detailed examples:
 - [Basic Workflows](basic_workflows.ipynb)
 - [Evaluator-Optimizer Workflow](evaluator_optimizer.ipynb) 
 - [Orchestrator-Workers Workflow](orchestrator_workers.ipynb)
+- [Async Multi-Agent Orchestration](async_multi_agent_orchestration.ipynb)
+- [Multi-Agent Teams Under Latency Pressure and Budgets](latency_multi_agent.ipynb)

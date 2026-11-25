@@ -1,0 +1,11 @@
+id,expected,summary
+CLM-001,APPROVE,"Other driver ran red light and struck front of insured's vehicle; cited at scene. $5,510 estimate."
+CLM-002,DENY,"Single-vehicle loss of control. $6,536 estimate."
+CLM-003,APPROVE,"Rear-end collision at a stop sign. $1,579 estimate."
+CLM-004,FRAUD,"Intersection collision; other driver cited. $2,890 estimate."
+CLM-005,DENY,"Household member took the car without permission; struck a mailbox. $2,250 estimate."
+CLM-006,APPROVE,Clipped the garage door frame while reversing out. $653 estimate.
+CLM-007,SUPERVISOR,"Backed into a parking-garage column. $1,180 estimate."
+CLM-008,SUPERVISOR,"Glass smashed and head unit stolen while parked at a trailhead; police report filed. $1,159 estimate."
+CLM-009,FRAUD,"Parked vehicle struck by an unknown vehicle (hit-and-run); police report filed. $1,797 estimate."
+CLM-010,FRAUD,"Tailgate and tail lamps stolen from parked pickup; police report filed. $2,571 estimate."

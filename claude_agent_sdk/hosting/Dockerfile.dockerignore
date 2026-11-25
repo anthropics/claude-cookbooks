@@ -1,0 +1,15 @@
+# Build context is claude_agent_sdk/ — keep the image lean by excluding
+# everything that isn't the agent, its utils, or the hosting server.
+**/.env
+**/__pycache__
+**/.ipynb_checkpoints
+**/*.ipynb
+**/.DS_Store
+**/.git
+sessions/
+images/
+
+# Exclude the deployment-tier subdirs; only the shared server bits go in the image.
+hosting/docker/
+hosting/modal/
+hosting/kubernetes/

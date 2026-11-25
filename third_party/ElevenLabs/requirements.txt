@@ -1,4 +1,4 @@
-anthropic>=0.71.0
+anthropic>=2.0.0
 elevenlabs>=2.15.0
 sounddevice>=0.5.1
 numpy>=1.26.0
