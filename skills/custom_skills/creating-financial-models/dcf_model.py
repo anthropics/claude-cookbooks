@@ -52,6 +52,9 @@ class DCFModel:
             "ebitda_margin": [ebitda[i] / revenue[i] for i in range(len(revenue))],
             "capex_percent": [capex[i] / revenue[i] for i in range(len(revenue))],
         }
+        # Historicals anchor the projection, so the previous results no longer apply.
+        self.projections = {}
+        self.valuation_results = {}
 
     def set_assumptions(
         self,
@@ -101,6 +104,10 @@ class DCFModel:
             "nwc_percent": nwc_percent,
             "terminal_growth": terminal_growth,
         }
+        # Assumptions changed, so the projections and valuation derived from the
+        # previous ones are stale; the next calculation projects again.
+        self.projections = {}
+        self.valuation_results = {}
 
     def calculate_wacc(
         self,
